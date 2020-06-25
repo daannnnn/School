@@ -1,6 +1,10 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#6200EE</color>
-    <color name="colorPrimaryDark">#3700B3</color>
-    <color name="colorAccent">#03DAC5</color>
+    <color name="colorPrimary">#005287</color>
+    <color name="colorPrimaryDark">#003D65</color>
+    <color name="colorAccent">#3CB3FF</color>
+
+    <color name="homeworkColor">#E17055</color>
+    <color name="examColor">#00B894</color>
+    <color name="taskColor">#D63031</color>
 </resources>
