@@ -12,4 +12,12 @@
         <item name="fontFamily">@font/cabin_regular</item>
     </style>
 
+    <style name="FABStyle">
+        <item name="android:textColor">#000</item>
+        <item name="android:fontFamily">@font/cabin_medium</item>
+        <item name="android:gravity">center</item>
+        <item name="android:paddingEnd">12dp</item>
+        <item name="android:paddingStart">12dp</item>
+    </style>
+
 </resources>

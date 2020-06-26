@@ -30,4 +30,52 @@
         app:menu="@menu/menu_bottom_navigation"
         android:layout_gravity="bottom" />
 
+    <com.github.clans.fab.FloatingActionMenu
+        android:id="@+id/floatingActionMenu"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_margin="8dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+        app:menu_animationDelayPerItem="50"
+        app:menu_colorNormal="@color/colorPrimary"
+        app:menu_colorPressed="@color/colorAccent"
+        app:menu_colorRipple="@color/colorAccent"
+        app:menu_fab_size="normal"
+        app:menu_showShadow="true"
+        app:menu_buttonSpacing="4dp"
+        app:menu_labels_style="@style/FABStyle">
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_menu_homework"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_fab_homework"
+            app:fab_colorNormal="@android:color/white"
+            app:fab_colorPressed="#CACACA"
+            app:fab_size="mini"
+            app:fab_label="Homework" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_menu_exam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_fab_exam"
+            app:fab_colorNormal="@android:color/white"
+            app:fab_colorPressed="#CACACA"
+            app:fab_size="mini"
+            app:fab_label="Exam" />
+
+        <com.github.clans.fab.FloatingActionButton
+            android:id="@+id/fab_menu_task"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:src="@drawable/ic_fab_task"
+            app:fab_colorNormal="@android:color/white"
+            app:fab_colorPressed="#CACACA"
+            app:fab_size="mini"
+            app:fab_label="Task" />
+
+    </com.github.clans.fab.FloatingActionMenu>
+
 </androidx.constraintlayout.widget.ConstraintLayout>
