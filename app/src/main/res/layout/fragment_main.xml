@@ -7,7 +7,7 @@
     android:orientation="vertical"
     tools:context=".MainFragment">
 
-    <RelativeLayout
+    <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
         android:layout_width="0dp"
         android:layout_height="?attr/actionBarSize"
@@ -16,24 +16,31 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent">
 
-        <ImageView
-            android:layout_width="24dp"
-            android:layout_height="24dp"
-            android:layout_centerVertical="true"
-            android:layout_margin="16dp"
-            android:background="?selectableItemBackgroundBorderless"
-            android:src="@drawable/ic_menu" />
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/white">
 
-        <TextView
-            android:layout_width="wrap_content"
-            android:layout_height="wrap_content"
-            android:layout_centerInParent="true"
-            android:fontFamily="@font/cabin_bold"
-            android:text="@string/app_name"
-            android:textColor="@android:color/black"
-            android:textSize="20sp" />
+            <ImageView
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="16dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_menu" />
 
-    </RelativeLayout>
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/cabin_bold"
+                android:text="@string/app_name"
+                android:textColor="@android:color/black"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
 
     <androidx.fragment.app.FragmentContainerView
         android:id="@+id/bottom_navigation_fragment"
@@ -45,7 +52,8 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appBar"
-        app:navGraph="@navigation/nav_bottom_navigation" />
+        app:navGraph="@navigation/nav_bottom_navigation"
+        android:elevation="4dp"/>
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
