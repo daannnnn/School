@@ -20,4 +20,19 @@
         <item name="android:paddingStart">12dp</item>
     </style>
 
+    <style name="NavigationTab" parent="Widget.MaterialComponents.TabLayout">
+        <item name="tabBackground">@android:color/white</item>
+        <item name="tabSelectedTextColor">@color/homeworkColor</item>
+        <item name="fontFamily">@font/cabin_bold</item>
+        <item name="tabIndicatorColor">@color/homeworkColor</item>
+        <item name="tabTextAppearance">@style/NavigationTabTextAppeareance</item>
+    </style>
+
+    <style name="NavigationTabTextAppeareance" parent="TextAppearance.Design.Tab">
+        <item name="android:textColor">@android:color/black</item>
+        <item name="textAllCaps">false</item>
+        <item name="android:textAllCaps">false</item>
+        <item name="fontFamily">@font/cabin_regular</item>
+    </style>
+
 </resources>

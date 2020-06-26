@@ -5,4 +5,10 @@
     <string name="home">Home</string>
     <string name="calendar">Calendar</string>
     <string name="agenda">Agenda</string>
+    <string name="homework">Homework</string>
+    <string name="homeworks">Homeworks</string>
+    <string name="exam">Exam</string>
+    <string name="exams">Exams</string>
+    <string name="task">Task</string>
+    <string name="tasks">Tasks</string>
 </resources>
