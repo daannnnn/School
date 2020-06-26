@@ -7,7 +7,7 @@
     tools:context=".MainFragment"
     android:orientation="vertical">
 
-    <fragment
+    <androidx.fragment.app.FragmentContainerView
         android:id="@+id/bottom_navigation_fragment"
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
@@ -34,12 +34,12 @@
         android:id="@+id/floatingActionMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_margin="8dp"
+        android:layout_margin="12dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:menu_animationDelayPerItem="50"
-        app:menu_colorNormal="@color/colorPrimary"
-        app:menu_colorPressed="@color/colorAccent"
+        app:menu_colorNormal="@color/add_button_color_normal"
+        app:menu_colorPressed="@color/add_button_color_pressed"
         app:menu_colorRipple="@color/colorAccent"
         app:menu_fab_size="normal"
         app:menu_showShadow="true"
