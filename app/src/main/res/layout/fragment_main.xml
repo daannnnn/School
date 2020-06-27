@@ -80,7 +80,8 @@
         app:menu_colorRipple="@color/colorAccent"
         app:menu_fab_size="normal"
         app:menu_labels_style="@style/FABStyle"
-        app:menu_showShadow="true">
+        app:menu_showShadow="true"
+        android:elevation="4dp">
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_menu_homework"
