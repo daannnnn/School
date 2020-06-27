@@ -66,6 +66,15 @@
         app:layout_constraintStart_toStartOf="parent"
         app:menu="@menu/menu_bottom_navigation" />
 
+    <View
+        android:id="@+id/shadowView"
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:background="#FFFFFF"
+        android:visibility="gone"
+        android:alpha="0"
+        android:elevation="8dp"/>
+
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/floatingActionMenu"
         android:layout_width="wrap_content"
@@ -81,7 +90,7 @@
         app:menu_fab_size="normal"
         app:menu_labels_style="@style/FABStyle"
         app:menu_showShadow="true"
-        android:elevation="4dp">
+        android:elevation="8dp">
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_menu_homework"
