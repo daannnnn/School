@@ -1,4 +1,3 @@
-<?xml version="1.0" encoding="utf-8"?>
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
@@ -47,13 +46,13 @@
         android:name="androidx.navigation.fragment.NavHostFragment"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:elevation="4dp"
         app:defaultNavHost="true"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appBar"
-        app:navGraph="@navigation/nav_bottom_navigation"
-        android:elevation="4dp"/>
+        app:navGraph="@navigation/nav_bottom_navigation" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
@@ -70,16 +69,17 @@
         android:id="@+id/shadowView"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:background="#FFFFFF"
-        android:visibility="gone"
         android:alpha="0"
-        android:elevation="8dp"/>
+        android:background="#FFFFFF"
+        android:elevation="8dp"
+        android:visibility="gone" />
 
     <com.github.clans.fab.FloatingActionMenu
         android:id="@+id/floatingActionMenu"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_margin="12dp"
+        android:elevation="8dp"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:menu_animationDelayPerItem="50"
@@ -89,8 +89,7 @@
         app:menu_colorRipple="@color/colorAccent"
         app:menu_fab_size="normal"
         app:menu_labels_style="@style/FABStyle"
-        app:menu_showShadow="true"
-        android:elevation="8dp">
+        app:menu_showShadow="true">
 
         <com.github.clans.fab.FloatingActionButton
             android:id="@+id/fab_menu_homework"
