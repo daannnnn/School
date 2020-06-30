@@ -21,14 +21,14 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
 
         navigationView.setNavigationItemSelectedListener(this)
         navigationView.menu.getItem(0).isChecked = true
-        fragmentManager.beginTransaction().add(R.id.frameLayoutContent, MainFragment(), "main").commit()
+        fragmentManager.beginTransaction().add(R.id.frameLayoutContent, MainNavigationFragment(), "main_navigation").commit()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
         item.isChecked = true
         when (item.itemId) {
             R.id.mainFragment -> {
-                setFragment("main")
+                setFragment("main_navigation")
             }
             R.id.settingsFragment -> {
                 setFragment("settings")
@@ -38,11 +38,11 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
         return true
     }
     private fun setFragment(tag: String) {
-        if (tag == "main") {
-            if (fragmentManager.findFragmentByTag("main") != null) {
-                fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("main")!!).commit()
+        if (tag == "main_navigation") {
+            if (fragmentManager.findFragmentByTag("main_navigation") != null) {
+                fragmentManager.beginTransaction().show(fragmentManager.findFragmentByTag("main_navigation")!!).commit()
             } else {
-                fragmentManager.beginTransaction().add(R.id.frameLayoutContent, MainFragment(), "main").commit()
+                fragmentManager.beginTransaction().add(R.id.frameLayoutContent, MainNavigationFragment(), "main_navigation").commit()
             }
             if(fragmentManager.findFragmentByTag("settings") != null){
                 fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("settings")!!).commit()
@@ -53,8 +53,8 @@ class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelecte
             } else {
                 fragmentManager.beginTransaction().add(R.id.frameLayoutContent, SettingsFragment(), "settings").commit()
             }
-            if(fragmentManager.findFragmentByTag("main") != null){
-                fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("main")!!).commit()
+            if(fragmentManager.findFragmentByTag("main_navigation") != null){
+                fragmentManager.beginTransaction().hide(fragmentManager.findFragmentByTag("main_navigation")!!).commit()
             }
         }
     }
