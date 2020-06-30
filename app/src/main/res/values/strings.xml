@@ -11,4 +11,17 @@
     <string name="exams">Exams</string>
     <string name="task">Task</string>
     <string name="tasks">Tasks</string>
+    <string name="title">Title</string>
+    <string name="subject">Subject</string>
+    <string name="pick_subject">Pick Subject</string>
+    <string name="date">Date</string>
+    <string name="pick_date">Pick Date</string>
+    <string name="today">Today</string>
+    <string name="tomorrow">Tomorrow</string>
+    <string name="subtasks">Subtasks</string>
+    <string name="add">Add</string>
+    <string name="notes">Notes</string>
+    <string name="new_exam">New Exam</string>
+    <string name="new_task">New Task</string>
+    <string name="new_homework">New Homework</string>
 </resources>

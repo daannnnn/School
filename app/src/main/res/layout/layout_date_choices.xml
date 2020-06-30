@@ -1,0 +1,40 @@
+<?xml version="1.0" encoding="utf-8"?>
+<HorizontalScrollView android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    app:layout_constraintTop_toBottomOf="@id/textViewDateLabel"
+    android:layout_marginStart="24dp"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:id="@+id/scrollViewDateChoices"
+    xmlns:android="http://schemas.android.com/apk/res/android">
+
+    <com.google.android.material.chip.ChipGroup
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        app:singleLine="true">
+
+        <com.google.android.material.chip.Chip
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/pick_date"
+            android:fontFamily="@font/cabin_regular"
+            app:chipIcon="@drawable/ic_chip_pick_date"/>
+
+        <com.google.android.material.chip.Chip
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/today"
+            android:fontFamily="@font/cabin_regular"
+            app:chipIcon="@drawable/ic_chip_today_tomorrow"/>
+
+        <com.google.android.material.chip.Chip
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/tomorrow"
+            android:fontFamily="@font/cabin_regular"
+            app:chipIcon="@drawable/ic_chip_today_tomorrow"/>
+
+    </com.google.android.material.chip.ChipGroup>
+
+</HorizontalScrollView>

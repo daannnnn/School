@@ -1,0 +1,15 @@
+<?xml version="1.0" encoding="utf-8"?>
+<EditText android:layout_width="0dp"
+    android:layout_height="wrap_content"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:fontFamily="@font/cabin_bold"
+    android:textColor="@android:color/black"
+    android:textSize="28sp"
+    android:background="@null"
+    android:hint="@string/title"
+    android:id="@+id/editTextTitle"
+    app:layout_constraintTop_toTopOf="parent"
+    app:layout_constraintStart_toStartOf="parent"
+    app:layout_constraintEnd_toEndOf="parent"
+    android:layout_margin="24dp"
+    xmlns:android="http://schemas.android.com/apk/res/android" />
