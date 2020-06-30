@@ -41,18 +41,13 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.fragment.app.FragmentContainerView
-        android:id="@+id/bottom_navigation_fragment"
-        android:name="androidx.navigation.fragment.NavHostFragment"
-        android:layout_width="0dp"
-        android:layout_height="0dp"
+    <FrameLayout
+        android:id="@+id/frameLayoutBottomNavigation"
+        android:layout_width="match_parent"
         android:elevation="4dp"
-        app:defaultNavHost="true"
-        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/appBar"
-        app:navGraph="@navigation/nav_bottom_navigation" />
+        app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
+        android:layout_height="0dp" />
 
     <com.google.android.material.bottomnavigation.BottomNavigationView
         android:id="@+id/bottom_navigation"
