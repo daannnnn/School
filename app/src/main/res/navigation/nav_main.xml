@@ -9,5 +9,30 @@
         android:id="@+id/mainFragment"
         android:name="com.dan.school.MainFragment"
         android:label="fragment_main"
-        tools:layout="@layout/fragment_main" />
+        tools:layout="@layout/fragment_main" >
+        <action
+            android:id="@+id/action_mainFragment_to_addHomeworkFragment"
+            app:destination="@id/addHomeworkFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_addExamFragment"
+            app:destination="@id/addExamFragment" />
+        <action
+            android:id="@+id/action_mainFragment_to_addTaskFragment"
+            app:destination="@id/addTaskFragment" />
+    </fragment>
+    <fragment
+        android:id="@+id/addExamFragment"
+        android:name="com.dan.school.AddExamFragment"
+        android:label="fragment_add_exam"
+        tools:layout="@layout/fragment_add_exam" />
+    <fragment
+        android:id="@+id/addHomeworkFragment"
+        android:name="com.dan.school.AddHomeworkFragment"
+        android:label="fragment_add_homework"
+        tools:layout="@layout/fragment_add_homework" />
+    <fragment
+        android:id="@+id/addTaskFragment"
+        android:name="com.dan.school.AddTaskFragment"
+        android:label="fragment_add_task"
+        tools:layout="@layout/fragment_add_task" />
 </navigation>

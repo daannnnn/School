@@ -4,15 +4,18 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
+import androidx.navigation.fragment.NavHostFragment
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_main.*
+
 
 class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -36,13 +39,13 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
 
         // Listeners
         fab_menu_homework.setOnClickListener {
-            Toast.makeText(context, "Homework Clicked!", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_mainFragment_to_addHomeworkFragment)
         }
         fab_menu_exam.setOnClickListener {
-            Toast.makeText(context, "Exam Clicked!", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_mainFragment_to_addExamFragment)
         }
         fab_menu_task.setOnClickListener {
-            Toast.makeText(context, "Task Clicked!", Toast.LENGTH_SHORT).show()
+            findNavController().navigate(R.id.action_mainFragment_to_addTaskFragment)
         }
         floatingActionMenu.setOnMenuButtonClickListener {
             clickFAB()
