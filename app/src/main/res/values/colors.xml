@@ -13,4 +13,5 @@
     <color name="add_button_color_pressed">#0085DC</color>
 
     <color name="dividerColor">#1F000000</color>
+    <color name="chipStrokeColor">#1F000000</color>
 </resources>

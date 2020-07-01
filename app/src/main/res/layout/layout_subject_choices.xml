@@ -19,7 +19,10 @@
             android:layout_height="wrap_content"
             android:text="@string/pick_subject"
             android:fontFamily="@font/cabin_regular"
-            app:chipIcon="@drawable/ic_chip_subject"/>
+            app:chipIcon="@drawable/ic_chip_subject"
+            app:chipStrokeColor="@color/chipStrokeColor"
+            app:chipStrokeWidth="1dp"
+            app:chipBackgroundColor="#FFF"/>
 
     </com.google.android.material.chip.ChipGroup>
 

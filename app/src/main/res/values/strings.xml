@@ -24,4 +24,6 @@
     <string name="new_exam">New Exam</string>
     <string name="new_task">New Task</string>
     <string name="new_homework">New Homework</string>
+    <string name="enter_note_here">Enter Note Here</string>
+    <string name="show_more">Show More</string>
 </resources>
