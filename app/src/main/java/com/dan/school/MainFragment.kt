@@ -9,6 +9,7 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.navigation.fragment.NavHostFragment
@@ -39,13 +40,16 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
 
         // Listeners
         fab_menu_homework.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_addHomeworkFragment)
+            val bundle = bundleOf("category" to 0)
+            findNavController().navigate(R.id.action_mainFragment_to_addFragment, bundle)
         }
         fab_menu_exam.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_addExamFragment)
+            val bundle = bundleOf("category" to 1)
+            findNavController().navigate(R.id.action_mainFragment_to_addFragment, bundle)
         }
         fab_menu_task.setOnClickListener {
-            findNavController().navigate(R.id.action_mainFragment_to_addTaskFragment)
+            val bundle = bundleOf("category" to 2)
+            findNavController().navigate(R.id.action_mainFragment_to_addFragment, bundle)
         }
         floatingActionMenu.setOnMenuButtonClickListener {
             clickFAB()
