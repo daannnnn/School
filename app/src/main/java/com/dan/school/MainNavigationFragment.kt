@@ -30,6 +30,6 @@ class MainNavigationFragment : Fragment() {
                     }
                 }
             }
-        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+        requireActivity().onBackPressedDispatcher.addCallback(requireActivity(), callback)
     }
 }
