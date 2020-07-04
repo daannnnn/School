@@ -1,17 +1,17 @@
 <?xml version="1.0" encoding="utf-8"?>
 <androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    xmlns:app="http://schemas.android.com/apk/res-auto"
     tools:context=".AddFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
-        app:liftOnScroll="true"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/white">
+        android:background="@android:color/white"
+        app:liftOnScroll="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
@@ -31,18 +31,18 @@
                 android:id="@+id/viewPagerCategory"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
                 android:layout_toStartOf="@id/buttonCheck"
                 android:layout_toEndOf="@id/buttonBack"
-                android:layout_centerInParent="true"
                 android:fontFamily="@font/cabin_bold" />
 
             <ImageView
                 android:id="@+id/buttonCheck"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_margin="16dp"
-                android:layout_alignParentEnd="true"
                 android:background="?selectableItemBackgroundBorderless"
                 android:src="@drawable/ic_check" />
 
@@ -53,57 +53,59 @@
     <androidx.core.widget.NestedScrollView
         android:id="@+id/scrollViewContent"
         android:layout_width="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content">
 
-            <EditText android:layout_width="0dp"
+            <EditText
+                android:id="@+id/editTextTitle"
+                android:layout_width="0dp"
                 android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:background="@null"
                 android:fontFamily="@font/cabin_regular"
+                android:hint="@string/title"
                 android:textColor="@android:color/black"
                 android:textSize="36sp"
-                android:background="@null"
-                android:hint="@string/title"
-                android:id="@+id/editTextTitle"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:layout_margin="24dp" />
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/subject"
-                android:fontFamily="@font/cabin_bold"
-                android:textSize="18sp"
-                android:textColor="@android:color/black"
-                app:layout_constraintTop_toBottomOf="@id/editTextTitle"
-                android:layout_margin="24dp"
                 android:id="@+id/textViewSubjectLabel"
-                app:layout_constraintStart_toStartOf="parent"/>
-
-            <TextView
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/subject"
-                android:fontFamily="@font/cabin_bold"
-                android:textSize="18sp"
-                app:layout_constraintTop_toTopOf="@id/textViewSubjectLabel"
-                app:layout_constraintBottom_toBottomOf="@id/textViewSubjectLabel"
                 android:layout_margin="24dp"
-                android:id="@+id/textViewSubjectPicked"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <HorizontalScrollView android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/textViewSubjectLabel"
-                android:layout_marginStart="24dp"
+                android:fontFamily="@font/cabin_bold"
+                android:text="@string/subject"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/editTextTitle" />
+
+            <TextView
+                android:id="@+id/textViewSubjectPicked"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:fontFamily="@font/cabin_bold"
+                android:text="@string/subject"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@id/textViewSubjectLabel"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:id="@+id/scrollViewSubjectChoices">
+                app:layout_constraintTop_toTopOf="@id/textViewSubjectLabel" />
+
+            <HorizontalScrollView
+                android:id="@+id/scrollViewSubjectChoices"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewSubjectLabel">
 
                 <com.google.android.material.chip.ChipGroup
                     android:layout_width="wrap_content"
@@ -113,48 +115,49 @@
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/pick_subject"
                         android:fontFamily="@font/cabin_regular"
+                        android:text="@string/pick_subject"
+                        app:chipBackgroundColor="#FFF"
                         app:chipIcon="@drawable/ic_chip_subject"
                         app:chipStrokeColor="@color/chipStrokeColor"
-                        app:chipStrokeWidth="1dp"
-                        app:chipBackgroundColor="#FFF"/>
+                        app:chipStrokeWidth="1dp" />
 
                 </com.google.android.material.chip.ChipGroup>
 
             </HorizontalScrollView>
 
             <TextView
+                android:id="@+id/textViewDateLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/date"
-                android:fontFamily="@font/cabin_bold"
-                android:textSize="18sp"
-                android:textColor="@android:color/black"
-                app:layout_constraintTop_toBottomOf="@id/scrollViewSubjectChoices"
                 android:layout_margin="24dp"
-                android:id="@+id/textViewDateLabel"
-                app:layout_constraintStart_toStartOf="parent"/>
+                android:fontFamily="@font/cabin_bold"
+                android:text="@string/date"
+                android:textColor="@android:color/black"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/scrollViewSubjectChoices" />
 
             <TextView
+                android:id="@+id/textViewDatePicked"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/date"
-                android:fontFamily="@font/cabin_bold"
-                android:textSize="18sp"
-                app:layout_constraintTop_toTopOf="@id/textViewDateLabel"
-                app:layout_constraintBottom_toBottomOf="@id/textViewDateLabel"
                 android:layout_margin="24dp"
-                android:id="@+id/textViewDatePicked"
-                app:layout_constraintEnd_toEndOf="parent" />
-
-            <HorizontalScrollView android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintTop_toBottomOf="@id/textViewDateLabel"
-                android:layout_marginStart="24dp"
-                app:layout_constraintStart_toStartOf="parent"
+                android:fontFamily="@font/cabin_bold"
+                android:text="@string/date"
+                android:textSize="18sp"
+                app:layout_constraintBottom_toBottomOf="@id/textViewDateLabel"
                 app:layout_constraintEnd_toEndOf="parent"
-                android:id="@+id/scrollViewDateChoices">
+                app:layout_constraintTop_toTopOf="@id/textViewDateLabel" />
+
+            <HorizontalScrollView
+                android:id="@+id/scrollViewDateChoices"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewDateLabel">
 
                 <com.google.android.material.chip.ChipGroup
                     android:layout_width="wrap_content"
@@ -164,114 +167,116 @@
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/pick_date"
                         android:fontFamily="@font/cabin_regular"
+                        android:text="@string/pick_date"
+                        app:chipBackgroundColor="#FFF"
                         app:chipIcon="@drawable/ic_chip_pick_date"
                         app:chipStrokeColor="@color/chipStrokeColor"
-                        app:chipStrokeWidth="1dp"
-                        app:chipBackgroundColor="#FFF"/>
+                        app:chipStrokeWidth="1dp" />
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
+                        android:fontFamily="@font/cabin_regular"
                         android:text="@string/today"
-                        android:fontFamily="@font/cabin_regular"
+                        app:chipBackgroundColor="#FFF"
                         app:chipIcon="@drawable/ic_chip_today_tomorrow"
                         app:chipStrokeColor="@color/chipStrokeColor"
-                        app:chipStrokeWidth="1dp"
-                        app:chipBackgroundColor="#FFF"/>
+                        app:chipStrokeWidth="1dp" />
 
                     <com.google.android.material.chip.Chip
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:text="@string/tomorrow"
                         android:fontFamily="@font/cabin_regular"
+                        android:text="@string/tomorrow"
+                        app:chipBackgroundColor="#FFF"
                         app:chipIcon="@drawable/ic_chip_today_tomorrow"
                         app:chipStrokeColor="@color/chipStrokeColor"
-                        app:chipStrokeWidth="1dp"
-                        app:chipBackgroundColor="#FFF"/>
+                        app:chipStrokeWidth="1dp" />
 
                 </com.google.android.material.chip.ChipGroup>
 
             </HorizontalScrollView>
 
-            <androidx.constraintlayout.widget.ConstraintLayout android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/scrollViewDateChoices"
+            <androidx.constraintlayout.widget.ConstraintLayout
                 android:id="@+id/constraintLayoutMore"
-                android:visibility="gone">
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/scrollViewDateChoices">
 
                 <TextView
+                    android:id="@+id/textViewSubtaskLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/subtasks"
-                    android:fontFamily="@font/cabin_bold"
-                    android:textSize="18sp"
-                    android:textColor="@android:color/black"
-                    app:layout_constraintTop_toTopOf="parent"
                     android:layout_margin="24dp"
-                    android:id="@+id/textViewSubtaskLabel"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    android:fontFamily="@font/cabin_bold"
+                    android:text="@string/subtasks"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <ListView
+                    android:id="@+id/listViewSubtasks"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:id="@+id/listViewSubtasks"
-                    app:layout_constraintTop_toBottomOf="@id/textViewSubtaskLabel"
-                    android:layout_marginTop="12dp"
                     android:layout_marginStart="36dp"
+                    android:layout_marginTop="12dp"
                     android:layout_marginEnd="36dp"
-                    android:visibility="gone"/>
+                    android:visibility="gone"
+                    app:layout_constraintTop_toBottomOf="@id/textViewSubtaskLabel" />
 
                 <Button
+                    android:id="@+id/buttonAddSubtask"
+                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/add"
-                    app:layout_constraintTop_toBottomOf="@id/listViewSubtasks"
-                    app:layout_constraintStart_toStartOf="parent"
                     android:layout_marginStart="36dp"
+                    android:text="@string/add"
                     app:icon="@drawable/fab_add"
-                    android:id="@+id/buttonAddSubtask"
-                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"/>
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/listViewSubtasks" />
 
                 <TextView
+                    android:id="@+id/textViewNotesLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    android:text="@string/notes"
-                    android:fontFamily="@font/cabin_bold"
-                    android:textSize="18sp"
-                    android:textColor="@android:color/black"
-                    app:layout_constraintTop_toBottomOf="@id/buttonAddSubtask"
                     android:layout_margin="24dp"
-                    android:id="@+id/textViewNotesLabel"
-                    app:layout_constraintStart_toStartOf="parent"/>
+                    android:fontFamily="@font/cabin_bold"
+                    android:text="@string/notes"
+                    android:textColor="@android:color/black"
+                    android:textSize="18sp"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/buttonAddSubtask" />
 
                 <EditText
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textViewNotesLabel"
-                    android:layout_width="0dp"
                     android:id="@+id/editTextNotes"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:hint="@string/enter_note_here"
                     android:layout_marginStart="32dp"
-                    android:layout_marginEnd="32dp"
                     android:layout_marginTop="12dp"
+                    android:layout_marginEnd="32dp"
                     android:background="@null"
-                    android:fontFamily="@font/cabin_regular"/>
+                    android:fontFamily="@font/cabin_regular"
+                    android:hint="@string/enter_note_here"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewNotesLabel" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
             <Button
+                android:id="@+id/buttonShowMore"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
                 android:text="@string/show_more"
-                app:layout_constraintTop_toBottomOf="@id/scrollViewDateChoices"/>
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/scrollViewDateChoices" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 

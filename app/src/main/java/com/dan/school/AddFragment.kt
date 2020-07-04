@@ -71,6 +71,12 @@ class AddFragment : DialogFragment() {
             }
         })
 
+        // listeners
+        buttonShowMore.setOnClickListener {
+            constraintLayoutMore.visibility = View.VISIBLE
+            buttonShowMore.visibility = View.GONE
+        }
+
         // initialize
         val category = requireArguments().getInt("category")
         currentPosition = category
