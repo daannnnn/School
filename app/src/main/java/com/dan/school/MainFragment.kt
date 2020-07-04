@@ -90,7 +90,7 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
         if (!isFABOpen) {
             floatingActionMenu.toggle(true)
             shadowView.visibility = View.VISIBLE
-            ObjectAnimator.ofFloat(shadowView, "alpha", 0.8f).setDuration(300).start()
+            ObjectAnimator.ofFloat(shadowView, "alpha", 1f).setDuration(300).start()
             shadowView.isFocusable = true
             shadowView.isClickable = true
         } else {
