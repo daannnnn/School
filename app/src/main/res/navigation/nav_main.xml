@@ -14,7 +14,7 @@
             android:id="@+id/action_mainFragment_to_addFragment"
             app:destination="@id/addFragment" />
     </fragment>
-    <fragment
+    <dialog
         android:id="@+id/addFragment"
         android:name="com.dan.school.AddFragment"
         android:label="fragment_add"
@@ -23,5 +23,10 @@
             android:name="category"
             app:argType="integer"
             android:defaultValue="0" />
-    </fragment>
+    </dialog>
+    <dialog
+        android:id="@+id/settingsFragment"
+        android:name="com.dan.school.SettingsFragment"
+        android:label="fragment_settings"
+        tools:layout="@layout/fragment_settings" />
 </navigation>

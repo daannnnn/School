@@ -4,7 +4,6 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -12,11 +11,9 @@ import android.view.ViewGroup
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.navigation.fragment.NavHostFragment
 import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_main.*
-
 
 class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedListener {
 
@@ -40,16 +37,13 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
 
         // Listeners
         fab_menu_homework.setOnClickListener {
-            val bundle = bundleOf("category" to 0)
-            findNavController().navigate(R.id.action_mainFragment_to_addFragment, bundle)
+            goToAddFragment(School.Category.HOMEWORK)
         }
         fab_menu_exam.setOnClickListener {
-            val bundle = bundleOf("category" to 1)
-            findNavController().navigate(R.id.action_mainFragment_to_addFragment, bundle)
+            goToAddFragment(School.Category.EXAM)
         }
         fab_menu_task.setOnClickListener {
-            val bundle = bundleOf("category" to 2)
-            findNavController().navigate(R.id.action_mainFragment_to_addFragment, bundle)
+            goToAddFragment(School.Category.TASK)
         }
         floatingActionMenu.setOnMenuButtonClickListener {
             clickFAB()
@@ -63,7 +57,18 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
         bottom_navigation.setOnNavigationItemSelectedListener(this)
 
         // Show HomeFragment
-        mChildFragmentManager.beginTransaction().add(R.id.frameLayoutBottomNavigation, HomeFragment(), "home").commit()
+        mChildFragmentManager.beginTransaction()
+            .add(R.id.frameLayoutBottomNavigation, HomeFragment(), "home").commit()
+    }
+
+    private fun goToAddFragment(category: Int) {
+        val bundle = bundleOf("category" to category)
+        findNavController().navigate(R.id.action_mainFragment_to_addFragment, bundle)
+        floatingActionMenu.close(false)
+        shadowView.alpha = 0f
+        shadowView.visibility = View.GONE
+        shadowView.isClickable = false
+        shadowView.isFocusable = false
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -108,39 +113,51 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
     private fun setFragment(tag: String) {
         if (tag == "home") {
             if (mChildFragmentManager.findFragmentByTag("home") != null) {
-                mChildFragmentManager.beginTransaction().show(mChildFragmentManager.findFragmentByTag("home")!!).commit()
+                mChildFragmentManager.beginTransaction()
+                    .show(mChildFragmentManager.findFragmentByTag("home")!!).commit()
             } else {
-                mChildFragmentManager.beginTransaction().add(R.id.frameLayoutBottomNavigation, HomeFragment(), "home").commit()
+                mChildFragmentManager.beginTransaction()
+                    .add(R.id.frameLayoutBottomNavigation, HomeFragment(), "home").commit()
             }
-            if(mChildFragmentManager.findFragmentByTag("calendar") != null){
-                mChildFragmentManager.beginTransaction().hide(mChildFragmentManager.findFragmentByTag("calendar")!!).commit()
+            if (mChildFragmentManager.findFragmentByTag("calendar") != null) {
+                mChildFragmentManager.beginTransaction()
+                    .hide(mChildFragmentManager.findFragmentByTag("calendar")!!).commit()
             }
-            if(mChildFragmentManager.findFragmentByTag("agenda") != null){
-                mChildFragmentManager.beginTransaction().hide(mChildFragmentManager.findFragmentByTag("agenda")!!).commit()
+            if (mChildFragmentManager.findFragmentByTag("agenda") != null) {
+                mChildFragmentManager.beginTransaction()
+                    .hide(mChildFragmentManager.findFragmentByTag("agenda")!!).commit()
             }
         } else if (tag == "calendar") {
             if (mChildFragmentManager.findFragmentByTag("calendar") != null) {
-                mChildFragmentManager.beginTransaction().show(mChildFragmentManager.findFragmentByTag("calendar")!!).commit()
+                mChildFragmentManager.beginTransaction()
+                    .show(mChildFragmentManager.findFragmentByTag("calendar")!!).commit()
             } else {
-                mChildFragmentManager.beginTransaction().add(R.id.frameLayoutBottomNavigation, CalendarFragment(), "calendar").commit()
+                mChildFragmentManager.beginTransaction()
+                    .add(R.id.frameLayoutBottomNavigation, CalendarFragment(), "calendar").commit()
             }
-            if(mChildFragmentManager.findFragmentByTag("home") != null){
-                mChildFragmentManager.beginTransaction().hide(mChildFragmentManager.findFragmentByTag("home")!!).commit()
+            if (mChildFragmentManager.findFragmentByTag("home") != null) {
+                mChildFragmentManager.beginTransaction()
+                    .hide(mChildFragmentManager.findFragmentByTag("home")!!).commit()
             }
-            if(mChildFragmentManager.findFragmentByTag("agenda") != null){
-                mChildFragmentManager.beginTransaction().hide(mChildFragmentManager.findFragmentByTag("agenda")!!).commit()
+            if (mChildFragmentManager.findFragmentByTag("agenda") != null) {
+                mChildFragmentManager.beginTransaction()
+                    .hide(mChildFragmentManager.findFragmentByTag("agenda")!!).commit()
             }
         } else if (tag == "agenda") {
             if (mChildFragmentManager.findFragmentByTag("agenda") != null) {
-                mChildFragmentManager.beginTransaction().show(mChildFragmentManager.findFragmentByTag("agenda")!!).commit()
+                mChildFragmentManager.beginTransaction()
+                    .show(mChildFragmentManager.findFragmentByTag("agenda")!!).commit()
             } else {
-                mChildFragmentManager.beginTransaction().add(R.id.frameLayoutBottomNavigation, AgendaFragment(), "agenda").commit()
+                mChildFragmentManager.beginTransaction()
+                    .add(R.id.frameLayoutBottomNavigation, AgendaFragment(), "agenda").commit()
             }
-            if(mChildFragmentManager.findFragmentByTag("home") != null){
-                mChildFragmentManager.beginTransaction().hide(mChildFragmentManager.findFragmentByTag("home")!!).commit()
+            if (mChildFragmentManager.findFragmentByTag("home") != null) {
+                mChildFragmentManager.beginTransaction()
+                    .hide(mChildFragmentManager.findFragmentByTag("home")!!).commit()
             }
-            if(mChildFragmentManager.findFragmentByTag("calendar") != null){
-                mChildFragmentManager.beginTransaction().hide(mChildFragmentManager.findFragmentByTag("calendar")!!).commit()
+            if (mChildFragmentManager.findFragmentByTag("calendar") != null) {
+                mChildFragmentManager.beginTransaction()
+                    .hide(mChildFragmentManager.findFragmentByTag("calendar")!!).commit()
             }
         }
     }
