@@ -64,11 +64,7 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
     private fun goToAddFragment(category: Int) {
         val bundle = bundleOf("category" to category)
         findNavController().navigate(R.id.action_mainFragment_to_addFragment, bundle)
-        floatingActionMenu.close(false)
-        shadowView.alpha = 0f
-        shadowView.visibility = View.GONE
-        shadowView.isClickable = false
-        shadowView.isFocusable = false
+        clickFAB()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
