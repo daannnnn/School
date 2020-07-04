@@ -19,6 +19,7 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
 
     var isFABOpen = false
     private lateinit var mChildFragmentManager: FragmentManager
+    var openDrawerListener: OpenDrawerListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -30,6 +31,7 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
     override fun onAttach(context: Context) {
         super.onAttach(context)
         mChildFragmentManager = childFragmentManager
+        openDrawerListener = context as MainActivity
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -55,6 +57,9 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
             clickFAB()
         }
         bottom_navigation.setOnNavigationItemSelectedListener(this)
+        buttonMenu.setOnClickListener {
+            openDrawerListener?.openDrawer()
+        }
 
         // Show HomeFragment
         mChildFragmentManager.beginTransaction()
@@ -156,5 +161,9 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
                     .hide(mChildFragmentManager.findFragmentByTag("calendar")!!).commit()
             }
         }
+    }
+
+    interface OpenDrawerListener {
+        fun openDrawer()
     }
 }
