@@ -282,7 +282,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="36dp"
                     android:text="@string/add"
-                    app:icon="@drawable/fab_add"
+                    app:icon="@drawable/ic_add"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/listViewSubtasks" />
 
