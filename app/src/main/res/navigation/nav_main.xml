@@ -16,9 +16,9 @@
     </fragment>
     <dialog
         android:id="@+id/addFragment"
-        android:name="com.dan.school.AddFragment"
+        android:name="com.dan.school.EditFragment"
         android:label="fragment_add"
-        tools:layout="@layout/fragment_add" >
+        tools:layout="@layout/fragment_edit" >
         <argument
             android:name="category"
             app:argType="integer"

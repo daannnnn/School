@@ -5,6 +5,8 @@
         <item name="colorPrimary">@color/colorPrimary</item>
         <item name="colorPrimaryDark">@color/colorPrimaryDark</item>
         <item name="colorAccent">@color/colorAccent</item>
+
+        <item name="bottomSheetDialogTheme">@style/BottomSheetDialogTheme</item>
     </style>
 
     <style name="Widget.BottomNavigationView"
@@ -44,6 +46,20 @@
     <style name="DialogAnimation">
         <item name="android:windowEnterAnimation">@anim/slide_up</item>
         <item name="android:windowExitAnimation">@anim/slide_down</item>
+    </style>
+
+    <style name="BottomSheetDialogTheme" parent="Theme.Design.Light.BottomSheetDialog">
+        <item name="android:windowIsFloating">false</item>
+        <item name="android:windowSoftInputMode">adjustResize</item>
+        <item name="android:statusBarColor">@android:color/transparent</item>
+    </style>
+
+    <style name="ChipTextRegular" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:fontFamily">@font/cabin_regular</item>
+    </style>
+
+    <style name="ChipTextBold" parent="TextAppearance.MaterialComponents.Chip">
+        <item name="android:fontFamily">@font/cabin_bold</item>
     </style>
 
 </resources>

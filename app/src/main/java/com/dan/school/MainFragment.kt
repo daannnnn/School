@@ -8,6 +8,8 @@ import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import androidx.core.content.ContextCompat.getSystemService
 import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
@@ -38,23 +40,12 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
         super.onViewCreated(view, savedInstanceState)
 
         // Listeners
-        fab_menu_homework.setOnClickListener {
-            goToAddFragment(School.Category.HOMEWORK)
-        }
-        fab_menu_exam.setOnClickListener {
-            goToAddFragment(School.Category.EXAM)
-        }
-        fab_menu_task.setOnClickListener {
-            goToAddFragment(School.Category.TASK)
-        }
-        floatingActionMenu.setOnMenuButtonClickListener {
-            clickFAB()
-        }
-        floatingActionMenu.setOnMenuToggleListener { opened ->
-            isFABOpen = opened
-        }
-        shadowView.setOnClickListener {
-            clickFAB()
+        floatingActionButton.setOnClickListener {
+            val addPhotoBottomDialogFragment = AddBottomSheetDialogFragment()
+            addPhotoBottomDialogFragment.show(
+                childFragmentManager,
+                "BottomSheet"
+            )
         }
         bottom_navigation.setOnNavigationItemSelectedListener(this)
         buttonMenu.setOnClickListener {
@@ -64,12 +55,6 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
         // Show HomeFragment
         mChildFragmentManager.beginTransaction()
             .add(R.id.frameLayoutBottomNavigation, HomeFragment(), "home").commit()
-    }
-
-    private fun goToAddFragment(category: Int) {
-        val bundle = bundleOf("category" to category)
-        findNavController().navigate(R.id.action_mainFragment_to_addFragment, bundle)
-        clickFAB()
     }
 
     override fun onNavigationItemSelected(item: MenuItem): Boolean {
@@ -85,30 +70,6 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
             }
         }
         return true
-    }
-
-    private fun clickFAB() {
-        if (!isFABOpen) {
-            floatingActionMenu.toggle(true)
-            shadowView.visibility = View.VISIBLE
-            ObjectAnimator.ofFloat(shadowView, "alpha", 1f).setDuration(300).start()
-            shadowView.isFocusable = true
-            shadowView.isClickable = true
-        } else {
-            floatingActionMenu.toggle(true)
-            val animator = ObjectAnimator.ofFloat(shadowView, "alpha", 0f).setDuration(300)
-            animator.start()
-            animator.addListener(object : Animator.AnimatorListener {
-                override fun onAnimationRepeat(animation: Animator?) {}
-                override fun onAnimationCancel(animation: Animator?) {}
-                override fun onAnimationStart(animation: Animator?) {}
-                override fun onAnimationEnd(animation: Animator?) {
-                    shadowView.visibility = View.GONE
-                }
-            })
-            shadowView.isClickable = false
-            shadowView.isFocusable = false
-        }
     }
 
     private fun setFragment(tag: String) {

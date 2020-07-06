@@ -1,0 +1,143 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:orientation="vertical">
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:gravity="center">
+
+            <Button
+                android:textColor="@color/colorPrimary"
+                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:text="@string/show_all_details" />
+
+            <ImageButton
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:src="@drawable/ic_chevron_up"
+                android:tint="@color/colorPrimary"
+                android:scaleType="centerInside"
+                android:background="?attr/selectableItemBackgroundBorderless"/>
+
+        </LinearLayout>
+
+        <LinearLayout
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="16dp"
+            android:layout_marginEnd="16dp"
+            android:layout_marginBottom="8dp">
+
+            <com.google.android.material.chip.Chip
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:chipBackgroundColor="#FFF"
+                android:text="@string/homework"
+                android:textAppearance="@style/ChipTextBold"
+                android:textAlignment="center"/>
+
+            <com.google.android.material.chip.Chip
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:chipBackgroundColor="#FFF"
+                android:text="@string/exam"
+                android:textAppearance="@style/ChipTextBold"
+                android:textAlignment="center"/>
+
+            <com.google.android.material.chip.Chip
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_weight="1"
+                app:chipBackgroundColor="#FFF"
+                android:text="@string/task"
+                android:textAppearance="@style/ChipTextBold"
+                android:textAlignment="center"/>
+
+        </LinearLayout>
+
+        <View
+            android:layout_width="match_parent"
+            android:layout_height="1dp"
+            android:background="@color/dividerColor"/>
+
+        <HorizontalScrollView
+            android:id="@+id/scrollViewDateChoices"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:clipToPadding="false"
+            android:paddingStart="24dp"
+            android:layout_marginTop="8dp">
+
+            <com.google.android.material.chip.ChipGroup
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                app:singleLine="true">
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/ChipTextRegular"
+                    android:text="@string/pick_date"
+                    app:chipBackgroundColor="#FFF"
+                    app:chipIcon="@drawable/ic_chip_pick_date"
+                    app:chipStrokeColor="@color/chipStrokeColor"
+                    app:chipStrokeWidth="1dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/ChipTextRegular"
+                    android:text="@string/today"
+                    app:chipBackgroundColor="#FFF"
+                    app:chipIcon="@drawable/ic_chip_today_tomorrow"
+                    app:chipStrokeColor="@color/chipStrokeColor"
+                    app:chipStrokeWidth="1dp" />
+
+                <com.google.android.material.chip.Chip
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:textAppearance="@style/ChipTextRegular"
+                    android:text="@string/tomorrow"
+                    app:chipBackgroundColor="#FFF"
+                    app:chipIcon="@drawable/ic_chip_today_tomorrow"
+                    app:chipStrokeColor="@color/chipStrokeColor"
+                    app:chipStrokeWidth="1dp" />
+
+            </com.google.android.material.chip.ChipGroup>
+
+        </HorizontalScrollView>
+
+        <LinearLayout
+            android:orientation="horizontal"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content">
+
+            <EditText
+                android:id="@+id/editTextTitle"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:hint="Enter title"
+                android:layout_marginTop="8dp"
+                android:fontFamily="@font/cabin_regular"
+                android:drawableEnd="@drawable/ic_check_inside_circle"
+                android:layout_marginEnd="24dp"
+                android:layout_marginBottom="8dp"/>
+
+        </LinearLayout>
+
+    </LinearLayout>
+
+</androidx.core.widget.NestedScrollView>
