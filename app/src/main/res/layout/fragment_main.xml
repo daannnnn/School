@@ -70,7 +70,6 @@
         android:layout_marginBottom="16dp"
         android:backgroundTint="@color/colorPrimary"
         android:src="@drawable/ic_add"
-        app:fab_size="normal"
         app:layout_constraintBottom_toTopOf="@id/bottom_navigation"
         app:layout_constraintEnd_toEndOf="parent"
         app:tint="@android:color/white" />
