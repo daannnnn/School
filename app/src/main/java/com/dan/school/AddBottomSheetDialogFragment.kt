@@ -7,11 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import kotlinx.android.synthetic.main.layout_add_bottom_sheet.*
 
-class AddBottomSheetDialogFragment: BottomSheetDialogFragment() {
+class AddBottomSheetDialogFragment(var listener: GoToEditFragment): BottomSheetDialogFragment() {
 
     private lateinit var inputMethodManager: InputMethodManager
 
@@ -39,6 +41,14 @@ class AddBottomSheetDialogFragment: BottomSheetDialogFragment() {
                 sheet.parent.parent.requestLayout()
             }
         }
+
+        buttonShowAllDetails.setOnClickListener {
+            listener.goToEditFragment()
+        }
+    }
+
+    interface GoToEditFragment {
+        fun goToEditFragment()
     }
 
     override fun onDismiss(dialog: DialogInterface) {

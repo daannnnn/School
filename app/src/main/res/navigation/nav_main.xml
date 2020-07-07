@@ -11,13 +11,13 @@
         android:label="fragment_main"
         tools:layout="@layout/fragment_main" >
         <action
-            android:id="@+id/action_mainFragment_to_addFragment"
-            app:destination="@id/addFragment" />
+            android:id="@+id/action_mainFragment_to_editFragment"
+            app:destination="@id/editFragment" />
     </fragment>
     <dialog
-        android:id="@+id/addFragment"
+        android:id="@+id/editFragment"
         android:name="com.dan.school.EditFragment"
-        android:label="fragment_add"
+        android:label="fragment_edit"
         tools:layout="@layout/fragment_edit" >
         <argument
             android:name="category"

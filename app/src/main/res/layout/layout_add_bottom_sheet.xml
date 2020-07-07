@@ -7,29 +7,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical">
+        android:orientation="vertical"
+        android:gravity="center">
 
-        <LinearLayout
-            android:layout_width="match_parent"
+        <Button
+            android:id="@+id/buttonShowAllDetails"
+            android:textColor="@color/colorPrimary"
+            style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
+            android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:gravity="center">
-
-            <Button
-                android:textColor="@color/colorPrimary"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:text="@string/show_all_details" />
-
-            <ImageButton
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:src="@drawable/ic_chevron_up"
-                android:tint="@color/colorPrimary"
-                android:scaleType="centerInside"
-                android:background="?attr/selectableItemBackgroundBorderless"/>
-
-        </LinearLayout>
+            android:text="@string/show_all_details"
+            app:icon="@drawable/ic_chevron_up"
+            app:iconSize="24dp"
+            app:iconGravity="end"
+            app:iconTint="@color/colorPrimary"/>
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -134,7 +125,12 @@
                 android:fontFamily="@font/cabin_regular"
                 android:drawableEnd="@drawable/ic_check_inside_circle"
                 android:layout_marginEnd="24dp"
-                android:layout_marginBottom="8dp"/>
+                android:layout_marginBottom="8dp"
+                android:inputType="textCapSentences">
+
+                <requestFocus/>
+
+            </EditText>
 
         </LinearLayout>
 

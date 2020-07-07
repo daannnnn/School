@@ -23,10 +23,6 @@ class EditFragment : DialogFragment() {
         dialog?.window?.attributes?.windowAnimations = R.style.DialogAnimation
     }
 
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-    }
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(
@@ -57,20 +53,13 @@ class EditFragment : DialogFragment() {
 
                 val colorFrom = ContextCompat.getColor(requireContext(), colors[currentPosition])
                 val colorTo = ContextCompat.getColor(requireContext(), colors[realPosition])
-                val colorAnimation1 = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-                colorAnimation1.addUpdateListener { animator ->
-                    textViewSubjectPicked.setTextColor(
-                        animator.animatedValue as Int
-                    )
-                }
-                colorAnimation1.start()
-                val colorAnimation2 = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
-                colorAnimation2.addUpdateListener { animator ->
+                val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
+                colorAnimation.addUpdateListener { animator ->
                     textViewDatePicked.setTextColor(
                         animator.animatedValue as Int
                     )
                 }
-                colorAnimation2.start()
+                colorAnimation.start()
 
                 currentPosition = realPosition
             }
@@ -86,7 +75,6 @@ class EditFragment : DialogFragment() {
         val category = requireArguments().getInt("category")
         currentPosition = category
         viewPagerCategory.currentItem += currentPosition
-        textViewSubjectPicked.setTextColor(ContextCompat.getColor(requireContext(), colors[currentPosition]))
         textViewDatePicked.setTextColor(ContextCompat.getColor(requireContext(), colors[currentPosition]))
     }
 }

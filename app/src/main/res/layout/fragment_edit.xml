@@ -75,58 +75,6 @@
                 app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
-                android:id="@+id/textViewSubjectLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:fontFamily="@font/cabin_bold"
-                android:text="@string/subject"
-                android:textColor="@android:color/black"
-                android:textSize="18sp"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/editTextTitle" />
-
-            <TextView
-                android:id="@+id/textViewSubjectPicked"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_margin="24dp"
-                android:fontFamily="@font/cabin_bold"
-                android:text="@string/subject"
-                android:textSize="18sp"
-                app:layout_constraintBottom_toBottomOf="@id/textViewSubjectLabel"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewSubjectLabel" />
-
-            <HorizontalScrollView
-                android:id="@+id/scrollViewSubjectChoices"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewSubjectLabel">
-
-                <com.google.android.material.chip.ChipGroup
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    app:singleLine="true">
-
-                    <com.google.android.material.chip.Chip
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:textAppearance="@style/ChipTextRegular"
-                        android:text="@string/pick_subject"
-                        app:chipBackgroundColor="#FFF"
-                        app:chipIcon="@drawable/ic_chip_subject"
-                        app:chipStrokeColor="@color/chipStrokeColor"
-                        app:chipStrokeWidth="1dp" />
-
-                </com.google.android.material.chip.ChipGroup>
-
-            </HorizontalScrollView>
-
-            <TextView
                 android:id="@+id/textViewDateLabel"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
@@ -136,7 +84,7 @@
                 android:textColor="@android:color/black"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/scrollViewSubjectChoices" />
+                app:layout_constraintTop_toBottomOf="@id/editTextTitle" />
 
             <TextView
                 android:id="@+id/textViewDatePicked"
@@ -202,7 +150,7 @@
                 android:id="@+id/constraintLayoutMore"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/scrollViewDateChoices">
@@ -282,6 +230,7 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="36dp"
                     android:text="@string/add"
+                    app:iconSize="24dp"
                     app:icon="@drawable/ic_add"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/listViewSubtasks" />
@@ -320,7 +269,7 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:text="@string/show_more"
-                android:visibility="gone"
+                android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/scrollViewDateChoices" />

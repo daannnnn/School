@@ -4,6 +4,7 @@ import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
@@ -17,11 +18,11 @@ import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_main.*
 
-class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedListener {
+class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedListener,
+    AddBottomSheetDialogFragment.GoToEditFragment {
 
-    var isFABOpen = false
     private lateinit var mChildFragmentManager: FragmentManager
-    var openDrawerListener: OpenDrawerListener? = null
+    private var openDrawerListener: OpenDrawerListener? = null
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -41,7 +42,7 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
 
         // Listeners
         floatingActionButton.setOnClickListener {
-            val addPhotoBottomDialogFragment = AddBottomSheetDialogFragment()
+            val addPhotoBottomDialogFragment = AddBottomSheetDialogFragment(this)
             addPhotoBottomDialogFragment.show(
                 childFragmentManager,
                 "BottomSheet"
@@ -126,5 +127,9 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
 
     interface OpenDrawerListener {
         fun openDrawer()
+    }
+
+    override fun goToEditFragment() {
+        findNavController().navigate(R.id.action_mainFragment_to_editFragment)
     }
 }
