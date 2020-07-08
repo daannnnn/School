@@ -2,7 +2,6 @@ package com.dan.school
 
 import android.animation.ArgbEvaluator
 import android.animation.ValueAnimator
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -13,7 +12,7 @@ import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
 import kotlinx.android.synthetic.main.fragment_edit.*
 
-class EditFragment : DialogFragment() {
+class EditFragment(private val listener: DismissBottomSheet, private val category: Int) : DialogFragment() {
 
     private val colors = arrayOf(R.color.homeworkColor, R.color.examColor, R.color.taskColor)
     private var currentPosition = School.Category.HOMEWORK
@@ -40,6 +39,8 @@ class EditFragment : DialogFragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        listener.dismissBottomSheet()
 
         val viewPagerAdapter = InfinitePagerAdapter(CategoryViewPagerAdapter(requireContext()))
 
@@ -72,9 +73,12 @@ class EditFragment : DialogFragment() {
         }
 
         // initialize
-        val category = requireArguments().getInt("category")
         currentPosition = category
         viewPagerCategory.currentItem += currentPosition
         textViewDatePicked.setTextColor(ContextCompat.getColor(requireContext(), colors[currentPosition]))
+    }
+
+    interface DismissBottomSheet {
+        fun dismissBottomSheet()
     }
 }

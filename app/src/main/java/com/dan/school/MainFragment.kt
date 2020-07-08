@@ -1,28 +1,22 @@
 package com.dan.school
 
-import android.animation.Animator
-import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.MenuItem
 import android.view.View
 import android.view.ViewGroup
-import android.view.inputmethod.InputMethodManager
-import androidx.core.content.ContextCompat.getSystemService
-import androidx.core.os.bundleOf
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
-import androidx.navigation.fragment.findNavController
 import com.google.android.material.bottomnavigation.BottomNavigationView
 import kotlinx.android.synthetic.main.fragment_main.*
 
 class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedListener,
-    AddBottomSheetDialogFragment.GoToEditFragment {
+    AddBottomSheetDialogFragment.GoToEditFragment, EditFragment.DismissBottomSheet {
 
     private lateinit var mChildFragmentManager: FragmentManager
     private var openDrawerListener: OpenDrawerListener? = null
+    private val addBottomSheetDialogFragment = AddBottomSheetDialogFragment(this)
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -42,8 +36,7 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
 
         // Listeners
         floatingActionButton.setOnClickListener {
-            val addPhotoBottomDialogFragment = AddBottomSheetDialogFragment(this)
-            addPhotoBottomDialogFragment.show(
+            addBottomSheetDialogFragment.show(
                 childFragmentManager,
                 "BottomSheet"
             )
@@ -130,6 +123,11 @@ class MainFragment : Fragment(), BottomNavigationView.OnNavigationItemSelectedLi
     }
 
     override fun goToEditFragment() {
-        findNavController().navigate(R.id.action_mainFragment_to_editFragment)
+        val editFragment = EditFragment(this, 0)
+        editFragment.show(childFragmentManager, "editFragment")
+    }
+
+    override fun dismissBottomSheet() {
+        addBottomSheetDialogFragment.dismiss()
     }
 }
