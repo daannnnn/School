@@ -1,49 +1,130 @@
 package com.dan.school
 
 import android.os.Bundle
-import android.view.Gravity
-import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
-import androidx.navigation.NavController
-import androidx.navigation.Navigation
-import androidx.navigation.ui.NavigationUI
-import com.google.android.material.navigation.NavigationView
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), NavigationView.OnNavigationItemSelectedListener,
-    MainFragment.OpenDrawerListener {
+class MainActivity : AppCompatActivity(),
+    AddBottomSheetDialogFragment.GoToEditFragment,
+    EditFragment.DismissBottomSheet, SettingsFragment.OnDismissListener {
 
-    private lateinit var navController: NavController
+    private val addBottomSheetDialogFragment = AddBottomSheetDialogFragment(this)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        navController = Navigation.findNavController(this, R.id.nav_host_fragment)
-        NavigationUI.setupWithNavController(navigationView, navController)
-
-        navigationView.setNavigationItemSelectedListener(this)
-
         navigationView.menu.getItem(0).isChecked = true
-    }
 
-    override fun onNavigationItemSelected(item: MenuItem): Boolean {
-        if (!item.isChecked) {
-            item.isChecked = true
-            drawerLayout.closeDrawers()
-
-            when (item.itemId) {
-                R.id.mainFragment -> navController.navigate(R.id.mainFragment)
-                R.id.settingsFragment -> navController.navigate(R.id.settingsFragment)
-            }
-        } else {
-            drawerLayout.closeDrawer(GravityCompat.START)
+        // Listeners
+        floatingActionButton.setOnClickListener {
+            addBottomSheetDialogFragment.show(
+                supportFragmentManager,
+                "BottomSheet"
+            )
         }
-        return true
+        bottomNavigation.setOnNavigationItemSelectedListener { item ->
+            when (item.itemId) {
+                R.id.homeFragment -> {
+                    setFragment("home")
+                }
+                R.id.calendarFragment -> {
+                    setFragment("calendar")
+                }
+                R.id.agendaFragment -> {
+                    setFragment("agenda")
+                }
+            }
+            return@setOnNavigationItemSelectedListener true
+        }
+        buttonMenu.setOnClickListener {
+            drawerLayout.openDrawer(GravityCompat.START)
+        }
+        navigationView.setNavigationItemSelectedListener { item ->
+            if (!item.isChecked) {
+                item.isChecked = true
+                drawerLayout.closeDrawers()
+
+                when (item.itemId) {
+                    R.id.settings -> {
+                        val settingsFragment = SettingsFragment(this)
+                        settingsFragment.show(supportFragmentManager, "settingsFragment")
+                    }
+                }
+            } else {
+                drawerLayout.closeDrawer(GravityCompat.START)
+            }
+            return@setNavigationItemSelectedListener true
+        }
+
+        // Show HomeFragment
+        supportFragmentManager.beginTransaction()
+            .add(R.id.frameLayoutBottomNavigation, HomeFragment(), "home").commit()
     }
 
-    override fun openDrawer() {
-        drawerLayout.openDrawer(GravityCompat.START)
+    private fun setFragment(tag: String) {
+        if (tag == "home") {
+            if (supportFragmentManager.findFragmentByTag("home") != null) {
+                supportFragmentManager.beginTransaction()
+                    .show(supportFragmentManager.findFragmentByTag("home")!!).commit()
+            } else {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.frameLayoutBottomNavigation, HomeFragment(), "home").commit()
+            }
+            if (supportFragmentManager.findFragmentByTag("calendar") != null) {
+                supportFragmentManager.beginTransaction()
+                    .hide(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
+            }
+            if (supportFragmentManager.findFragmentByTag("agenda") != null) {
+                supportFragmentManager.beginTransaction()
+                    .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
+            }
+        } else if (tag == "calendar") {
+            if (supportFragmentManager.findFragmentByTag("calendar") != null) {
+                supportFragmentManager.beginTransaction()
+                    .show(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
+            } else {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.frameLayoutBottomNavigation, CalendarFragment(), "calendar").commit()
+            }
+            if (supportFragmentManager.findFragmentByTag("home") != null) {
+                supportFragmentManager.beginTransaction()
+                    .hide(supportFragmentManager.findFragmentByTag("home")!!).commit()
+            }
+            if (supportFragmentManager.findFragmentByTag("agenda") != null) {
+                supportFragmentManager.beginTransaction()
+                    .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
+            }
+        } else if (tag == "agenda") {
+            if (supportFragmentManager.findFragmentByTag("agenda") != null) {
+                supportFragmentManager.beginTransaction()
+                    .show(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
+            } else {
+                supportFragmentManager.beginTransaction()
+                    .add(R.id.frameLayoutBottomNavigation, AgendaFragment(), "agenda").commit()
+            }
+            if (supportFragmentManager.findFragmentByTag("home") != null) {
+                supportFragmentManager.beginTransaction()
+                    .hide(supportFragmentManager.findFragmentByTag("home")!!).commit()
+            }
+            if (supportFragmentManager.findFragmentByTag("calendar") != null) {
+                supportFragmentManager.beginTransaction()
+                    .hide(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
+            }
+        }
+    }
+
+    override fun goToEditFragment() {
+        val editFragment = EditFragment(this, 0)
+        editFragment.show(supportFragmentManager, "editFragment")
+    }
+
+    override fun dismissBottomSheet() {
+        addBottomSheetDialogFragment.dismiss()
+    }
+
+    override fun onDismiss() {
+        navigationView.setCheckedItem(R.id.overview)
     }
 }
