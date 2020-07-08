@@ -40,7 +40,9 @@ class EditFragment(private val listener: DismissBottomSheet, private val categor
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        listener.dismissBottomSheet()
+        dialog?.setOnShowListener {
+            listener.dismissBottomSheet()
+        }
 
         val viewPagerAdapter = InfinitePagerAdapter(CategoryViewPagerAdapter(requireContext()))
 
