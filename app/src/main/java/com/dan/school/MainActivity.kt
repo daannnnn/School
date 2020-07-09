@@ -7,9 +7,10 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(),
     AddBottomSheetDialogFragment.GoToEditFragment,
-    EditFragment.DismissBottomSheet, SettingsFragment.OnDismissListener {
+    EditFragment.DismissBottomSheet, SettingsFragment.OnDismissListener, AddBottomSheetDialogFragment.SelectedCategoryChangeListener, HomeFragment.SelectedTabChangeListener {
 
-    private val addBottomSheetDialogFragment = AddBottomSheetDialogFragment(this)
+    private var addBottomSheetDialogFragment: AddBottomSheetDialogFragment? = null
+    private var lastSelectedAddCategory = School.Category.HOMEWORK
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -19,7 +20,8 @@ class MainActivity : AppCompatActivity(),
 
         // Listeners
         floatingActionButton.setOnClickListener {
-            addBottomSheetDialogFragment.show(
+            addBottomSheetDialogFragment = AddBottomSheetDialogFragment(this, this, lastSelectedAddCategory)
+            addBottomSheetDialogFragment?.show(
                 supportFragmentManager,
                 "BottomSheet"
             )
@@ -60,7 +62,7 @@ class MainActivity : AppCompatActivity(),
 
         // Show HomeFragment
         supportFragmentManager.beginTransaction()
-            .add(R.id.frameLayoutBottomNavigation, HomeFragment(), "home").commit()
+            .add(R.id.frameLayoutBottomNavigation, HomeFragment(this), "home").commit()
     }
 
     private fun setFragment(tag: String) {
@@ -70,7 +72,7 @@ class MainActivity : AppCompatActivity(),
                     .show(supportFragmentManager.findFragmentByTag("home")!!).commit()
             } else {
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.frameLayoutBottomNavigation, HomeFragment(), "home").commit()
+                    .add(R.id.frameLayoutBottomNavigation, HomeFragment(this), "home").commit()
             }
             if (supportFragmentManager.findFragmentByTag("calendar") != null) {
                 supportFragmentManager.beginTransaction()
@@ -80,6 +82,7 @@ class MainActivity : AppCompatActivity(),
                 supportFragmentManager.beginTransaction()
                     .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
             }
+            lastSelectedAddCategory = (supportFragmentManager.findFragmentByTag("home") as HomeFragment).getSelectedTabPosition()
         } else if (tag == "calendar") {
             if (supportFragmentManager.findFragmentByTag("calendar") != null) {
                 supportFragmentManager.beginTransaction()
@@ -121,10 +124,18 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun dismissBottomSheet() {
-        addBottomSheetDialogFragment.dismiss()
+        addBottomSheetDialogFragment?.dismiss()
     }
 
     override fun onDismiss() {
         navigationView.setCheckedItem(R.id.overview)
+    }
+
+    override fun selectedCategoryChanged(category: Int) {
+        lastSelectedAddCategory = category
+    }
+
+    override fun selectedTabChanged(category: Int) {
+        lastSelectedAddCategory = category
     }
 }

@@ -9,7 +9,7 @@ import androidx.fragment.app.Fragment
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_home.*
 
-class HomeFragment : Fragment() {
+class HomeFragment(var selectedTabChangeListener: SelectedTabChangeListener) : Fragment() {
 
     val categoryColors = ArrayList<Int>()
 
@@ -56,10 +56,19 @@ class HomeFragment : Fragment() {
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 // change color when selecting tab
                 val position = tab!!.position
+                selectedTabChangeListener.selectedTabChanged(position)
                 tabLayout.setSelectedTabIndicatorColor(categoryColors[position])
                 tabLayout.setTabTextColors(tabLayout.tabTextColors!!.defaultColor, categoryColors[position])
             }
         })
         // [END configure TabLayout and ViewPager]
+    }
+
+    fun getSelectedTabPosition(): Int {
+        return tabLayout.selectedTabPosition
+    }
+
+    interface SelectedTabChangeListener {
+        fun selectedTabChanged(category: Int)
     }
 }
