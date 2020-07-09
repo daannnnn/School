@@ -4,10 +4,14 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import kotlinx.android.synthetic.main.activity_main.*
+import java.util.*
 
 class MainActivity : AppCompatActivity(),
-    AddBottomSheetDialogFragment.GoToEditFragment,
-    EditFragment.DismissBottomSheet, SettingsFragment.OnDismissListener, AddBottomSheetDialogFragment.SelectedCategoryChangeListener, HomeFragment.SelectedTabChangeListener {
+        AddBottomSheetDialogFragment.GoToEditFragment,
+        EditFragment.DismissBottomSheet,
+        SettingsFragment.OnDismissListener,
+        AddBottomSheetDialogFragment.SelectedCategoryChangeListener,
+        HomeFragment.SelectedTabChangeListener, EditFragment.CategoryChangeListener {
 
     private var addBottomSheetDialogFragment: AddBottomSheetDialogFragment? = null
     private var lastSelectedAddCategory = School.Category.HOMEWORK
@@ -20,10 +24,13 @@ class MainActivity : AppCompatActivity(),
 
         // Listeners
         floatingActionButton.setOnClickListener {
-            addBottomSheetDialogFragment = AddBottomSheetDialogFragment(this, this, lastSelectedAddCategory)
+            addBottomSheetDialogFragment = AddBottomSheetDialogFragment(
+                    this,
+                    this,
+                    lastSelectedAddCategory)
             addBottomSheetDialogFragment?.show(
-                supportFragmentManager,
-                "BottomSheet"
+                    supportFragmentManager,
+                    "BottomSheet"
             )
         }
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
@@ -62,64 +69,64 @@ class MainActivity : AppCompatActivity(),
 
         // Show HomeFragment
         supportFragmentManager.beginTransaction()
-            .add(R.id.frameLayoutBottomNavigation, HomeFragment(this), "home").commit()
+                .add(R.id.frameLayoutBottomNavigation, HomeFragment(this), "home").commit()
     }
 
     private fun setFragment(tag: String) {
         if (tag == "home") {
             if (supportFragmentManager.findFragmentByTag("home") != null) {
                 supportFragmentManager.beginTransaction()
-                    .show(supportFragmentManager.findFragmentByTag("home")!!).commit()
+                        .show(supportFragmentManager.findFragmentByTag("home")!!).commit()
             } else {
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.frameLayoutBottomNavigation, HomeFragment(this), "home").commit()
+                        .add(R.id.frameLayoutBottomNavigation, HomeFragment(this), "home").commit()
             }
             if (supportFragmentManager.findFragmentByTag("calendar") != null) {
                 supportFragmentManager.beginTransaction()
-                    .hide(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
+                        .hide(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
             }
             if (supportFragmentManager.findFragmentByTag("agenda") != null) {
                 supportFragmentManager.beginTransaction()
-                    .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
+                        .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
             }
             lastSelectedAddCategory = (supportFragmentManager.findFragmentByTag("home") as HomeFragment).getSelectedTabPosition()
         } else if (tag == "calendar") {
             if (supportFragmentManager.findFragmentByTag("calendar") != null) {
                 supportFragmentManager.beginTransaction()
-                    .show(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
+                        .show(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
             } else {
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.frameLayoutBottomNavigation, CalendarFragment(), "calendar").commit()
+                        .add(R.id.frameLayoutBottomNavigation, CalendarFragment(), "calendar").commit()
             }
             if (supportFragmentManager.findFragmentByTag("home") != null) {
                 supportFragmentManager.beginTransaction()
-                    .hide(supportFragmentManager.findFragmentByTag("home")!!).commit()
+                        .hide(supportFragmentManager.findFragmentByTag("home")!!).commit()
             }
             if (supportFragmentManager.findFragmentByTag("agenda") != null) {
                 supportFragmentManager.beginTransaction()
-                    .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
+                        .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
             }
         } else if (tag == "agenda") {
             if (supportFragmentManager.findFragmentByTag("agenda") != null) {
                 supportFragmentManager.beginTransaction()
-                    .show(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
+                        .show(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
             } else {
                 supportFragmentManager.beginTransaction()
-                    .add(R.id.frameLayoutBottomNavigation, AgendaFragment(), "agenda").commit()
+                        .add(R.id.frameLayoutBottomNavigation, AgendaFragment(), "agenda").commit()
             }
             if (supportFragmentManager.findFragmentByTag("home") != null) {
                 supportFragmentManager.beginTransaction()
-                    .hide(supportFragmentManager.findFragmentByTag("home")!!).commit()
+                        .hide(supportFragmentManager.findFragmentByTag("home")!!).commit()
             }
             if (supportFragmentManager.findFragmentByTag("calendar") != null) {
                 supportFragmentManager.beginTransaction()
-                    .hide(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
+                        .hide(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
             }
         }
     }
 
-    override fun goToEditFragment() {
-        val editFragment = EditFragment(this, 0)
+    override fun goToEditFragment(category: Int, title: String, chipGroupDateSelected: Int, date: Calendar?) {
+        val editFragment = EditFragment(this, this, category, title, chipGroupDateSelected, date)
         editFragment.show(supportFragmentManager, "editFragment")
     }
 

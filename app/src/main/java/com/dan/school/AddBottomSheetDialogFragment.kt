@@ -5,9 +5,7 @@ import android.animation.ValueAnimator
 import android.app.DatePickerDialog
 import android.content.Context
 import android.content.DialogInterface
-import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -24,48 +22,48 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class AddBottomSheetDialogFragment(private val listener: GoToEditFragment, private val categoryChangeListener: SelectedCategoryChangeListener, private val category: Int) :
-    BottomSheetDialogFragment(), DatePickerDialog.OnDateSetListener, DatePickerFragment.OnCancelListener {
+        BottomSheetDialogFragment(), DatePickerDialog.OnDateSetListener, DatePickerFragment.OnCancelListener {
 
     private lateinit var inputMethodManager: InputMethodManager
     private val categoryColors =
-        arrayOf(R.color.homeworkColor, R.color.examColor, R.color.taskColor, R.color.colorPrimary)
+            arrayOf(R.color.homeworkColor, R.color.examColor, R.color.taskColor, R.color.colorPrimary)
     private val categoryChipBackgroundColorStateList = arrayOf(
-        R.color.chip_homework_background_state_list,
-        R.color.chip_exam_background_state_list,
-        R.color.chip_task_background_state_list,
-        R.color.chip_background_state_list
+            R.color.chip_homework_background_state_list,
+            R.color.chip_exam_background_state_list,
+            R.color.chip_task_background_state_list,
+            R.color.chip_background_state_list
     )
     private val categoryChipStrokeColorStateList = arrayOf(
-        R.color.chip_homework_stroke_color_state_list,
-        R.color.chip_exam_stroke_color_state_list,
-        R.color.chip_task_stroke_color_state_list,
-        R.color.chip_stroke_color_state_list
+            R.color.chip_homework_stroke_color_state_list,
+            R.color.chip_exam_stroke_color_state_list,
+            R.color.chip_task_stroke_color_state_list,
+            R.color.chip_stroke_color_state_list
     )
     private val selectedDate = Calendar.getInstance()
     private val dateToday = Calendar.getInstance()
     private val dateTomorrow = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault())
 
-    private var lastSelectedDate: Int = R.id.chipToday
+    private var chipGroupDateSelected: Int = R.id.chipToday
+
+    private var selectedCategory = School.Category.HOMEWORK
 
     override fun onCreateView(
-        inflater: LayoutInflater,
-        container: ViewGroup?,
-        savedInstanceState: Bundle?
+            inflater: LayoutInflater,
+            container: ViewGroup?,
+            savedInstanceState: Bundle?
     ): View? {
         inputMethodManager =
-            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+                requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.toggleSoftInput(
-            InputMethodManager.SHOW_FORCED,
-            0
+                InputMethodManager.SHOW_FORCED,
+                0
         )
         return inflater.inflate(R.layout.layout_add_bottom_sheet, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
 
         // listeners
         dialog?.setOnShowListener {
@@ -77,7 +75,17 @@ class AddBottomSheetDialogFragment(private val listener: GoToEditFragment, priva
             }
         }
         buttonShowAllDetails.setOnClickListener {
-            listener.goToEditFragment()
+            when (chipGroupDateSelected) {
+                R.id.chipToday -> {
+                    listener.goToEditFragment(selectedCategory, editTextTitle.text.toString(), School.Date.TODAY, null)
+                }
+                R.id.chipTomorrow -> {
+                    listener.goToEditFragment(selectedCategory, editTextTitle.text.toString(), School.Date.TOMORROW, null)
+                }
+                else -> {
+                    listener.goToEditFragment(selectedCategory, editTextTitle.text.toString(), School.Date.PICK_DATE, selectedDate)
+                }
+            }
         }
         chipHomework.setOnClickListener {
             changeColors(School.Category.HOMEWORK)
@@ -96,22 +104,23 @@ class AddBottomSheetDialogFragment(private val listener: GoToEditFragment, priva
                 }
                 R.id.chipToday -> {
                     textViewDatePicked.text = dateFormat.format(dateToday.time)
-                    lastSelectedDate = R.id.chipToday
+                    chipGroupDateSelected = R.id.chipToday
                 }
                 R.id.chipTomorrow -> {
                     textViewDatePicked.text = dateFormat.format(dateTomorrow.time)
-                    lastSelectedDate = R.id.chipTomorrow
+                    chipGroupDateSelected = R.id.chipTomorrow
                 }
             }
         }
 
         // initialize
+        dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
         changeColors(category)
         chipGroupDate.check(R.id.chipToday)
     }
 
     interface GoToEditFragment {
-        fun goToEditFragment()
+        fun goToEditFragment(category: Int, title: String, chipGroupDateSelected: Int, date: Calendar?)
     }
 
     override fun onDismiss(dialog: DialogInterface) {
@@ -152,51 +161,52 @@ class AddBottomSheetDialogFragment(private val listener: GoToEditFragment, priva
         when (category) {
             School.Category.HOMEWORK -> {
                 chipHomework.chipBackgroundColor = ContextCompat.getColorStateList(
-                    requireContext(),
-                    categoryChipBackgroundColorStateList[category]
+                        requireContext(),
+                        categoryChipBackgroundColorStateList[category]
                 )
                 chipHomework.isSelected = true
 
             }
             School.Category.EXAM -> {
                 chipExam.chipBackgroundColor = ContextCompat.getColorStateList(
-                    requireContext(),
-                    categoryChipBackgroundColorStateList[category]
+                        requireContext(),
+                        categoryChipBackgroundColorStateList[category]
                 )
                 chipExam.isSelected = true
             }
             School.Category.TASK -> {
                 chipTask.chipBackgroundColor = ContextCompat.getColorStateList(
-                    requireContext(),
-                    categoryChipBackgroundColorStateList[category]
+                        requireContext(),
+                        categoryChipBackgroundColorStateList[category]
                 )
                 chipTask.isSelected = true
             }
         }
         chipPickDate.chipBackgroundColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipBackgroundColorStateList[category]
+                requireContext(),
+                categoryChipBackgroundColorStateList[category]
         )
         chipToday.chipBackgroundColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipBackgroundColorStateList[category]
+                requireContext(),
+                categoryChipBackgroundColorStateList[category]
         )
         chipTomorrow.chipBackgroundColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipBackgroundColorStateList[category]
+                requireContext(),
+                categoryChipBackgroundColorStateList[category]
         )
         chipPickDate.chipStrokeColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipStrokeColorStateList[category]
+                requireContext(),
+                categoryChipStrokeColorStateList[category]
         )
         chipToday.chipStrokeColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipStrokeColorStateList[category]
+                requireContext(),
+                categoryChipStrokeColorStateList[category]
         )
         chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipStrokeColorStateList[category]
+                requireContext(),
+                categoryChipStrokeColorStateList[category]
         )
+        selectedCategory = category
         categoryChangeListener.selectedCategoryChanged(category)
     }
 
@@ -209,10 +219,10 @@ class AddBottomSheetDialogFragment(private val listener: GoToEditFragment, priva
         selectedDate.set(Calendar.MONTH, month)
         selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
         textViewDatePicked.text = dateFormat.format(selectedDate.time)
-        lastSelectedDate = R.id.chipPickDate
+        chipGroupDateSelected = R.id.chipPickDate
     }
 
     override fun canceled() {
-        chipGroupDate.check(lastSelectedDate)
+        chipGroupDate.check(chipGroupDateSelected)
     }
 }

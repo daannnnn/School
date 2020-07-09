@@ -6,4 +6,10 @@ class School {
         const val EXAM = 1
         const val TASK = 2
     }
+
+    object Date {
+        const val PICK_DATE = 0
+        const val TODAY = 1
+        const val TOMORROW = 2
+    }
 }

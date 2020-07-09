@@ -108,38 +108,50 @@
                 app:layout_constraintTop_toBottomOf="@id/textViewDateLabel">
 
                 <com.google.android.material.chip.ChipGroup
+                    android:id="@+id/chipGroupDate"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
-                    app:singleLine="true">
+                    app:selectionRequired="true"
+                    app:singleSelection="true">
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipPickDate"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/ChipTextRegular"
                         android:text="@string/pick_date"
-                        app:chipBackgroundColor="#FFF"
+                        android:textAppearance="@style/ChipTextRegular"
+                        android:textColor="@color/chip_text_color_state_list"
+                        app:chipBackgroundColor="@color/chip_background_state_list"
                         app:chipIcon="@drawable/ic_chip_pick_date"
-                        app:chipStrokeColor="@color/chipStrokeColor"
+                        app:chipIconEnabled="true"
+                        app:chipStrokeColor="@color/chip_stroke_color_state_list"
                         app:chipStrokeWidth="1dp" />
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipToday"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/ChipTextRegular"
                         android:text="@string/today"
-                        app:chipBackgroundColor="#FFF"
+                        android:textAppearance="@style/ChipTextRegular"
+                        android:textColor="@color/chip_text_color_state_list"
+                        app:chipBackgroundColor="@color/chip_background_state_list"
                         app:chipIcon="@drawable/ic_chip_today_tomorrow"
-                        app:chipStrokeColor="@color/chipStrokeColor"
+                        app:chipStrokeColor="@color/chip_stroke_color_state_list"
                         app:chipStrokeWidth="1dp" />
 
                     <com.google.android.material.chip.Chip
+                        android:id="@+id/chipTomorrow"
+                        style="@style/Widget.MaterialComponents.Chip.Choice"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:textAppearance="@style/ChipTextRegular"
                         android:text="@string/tomorrow"
-                        app:chipBackgroundColor="#FFF"
+                        android:textAppearance="@style/ChipTextRegular"
+                        android:textColor="@color/chip_text_color_state_list"
+                        app:chipBackgroundColor="@color/chip_background_state_list"
                         app:chipIcon="@drawable/ic_chip_today_tomorrow"
-                        app:chipStrokeColor="@color/chipStrokeColor"
+                        app:chipStrokeColor="@color/chip_stroke_color_state_list"
                         app:chipStrokeWidth="1dp" />
 
                 </com.google.android.material.chip.ChipGroup>
@@ -230,8 +242,8 @@
                     android:layout_height="wrap_content"
                     android:layout_marginStart="36dp"
                     android:text="@string/add"
-                    app:iconSize="24dp"
                     app:icon="@drawable/ic_add"
+                    app:iconSize="24dp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/listViewSubtasks" />
 

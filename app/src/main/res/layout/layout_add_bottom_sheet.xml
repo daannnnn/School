@@ -8,20 +8,20 @@
     <LinearLayout
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:orientation="vertical"
-        android:gravity="center">
+        android:gravity="center"
+        android:orientation="vertical">
 
         <Button
             android:id="@+id/buttonShowAllDetails"
-            android:textColor="@color/colorPrimary"
             style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:text="@string/show_all_details"
+            android:textColor="@color/colorPrimary"
             app:icon="@drawable/ic_chevron_up"
-            app:iconSize="24dp"
             app:iconGravity="end"
-            app:iconTint="@color/colorPrimary"/>
+            app:iconSize="24dp"
+            app:iconTint="@color/colorPrimary" />
 
         <LinearLayout
             android:layout_width="match_parent"
@@ -35,47 +35,47 @@
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:chipBackgroundColor="@color/chip_background_state_list"
                 android:text="@string/homework"
+                android:textAlignment="center"
                 android:textAppearance="@style/ChipTextBold"
-                android:textAlignment="center"/>
+                app:chipBackgroundColor="@color/chip_background_state_list" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipExam"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:chipBackgroundColor="@color/chip_background_state_list"
                 android:text="@string/exam"
+                android:textAlignment="center"
                 android:textAppearance="@style/ChipTextBold"
-                android:textAlignment="center"/>
+                app:chipBackgroundColor="@color/chip_background_state_list" />
 
             <com.google.android.material.chip.Chip
                 android:id="@+id/chipTask"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_weight="1"
-                app:chipBackgroundColor="@color/chip_background_state_list"
                 android:text="@string/task"
+                android:textAlignment="center"
                 android:textAppearance="@style/ChipTextBold"
-                android:textAlignment="center"/>
+                app:chipBackgroundColor="@color/chip_background_state_list" />
 
         </LinearLayout>
 
         <View
             android:layout_width="match_parent"
             android:layout_height="1dp"
-            android:background="@color/dividerColor"/>
+            android:background="@color/dividerColor" />
 
         <TextView
             android:id="@+id/textViewDatePicked"
-            android:layout_marginTop="16dp"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:layout_marginStart="32dp"
-            android:textSize="16sp"
+            android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
-            android:fontFamily="@font/cabin_bold"/>
+            android:fontFamily="@font/cabin_bold"
+            android:textSize="16sp" />
 
         <HorizontalScrollView
             android:id="@+id/scrollViewDateChoices"
@@ -89,8 +89,8 @@
                 android:id="@+id/chipGroupDate"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                app:singleSelection="true"
-                app:selectionRequired="true">
+                app:selectionRequired="true"
+                app:singleSelection="true">
 
                 <com.google.android.material.chip.Chip
                     android:id="@+id/chipPickDate"
@@ -102,6 +102,7 @@
                     android:textColor="@color/chip_text_color_state_list"
                     app:chipBackgroundColor="@color/chip_background_state_list"
                     app:chipIcon="@drawable/ic_chip_pick_date"
+                    app:chipIconEnabled="true"
                     app:chipStrokeColor="@color/chip_stroke_color_state_list"
                     app:chipStrokeWidth="1dp" />
 
@@ -115,6 +116,7 @@
                     android:textColor="@color/chip_text_color_state_list"
                     app:chipBackgroundColor="@color/chip_background_state_list"
                     app:chipIcon="@drawable/ic_chip_today_tomorrow"
+                    app:chipIconEnabled="true"
                     app:chipStrokeColor="@color/chip_stroke_color_state_list"
                     app:chipStrokeWidth="1dp" />
 
@@ -128,6 +130,7 @@
                     android:textColor="@color/chip_text_color_state_list"
                     app:chipBackgroundColor="@color/chip_background_state_list"
                     app:chipIcon="@drawable/ic_chip_today_tomorrow"
+                    app:chipIconEnabled="true"
                     app:chipStrokeColor="@color/chip_stroke_color_state_list"
                     app:chipStrokeWidth="1dp" />
 
@@ -136,26 +139,26 @@
         </HorizontalScrollView>
 
         <LinearLayout
-            android:orientation="horizontal"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center">
+            android:gravity="center"
+            android:orientation="horizontal">
 
             <EditText
                 android:id="@+id/editTextTitle"
                 android:layout_width="0dp"
-                android:layout_weight="1"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
-                android:hint="@string/enter_title"
                 android:layout_marginTop="8dp"
                 android:layout_marginEnd="8dp"
-                android:fontFamily="@font/cabin_regular"
                 android:layout_marginBottom="8dp"
+                android:layout_weight="1"
                 android:backgroundTint="@color/colorPrimary"
+                android:fontFamily="@font/cabin_regular"
+                android:hint="@string/enter_title"
                 android:inputType="textCapSentences">
 
-                <requestFocus/>
+                <requestFocus />
 
             </EditText>
 
@@ -164,7 +167,7 @@
                 android:layout_width="32dp"
                 android:layout_height="32dp"
                 android:layout_marginEnd="24dp"
-                android:src="@drawable/ic_check_inside_circle"/>
+                android:src="@drawable/ic_check_inside_circle" />
 
         </LinearLayout>
 
