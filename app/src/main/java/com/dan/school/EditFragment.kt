@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.DialogFragment
 import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
@@ -23,27 +24,35 @@ import java.text.SimpleDateFormat
 import java.util.*
 
 class EditFragment(
-        private val categoryChangeListener: CategoryChangeListener,
-        private val listener: DismissBottomSheet,
-        private var category: Int = School.Category.HOMEWORK,
-        private val title: String = "",
-        private val chipGroupSelected: Int = School.Date.TODAY,
-        private var selectedDate: Calendar? = Calendar.getInstance()
+    private val categoryChangeListener: CategoryChangeListener,
+    private val listener: DismissBottomSheet,
+    private var category: Int = School.Category.HOMEWORK,
+    private val title: String = "",
+    private val chipGroupSelected: Int = School.Date.TODAY,
+    private var selectedDate: Calendar? = Calendar.getInstance()
 ) : DialogFragment() {
 
     private val categoryColors =
-            arrayOf(R.color.homeworkColor, R.color.examColor, R.color.taskColor, R.color.colorPrimary)
+        arrayOf(R.color.homeworkColor, R.color.examColor, R.color.taskColor)
     private val categoryChipBackgroundColorStateList = arrayOf(
-            R.color.chip_homework_background_state_list,
-            R.color.chip_exam_background_state_list,
-            R.color.chip_task_background_state_list,
-            R.color.chip_background_state_list
+        R.color.chip_homework_background_state_list,
+        R.color.chip_exam_background_state_list,
+        R.color.chip_task_background_state_list
     )
     private val categoryChipStrokeColorStateList = arrayOf(
-            R.color.chip_homework_stroke_color_state_list,
-            R.color.chip_exam_stroke_color_state_list,
-            R.color.chip_task_stroke_color_state_list,
-            R.color.chip_stroke_color_state_list
+        R.color.chip_homework_stroke_color_state_list,
+        R.color.chip_exam_stroke_color_state_list,
+        R.color.chip_task_stroke_color_state_list
+    )
+    private val categorySwitchThumbColorStateList = arrayOf(
+        R.color.switch_thumb_homework_color_state_list,
+        R.color.switch_thumb_exam_color_state_list,
+        R.color.switch_thumb_task_color_state_list
+    )
+    private val categorySwitchTrackColorStateList = arrayOf(
+        R.color.switch_track_homework_color_state_list,
+        R.color.switch_track_exam_color_state_list,
+        R.color.switch_track_task_color_state_list
     )
     private val dateToday = Calendar.getInstance()
     private val dateTomorrow = Calendar.getInstance()
@@ -57,14 +66,14 @@ class EditFragment(
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setStyle(
-                STYLE_NORMAL,
-                R.style.FullScreenDialog
+            STYLE_NORMAL,
+            R.style.FullScreenDialog
         )
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater, container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_edit, container, false)
     }
@@ -81,7 +90,13 @@ class EditFragment(
         viewPagerCategory.adapter = viewPagerAdapter
         viewPagerCategory.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
-            override fun onPageScrolled(position: Int, positionOffset: Float, positionOffsetPixels: Int) {}
+            override fun onPageScrolled(
+                position: Int,
+                positionOffset: Float,
+                positionOffsetPixels: Int
+            ) {
+            }
+
             override fun onPageSelected(position: Int) {
                 val realPosition = viewPagerCategory.currentItem
                 changeColors(realPosition)
@@ -97,7 +112,12 @@ class EditFragment(
         // initialize
         dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
         viewPagerCategory.currentItem += category
-        textViewDatePicked.setTextColor(ContextCompat.getColor(requireContext(), categoryColors[category]))
+        textViewDatePicked.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                categoryColors[category]
+            )
+        )
         editTextTitle.setText(title)
         when (chipGroupSelected) {
             School.Date.TODAY -> {
@@ -126,31 +146,48 @@ class EditFragment(
             val animatedValue = animator.animatedValue as Int
             textViewDatePicked.setTextColor(animatedValue)
             textViewDatePicked.setTextColor(animatedValue)
+            buttonPlusSubtask.setColorFilter(animatedValue)
         }
         colorAnimation.start()
         chipPickDate.chipBackgroundColor = ContextCompat.getColorStateList(
-                requireContext(),
-                categoryChipBackgroundColorStateList[newCategory]
+            requireContext(),
+            categoryChipBackgroundColorStateList[newCategory]
         )
         chipToday.chipBackgroundColor = ContextCompat.getColorStateList(
-                requireContext(),
-                categoryChipBackgroundColorStateList[newCategory]
+            requireContext(),
+            categoryChipBackgroundColorStateList[newCategory]
         )
         chipTomorrow.chipBackgroundColor = ContextCompat.getColorStateList(
-                requireContext(),
-                categoryChipBackgroundColorStateList[newCategory]
+            requireContext(),
+            categoryChipBackgroundColorStateList[newCategory]
         )
         chipPickDate.chipStrokeColor = ContextCompat.getColorStateList(
-                requireContext(),
-                categoryChipStrokeColorStateList[newCategory]
+            requireContext(),
+            categoryChipStrokeColorStateList[newCategory]
         )
         chipToday.chipStrokeColor = ContextCompat.getColorStateList(
-                requireContext(),
-                categoryChipStrokeColorStateList[newCategory]
+            requireContext(),
+            categoryChipStrokeColorStateList[newCategory]
         )
         chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
-                requireContext(),
-                categoryChipStrokeColorStateList[newCategory]
+            requireContext(),
+            categoryChipStrokeColorStateList[newCategory]
+        )
+        chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
+            requireContext(),
+            categoryChipStrokeColorStateList[newCategory]
+        )
+        chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
+            requireContext(),
+            categoryChipStrokeColorStateList[newCategory]
+        )
+        switchReminder.thumbTintList = ContextCompat.getColorStateList(
+            requireContext(),
+            categorySwitchThumbColorStateList[newCategory]
+        )
+        switchReminder.trackTintList = ContextCompat.getColorStateList(
+            requireContext(),
+            categorySwitchTrackColorStateList[newCategory]
         )
         categoryChangeListener.selectedCategoryChanged(newCategory)
         category = newCategory
