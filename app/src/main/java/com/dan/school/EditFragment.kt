@@ -7,13 +7,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
-import androidx.core.widget.ImageViewCompat
 import androidx.fragment.app.DialogFragment
 import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_edit.*
-import kotlinx.android.synthetic.main.fragment_edit.buttonCheck
 import kotlinx.android.synthetic.main.fragment_edit.chipGroupDate
 import kotlinx.android.synthetic.main.fragment_edit.chipPickDate
 import kotlinx.android.synthetic.main.fragment_edit.chipToday
@@ -53,6 +51,16 @@ class EditFragment(
         R.color.switch_track_homework_color_state_list,
         R.color.switch_track_exam_color_state_list,
         R.color.switch_track_task_color_state_list
+    )
+    private val categoryButtonAddColorStateList = arrayOf(
+        R.color.button_add_homework_color_state_list,
+        R.color.button_add_exam_color_state_list,
+        R.color.button_add_task_color_state_list
+    )
+    private val categoryButtonAddRippleColorStateList = arrayOf(
+        R.color.button_add_ripple_homework_color_state_list,
+        R.color.button_add_ripple_exam_color_state_list,
+        R.color.button_add_ripple_task_color_state_list
     )
     private val dateToday = Calendar.getInstance()
     private val dateTomorrow = Calendar.getInstance()
@@ -146,7 +154,7 @@ class EditFragment(
             val animatedValue = animator.animatedValue as Int
             textViewDatePicked.setTextColor(animatedValue)
             textViewDatePicked.setTextColor(animatedValue)
-            buttonPlusSubtask.setColorFilter(animatedValue)
+            buttonPlusReminder.setColorFilter(animatedValue)
         }
         colorAnimation.start()
         chipPickDate.chipBackgroundColor = ContextCompat.getColorStateList(
@@ -189,6 +197,9 @@ class EditFragment(
             requireContext(),
             categorySwitchTrackColorStateList[newCategory]
         )
+        (buttonAddSubtask as MaterialButton).iconTint = ContextCompat.getColorStateList(requireContext(), categoryButtonAddColorStateList[newCategory])
+        buttonAddSubtask.setTextColor(ContextCompat.getColorStateList(requireContext(), categoryButtonAddColorStateList[newCategory]))
+        (buttonAddSubtask as MaterialButton).rippleColor = ContextCompat.getColorStateList(requireContext(), categoryButtonAddRippleColorStateList[newCategory])
         categoryChangeListener.selectedCategoryChanged(newCategory)
         category = newCategory
     }

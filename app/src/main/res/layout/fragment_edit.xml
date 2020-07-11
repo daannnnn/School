@@ -180,7 +180,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
-                    android:id="@+id/buttonPlusSubtask"
+                    android:id="@+id/buttonPlusReminder"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"

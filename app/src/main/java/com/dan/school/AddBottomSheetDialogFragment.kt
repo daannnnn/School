@@ -153,7 +153,7 @@ class AddBottomSheetDialogFragment(private val listener: GoToEditFragment, priva
             val animatedValue = animator.animatedValue as Int
             editTextTitle.background.mutate().setTint(animatedValue)
             textViewDatePicked.setTextColor(animatedValue)
-            buttonCheck.drawable.setTint(animatedValue)
+            buttonCheck.setColorFilter(animatedValue)
             buttonShowAllDetails.setTextColor(animatedValue)
             (buttonShowAllDetails as MaterialButton).icon.setTint(animatedValue)
         }
