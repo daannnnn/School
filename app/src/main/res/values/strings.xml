@@ -31,4 +31,5 @@
     <string name="show_all_details">Show All Details</string>
     <string name="overview">Overview</string>
     <string name="enter_title">Enter title</string>
+    <string name="enter_subtask">Enter Subtask</string>
 </resources>

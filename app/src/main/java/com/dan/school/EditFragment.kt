@@ -1,25 +1,26 @@
 package com.dan.school
 
 import android.animation.ArgbEvaluator
+import android.animation.LayoutTransition
 import android.animation.ValueAnimator
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.view.inputmethod.InputMethodManager
+import android.widget.EditText
+import android.widget.ImageButton
+import android.widget.ListView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_edit.*
-import kotlinx.android.synthetic.main.fragment_edit.chipGroupDate
-import kotlinx.android.synthetic.main.fragment_edit.chipPickDate
-import kotlinx.android.synthetic.main.fragment_edit.chipToday
-import kotlinx.android.synthetic.main.fragment_edit.chipTomorrow
-import kotlinx.android.synthetic.main.fragment_edit.editTextTitle
-import kotlinx.android.synthetic.main.fragment_edit.textViewDatePicked
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.collections.ArrayList
 
 class EditFragment(
     private val categoryChangeListener: CategoryChangeListener,
@@ -28,7 +29,7 @@ class EditFragment(
     private val title: String = "",
     private val chipGroupSelected: Int = School.Date.TODAY,
     private var selectedDate: Calendar? = Calendar.getInstance()
-) : DialogFragment() {
+) : DialogFragment(), SubtaskListAdapter.DataChangeListener, SubtaskListAdapter.SetFocusListener {
 
     private val categoryColors =
         arrayOf(R.color.homeworkColor, R.color.examColor, R.color.taskColor)
@@ -62,13 +63,31 @@ class EditFragment(
         R.color.button_add_ripple_exam_color_state_list,
         R.color.button_add_ripple_task_color_state_list
     )
+    private val categoryCheckedIcons = arrayOf(
+        R.drawable.ic_homework_checked,
+        R.drawable.ic_exam_checked,
+        R.drawable.ic_task_checked
+    )
+    private val categoryUncheckedIcons = arrayOf(
+        R.drawable.ic_homework_unchecked,
+        R.drawable.ic_exam_unchecked,
+        R.drawable.ic_task_unchecked
+    )
     private val dateToday = Calendar.getInstance()
     private val dateTomorrow = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault())
+    private lateinit var inputMethodManager: InputMethodManager
+    private lateinit var subtaskListAdapter: SubtaskListAdapter
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         dialog?.window?.attributes?.windowAnimations = R.style.DialogAnimation
+    }
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        inputMethodManager =
+            requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -116,6 +135,13 @@ class EditFragment(
             constraintLayoutMore.visibility = View.VISIBLE
             buttonShowMore.visibility = View.GONE
         }
+        buttonAddSubtask.setOnClickListener {
+            (listViewSubtasks.adapter as SubtaskListAdapter).add(Subtask())
+            inputMethodManager.toggleSoftInput(
+                InputMethodManager.SHOW_FORCED,
+                0
+            )
+        }
 
         // initialize
         dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
@@ -143,7 +169,18 @@ class EditFragment(
                 }
             }
         }
+        subtaskListAdapter = SubtaskListAdapter(
+            requireContext(),
+            this,
+            this,
+            ArrayList(),
+            categoryCheckedIcons[category],
+            categoryUncheckedIcons[category]
+        )
+        listViewSubtasks.adapter = subtaskListAdapter
         changeColors(category)
+        constraintLayoutMore.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        editTextTitle.requestFocus()
     }
 
     private fun changeColors(newCategory: Int) {
@@ -197,11 +234,68 @@ class EditFragment(
             requireContext(),
             categorySwitchTrackColorStateList[newCategory]
         )
-        (buttonAddSubtask as MaterialButton).iconTint = ContextCompat.getColorStateList(requireContext(), categoryButtonAddColorStateList[newCategory])
-        buttonAddSubtask.setTextColor(ContextCompat.getColorStateList(requireContext(), categoryButtonAddColorStateList[newCategory]))
-        (buttonAddSubtask as MaterialButton).rippleColor = ContextCompat.getColorStateList(requireContext(), categoryButtonAddRippleColorStateList[newCategory])
+        (buttonAddSubtask as MaterialButton).iconTint = ContextCompat.getColorStateList(
+            requireContext(),
+            categoryButtonAddColorStateList[newCategory]
+        )
+        buttonAddSubtask.setTextColor(
+            ContextCompat.getColorStateList(
+                requireContext(),
+                categoryButtonAddColorStateList[newCategory]
+            )
+        )
+        (buttonAddSubtask as MaterialButton).rippleColor = ContextCompat.getColorStateList(
+            requireContext(),
+            categoryButtonAddRippleColorStateList[newCategory]
+        )
+        changeSubtaskListColor(newCategory)
         categoryChangeListener.selectedCategoryChanged(newCategory)
         category = newCategory
+    }
+
+    private fun changeSubtaskListColor(newCategory: Int) {
+        for (i in 0 until subtaskListAdapter.count) {
+            val v = listViewSubtasks.getChildAt(i)
+            val buttonCheck = v.findViewById<ImageButton>(R.id.buttonCheck)
+            if (!subtaskListAdapter.getItem(i)?.done!!) {
+                buttonCheck.setImageResource(categoryUncheckedIcons[newCategory])
+            } else {
+                buttonCheck.setImageResource(categoryCheckedIcons[newCategory])
+            }
+            buttonCheck.setOnClickListener {
+                if (subtaskListAdapter.getItem(i)?.done!!) {
+                    buttonCheck.setImageResource(categoryUncheckedIcons[newCategory])
+                    subtaskListAdapter.getItem(i)?.done = false
+                } else {
+                    buttonCheck.setImageResource(categoryCheckedIcons[newCategory])
+                    subtaskListAdapter.getItem(i)?.done = true
+                }
+            }
+        }
+    }
+
+    private fun setListViewHeightBasedOnChild(listView: ListView) {
+        val listAdapter = listView.adapter ?: return
+        val width = View.MeasureSpec.makeMeasureSpec(
+            listView.width,
+            View.MeasureSpec.UNSPECIFIED
+        )
+        var height = 0
+        var mView: View? = null
+        for (i in 0 until listAdapter.count) {
+            mView = listAdapter.getView(i, mView, listView)
+            if (i == 0) {
+                mView.layoutParams = ViewGroup.LayoutParams(
+                    width,
+                    ViewGroup.LayoutParams.WRAP_CONTENT
+                )
+            }
+            mView.measure(width, View.MeasureSpec.UNSPECIFIED)
+            height += mView.measuredHeight
+        }
+        val params = listView.layoutParams
+        params.height = height + listView.dividerHeight * (listAdapter.count - 1)
+        listView.layoutParams = params
     }
 
     interface DismissBottomSheet {
@@ -210,5 +304,14 @@ class EditFragment(
 
     interface CategoryChangeListener {
         fun selectedCategoryChanged(category: Int)
+    }
+
+    override fun dataChanged() {
+        setListViewHeightBasedOnChild(listViewSubtasks)
+    }
+
+    override fun setFocus(position: Int) {
+        listViewSubtasks.getChildAt(position).findViewById<EditText>(R.id.editTextSubtaskTitle)
+            .requestFocus()
     }
 }

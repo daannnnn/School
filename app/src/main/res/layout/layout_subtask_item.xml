@@ -1,0 +1,32 @@
+<?xml version="1.0" encoding="utf-8"?>
+<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    android:layout_width="match_parent"
+    android:layout_height="wrap_content"
+    android:gravity="center">
+    
+    <ImageButton
+        android:id="@+id/buttonCheck"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_homework_unchecked"
+        android:scaleType="fitCenter"
+        android:layout_marginStart="12dp"
+        android:layout_marginEnd="8dp"/>
+
+    <EditText
+        android:hint="@string/enter_subtask"
+        android:id="@+id/editTextSubtaskTitle"
+        android:layout_width="0dp"
+        android:layout_weight="1"
+        android:background="@null"
+        android:layout_height="wrap_content"
+        android:focusableInTouchMode="true"
+        android:layout_marginTop="4dp"
+        android:layout_marginBottom="4dp"
+        android:maxLines="1"
+        android:fontFamily="@font/cabin_regular"
+        android:imeOptions="actionDone"
+        android:inputType="textCapSentences"/>
+
+</LinearLayout>
