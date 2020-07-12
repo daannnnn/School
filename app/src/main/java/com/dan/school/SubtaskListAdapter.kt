@@ -1,85 +1,105 @@
 package com.dan.school
 
 import android.content.Context
+import android.text.Editable
+import android.text.TextWatcher
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.EditorInfo
 import android.view.inputmethod.InputMethodManager
-import android.widget.ArrayAdapter
 import android.widget.EditText
 import android.widget.ImageButton
-import android.widget.TextView
+import androidx.recyclerview.widget.RecyclerView
 
 class SubtaskListAdapter(
-    private val mContext: Context,
+    private val context: Context,
     private val dataChangedListener: DataChangeListener,
-    val setFocusListener: SetFocusListener,
-    private val data: ArrayList<Subtask>,
+    private val setFocusListener: SetFocusListener,
     var iconChecked: Int,
-    var iconUnchecked: Int
-) :
-    ArrayAdapter<Subtask>(mContext, R.layout.layout_subtask_item, data) {
+    var iconUnchecked: Int,
+    val data: ArrayList<Subtask>
+) : RecyclerView.Adapter<SubtaskListAdapter.SubtaskViewHolder>() {
 
     private var inputMethodManager: InputMethodManager =
-        mContext.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
+        context.getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
 
-    override fun getView(position: Int, convertView: View?, parent: ViewGroup): View {
-        val mView: View
-
-        if (convertView == null) {
-            val inflater = LayoutInflater.from(mContext)
-            mView = inflater.inflate(R.layout.layout_subtask_item, parent, false)
-            val editTextSubtaskTitle = mView.findViewById<EditText>(R.id.editTextSubtaskTitle)
-            editTextSubtaskTitle.setText(getItem(position)?.title)
-            editTextSubtaskTitle.setOnEditorActionListener { _, actionId, _ ->
-                if (actionId == EditorInfo.IME_ACTION_DONE) {
-                    if (editTextSubtaskTitle.text.toString() == "") {
-                        if (position == count - 1) {
-                            data.removeAt(position)
-                            notifyDataSetChanged()
-                            dataChangedListener.dataChanged()
-                            inputMethodManager.toggleSoftInput(
-                                InputMethodManager.HIDE_IMPLICIT_ONLY,
-                                0
-                            )
-                        }
-                    } else {
-                        if (position == count - 1) {
-                            add(Subtask())
-                        } else {
-                            setFocusListener.setFocus(position+1)
-                        }
-                    }
-                }
-                return@setOnEditorActionListener true
-            }
-
-            val buttonCheck = mView.findViewById<ImageButton>(R.id.buttonCheck)
-            buttonCheck.setImageResource(iconUnchecked)
-            buttonCheck.setOnClickListener {
-                if (getItem(position)?.done!!) {
-                    buttonCheck.setImageResource(iconUnchecked)
-                    getItem(position)?.done = false
-                } else {
-                    buttonCheck.setImageResource(iconChecked)
-                    getItem(position)?.done = true
-                }
-            }
-        } else {
-            mView = convertView
-        }
-
-        if (position == count - 1) {
-            mView.findViewById<TextView>(R.id.editTextSubtaskTitle).requestFocus()
-        }
-
-        return mView
+    class SubtaskViewHolder(val view: View) : RecyclerView.ViewHolder(view) {
+        val editTextSubtaskTitle: EditText = view.findViewById(R.id.editTextSubtaskTitle)
+        val buttonCheck: ImageButton = view.findViewById(R.id.buttonCheck)
+        val buttonRemove: ImageButton = view.findViewById(R.id.buttonRemove)
     }
 
-    override fun add(subtask: Subtask?) {
-        super.add(subtask)
-        dataChangedListener.dataChanged()
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): SubtaskViewHolder {
+        val view =
+            LayoutInflater.from(context).inflate(R.layout.layout_subtask_item, parent, false)
+        return SubtaskViewHolder(view)
+    }
+
+    override fun getItemCount(): Int {
+        return data.size
+    }
+
+    override fun onBindViewHolder(holder: SubtaskViewHolder, position: Int) {
+        holder.editTextSubtaskTitle.setText(data[holder.adapterPosition].title)
+        holder.editTextSubtaskTitle.setOnEditorActionListener { _, actionId, _ ->
+            if (actionId == EditorInfo.IME_ACTION_DONE) {
+                if (holder.editTextSubtaskTitle.text.toString() == "") {
+                    if (holder.adapterPosition == itemCount - 1) {
+                        data.removeAt(holder.adapterPosition)
+                        notifyItemRemoved(holder.adapterPosition)
+                        dataChangedListener.dataChanged()
+                        inputMethodManager.toggleSoftInput(
+                            InputMethodManager.HIDE_IMPLICIT_ONLY,
+                            0
+                        )
+                    }
+                } else {
+                    if (holder.adapterPosition == itemCount - 1) {
+                        data.add(Subtask())
+                        notifyItemInserted(itemCount - 1)
+                        dataChangedListener.dataChanged()
+                    } else {
+                        setFocusListener.setFocus(holder.adapterPosition + 1)
+                    }
+                }
+            }
+            return@setOnEditorActionListener true
+        }
+        holder.editTextSubtaskTitle.addTextChangedListener(object : TextWatcher {
+            override fun afterTextChanged(s: Editable?) {}
+            override fun beforeTextChanged(
+                s: CharSequence?,
+                start: Int,
+                count: Int,
+                after: Int
+            ) {
+            }
+            override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
+                data[holder.adapterPosition].title = s.toString()
+            }
+        })
+        holder.buttonCheck.setImageResource(iconUnchecked)
+        holder.buttonCheck.setOnClickListener {
+            if (data[holder.adapterPosition].done) {
+                holder.buttonCheck.setImageResource(iconUnchecked)
+                data[holder.adapterPosition].done = false
+            } else {
+                holder.buttonCheck.setImageResource(iconChecked)
+                data[holder.adapterPosition].done = true
+            }
+        }
+        holder.buttonRemove.setOnClickListener {
+            data.removeAt(holder.adapterPosition)
+            notifyItemRemoved(holder.adapterPosition)
+            dataChangedListener.dataChanged()
+        }
+
+        if (holder.adapterPosition == itemCount - 1) {
+            holder.editTextSubtaskTitle.post(Runnable {
+                holder.editTextSubtaskTitle.requestFocus()
+            })
+        }
     }
 
     interface DataChangeListener {

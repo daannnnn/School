@@ -226,15 +226,18 @@
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/recyclerViewReminders" />
 
-                <ListView
-                    android:id="@+id/listViewSubtasks"
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewSubtasks"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="36dp"
                     android:scrollbars="none"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="36dp"
+                    android:nestedScrollingEnabled="false"
                     android:visibility="visible"
+                    tools:listitem="@layout/layout_subtask_item"
+                    tools:itemCount="2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/textViewSubtaskLabel" />
@@ -249,7 +252,7 @@
                     app:icon="@drawable/ic_add"
                     app:iconSize="24dp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/listViewSubtasks" />
+                    app:layout_constraintTop_toBottomOf="@id/recyclerViewSubtasks" />
 
                 <TextView
                     android:id="@+id/textViewNotesLabel"

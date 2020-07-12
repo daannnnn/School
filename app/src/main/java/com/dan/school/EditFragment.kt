@@ -15,6 +15,8 @@ import android.widget.ImageButton
 import android.widget.ListView
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
 import com.google.android.material.button.MaterialButton
@@ -137,7 +139,8 @@ class EditFragment(
             buttonShowMore.visibility = View.GONE
         }
         buttonAddSubtask.setOnClickListener {
-            (listViewSubtasks.adapter as SubtaskListAdapter).add(Subtask())
+            (recyclerViewSubtasks.adapter as SubtaskListAdapter).data.add(Subtask())
+            (recyclerViewSubtasks.adapter as SubtaskListAdapter).notifyItemInserted((recyclerViewSubtasks.adapter as SubtaskListAdapter).itemCount - 1)
             inputMethodManager.toggleSoftInput(
                 InputMethodManager.SHOW_FORCED,
                 0
@@ -173,11 +176,12 @@ class EditFragment(
             requireContext(),
             this,
             this,
-            ArrayList(),
             categoryCheckedIcons[category],
-            categoryUncheckedIcons[category]
+            categoryUncheckedIcons[category],
+            ArrayList()
         )
-        listViewSubtasks.adapter = subtaskListAdapter
+        recyclerViewSubtasks.layoutManager = LinearLayoutManager(context)
+        recyclerViewSubtasks.adapter = subtaskListAdapter
         if (category == School.Category.HOMEWORK) {
             changeColors(category)
         } else {
@@ -260,49 +264,49 @@ class EditFragment(
     private fun changeSubtaskListColor(newCategory: Int) {
         subtaskListAdapter.iconChecked = categoryCheckedIcons[newCategory]
         subtaskListAdapter.iconUnchecked = categoryUncheckedIcons[newCategory]
-        for (i in 0 until subtaskListAdapter.count) {
-            val v = listViewSubtasks.getChildAt(i)
+        for (i in 0 until subtaskListAdapter.itemCount) {
+            val v = recyclerViewSubtasks.getChildAt(i)
             val buttonCheck = v.findViewById<ImageButton>(R.id.buttonCheck)
-            if (!subtaskListAdapter.getItem(i)?.done!!) {
+            if (!subtaskListAdapter.data[i].done) {
                 buttonCheck.setImageResource(categoryUncheckedIcons[newCategory])
             } else {
                 buttonCheck.setImageResource(categoryCheckedIcons[newCategory])
             }
             buttonCheck.setOnClickListener {
-                if (subtaskListAdapter.getItem(i)?.done!!) {
+                if (subtaskListAdapter.data[i].done) {
                     buttonCheck.setImageResource(categoryUncheckedIcons[newCategory])
-                    subtaskListAdapter.getItem(i)?.done = false
+                    subtaskListAdapter.data[i].done = false
                 } else {
                     buttonCheck.setImageResource(categoryCheckedIcons[newCategory])
-                    subtaskListAdapter.getItem(i)?.done = true
+                    subtaskListAdapter.data[i].done = true
                 }
             }
         }
     }
 
-    private fun setListViewHeightBasedOnChild(listView: ListView) {
-        val listAdapter = listView.adapter ?: return
-        val width = View.MeasureSpec.makeMeasureSpec(
-            listView.width,
-            View.MeasureSpec.UNSPECIFIED
-        )
-        var height = 0
-        var mView: View? = null
-        for (i in 0 until listAdapter.count) {
-            mView = listAdapter.getView(i, mView, listView)
-            if (i == 0) {
-                mView.layoutParams = ViewGroup.LayoutParams(
-                    width,
-                    ViewGroup.LayoutParams.WRAP_CONTENT
-                )
-            }
-            mView.measure(width, View.MeasureSpec.UNSPECIFIED)
-            height += mView.measuredHeight
-        }
-        val params = listView.layoutParams
-        params.height = height + listView.dividerHeight * (listAdapter.count - 1)
-        listView.layoutParams = params
-    }
+//    private fun setListViewHeightBasedOnChild(recyclerView: RecyclerView) {
+//        val listAdapter = recyclerView.adapter as SubtaskListAdapter
+//        val width = View.MeasureSpec.makeMeasureSpec(
+//            recyclerView.width,
+//            View.MeasureSpec.UNSPECIFIED
+//        )
+//        var height = 0
+//        var mView: View? = null
+//        for (i in 0 until listAdapter.itemCount) {
+//            mView = listAdapter.(i, mView, recyclerView)
+//            if (i == 0) {
+//                mView.layoutParams = ViewGroup.LayoutParams(
+//                    width,
+//                    ViewGroup.LayoutParams.WRAP_CONTENT
+//                )
+//            }
+//            mView.measure(width, View.MeasureSpec.UNSPECIFIED)
+//            height += mView.measuredHeight
+//        }
+//        val params = recyclerView.layoutParams
+//        params.height = height + recyclerView.dividerHeight * (listAdapter.count - 1)
+//        recyclerView.layoutParams = params
+//    }
 
     interface DismissBottomSheet {
         fun dismissBottomSheet()
@@ -313,11 +317,18 @@ class EditFragment(
     }
 
     override fun dataChanged() {
-        setListViewHeightBasedOnChild(listViewSubtasks)
+//        setListViewHeightBasedOnChild(recyclerViewSubtasks)
+        var s = ""
+        val data = (recyclerViewSubtasks.adapter as SubtaskListAdapter).data
+        for (i in 0 until subtaskListAdapter.itemCount) {
+            s += data[i].title
+        }
+        Log.i("Test", s)
     }
 
     override fun setFocus(position: Int) {
-        listViewSubtasks.getChildAt(position).findViewById<EditText>(R.id.editTextSubtaskTitle)
-            .requestFocus()
+        (recyclerViewSubtasks.getChildViewHolder(
+            recyclerViewSubtasks.getChildAt(position)
+        ) as SubtaskListAdapter.SubtaskViewHolder).editTextSubtaskTitle.requestFocus()
     }
 }
