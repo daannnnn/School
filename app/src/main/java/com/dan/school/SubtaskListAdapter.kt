@@ -16,8 +16,8 @@ class SubtaskListAdapter(
     private val dataChangedListener: DataChangeListener,
     val setFocusListener: SetFocusListener,
     private val data: ArrayList<Subtask>,
-    private var iconChecked: Int,
-    private var iconUnchecked: Int
+    var iconChecked: Int,
+    var iconUnchecked: Int
 ) :
     ArrayAdapter<Subtask>(mContext, R.layout.layout_subtask_item, data) {
 
@@ -56,6 +56,7 @@ class SubtaskListAdapter(
             }
 
             val buttonCheck = mView.findViewById<ImageButton>(R.id.buttonCheck)
+            buttonCheck.setImageResource(iconUnchecked)
             buttonCheck.setOnClickListener {
                 if (getItem(position)?.done!!) {
                     buttonCheck.setImageResource(iconUnchecked)

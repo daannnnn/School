@@ -5,6 +5,7 @@ import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -145,7 +146,6 @@ class EditFragment(
 
         // initialize
         dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
-        viewPagerCategory.currentItem += category
         textViewDatePicked.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
@@ -178,7 +178,11 @@ class EditFragment(
             categoryUncheckedIcons[category]
         )
         listViewSubtasks.adapter = subtaskListAdapter
-        changeColors(category)
+        if (category == School.Category.HOMEWORK) {
+            changeColors(category)
+        } else {
+            viewPagerCategory.currentItem += category
+        }
         constraintLayoutMore.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         editTextTitle.requestFocus()
     }
@@ -254,6 +258,8 @@ class EditFragment(
     }
 
     private fun changeSubtaskListColor(newCategory: Int) {
+        subtaskListAdapter.iconChecked = categoryCheckedIcons[newCategory]
+        subtaskListAdapter.iconUnchecked = categoryUncheckedIcons[newCategory]
         for (i in 0 until subtaskListAdapter.count) {
             val v = listViewSubtasks.getChildAt(i)
             val buttonCheck = v.findViewById<ImageButton>(R.id.buttonCheck)

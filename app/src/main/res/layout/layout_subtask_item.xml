@@ -9,9 +9,8 @@
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:src="@drawable/ic_homework_unchecked"
         android:scaleType="fitCenter"
-        android:layout_marginStart="12dp"
+        android:layout_marginStart="8dp"
         android:layout_marginEnd="8dp"/>
 
     <EditText
@@ -28,5 +27,17 @@
         android:fontFamily="@font/cabin_regular"
         android:imeOptions="actionDone"
         android:inputType="textCapSentences"/>
+
+    <ImageButton
+        android:id="@+id/buttonRemove"
+        android:layout_width="24dp"
+        android:layout_height="24dp"
+        android:background="?attr/selectableItemBackgroundBorderless"
+        android:src="@drawable/ic_remove"
+        android:scaleType="fitCenter"
+        android:padding="4dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginEnd="8dp"
+        android:tint="@android:color/holo_red_light"/>
 
 </LinearLayout>
