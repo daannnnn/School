@@ -14,7 +14,7 @@ class MainActivity : AppCompatActivity(),
         HomeFragment.SelectedTabChangeListener, EditFragment.CategoryChangeListener {
 
     private var addBottomSheetDialogFragment: AddBottomSheetDialogFragment? = null
-    private var lastSelectedAddCategory = School.Category.HOMEWORK
+    private var lastSelectedAddCategory = School.HOMEWORK
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)

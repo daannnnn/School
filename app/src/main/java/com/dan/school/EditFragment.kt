@@ -3,6 +3,8 @@ package com.dan.school
 import android.animation.ArgbEvaluator
 import android.animation.LayoutTransition
 import android.animation.ValueAnimator
+import android.app.DatePickerDialog
+import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.util.Log
@@ -10,9 +12,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.EditText
-import android.widget.ImageButton
-import android.widget.ListView
+import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -21,6 +21,13 @@ import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_edit.*
+import kotlinx.android.synthetic.main.fragment_edit.chipGroupDate
+import kotlinx.android.synthetic.main.fragment_edit.chipPickDate
+import kotlinx.android.synthetic.main.fragment_edit.chipToday
+import kotlinx.android.synthetic.main.fragment_edit.chipTomorrow
+import kotlinx.android.synthetic.main.fragment_edit.editTextTitle
+import kotlinx.android.synthetic.main.fragment_edit.textViewDatePicked
+import kotlinx.android.synthetic.main.layout_add_bottom_sheet.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -28,11 +35,11 @@ import kotlin.collections.ArrayList
 class EditFragment(
     private val categoryChangeListener: CategoryChangeListener,
     private val listener: DismissBottomSheet,
-    private var category: Int = School.Category.HOMEWORK,
+    private var category: Int = School.HOMEWORK,
     private val title: String = "",
-    private val chipGroupSelected: Int = School.Date.TODAY,
+    private val chipGroupSelected: Int = School.TODAY,
     private var selectedDate: Calendar? = Calendar.getInstance()
-) : DialogFragment(), SubtaskListAdapter.DataChangeListener, SubtaskListAdapter.SetFocusListener {
+) : DialogFragment(), SubtaskListAdapter.SetFocusListener, DateTimePicker.DoneListener {
 
     private val categoryColors =
         arrayOf(R.color.homeworkColor, R.color.examColor, R.color.taskColor)
@@ -81,10 +88,12 @@ class EditFragment(
     private val dateFormat = SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault())
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var subtaskListAdapter: SubtaskListAdapter
+    private lateinit var reminderListAdapter: ReminderListAdapter
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         dialog?.window?.attributes?.windowAnimations = R.style.DialogAnimation
+        View.GONE
     }
 
     override fun onAttach(context: Context) {
@@ -146,8 +155,19 @@ class EditFragment(
                 0
             )
         }
+        buttonAddReminder.setOnClickListener {
+            DateTimePicker(this, childFragmentManager).startGetDateTime()
+        }
+        switchReminder.setOnCheckedChangeListener { _, isChecked ->
+            buttonAddReminder.isEnabled = isChecked
+            if (isChecked) {
+                recyclerViewReminders.visibility = View.VISIBLE
+            } else {
+                recyclerViewReminders.visibility = View.GONE
+            }
+        }
 
-        // initialize
+        // [START] initialize
         dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
         textViewDatePicked.setTextColor(
             ContextCompat.getColor(
@@ -157,24 +177,25 @@ class EditFragment(
         )
         editTextTitle.setText(title)
         when (chipGroupSelected) {
-            School.Date.TODAY -> {
+            School.TODAY -> {
                 chipGroupDate.check(R.id.chipToday)
                 textViewDatePicked.text = dateFormat.format(dateToday.time)
             }
-            School.Date.TOMORROW -> {
+            School.TOMORROW -> {
                 chipGroupDate.check(R.id.chipTomorrow)
                 textViewDatePicked.text = dateFormat.format(dateTomorrow.time)
             }
-            School.Date.PICK_DATE -> {
+            School.PICK_DATE -> {
                 chipGroupDate.check(R.id.chipPickDate)
                 if (selectedDate != null) {
                     textViewDatePicked.text = dateFormat.format(selectedDate!!.time)
                 }
             }
         }
+
+        // [START] configure subtasks list
         subtaskListAdapter = SubtaskListAdapter(
             requireContext(),
-            this,
             this,
             categoryCheckedIcons[category],
             categoryUncheckedIcons[category],
@@ -182,13 +203,26 @@ class EditFragment(
         )
         recyclerViewSubtasks.layoutManager = LinearLayoutManager(context)
         recyclerViewSubtasks.adapter = subtaskListAdapter
-        if (category == School.Category.HOMEWORK) {
+        // [END] configure subtasks list
+
+        // [START] configure reminders list
+        reminderListAdapter = ReminderListAdapter(
+            requireContext(),
+            ArrayList()
+        )
+        recyclerViewReminders.layoutManager = LinearLayoutManager(context)
+        recyclerViewReminders.adapter = reminderListAdapter
+        // [END] configure reminders list
+
+        if (category == School.HOMEWORK) {
             changeColors(category)
         } else {
             viewPagerCategory.currentItem += category
         }
         constraintLayoutMore.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         editTextTitle.requestFocus()
+        buttonAddReminder.isEnabled = switchReminder.isChecked
+        // [END] initialize
     }
 
     private fun changeColors(newCategory: Int) {
@@ -199,7 +233,6 @@ class EditFragment(
             val animatedValue = animator.animatedValue as Int
             textViewDatePicked.setTextColor(animatedValue)
             textViewDatePicked.setTextColor(animatedValue)
-            buttonPlusReminder.setColorFilter(animatedValue)
         }
         colorAnimation.start()
         chipPickDate.chipBackgroundColor = ContextCompat.getColorStateList(
@@ -256,6 +289,10 @@ class EditFragment(
             requireContext(),
             categoryButtonAddRippleColorStateList[newCategory]
         )
+        buttonAddReminder.imageTintList = ContextCompat.getColorStateList(
+            requireContext(),
+            categoryButtonAddColorStateList[newCategory]
+        )
         changeSubtaskListColor(newCategory)
         categoryChangeListener.selectedCategoryChanged(newCategory)
         category = newCategory
@@ -284,30 +321,6 @@ class EditFragment(
         }
     }
 
-//    private fun setListViewHeightBasedOnChild(recyclerView: RecyclerView) {
-//        val listAdapter = recyclerView.adapter as SubtaskListAdapter
-//        val width = View.MeasureSpec.makeMeasureSpec(
-//            recyclerView.width,
-//            View.MeasureSpec.UNSPECIFIED
-//        )
-//        var height = 0
-//        var mView: View? = null
-//        for (i in 0 until listAdapter.itemCount) {
-//            mView = listAdapter.(i, mView, recyclerView)
-//            if (i == 0) {
-//                mView.layoutParams = ViewGroup.LayoutParams(
-//                    width,
-//                    ViewGroup.LayoutParams.WRAP_CONTENT
-//                )
-//            }
-//            mView.measure(width, View.MeasureSpec.UNSPECIFIED)
-//            height += mView.measuredHeight
-//        }
-//        val params = recyclerView.layoutParams
-//        params.height = height + recyclerView.dividerHeight * (listAdapter.count - 1)
-//        recyclerView.layoutParams = params
-//    }
-
     interface DismissBottomSheet {
         fun dismissBottomSheet()
     }
@@ -316,19 +329,14 @@ class EditFragment(
         fun selectedCategoryChanged(category: Int)
     }
 
-    override fun dataChanged() {
-//        setListViewHeightBasedOnChild(recyclerViewSubtasks)
-        var s = ""
-        val data = (recyclerViewSubtasks.adapter as SubtaskListAdapter).data
-        for (i in 0 until subtaskListAdapter.itemCount) {
-            s += data[i].title
-        }
-        Log.i("Test", s)
-    }
-
     override fun setFocus(position: Int) {
         (recyclerViewSubtasks.getChildViewHolder(
             recyclerViewSubtasks.getChildAt(position)
         ) as SubtaskListAdapter.SubtaskViewHolder).editTextSubtaskTitle.requestFocus()
+    }
+
+    override fun done(calendar: Calendar) {
+        (recyclerViewReminders.adapter as ReminderListAdapter).data.add(Reminder(calendar))
+        (recyclerViewReminders.adapter as ReminderListAdapter).notifyItemInserted(0)
     }
 }

@@ -42,11 +42,11 @@ class AddBottomSheetDialogFragment(private val listener: GoToEditFragment, priva
     private val selectedDate = Calendar.getInstance()
     private val dateToday = Calendar.getInstance()
     private val dateTomorrow = Calendar.getInstance()
-    private val dateFormat = SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault())
+    private val dateFormat = SimpleDateFormat(School.dateFormat, Locale.getDefault())
 
     private var chipGroupDateSelected: Int = R.id.chipToday
 
-    private var selectedCategory = School.Category.HOMEWORK
+    private var selectedCategory = School.HOMEWORK
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -77,24 +77,24 @@ class AddBottomSheetDialogFragment(private val listener: GoToEditFragment, priva
         buttonShowAllDetails.setOnClickListener {
             when (chipGroupDateSelected) {
                 R.id.chipToday -> {
-                    listener.goToEditFragment(selectedCategory, editTextTitle.text.toString(), School.Date.TODAY, null)
+                    listener.goToEditFragment(selectedCategory, editTextTitle.text.toString(), School.TODAY, null)
                 }
                 R.id.chipTomorrow -> {
-                    listener.goToEditFragment(selectedCategory, editTextTitle.text.toString(), School.Date.TOMORROW, null)
+                    listener.goToEditFragment(selectedCategory, editTextTitle.text.toString(), School.TOMORROW, null)
                 }
                 else -> {
-                    listener.goToEditFragment(selectedCategory, editTextTitle.text.toString(), School.Date.PICK_DATE, selectedDate)
+                    listener.goToEditFragment(selectedCategory, editTextTitle.text.toString(), School.PICK_DATE, selectedDate)
                 }
             }
         }
         chipHomework.setOnClickListener {
-            changeColors(School.Category.HOMEWORK)
+            changeColors(School.HOMEWORK)
         }
         chipExam.setOnClickListener {
-            changeColors(School.Category.EXAM)
+            changeColors(School.EXAM)
         }
         chipTask.setOnClickListener {
-            changeColors(School.Category.TASK)
+            changeColors(School.TASK)
         }
         chipGroupDate.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
@@ -159,7 +159,7 @@ class AddBottomSheetDialogFragment(private val listener: GoToEditFragment, priva
         }
         colorAnimation.start()
         when (category) {
-            School.Category.HOMEWORK -> {
+            School.HOMEWORK -> {
                 chipHomework.chipBackgroundColor = ContextCompat.getColorStateList(
                         requireContext(),
                         categoryChipBackgroundColorStateList[category]
@@ -167,14 +167,14 @@ class AddBottomSheetDialogFragment(private val listener: GoToEditFragment, priva
                 chipHomework.isSelected = true
 
             }
-            School.Category.EXAM -> {
+            School.EXAM -> {
                 chipExam.chipBackgroundColor = ContextCompat.getColorStateList(
                         requireContext(),
                         categoryChipBackgroundColorStateList[category]
                 )
                 chipExam.isSelected = true
             }
-            School.Category.TASK -> {
+            School.TASK -> {
                 chipTask.chipBackgroundColor = ContextCompat.getColorStateList(
                         requireContext(),
                         categoryChipBackgroundColorStateList[category]

@@ -1,15 +1,14 @@
 package com.dan.school
 
-class School {
-    object Category {
-        const val HOMEWORK = 0
-        const val EXAM = 1
-        const val TASK = 2
-    }
+object School {
+    const val HOMEWORK = 0
+    const val EXAM = 1
+    const val TASK = 2
+    
+    const val PICK_DATE = 0
+    const val TODAY = 1
+    const val TOMORROW = 2
 
-    object Date {
-        const val PICK_DATE = 0
-        const val TODAY = 1
-        const val TOMORROW = 2
-    }
+    const val dateFormat = "EEE, MMM d, yyyy"
+    const val timeFormat = "hh:mm aaa"
 }

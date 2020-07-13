@@ -7,7 +7,7 @@ import android.os.Bundle
 import androidx.fragment.app.DialogFragment
 import java.util.*
 
-class DatePickerFragment(private val listener: DatePickerDialog.OnDateSetListener, private val onCancelListener: OnCancelListener) : DialogFragment() {
+class DatePickerFragment(private val listener: DatePickerDialog.OnDateSetListener, private val onCancelListener: OnCancelListener?) : DialogFragment() {
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         val c: Calendar = Calendar.getInstance()
         val year: Int = c.get(Calendar.YEAR)
@@ -17,7 +17,7 @@ class DatePickerFragment(private val listener: DatePickerDialog.OnDateSetListene
     }
 
     override fun onCancel(dialog: DialogInterface) {
-        onCancelListener.canceled()
+        onCancelListener?.canceled()
         super.onCancel(dialog)
     }
 

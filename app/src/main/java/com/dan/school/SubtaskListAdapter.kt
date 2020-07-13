@@ -14,7 +14,6 @@ import androidx.recyclerview.widget.RecyclerView
 
 class SubtaskListAdapter(
     private val context: Context,
-    private val dataChangedListener: DataChangeListener,
     private val setFocusListener: SetFocusListener,
     var iconChecked: Int,
     var iconUnchecked: Int,
@@ -48,7 +47,6 @@ class SubtaskListAdapter(
                     if (holder.adapterPosition == itemCount - 1) {
                         data.removeAt(holder.adapterPosition)
                         notifyItemRemoved(holder.adapterPosition)
-                        dataChangedListener.dataChanged()
                         inputMethodManager.toggleSoftInput(
                             InputMethodManager.HIDE_IMPLICIT_ONLY,
                             0
@@ -58,7 +56,6 @@ class SubtaskListAdapter(
                     if (holder.adapterPosition == itemCount - 1) {
                         data.add(Subtask())
                         notifyItemInserted(itemCount - 1)
-                        dataChangedListener.dataChanged()
                     } else {
                         setFocusListener.setFocus(holder.adapterPosition + 1)
                     }
@@ -92,7 +89,6 @@ class SubtaskListAdapter(
         holder.buttonRemove.setOnClickListener {
             data.removeAt(holder.adapterPosition)
             notifyItemRemoved(holder.adapterPosition)
-            dataChangedListener.dataChanged()
         }
 
         if (holder.adapterPosition == itemCount - 1) {
@@ -100,10 +96,6 @@ class SubtaskListAdapter(
                 holder.editTextSubtaskTitle.requestFocus()
             })
         }
-    }
-
-    interface DataChangeListener {
-        fun dataChanged()
     }
 
     interface SetFocusListener {

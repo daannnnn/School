@@ -181,7 +181,7 @@
                     app:layout_constraintTop_toTopOf="parent" />
 
                 <ImageButton
-                    android:id="@+id/buttonPlusReminder"
+                    android:id="@+id/buttonAddReminder"
                     android:layout_width="24dp"
                     android:layout_height="24dp"
                     android:layout_marginEnd="8dp"
@@ -202,12 +202,13 @@
                     app:layout_constraintTop_toTopOf="@id/textViewReminderLabel" />
 
                 <androidx.recyclerview.widget.RecyclerView
+                    android:visibility="gone"
                     android:id="@+id/recyclerViewReminders"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="36dp"
-                    android:layout_marginTop="4dp"
                     android:layout_marginEnd="24dp"
+                    android:nestedScrollingEnabled="false"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/switchReminder"
@@ -231,7 +232,6 @@
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="36dp"
-                    android:scrollbars="none"
                     android:layout_marginTop="4dp"
                     android:layout_marginEnd="36dp"
                     android:nestedScrollingEnabled="false"
