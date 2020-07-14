@@ -330,9 +330,13 @@ class EditFragment(
     }
 
     override fun setFocus(position: Int) {
-        (recyclerViewSubtasks.getChildViewHolder(
-            recyclerViewSubtasks.getChildAt(position)
-        ) as SubtaskListAdapter.SubtaskViewHolder).editTextSubtaskTitle.requestFocus()
+        if (position == -1) {
+            editTextTitle.requestFocus()
+        } else {
+            (recyclerViewSubtasks.getChildViewHolder(
+                recyclerViewSubtasks.getChildAt(position)
+            ) as SubtaskListAdapter.SubtaskViewHolder).editTextSubtaskTitle.requestFocus()
+        }
     }
 
     override fun done(calendar: Calendar) {

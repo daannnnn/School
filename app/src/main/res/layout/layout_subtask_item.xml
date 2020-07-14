@@ -1,10 +1,12 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
-    android:layout_height="wrap_content"
-    android:gravity="center">
-    
+    android:layout_height="wrap_content">
+
     <ImageButton
+        android:layout_centerVertical="true"
+        android:layout_alignParentStart="true"
         android:id="@+id/buttonCheck"
         android:layout_width="24dp"
         android:layout_height="24dp"
@@ -14,23 +16,27 @@
         android:layout_marginEnd="8dp"/>
 
     <EditText
+        android:layout_centerVertical="true"
         android:hint="@string/enter_subtask"
         android:id="@+id/editTextSubtaskTitle"
-        android:layout_width="0dp"
-        android:layout_weight="1"
+        android:layout_width="match_parent"
         android:background="@null"
         android:layout_height="wrap_content"
-        android:focusableInTouchMode="true"
         android:layout_marginTop="4dp"
         android:layout_marginBottom="4dp"
+        android:layout_marginStart="36dp"
         android:maxLines="1"
         android:fontFamily="@font/cabin_regular"
         android:imeOptions="actionDone"
-        android:inputType="textCapSentences"/>
+        android:paddingEnd="36dp"
+        android:inputType="textCapSentences"
+        tools:ignore="RtlSymmetry" />
 
     <ImageButton
+        android:layout_centerVertical="true"
         android:id="@+id/buttonRemove"
         android:layout_width="24dp"
+        android:layout_alignParentEnd="true"
         android:layout_height="24dp"
         android:background="?attr/selectableItemBackgroundBorderless"
         android:src="@drawable/ic_remove"
@@ -40,4 +46,4 @@
         android:layout_marginEnd="8dp"
         android:tint="@android:color/holo_red_light"/>
 
-</LinearLayout>
+</RelativeLayout>

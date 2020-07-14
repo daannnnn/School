@@ -68,6 +68,7 @@
                 android:background="@null"
                 android:fontFamily="@font/cabin_regular"
                 android:hint="@string/title"
+                android:inputType="textCapSentences"
                 android:textColor="@android:color/black"
                 android:textSize="36sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -202,13 +203,13 @@
                     app:layout_constraintTop_toTopOf="@id/textViewReminderLabel" />
 
                 <androidx.recyclerview.widget.RecyclerView
-                    android:visibility="gone"
                     android:id="@+id/recyclerViewReminders"
                     android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="36dp"
                     android:layout_marginEnd="24dp"
                     android:nestedScrollingEnabled="false"
+                    android:visibility="gone"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/switchReminder"
@@ -236,11 +237,11 @@
                     android:layout_marginEnd="36dp"
                     android:nestedScrollingEnabled="false"
                     android:visibility="visible"
-                    tools:listitem="@layout/layout_subtask_item"
-                    tools:itemCount="2"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textViewSubtaskLabel" />
+                    app:layout_constraintTop_toBottomOf="@id/textViewSubtaskLabel"
+                    tools:itemCount="2"
+                    tools:listitem="@layout/layout_subtask_item" />
 
                 <Button
                     android:id="@+id/buttonAddSubtask"

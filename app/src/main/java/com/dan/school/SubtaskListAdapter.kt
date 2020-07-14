@@ -87,6 +87,18 @@ class SubtaskListAdapter(
             }
         }
         holder.buttonRemove.setOnClickListener {
+            if (holder.editTextSubtaskTitle.hasFocus()) {
+                holder.editTextSubtaskTitle.clearFocus()
+                if (holder.adapterPosition == data.size - 1) {
+                    if (data.size == 1) {
+                        setFocusListener.setFocus(-1)
+                    } else {
+                        setFocusListener.setFocus(holder.adapterPosition - 1)
+                    }
+                } else {
+                    setFocusListener.setFocus(holder.adapterPosition + 1)
+                }
+            }
             data.removeAt(holder.adapterPosition)
             notifyItemRemoved(holder.adapterPosition)
         }
