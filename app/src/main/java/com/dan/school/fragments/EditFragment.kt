@@ -206,7 +206,8 @@ class EditFragment(
                 title = editTextTitle.text.toString(),
                 date = dateFormat.format(selectedDate!!.time),
                 subtasks = subtaskListAdapter.data,
-                reminders = reminderListAdapter.data
+                reminders = reminderListAdapter.data,
+                notes = editTextNotes.text.toString()
             )
             dataViewModel.insert(item)
         }
