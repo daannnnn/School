@@ -21,7 +21,15 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
+import kotlinx.android.synthetic.main.fragment_edit.*
 import kotlinx.android.synthetic.main.layout_add_bottom_sheet.*
+import kotlinx.android.synthetic.main.layout_add_bottom_sheet.buttonCheck
+import kotlinx.android.synthetic.main.layout_add_bottom_sheet.chipGroupDate
+import kotlinx.android.synthetic.main.layout_add_bottom_sheet.chipPickDate
+import kotlinx.android.synthetic.main.layout_add_bottom_sheet.chipToday
+import kotlinx.android.synthetic.main.layout_add_bottom_sheet.chipTomorrow
+import kotlinx.android.synthetic.main.layout_add_bottom_sheet.editTextTitle
+import kotlinx.android.synthetic.main.layout_add_bottom_sheet.textViewDatePicked
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -58,7 +66,7 @@ class AddBottomSheetDialogFragment(
     private val dateTomorrow = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat(School.dateFormat, Locale.getDefault())
 
-    private var chipGroupDateSelected: Int = R.id.chipToday
+    private var chipGroupSelected: Int = School.TODAY
 
     private lateinit var dataViewModel: DataViewModel
 
@@ -94,29 +102,21 @@ class AddBottomSheetDialogFragment(
             }
         }
         buttonShowAllDetails.setOnClickListener {
-            when (chipGroupDateSelected) {
-                R.id.chipToday -> {
+            when (chipGroupSelected) {
+                School.PICK_DATE -> {
                     listener.goToEditFragment(
                         category,
                         editTextTitle.text.toString(),
-                        School.TODAY,
-                        null
-                    )
-                }
-                R.id.chipTomorrow -> {
-                    listener.goToEditFragment(
-                        category,
-                        editTextTitle.text.toString(),
-                        School.TOMORROW,
-                        null
+                        School.PICK_DATE,
+                        selectedDate
                     )
                 }
                 else -> {
                     listener.goToEditFragment(
                         category,
                         editTextTitle.text.toString(),
-                        School.PICK_DATE,
-                        selectedDate
+                        chipGroupSelected,
+                        null
                     )
                 }
             }
@@ -132,20 +132,20 @@ class AddBottomSheetDialogFragment(
         }
         chipGroupDate.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.chipPickDate -> {
-                    val datePicker: DialogFragment =
-                        DatePickerFragment(this, this)
-                    datePicker.show(childFragmentManager, "date picker")
-                }
                 R.id.chipToday -> {
                     textViewDatePicked.text = dateFormat.format(dateToday.time)
-                    chipGroupDateSelected = R.id.chipToday
+                    chipGroupSelected = School.TODAY
                 }
                 R.id.chipTomorrow -> {
                     textViewDatePicked.text = dateFormat.format(dateTomorrow.time)
-                    chipGroupDateSelected = R.id.chipTomorrow
+                    chipGroupSelected = School.TOMORROW
                 }
             }
+        }
+        chipPickDate.setOnClickListener {
+            val datePicker: DialogFragment =
+                DatePickerFragment(this, this)
+            datePicker.show(childFragmentManager, "date picker")
         }
         buttonCheck.setOnClickListener {
             val item = Item(
@@ -256,10 +256,14 @@ class AddBottomSheetDialogFragment(
         selectedDate.set(Calendar.MONTH, month)
         selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
         textViewDatePicked.text = dateFormat.format(selectedDate.time)
-        chipGroupDateSelected = R.id.chipPickDate
+        chipGroupSelected = School.PICK_DATE
     }
 
     override fun canceled() {
-        chipGroupDate.check(chipGroupDateSelected)
+        when (chipGroupSelected) {
+            School.TODAY -> chipGroupDate.check(R.id.chipToday)
+            School.TOMORROW -> chipGroupDate.check(R.id.chipTomorrow)
+            School.PICK_DATE -> chipGroupDate.check(R.id.chipPickDate)
+        }
     }
 }

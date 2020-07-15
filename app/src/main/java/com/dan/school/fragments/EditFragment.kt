@@ -37,7 +37,7 @@ class EditFragment(
     private val listener: DismissBottomSheet,
     private var category: Int = School.HOMEWORK,
     private val title: String = "",
-    private val chipGroupSelected: Int = School.TODAY,
+    private var chipGroupSelected: Int = School.TODAY,
     private var selectedDate: Calendar?
 ) : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     DateTimePicker.DoneListener, DatePickerDialog.OnDateSetListener,
@@ -95,8 +95,6 @@ class EditFragment(
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var subtaskListAdapter: SubtaskListAdapter
     private lateinit var reminderListAdapter: ReminderListAdapter
-
-    private var chipGroupDateSelected: Int = R.id.chipToday
 
     private lateinit var dataViewModel: DataViewModel
 
@@ -184,20 +182,20 @@ class EditFragment(
         }
         chipGroupDate.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
-                R.id.chipPickDate -> {
-                    val datePicker: DialogFragment =
-                        DatePickerFragment(this, this)
-                    datePicker.show(childFragmentManager, "date picker")
-                }
                 R.id.chipToday -> {
                     textViewDatePicked.text = dateFormat.format(dateToday.time)
-                    chipGroupDateSelected = R.id.chipToday
+                    chipGroupSelected = School.TODAY
                 }
                 R.id.chipTomorrow -> {
                     textViewDatePicked.text = dateFormat.format(dateTomorrow.time)
-                    chipGroupDateSelected = R.id.chipTomorrow
+                    chipGroupSelected = School.TOMORROW
                 }
             }
+        }
+        chipPickDate.setOnClickListener {
+            val datePicker: DialogFragment =
+                DatePickerFragment(this, this)
+            datePicker.show(childFragmentManager, "date picker")
         }
         buttonCheck.setOnClickListener {
             val item = Item(
@@ -407,10 +405,14 @@ class EditFragment(
         selectedDate!!.set(Calendar.MONTH, month)
         selectedDate!!.set(Calendar.DAY_OF_MONTH, dayOfMonth)
         textViewDatePicked.text = dateFormat.format(selectedDate!!.time)
-        chipGroupDateSelected = R.id.chipPickDate
+        chipGroupSelected = School.PICK_DATE
     }
 
     override fun canceled() {
-        chipGroupDate.check(chipGroupDateSelected)
+        when (chipGroupSelected) {
+            School.TODAY -> chipGroupDate.check(R.id.chipToday)
+            School.TOMORROW -> chipGroupDate.check(R.id.chipTomorrow)
+            School.PICK_DATE -> chipGroupDate.check(R.id.chipPickDate)
+        }
     }
 }
