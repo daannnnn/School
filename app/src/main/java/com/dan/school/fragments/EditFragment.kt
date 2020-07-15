@@ -201,6 +201,7 @@ class EditFragment(
         }
         buttonCheck.setOnClickListener {
             val item = Item(
+                category = category,
                 title = editTextTitle.text.toString(),
                 date = dateFormat.format(selectedDate!!.time),
                 subtasks = subtaskListAdapter.data,

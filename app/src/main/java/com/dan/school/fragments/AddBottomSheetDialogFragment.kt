@@ -35,7 +35,7 @@ import java.util.*
 class AddBottomSheetDialogFragment(
     private val listener: GoToEditFragment,
     private val categoryChangeListener: SelectedCategoryChangeListener,
-    private val category: Int
+    private var category: Int
 ) :
     BottomSheetDialogFragment(), DatePickerDialog.OnDateSetListener,
     DatePickerFragment.OnCancelListener {
@@ -66,8 +66,6 @@ class AddBottomSheetDialogFragment(
     private val dateFormat = SimpleDateFormat(School.dateFormat, Locale.getDefault())
 
     private var chipGroupDateSelected: Int = R.id.chipToday
-
-    private var selectedCategory = School.HOMEWORK
 
     private lateinit var dataViewModel: DataViewModel
 
@@ -106,7 +104,7 @@ class AddBottomSheetDialogFragment(
             when (chipGroupDateSelected) {
                 R.id.chipToday -> {
                     listener.goToEditFragment(
-                        selectedCategory,
+                        category,
                         editTextTitle.text.toString(),
                         School.TODAY,
                         null
@@ -114,7 +112,7 @@ class AddBottomSheetDialogFragment(
                 }
                 R.id.chipTomorrow -> {
                     listener.goToEditFragment(
-                        selectedCategory,
+                        category,
                         editTextTitle.text.toString(),
                         School.TOMORROW,
                         null
@@ -122,7 +120,7 @@ class AddBottomSheetDialogFragment(
                 }
                 else -> {
                     listener.goToEditFragment(
-                        selectedCategory,
+                        category,
                         editTextTitle.text.toString(),
                         School.PICK_DATE,
                         selectedDate
@@ -158,6 +156,7 @@ class AddBottomSheetDialogFragment(
         }
         buttonCheck.setOnClickListener {
             val item = Item(
+                category = category,
                 title = editTextTitle.text.toString(),
                 date = dateFormat.format(selectedDate.time)
             )
@@ -185,8 +184,8 @@ class AddBottomSheetDialogFragment(
         super.onDismiss(dialog)
     }
 
-    private fun changeColors(category: Int) {
-        val colorTo = ContextCompat.getColorStateList(requireContext(), categoryColors[category])
+    private fun changeColors(newCategory: Int) {
+        val colorTo = ContextCompat.getColorStateList(requireContext(), categoryColors[newCategory])
         when {
             chipHomework.isSelected -> {
                 chipHomework.isSelected = false
@@ -198,11 +197,11 @@ class AddBottomSheetDialogFragment(
                 chipTask.isSelected = false
             }
         }
-        when (category) {
+        when (newCategory) {
             School.HOMEWORK -> {
                 chipHomework.chipBackgroundColor = ContextCompat.getColorStateList(
                     requireContext(),
-                    categoryChipBackgroundColorStateList[category]
+                    categoryChipBackgroundColorStateList[newCategory]
                 )
                 chipHomework.isSelected = true
 
@@ -210,14 +209,14 @@ class AddBottomSheetDialogFragment(
             School.EXAM -> {
                 chipExam.chipBackgroundColor = ContextCompat.getColorStateList(
                     requireContext(),
-                    categoryChipBackgroundColorStateList[category]
+                    categoryChipBackgroundColorStateList[newCategory]
                 )
                 chipExam.isSelected = true
             }
             School.TASK -> {
                 chipTask.chipBackgroundColor = ContextCompat.getColorStateList(
                     requireContext(),
-                    categoryChipBackgroundColorStateList[category]
+                    categoryChipBackgroundColorStateList[newCategory]
                 )
                 chipTask.isSelected = true
             }
@@ -229,30 +228,30 @@ class AddBottomSheetDialogFragment(
         (buttonShowAllDetails as MaterialButton).iconTint = colorTo
         chipPickDate.chipBackgroundColor = ContextCompat.getColorStateList(
             requireContext(),
-            categoryChipBackgroundColorStateList[category]
+            categoryChipBackgroundColorStateList[newCategory]
         )
         chipToday.chipBackgroundColor = ContextCompat.getColorStateList(
             requireContext(),
-            categoryChipBackgroundColorStateList[category]
+            categoryChipBackgroundColorStateList[newCategory]
         )
         chipTomorrow.chipBackgroundColor = ContextCompat.getColorStateList(
             requireContext(),
-            categoryChipBackgroundColorStateList[category]
+            categoryChipBackgroundColorStateList[newCategory]
         )
         chipPickDate.chipStrokeColor = ContextCompat.getColorStateList(
             requireContext(),
-            categoryChipStrokeColorStateList[category]
+            categoryChipStrokeColorStateList[newCategory]
         )
         chipToday.chipStrokeColor = ContextCompat.getColorStateList(
             requireContext(),
-            categoryChipStrokeColorStateList[category]
+            categoryChipStrokeColorStateList[newCategory]
         )
         chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
             requireContext(),
-            categoryChipStrokeColorStateList[category]
+            categoryChipStrokeColorStateList[newCategory]
         )
-        selectedCategory = category
-        categoryChangeListener.selectedCategoryChanged(category)
+        category = newCategory
+        categoryChangeListener.selectedCategoryChanged(newCategory)
     }
 
     interface SelectedCategoryChangeListener {
