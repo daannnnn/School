@@ -276,6 +276,7 @@
                     android:layout_marginEnd="32dp"
                     android:layout_marginBottom="24dp"
                     android:background="@null"
+                    android:inputType="textCapSentences"
                     android:fontFamily="@font/cabin_regular"
                     android:hint="@string/enter_note_here"
                     app:layout_constraintBottom_toBottomOf="parent"
