@@ -8,7 +8,7 @@ data class Item(
     @PrimaryKey(autoGenerate = true) val uid: Int = 0,
     val title: String,
     val date: String,
-    val reminders: ArrayList<Reminder>,
-    val subtasks: ArrayList<Subtask>,
+    val reminders: ArrayList<Reminder> = ArrayList(),
+    val subtasks: ArrayList<Subtask> = ArrayList(),
     val notes: String = ""
 )

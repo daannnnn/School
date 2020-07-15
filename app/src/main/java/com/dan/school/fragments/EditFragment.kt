@@ -98,7 +98,6 @@ class EditFragment(
 
     private var chipGroupDateSelected: Int = R.id.chipToday
 
-    private lateinit var database: ItemDatabase
     private lateinit var dataViewModel: DataViewModel
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -120,7 +119,6 @@ class EditFragment(
             STYLE_NORMAL,
             R.style.FullScreenDialog
         )
-        database = ItemDatabase.getInstance(requireContext())
         dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
     }
 
