@@ -3,19 +3,23 @@ package com.dan.school.fragments
 import android.animation.ArgbEvaluator
 import android.animation.LayoutTransition
 import android.animation.ValueAnimator
+import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
-import android.widget.*
+import android.widget.DatePicker
+import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
-import com.dan.school.*
+import com.dan.school.DateTimePicker
+import com.dan.school.R
+import com.dan.school.School
 import com.dan.school.adapters.CategoryViewPagerAdapter
 import com.dan.school.adapters.ReminderListAdapter
 import com.dan.school.adapters.SubtaskListAdapter
@@ -23,12 +27,6 @@ import com.dan.school.models.Reminder
 import com.dan.school.models.Subtask
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_edit.*
-import kotlinx.android.synthetic.main.fragment_edit.chipGroupDate
-import kotlinx.android.synthetic.main.fragment_edit.chipPickDate
-import kotlinx.android.synthetic.main.fragment_edit.chipToday
-import kotlinx.android.synthetic.main.fragment_edit.chipTomorrow
-import kotlinx.android.synthetic.main.fragment_edit.editTextTitle
-import kotlinx.android.synthetic.main.fragment_edit.textViewDatePicked
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -39,9 +37,10 @@ class EditFragment(
     private var category: Int = School.HOMEWORK,
     private val title: String = "",
     private val chipGroupSelected: Int = School.TODAY,
-    private var selectedDate: Calendar? = Calendar.getInstance()
+    private var selectedDate: Calendar?
 ) : DialogFragment(), SubtaskListAdapter.SetFocusListener,
-    DateTimePicker.DoneListener {
+    DateTimePicker.DoneListener, DatePickerDialog.OnDateSetListener,
+    DatePickerFragment.OnCancelListener {
 
     private val categoryColors =
         arrayOf(
@@ -95,6 +94,8 @@ class EditFragment(
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var subtaskListAdapter: SubtaskListAdapter
     private lateinit var reminderListAdapter: ReminderListAdapter
+
+    private var chipGroupDateSelected: Int = R.id.chipToday
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -177,6 +178,23 @@ class EditFragment(
                 recyclerViewReminders.visibility = View.VISIBLE
             } else {
                 recyclerViewReminders.visibility = View.GONE
+            }
+        }
+        chipGroupDate.setOnCheckedChangeListener { _, checkedId ->
+            when (checkedId) {
+                R.id.chipPickDate -> {
+                    val datePicker: DialogFragment =
+                        DatePickerFragment(this, this)
+                    datePicker.show(childFragmentManager, "date picker")
+                }
+                R.id.chipToday -> {
+                    textViewDatePicked.text = dateFormat.format(dateToday.time)
+                    chipGroupDateSelected = R.id.chipToday
+                }
+                R.id.chipTomorrow -> {
+                    textViewDatePicked.text = dateFormat.format(dateTomorrow.time)
+                    chipGroupDateSelected = R.id.chipTomorrow
+                }
             }
         }
 
@@ -357,5 +375,20 @@ class EditFragment(
             Reminder(calendar)
         )
         (recyclerViewReminders.adapter as ReminderListAdapter).notifyItemInserted(0)
+    }
+
+    override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
+        if (selectedDate == null) {
+            selectedDate = Calendar.getInstance()
+        }
+        selectedDate!!.set(Calendar.YEAR, year)
+        selectedDate!!.set(Calendar.MONTH, month)
+        selectedDate!!.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        textViewDatePicked.text = dateFormat.format(selectedDate!!.time)
+        chipGroupDateSelected = R.id.chipPickDate
+    }
+
+    override fun canceled() {
+        chipGroupDate.check(chipGroupDateSelected)
     }
 }
