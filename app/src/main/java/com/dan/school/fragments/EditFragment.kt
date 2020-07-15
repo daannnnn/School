@@ -388,6 +388,7 @@ class EditFragment(
 
     override fun done(calendar: Calendar) {
         reminderListAdapter.data.add(
+            0,
             Reminder(
                 SimpleDateFormat(
                     School.dateTimeFormat,
