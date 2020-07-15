@@ -6,6 +6,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
+import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
@@ -21,6 +22,7 @@ class HomeworkListAdapter(
     class HomeworkViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textViewItem: TextView = view.findViewById(R.id.textViewItem)
         val buttonCheckHomework: ImageButton = view.findViewById(R.id.buttonCheckHomework)
+        val buttonSubtask: ImageButton = view.findViewById(R.id.buttonSubtask)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeworkViewHolder {
@@ -35,9 +37,17 @@ class HomeworkListAdapter(
         } else {
             holder.buttonCheckHomework.setImageResource(R.drawable.ic_homework_unchecked)
         }
+        if (getItem(holder.adapterPosition).subtasks.isEmpty()) {
+            holder.buttonSubtask.visibility = View.GONE
+        } else {
+            holder.buttonSubtask.visibility = View.VISIBLE
+        }
         holder.buttonCheckHomework.setOnClickListener {
             holder.buttonCheckHomework.setImageResource(R.drawable.ic_homework_checked)
             doneListener.setDone(getItem(holder.adapterPosition).uid, true)
+        }
+        holder.buttonSubtask.setOnClickListener {
+            Toast.makeText(context, "Show Subtasks", Toast.LENGTH_LONG).show()
         }
     }
 
