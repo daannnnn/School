@@ -7,6 +7,7 @@ import androidx.room.PrimaryKey
 data class Item(
     @PrimaryKey(autoGenerate = true) val uid: Int = 0,
     val category: Int,
+    val done: Boolean = false,
     val title: String,
     val date: String,
     val reminders: ArrayList<Reminder> = ArrayList(),
