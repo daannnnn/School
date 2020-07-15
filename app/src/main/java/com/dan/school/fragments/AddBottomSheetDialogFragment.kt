@@ -159,8 +159,7 @@ class AddBottomSheetDialogFragment(
         buttonCheck.setOnClickListener {
             val item = Item(
                 title = editTextTitle.text.toString(),
-                date = dateFormat.format(selectedDate.time),
-                notes = editTextNotes.text.toString()
+                date = dateFormat.format(selectedDate.time)
             )
             dataViewModel.insert(item)
             dismiss()
