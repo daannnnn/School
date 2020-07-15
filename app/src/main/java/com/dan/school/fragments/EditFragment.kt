@@ -15,13 +15,11 @@ import android.widget.DatePicker
 import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
-import com.dan.school.DateTimePicker
-import com.dan.school.ItemDatabase
-import com.dan.school.R
-import com.dan.school.School
+import com.dan.school.*
 import com.dan.school.adapters.CategoryViewPagerAdapter
 import com.dan.school.adapters.ReminderListAdapter
 import com.dan.school.adapters.SubtaskListAdapter
@@ -33,7 +31,6 @@ import kotlinx.android.synthetic.main.fragment_edit.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
-
 
 class EditFragment(
     private val categoryChangeListener: CategoryChangeListener,
@@ -102,6 +99,7 @@ class EditFragment(
     private var chipGroupDateSelected: Int = R.id.chipToday
 
     private lateinit var database: ItemDatabase
+    private lateinit var dataViewModel: DataViewModel
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -123,6 +121,7 @@ class EditFragment(
             R.style.FullScreenDialog
         )
         database = ItemDatabase.getInstance(requireContext())
+        dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
     }
 
     override fun onCreateView(
@@ -167,10 +166,8 @@ class EditFragment(
             buttonShowMore.visibility = View.GONE
         }
         buttonAddSubtask.setOnClickListener {
-            (recyclerViewSubtasks.adapter as SubtaskListAdapter).data.add(
-                Subtask()
-            )
-            (recyclerViewSubtasks.adapter as SubtaskListAdapter).notifyItemInserted((recyclerViewSubtasks.adapter as SubtaskListAdapter).itemCount - 1)
+            subtaskListAdapter.data.add(Subtask())
+            subtaskListAdapter.notifyItemInserted(subtaskListAdapter.itemCount - 1)
             inputMethodManager.toggleSoftInput(
                 InputMethodManager.SHOW_FORCED,
                 0
@@ -207,9 +204,11 @@ class EditFragment(
         buttonCheck.setOnClickListener {
             val item = Item(
                 title = editTextTitle.text.toString(),
-                date = dateFormat.format(selectedDate!!.time)
+                date = dateFormat.format(selectedDate!!.time),
+                subtasks = subtaskListAdapter.data,
+                reminders = reminderListAdapter.data
             )
-            AsyncTask.execute { database.itemDao().insert(item) }
+            dataViewModel.insert(item)
         }
 
         // [START] initialize
@@ -387,10 +386,15 @@ class EditFragment(
     }
 
     override fun done(calendar: Calendar) {
-        (recyclerViewReminders.adapter as ReminderListAdapter).data.add(
-            Reminder(calendar)
+        reminderListAdapter.data.add(
+            Reminder(
+                SimpleDateFormat(
+                    School.dateTimeFormat,
+                    Locale.getDefault()
+                ).format(calendar.time)
+            )
         )
-        (recyclerViewReminders.adapter as ReminderListAdapter).notifyItemInserted(0)
+        reminderListAdapter.notifyItemInserted(0)
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {

@@ -1,14 +1,10 @@
 package com.dan.school.models
 
-import com.dan.school.School
-import java.text.SimpleDateFormat
-import java.util.*
-
-class Reminder(var date_time: Calendar) {
+class Reminder(val dateTimeString: String) {
     fun getTimeString(): String {
-        return SimpleDateFormat(School.timeFormat, Locale.getDefault()).format(date_time.time)
+        return dateTimeString.split(" - ")[1]
     }
     fun getDateString(): String {
-        return SimpleDateFormat(School.dateFormat, Locale.getDefault()).format(date_time.time)
+        return dateTimeString.split(" - ")[0]
     }
 }
