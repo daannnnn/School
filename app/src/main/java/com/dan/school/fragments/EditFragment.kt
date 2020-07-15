@@ -5,6 +5,7 @@ import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.app.DatePickerDialog
 import android.content.Context
+import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,11 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
 import com.dan.school.DateTimePicker
+import com.dan.school.ItemDatabase
 import com.dan.school.R
 import com.dan.school.School
 import com.dan.school.adapters.CategoryViewPagerAdapter
 import com.dan.school.adapters.ReminderListAdapter
 import com.dan.school.adapters.SubtaskListAdapter
+import com.dan.school.models.Item
 import com.dan.school.models.Reminder
 import com.dan.school.models.Subtask
 import com.google.android.material.button.MaterialButton
@@ -30,6 +33,7 @@ import kotlinx.android.synthetic.main.fragment_edit.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
+
 
 class EditFragment(
     private val categoryChangeListener: CategoryChangeListener,
@@ -97,6 +101,8 @@ class EditFragment(
 
     private var chipGroupDateSelected: Int = R.id.chipToday
 
+    private lateinit var database: ItemDatabase
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
         dialog?.window?.attributes?.windowAnimations =
@@ -116,6 +122,7 @@ class EditFragment(
             STYLE_NORMAL,
             R.style.FullScreenDialog
         )
+        database = ItemDatabase.getInstance(requireContext())
     }
 
     override fun onCreateView(
@@ -197,6 +204,13 @@ class EditFragment(
                 }
             }
         }
+        buttonCheck.setOnClickListener {
+            val item = Item(
+                title = editTextTitle.text.toString(),
+                date = dateFormat.format(selectedDate!!.time)
+            )
+            AsyncTask.execute { database.itemDao().insert(item) }
+        }
 
         // [START] initialize
         dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
@@ -211,10 +225,12 @@ class EditFragment(
             School.TODAY -> {
                 chipGroupDate.check(R.id.chipToday)
                 textViewDatePicked.text = dateFormat.format(dateToday.time)
+                selectedDate = dateToday
             }
             School.TOMORROW -> {
                 chipGroupDate.check(R.id.chipTomorrow)
                 textViewDatePicked.text = dateFormat.format(dateTomorrow.time)
+                selectedDate = dateTomorrow
             }
             School.PICK_DATE -> {
                 chipGroupDate.check(R.id.chipPickDate)
