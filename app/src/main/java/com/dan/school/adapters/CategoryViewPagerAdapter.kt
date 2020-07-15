@@ -1,7 +1,6 @@
-package com.dan.school
+package com.dan.school.adapters
 
 import android.content.Context
-import android.graphics.Typeface
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.View
@@ -10,12 +9,17 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.viewpager.widget.PagerAdapter
+import com.dan.school.R
 
 class CategoryViewPagerAdapter(val context: Context) :
     PagerAdapter() {
 
     private val titles = arrayOf("Homework", "Exam", "Task")
-    private val colors = arrayOf(R.color.homeworkColor, R.color.examColor, R.color.taskColor)
+    private val colors = arrayOf(
+        R.color.homeworkColor,
+        R.color.examColor,
+        R.color.taskColor
+    )
 
     override fun getCount(): Int {
         return titles.size
@@ -30,7 +34,9 @@ class CategoryViewPagerAdapter(val context: Context) :
         v.text = titles[position]
         v.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20F)
         v.setTextColor(ContextCompat.getColor(context, colors[position]))
-        v.typeface = ResourcesCompat.getFont(context, R.font.cabin_bold)
+        v.typeface = ResourcesCompat.getFont(context,
+            R.font.cabin_bold
+        )
         v.gravity = Gravity.CENTER
         container.addView(v, 0)
         return v

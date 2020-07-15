@@ -1,4 +1,4 @@
-package com.dan.school
+package com.dan.school.adapters
 
 import android.content.Context
 import android.view.LayoutInflater
@@ -7,6 +7,8 @@ import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
+import com.dan.school.R
+import com.dan.school.models.Reminder
 
 class ReminderListAdapter(
     private val context: Context,
@@ -22,7 +24,9 @@ class ReminderListAdapter(
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ReminderViewHolder {
         val view =
             LayoutInflater.from(context).inflate(R.layout.layout_reminder_item, parent, false)
-        return ReminderViewHolder(view)
+        return ReminderViewHolder(
+            view
+        )
     }
 
     override fun getItemCount(): Int {

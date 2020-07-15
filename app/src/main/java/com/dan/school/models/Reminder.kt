@@ -1,5 +1,6 @@
-package com.dan.school
+package com.dan.school.models
 
+import com.dan.school.School
 import java.text.SimpleDateFormat
 import java.util.*
 

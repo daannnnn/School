@@ -1,13 +1,10 @@
-package com.dan.school
+package com.dan.school.fragments
 
 import android.animation.ArgbEvaluator
 import android.animation.LayoutTransition
 import android.animation.ValueAnimator
-import android.app.DatePickerDialog
-import android.app.TimePickerDialog
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,9 +13,14 @@ import android.widget.*
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.recyclerview.widget.LinearLayoutManager
-import androidx.recyclerview.widget.RecyclerView
 import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
+import com.dan.school.*
+import com.dan.school.adapters.CategoryViewPagerAdapter
+import com.dan.school.adapters.ReminderListAdapter
+import com.dan.school.adapters.SubtaskListAdapter
+import com.dan.school.models.Reminder
+import com.dan.school.models.Subtask
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_edit.*
 import kotlinx.android.synthetic.main.fragment_edit.chipGroupDate
@@ -27,7 +29,6 @@ import kotlinx.android.synthetic.main.fragment_edit.chipToday
 import kotlinx.android.synthetic.main.fragment_edit.chipTomorrow
 import kotlinx.android.synthetic.main.fragment_edit.editTextTitle
 import kotlinx.android.synthetic.main.fragment_edit.textViewDatePicked
-import kotlinx.android.synthetic.main.layout_add_bottom_sheet.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -39,10 +40,15 @@ class EditFragment(
     private val title: String = "",
     private val chipGroupSelected: Int = School.TODAY,
     private var selectedDate: Calendar? = Calendar.getInstance()
-) : DialogFragment(), SubtaskListAdapter.SetFocusListener, DateTimePicker.DoneListener {
+) : DialogFragment(), SubtaskListAdapter.SetFocusListener,
+    DateTimePicker.DoneListener {
 
     private val categoryColors =
-        arrayOf(R.color.homeworkColor, R.color.examColor, R.color.taskColor)
+        arrayOf(
+            R.color.homeworkColor,
+            R.color.examColor,
+            R.color.taskColor
+        )
     private val categoryChipBackgroundColorStateList = arrayOf(
         R.color.chip_homework_background_state_list,
         R.color.chip_exam_background_state_list,
@@ -92,7 +98,8 @@ class EditFragment(
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        dialog?.window?.attributes?.windowAnimations = R.style.DialogAnimation
+        dialog?.window?.attributes?.windowAnimations =
+            R.style.DialogAnimation
         View.GONE
     }
 
@@ -124,7 +131,11 @@ class EditFragment(
             listener.dismissBottomSheet()
         }
 
-        val viewPagerAdapter = InfinitePagerAdapter(CategoryViewPagerAdapter(requireContext()))
+        val viewPagerAdapter = InfinitePagerAdapter(
+            CategoryViewPagerAdapter(
+                requireContext()
+            )
+        )
 
         viewPagerCategory.adapter = viewPagerAdapter
         viewPagerCategory.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
@@ -148,7 +159,9 @@ class EditFragment(
             buttonShowMore.visibility = View.GONE
         }
         buttonAddSubtask.setOnClickListener {
-            (recyclerViewSubtasks.adapter as SubtaskListAdapter).data.add(Subtask())
+            (recyclerViewSubtasks.adapter as SubtaskListAdapter).data.add(
+                Subtask()
+            )
             (recyclerViewSubtasks.adapter as SubtaskListAdapter).notifyItemInserted((recyclerViewSubtasks.adapter as SubtaskListAdapter).itemCount - 1)
             inputMethodManager.toggleSoftInput(
                 InputMethodManager.SHOW_FORCED,
@@ -340,7 +353,9 @@ class EditFragment(
     }
 
     override fun done(calendar: Calendar) {
-        (recyclerViewReminders.adapter as ReminderListAdapter).data.add(Reminder(calendar))
+        (recyclerViewReminders.adapter as ReminderListAdapter).data.add(
+            Reminder(calendar)
+        )
         (recyclerViewReminders.adapter as ReminderListAdapter).notifyItemInserted(0)
     }
 }

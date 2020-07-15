@@ -1,4 +1,4 @@
-package com.dan.school
+package com.dan.school.fragments
 
 import android.app.Dialog
 import android.app.TimePickerDialog

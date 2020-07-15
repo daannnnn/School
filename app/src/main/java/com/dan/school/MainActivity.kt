@@ -3,6 +3,7 @@ package com.dan.school
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import com.dan.school.fragments.*
 import kotlinx.android.synthetic.main.activity_main.*
 import java.util.*
 
@@ -24,10 +25,12 @@ class MainActivity : AppCompatActivity(),
 
         // Listeners
         floatingActionButton.setOnClickListener {
-            addBottomSheetDialogFragment = AddBottomSheetDialogFragment(
+            addBottomSheetDialogFragment =
+                AddBottomSheetDialogFragment(
                     this,
                     this,
-                    lastSelectedAddCategory)
+                    lastSelectedAddCategory
+                )
             addBottomSheetDialogFragment?.show(
                     supportFragmentManager,
                     "BottomSheet"
@@ -57,7 +60,8 @@ class MainActivity : AppCompatActivity(),
 
                 when (item.itemId) {
                     R.id.settings -> {
-                        val settingsFragment = SettingsFragment(this)
+                        val settingsFragment =
+                            SettingsFragment(this)
                         settingsFragment.show(supportFragmentManager, "settingsFragment")
                     }
                 }
@@ -69,7 +73,8 @@ class MainActivity : AppCompatActivity(),
 
         // Show HomeFragment
         supportFragmentManager.beginTransaction()
-                .add(R.id.frameLayoutBottomNavigation, HomeFragment(this), "home").commit()
+                .add(R.id.frameLayoutBottomNavigation,
+                    HomeFragment(this), "home").commit()
     }
 
     private fun setFragment(tag: String) {
@@ -79,7 +84,8 @@ class MainActivity : AppCompatActivity(),
                         .show(supportFragmentManager.findFragmentByTag("home")!!).commit()
             } else {
                 supportFragmentManager.beginTransaction()
-                        .add(R.id.frameLayoutBottomNavigation, HomeFragment(this), "home").commit()
+                        .add(R.id.frameLayoutBottomNavigation,
+                            HomeFragment(this), "home").commit()
             }
             if (supportFragmentManager.findFragmentByTag("calendar") != null) {
                 supportFragmentManager.beginTransaction()
@@ -96,7 +102,8 @@ class MainActivity : AppCompatActivity(),
                         .show(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
             } else {
                 supportFragmentManager.beginTransaction()
-                        .add(R.id.frameLayoutBottomNavigation, CalendarFragment(), "calendar").commit()
+                        .add(R.id.frameLayoutBottomNavigation,
+                            CalendarFragment(), "calendar").commit()
             }
             if (supportFragmentManager.findFragmentByTag("home") != null) {
                 supportFragmentManager.beginTransaction()
@@ -112,7 +119,8 @@ class MainActivity : AppCompatActivity(),
                         .show(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
             } else {
                 supportFragmentManager.beginTransaction()
-                        .add(R.id.frameLayoutBottomNavigation, AgendaFragment(), "agenda").commit()
+                        .add(R.id.frameLayoutBottomNavigation,
+                            AgendaFragment(), "agenda").commit()
             }
             if (supportFragmentManager.findFragmentByTag("home") != null) {
                 supportFragmentManager.beginTransaction()
@@ -126,7 +134,14 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun goToEditFragment(category: Int, title: String, chipGroupDateSelected: Int, date: Calendar?) {
-        val editFragment = EditFragment(this, this, category, title, chipGroupDateSelected, date)
+        val editFragment = EditFragment(
+            this,
+            this,
+            category,
+            title,
+            chipGroupDateSelected,
+            date
+        )
         editFragment.show(supportFragmentManager, "editFragment")
     }
 

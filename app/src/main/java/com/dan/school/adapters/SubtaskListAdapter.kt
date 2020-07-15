@@ -1,4 +1,4 @@
-package com.dan.school
+package com.dan.school.adapters
 
 import android.content.Context
 import android.text.Editable
@@ -11,6 +11,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.EditText
 import android.widget.ImageButton
 import androidx.recyclerview.widget.RecyclerView
+import com.dan.school.R
+import com.dan.school.models.Subtask
 
 class SubtaskListAdapter(
     private val context: Context,

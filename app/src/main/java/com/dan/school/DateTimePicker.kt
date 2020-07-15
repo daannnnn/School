@@ -6,6 +6,8 @@ import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.FragmentManager
+import com.dan.school.fragments.DatePickerFragment
+import com.dan.school.fragments.TimePickerFragment
 import java.util.*
 
 class DateTimePicker(
@@ -16,7 +18,8 @@ class DateTimePicker(
     val calendar: Calendar = Calendar.getInstance()
 
     fun startGetDateTime() {
-        val datePicker: DialogFragment = DatePickerFragment(this, null)
+        val datePicker: DialogFragment =
+            DatePickerFragment(this, null)
         datePicker.show(childFragmentManager, "date picker")
     }
 
@@ -29,7 +32,8 @@ class DateTimePicker(
         calendar.set(Calendar.MONTH, month)
         calendar.set(Calendar.DAY_OF_MONTH, dayOfMonth)
 
-        val timePicker: DialogFragment = TimePickerFragment(this)
+        val timePicker: DialogFragment =
+            TimePickerFragment(this)
         timePicker.show(childFragmentManager, "time picker")
     }
 

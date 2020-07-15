@@ -1,4 +1,4 @@
-package com.dan.school
+package com.dan.school.fragments
 
 import android.app.DatePickerDialog
 import android.content.Context
@@ -11,6 +11,8 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import com.dan.school.R
+import com.dan.school.School
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
@@ -29,7 +31,12 @@ class AddBottomSheetDialogFragment(
 
     private lateinit var inputMethodManager: InputMethodManager
     private val categoryColors =
-        arrayOf(R.color.homeworkColor, R.color.examColor, R.color.taskColor, R.color.colorPrimary)
+        arrayOf(
+            R.color.homeworkColor,
+            R.color.examColor,
+            R.color.taskColor,
+            R.color.colorPrimary
+        )
     private val categoryChipBackgroundColorStateList = arrayOf(
         R.color.chip_homework_background_state_list,
         R.color.chip_exam_background_state_list,
@@ -117,7 +124,8 @@ class AddBottomSheetDialogFragment(
         chipGroupDate.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.chipPickDate -> {
-                    val datePicker: DialogFragment = DatePickerFragment(this, this)
+                    val datePicker: DialogFragment =
+                        DatePickerFragment(this, this)
                     datePicker.show(childFragmentManager, "date picker")
                 }
                 R.id.chipToday -> {

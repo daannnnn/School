@@ -1,4 +1,4 @@
-package com.dan.school
+package com.dan.school.models
 
 class Subtask(var title: String, var done: Boolean) {
     constructor()

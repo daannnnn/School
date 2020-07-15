@@ -1,4 +1,4 @@
-package com.dan.school
+package com.dan.school.fragments
 
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -6,6 +6,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
+import com.dan.school.adapters.HomeworkExamTaskTabLayoutAdapter
+import com.dan.school.R
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_home.*
 
@@ -24,9 +26,15 @@ class HomeFragment(var selectedTabChangeListener: SelectedTabChangeListener) : F
         super.onViewCreated(view, savedInstanceState)
 
         // colors for each category
-        categoryColors.add(ContextCompat.getColor(requireContext(), R.color.homeworkColor))
-        categoryColors.add(ContextCompat.getColor(requireContext(), R.color.examColor))
-        categoryColors.add(ContextCompat.getColor(requireContext(), R.color.taskColor))
+        categoryColors.add(ContextCompat.getColor(requireContext(),
+            R.color.homeworkColor
+        ))
+        categoryColors.add(ContextCompat.getColor(requireContext(),
+            R.color.examColor
+        ))
+        categoryColors.add(ContextCompat.getColor(requireContext(),
+            R.color.taskColor
+        ))
 
         // [START configure TabLayout and ViewPager]
         val homeworksFragment = HomeworksFragment()
@@ -43,7 +51,11 @@ class HomeFragment(var selectedTabChangeListener: SelectedTabChangeListener) : F
         mListFragmentTitles.add(getString(R.string.exams))
         mListFragmentTitles.add(getString(R.string.tasks))
 
-        val adapter = HomeworkExamTaskTabLayoutAdapter(mListFragments, mListFragmentTitles, childFragmentManager)
+        val adapter = HomeworkExamTaskTabLayoutAdapter(
+            mListFragments,
+            mListFragmentTitles,
+            childFragmentManager
+        )
 
         viewPager.adapter = adapter
         tabLayout.setupWithViewPager(viewPager)
