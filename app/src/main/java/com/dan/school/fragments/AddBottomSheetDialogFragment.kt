@@ -12,6 +12,7 @@ import android.widget.DatePicker
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.DiffUtil
 import com.dan.school.DataViewModel
 import com.dan.school.R
 import com.dan.school.School
@@ -20,15 +21,7 @@ import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
-import kotlinx.android.synthetic.main.fragment_edit.*
 import kotlinx.android.synthetic.main.layout_add_bottom_sheet.*
-import kotlinx.android.synthetic.main.layout_add_bottom_sheet.buttonCheck
-import kotlinx.android.synthetic.main.layout_add_bottom_sheet.chipGroupDate
-import kotlinx.android.synthetic.main.layout_add_bottom_sheet.chipPickDate
-import kotlinx.android.synthetic.main.layout_add_bottom_sheet.chipToday
-import kotlinx.android.synthetic.main.layout_add_bottom_sheet.chipTomorrow
-import kotlinx.android.synthetic.main.layout_add_bottom_sheet.editTextTitle
-import kotlinx.android.synthetic.main.layout_add_bottom_sheet.textViewDatePicked
 import java.text.SimpleDateFormat
 import java.util.*
 

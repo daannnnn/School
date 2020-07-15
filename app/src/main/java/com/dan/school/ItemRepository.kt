@@ -5,8 +5,11 @@ import com.dan.school.models.Item
 
 class ItemRepository(private val itemDao: ItemDao) {
 
-    val allHomeworks: LiveData<List<Item>> = itemDao.getAllDataByCategory(School.HOMEWORK)
+    val allHomeworks: LiveData<List<Item>> = itemDao.getAllUndoneDataByCategory(School.HOMEWORK)
 
+    fun setDone(id: Int, done: Boolean) {
+        itemDao.setDone(id, done)
+    }
     fun insert(item: Item) {
         itemDao.insert(item)
     }

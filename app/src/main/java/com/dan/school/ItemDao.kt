@@ -16,8 +16,11 @@ interface ItemDao {
     @Query("SELECT * FROM items WHERE uid IN (:userIds)")
     fun loadAllByIds(userIds: IntArray): List<Item>
 
-    @Query("SELECT * FROM items WHERE category=:category")
-    fun getAllDataByCategory(category: Int): LiveData<List<Item>>
+    @Query("SELECT * FROM items WHERE category=:category AND done=0")
+    fun getAllUndoneDataByCategory(category: Int): LiveData<List<Item>>
+
+    @Query("UPDATE items SET done = :done WHERE uid=:id")
+    fun setDone(id: Int, done: Boolean)
 
     @Insert
     fun insert(user: Item)

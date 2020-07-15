@@ -20,6 +20,10 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         allHomeworks = itemRepository.allHomeworks
     }
 
+    fun setDone(id: Int, done: Boolean) = viewModelScope.launch(Dispatchers.IO) {
+        itemRepository.setDone(id, done)
+    }
+
     fun insert(item: Item) = viewModelScope.launch(Dispatchers.IO) {
         itemRepository.insert(item)
     }

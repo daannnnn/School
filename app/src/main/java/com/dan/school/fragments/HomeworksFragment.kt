@@ -13,7 +13,7 @@ import com.dan.school.R
 import com.dan.school.adapters.HomeworkListAdapter
 import kotlinx.android.synthetic.main.fragment_homeworks.*
 
-class HomeworksFragment : Fragment() {
+class HomeworksFragment : Fragment(), HomeworkListAdapter.DoneListener {
 
     private lateinit var dataViewModel: DataViewModel
     private lateinit var homeworkListAdapter: HomeworkListAdapter
@@ -33,12 +33,16 @@ class HomeworksFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        homeworkListAdapter = HomeworkListAdapter(requireContext())
+        homeworkListAdapter = HomeworkListAdapter(requireContext(), this)
         recyclerViewHomework.layoutManager = LinearLayoutManager(context)
         recyclerViewHomework.adapter = homeworkListAdapter
 
         dataViewModel.allHomeworks.observe(viewLifecycleOwner, Observer { homeworks ->
-            homeworks?.let { homeworkListAdapter.setHomeworks(it) }
+            homeworks?.let { homeworkListAdapter.submitList(it) }
         })
+    }
+
+    override fun setDone(id: Int, done: Boolean) {
+        dataViewModel.setDone(id, done)
     }
 }
