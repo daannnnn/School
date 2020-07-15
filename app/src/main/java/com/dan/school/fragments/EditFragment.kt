@@ -210,6 +210,7 @@ class EditFragment(
                 notes = editTextNotes.text.toString()
             )
             dataViewModel.insert(item)
+            dismiss()
         }
 
         // [START] initialize
