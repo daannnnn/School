@@ -12,7 +12,8 @@ import com.dan.school.models.Subtask
 
 class SubtasksShowListAdapter(
     private val context: Context,
-    private val subtasks: ArrayList<Subtask>
+    private val subtasks: ArrayList<Subtask>,
+    private val subtaskChangedListener: SubtaskChangedListener
 ) :
     RecyclerView.Adapter<SubtasksShowListAdapter.SubtasksShowViewHolder>() {
 
@@ -38,5 +39,21 @@ class SubtasksShowListAdapter(
         } else {
             holder.buttonCheck.setImageResource(R.drawable.ic_homework_unchecked)
         }
+        holder.buttonCheck.setOnClickListener {
+            val subtask = subtasks[holder.adapterPosition]
+            if (subtask.done) {
+                holder.buttonCheck.setImageResource(R.drawable.ic_homework_unchecked)
+                subtasks[holder.adapterPosition].done = false
+                subtaskChangedListener.subtaskChanged()
+            } else {
+                holder.buttonCheck.setImageResource(R.drawable.ic_homework_checked)
+                subtasks[holder.adapterPosition].done = true
+                subtaskChangedListener.subtaskChanged()
+            }
+        }
+    }
+
+    interface SubtaskChangedListener {
+        fun subtaskChanged()
     }
 }

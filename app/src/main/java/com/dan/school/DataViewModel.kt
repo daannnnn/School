@@ -5,6 +5,7 @@ import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.dan.school.models.Item
+import com.dan.school.models.Subtask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 
@@ -24,7 +25,15 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         itemRepository.setDone(id, done)
     }
 
+    fun setItemSubtasks(id: Int, subtasks: ArrayList<Subtask>) = viewModelScope.launch(Dispatchers.IO) {
+        itemRepository.setItemSubtasks(id, subtasks)
+    }
+
     fun insert(item: Item) = viewModelScope.launch(Dispatchers.IO) {
+        itemRepository.insert(item)
+    }
+
+    fun updateItemSubtasks(item: Item) = viewModelScope.launch(Dispatchers.IO) {
         itemRepository.insert(item)
     }
 

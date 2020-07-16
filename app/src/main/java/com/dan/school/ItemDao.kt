@@ -6,6 +6,7 @@ import androidx.room.Delete
 import androidx.room.Insert
 import androidx.room.Query
 import com.dan.school.models.Item
+import com.dan.school.models.Subtask
 
 
 @Dao
@@ -21,6 +22,9 @@ interface ItemDao {
 
     @Query("UPDATE items SET done = :done WHERE uid=:id")
     fun setDone(id: Int, done: Boolean)
+
+    @Query("UPDATE items SET subtasks = :subtasks WHERE uid=:id")
+    fun setItemSubtasks(id: Int, subtasks: ArrayList<Subtask>)
 
     @Insert
     fun insert(user: Item)

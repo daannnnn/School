@@ -8,21 +8,24 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.dan.school.DataViewModel
 import com.dan.school.R
 import com.dan.school.adapters.SubtasksShowListAdapter
 import com.dan.school.models.Subtask
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import kotlinx.android.synthetic.main.layout_subtasks_bottom_sheet.*
 
-
 class SubtasksBottomSheetDialogFragment(
     private val subtasks: ArrayList<Subtask>,
-    private val itemTitle: String
-) : BottomSheetDialogFragment() {
+    private val itemTitle: String,
+    private val itemId: Int
+) : BottomSheetDialogFragment(), SubtasksShowListAdapter.SubtaskChangedListener {
 
     var float4dp = 0f
+    private lateinit var dataViewModel: DataViewModel
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -38,13 +41,17 @@ class SubtasksBottomSheetDialogFragment(
             TypedValue.COMPLEX_UNIT_DIP, 4f,
             requireContext().resources.displayMetrics
         )
+        dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         recyclerViewSubtasks.layoutManager = LinearLayoutManager(context)
-        recyclerViewSubtasks.adapter = SubtasksShowListAdapter(requireContext(), subtasks)
+        recyclerViewSubtasks.adapter = SubtasksShowListAdapter(
+            requireContext(), subtasks,
+            this
+        )
         textViewItemTitle.text = itemTitle
 
         dialog?.setOnShowListener {
@@ -63,5 +70,9 @@ class SubtasksBottomSheetDialogFragment(
         val stateListAnimator = StateListAnimator()
         stateListAnimator.addState(IntArray(0), ObjectAnimator.ofFloat(view, "elevation", 0f))
         appBar.stateListAnimator = stateListAnimator
+    }
+
+    override fun subtaskChanged() {
+        dataViewModel.setItemSubtasks(itemId, subtasks)
     }
 }

@@ -48,7 +48,7 @@ class HomeworksFragment : Fragment(), HomeworkListAdapter.DoneListener,
         dataViewModel.setDone(id, done)
     }
 
-    override fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String) {
-        SubtasksBottomSheetDialogFragment(subtasks, itemTitle).show(childFragmentManager, "subtasksBottomSheet")
+    override fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: Int) {
+        SubtasksBottomSheetDialogFragment(subtasks, itemTitle, id).show(childFragmentManager, "subtasksBottomSheet")
     }
 }
