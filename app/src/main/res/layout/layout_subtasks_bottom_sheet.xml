@@ -11,24 +11,23 @@
         android:layout_height="?attr/actionBarSize"
         android:background="@android:color/white">
 
-        <RelativeLayout
+        <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white">
+            android:background="@android:color/white"
+            android:gravity="center">
 
             <TextView
                 android:id="@+id/textViewItemTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_centerInParent="true"
-                android:layout_centerVertical="true"
                 android:layout_marginStart="24dp"
                 android:fontFamily="@font/cabin_bold"
                 android:text="Test"
                 android:textColor="@android:color/black"
                 android:textSize="20sp" />
 
-        </RelativeLayout>
+        </LinearLayout>
 
     </com.google.android.material.appbar.AppBarLayout>
 
