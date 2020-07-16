@@ -1,6 +1,6 @@
 package com.dan.school.models
 
-class Reminder(val dateTimeString: String) {
+data class Reminder(val dateTimeString: String) {
     fun getTimeString(): String {
         return dateTimeString.split(" - ")[1]
     }

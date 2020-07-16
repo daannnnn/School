@@ -1,6 +1,7 @@
 package com.dan.school.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -75,7 +76,13 @@ class HomeworkListAdapter(
                 override fun areContentsTheSame(
                     oldItem: Item, newItem: Item
                 ): Boolean {
-                    return oldItem == newItem
+                    return oldItem.category == newItem.category &&
+                            oldItem.done == newItem.done &&
+                            oldItem.title == newItem.title &&
+                            oldItem.date == newItem.date &&
+                            oldItem.reminders == newItem.reminders &&
+                            oldItem.subtasks == newItem.subtasks &&
+                            oldItem.notes == newItem.notes
                 }
             }
     }
