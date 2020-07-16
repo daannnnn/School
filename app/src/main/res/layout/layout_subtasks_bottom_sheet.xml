@@ -21,7 +21,6 @@
                 android:id="@+id/textViewItemTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
                 android:fontFamily="@font/cabin_bold"
                 android:text="Test"
                 android:textColor="@android:color/black"
