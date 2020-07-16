@@ -48,11 +48,11 @@ class HomeworkListAdapter(
         }
         holder.buttonCheckHomework.setOnClickListener {
             holder.buttonCheckHomework.setImageResource(R.drawable.ic_homework_checked)
-            doneListener.setDone(getItem(holder.adapterPosition).uid, true)
+            doneListener.setDone(getItem(holder.adapterPosition).id, true)
         }
         holder.buttonSubtask.setOnClickListener {
             val item = getItem(holder.adapterPosition)
-            showSubtasksListener.showSubtasks(item.subtasks, item.title, item.uid)
+            showSubtasksListener.showSubtasks(item.subtasks, item.title, item.id)
         }
     }
 
@@ -70,7 +70,7 @@ class HomeworkListAdapter(
                 override fun areItemsTheSame(
                     oldItem: Item, newItem: Item
                 ): Boolean {
-                    return oldItem.uid == newItem.uid
+                    return oldItem.id == newItem.id
                 }
 
                 override fun areContentsTheSame(
