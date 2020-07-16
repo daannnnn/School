@@ -11,11 +11,14 @@ import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dan.school.R
+import com.dan.school.fragments.SubtasksBottomSheetDialogFragment
 import com.dan.school.models.Item
+import com.dan.school.models.Subtask
 
 class HomeworkListAdapter(
     private val context: Context,
-    private val doneListener: DoneListener
+    private val doneListener: DoneListener,
+    private val showSubtasksListener: ShowSubtasksListener
 ) :
     ListAdapter<Item, HomeworkListAdapter.HomeworkViewHolder>(DIFF_CALLBACK) {
 
@@ -47,12 +50,16 @@ class HomeworkListAdapter(
             doneListener.setDone(getItem(holder.adapterPosition).uid, true)
         }
         holder.buttonSubtask.setOnClickListener {
-            Toast.makeText(context, "Show Subtasks", Toast.LENGTH_LONG).show()
+            showSubtasksListener.showSubtasks(getItem(holder.adapterPosition).subtasks)
         }
     }
 
     interface DoneListener {
         fun setDone(id: Int, done: Boolean)
+    }
+
+    interface ShowSubtasksListener {
+        fun showSubtasks(subtasks: ArrayList<Subtask>)
     }
 
     companion object {

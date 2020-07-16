@@ -11,9 +11,11 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.DataViewModel
 import com.dan.school.R
 import com.dan.school.adapters.HomeworkListAdapter
+import com.dan.school.models.Subtask
 import kotlinx.android.synthetic.main.fragment_homeworks.*
 
-class HomeworksFragment : Fragment(), HomeworkListAdapter.DoneListener {
+class HomeworksFragment : Fragment(), HomeworkListAdapter.DoneListener,
+    HomeworkListAdapter.ShowSubtasksListener {
 
     private lateinit var dataViewModel: DataViewModel
     private lateinit var homeworkListAdapter: HomeworkListAdapter
@@ -33,7 +35,7 @@ class HomeworksFragment : Fragment(), HomeworkListAdapter.DoneListener {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        homeworkListAdapter = HomeworkListAdapter(requireContext(), this)
+        homeworkListAdapter = HomeworkListAdapter(requireContext(), this, this)
         recyclerViewHomework.layoutManager = LinearLayoutManager(context)
         recyclerViewHomework.adapter = homeworkListAdapter
 
@@ -44,5 +46,9 @@ class HomeworksFragment : Fragment(), HomeworkListAdapter.DoneListener {
 
     override fun setDone(id: Int, done: Boolean) {
         dataViewModel.setDone(id, done)
+    }
+
+    override fun showSubtasks(subtasks: ArrayList<Subtask>) {
+        SubtasksBottomSheetDialogFragment(subtasks).show(childFragmentManager, "subtasksBottomSheet")
     }
 }
