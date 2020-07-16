@@ -9,12 +9,11 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/white">
+        android:background="@drawable/appbar_rounded_topleft_topright_corners">
 
         <LinearLayout
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white"
             android:gravity="center">
 
             <TextView
