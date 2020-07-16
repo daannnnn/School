@@ -50,7 +50,8 @@ class HomeworkListAdapter(
             doneListener.setDone(getItem(holder.adapterPosition).uid, true)
         }
         holder.buttonSubtask.setOnClickListener {
-            showSubtasksListener.showSubtasks(getItem(holder.adapterPosition).subtasks)
+            val item = getItem(holder.adapterPosition)
+            showSubtasksListener.showSubtasks(item.subtasks, item.title)
         }
     }
 
@@ -59,7 +60,7 @@ class HomeworkListAdapter(
     }
 
     interface ShowSubtasksListener {
-        fun showSubtasks(subtasks: ArrayList<Subtask>)
+        fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String)
     }
 
     companion object {

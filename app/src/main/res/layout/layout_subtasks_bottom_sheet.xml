@@ -28,16 +28,6 @@
                 android:textColor="@android:color/black"
                 android:textSize="20sp" />
 
-            <Button
-                android:id="@+id/buttonEdit"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true"
-                android:layout_centerVertical="true"
-                android:text="@string/edit"
-                android:textColor="@color/homeworkColor" />
-
         </RelativeLayout>
 
     </com.google.android.material.appbar.AppBarLayout>

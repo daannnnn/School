@@ -18,7 +18,8 @@ import kotlinx.android.synthetic.main.layout_subtasks_bottom_sheet.*
 
 
 class SubtasksBottomSheetDialogFragment(
-    private val subtasks: ArrayList<Subtask>
+    private val subtasks: ArrayList<Subtask>,
+    private val itemTitle: String
 ) : BottomSheetDialogFragment() {
 
     var float4dp = 0f
@@ -44,6 +45,7 @@ class SubtasksBottomSheetDialogFragment(
 
         recyclerViewSubtasks.layoutManager = LinearLayoutManager(context)
         recyclerViewSubtasks.adapter = SubtasksShowListAdapter(requireContext(), subtasks)
+        textViewItemTitle.text = itemTitle
 
         dialog?.setOnShowListener {
             recyclerViewSubtasks.addOnScrollListener(object : RecyclerView.OnScrollListener() {
