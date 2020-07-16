@@ -19,7 +19,8 @@ class SubtaskListAdapter(
     private val setFocusListener: SetFocusListener,
     var iconChecked: Int,
     var iconUnchecked: Int,
-    val data: ArrayList<Subtask>
+    val data: ArrayList<Subtask>,
+    private var getFocus: Boolean
 ) : RecyclerView.Adapter<SubtaskListAdapter.SubtaskViewHolder>() {
 
     private var inputMethodManager: InputMethodManager =
@@ -107,7 +108,11 @@ class SubtaskListAdapter(
 
         if (holder.adapterPosition == itemCount - 1) {
             holder.editTextSubtaskTitle.post(Runnable {
-                holder.editTextSubtaskTitle.requestFocus()
+                if (getFocus) {
+                    holder.editTextSubtaskTitle.requestFocus()
+                } else {
+                    getFocus = true
+                }
             })
         }
     }

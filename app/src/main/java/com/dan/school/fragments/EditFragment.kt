@@ -5,7 +5,6 @@ import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.app.DatePickerDialog
 import android.content.Context
-import android.os.AsyncTask
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -19,7 +18,10 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
-import com.dan.school.*
+import com.dan.school.DataViewModel
+import com.dan.school.DateTimePicker
+import com.dan.school.R
+import com.dan.school.School
 import com.dan.school.adapters.CategoryViewPagerAdapter
 import com.dan.school.adapters.ReminderListAdapter
 import com.dan.school.adapters.SubtaskListAdapter
@@ -34,11 +36,15 @@ import kotlin.collections.ArrayList
 
 class EditFragment(
     private val categoryChangeListener: CategoryChangeListener,
-    private val listener: DismissBottomSheet,
+    private val dismissBottomSheetListener: DismissBottomSheetListener,
     private var category: Int = School.HOMEWORK,
     private val title: String = "",
+    private val subtasks: ArrayList<Subtask> = ArrayList(),
+    private val reminders: ArrayList<Reminder> = ArrayList(),
+    private val notes: String = "",
     private var chipGroupSelected: Int = School.TODAY,
-    private var selectedDate: Calendar?
+    private var selectedDate: Calendar?,
+    private val isEdit: Boolean = false
 ) : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     DateTimePicker.DoneListener, DatePickerDialog.OnDateSetListener,
     DatePickerFragment.OnCancelListener {
@@ -131,7 +137,7 @@ class EditFragment(
         super.onViewCreated(view, savedInstanceState)
 
         dialog?.setOnShowListener {
-            listener.dismissBottomSheet()
+            dismissBottomSheetListener.dismissBottomSheet()
         }
 
         val viewPagerAdapter = InfinitePagerAdapter(
@@ -238,13 +244,21 @@ class EditFragment(
             }
         }
 
+        if (category == School.HOMEWORK) {
+            changeColors(category)
+        } else {
+            viewPagerCategory.currentItem += category
+        }
+
         // [START] configure subtasks list
+        editTextNotes.setText(notes)
         subtaskListAdapter = SubtaskListAdapter(
             requireContext(),
             this,
             categoryCheckedIcons[category],
             categoryUncheckedIcons[category],
-            ArrayList()
+            subtasks,
+            !isEdit
         )
         recyclerViewSubtasks.layoutManager = LinearLayoutManager(context)
         recyclerViewSubtasks.adapter = subtaskListAdapter
@@ -253,19 +267,16 @@ class EditFragment(
         // [START] configure reminders list
         reminderListAdapter = ReminderListAdapter(
             requireContext(),
-            ArrayList()
+            reminders
         )
         recyclerViewReminders.layoutManager = LinearLayoutManager(context)
         recyclerViewReminders.adapter = reminderListAdapter
         // [END] configure reminders list
 
-        if (category == School.HOMEWORK) {
-            changeColors(category)
-        } else {
-            viewPagerCategory.currentItem += category
-        }
         constraintLayoutMore.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
-        editTextTitle.requestFocus()
+        if (!isEdit) {
+            editTextTitle.requestFocus()
+        }
         buttonAddReminder.isEnabled = switchReminder.isChecked
         // [END] initialize
     }
@@ -344,29 +355,31 @@ class EditFragment(
     }
 
     private fun changeSubtaskListColor(newCategory: Int) {
-        subtaskListAdapter.iconChecked = categoryCheckedIcons[newCategory]
-        subtaskListAdapter.iconUnchecked = categoryUncheckedIcons[newCategory]
-        for (i in 0 until subtaskListAdapter.itemCount) {
-            val v = recyclerViewSubtasks.getChildAt(i)
-            val buttonCheck = v.findViewById<ImageButton>(R.id.buttonCheck)
-            if (!subtaskListAdapter.data[i].done) {
-                buttonCheck.setImageResource(categoryUncheckedIcons[newCategory])
-            } else {
-                buttonCheck.setImageResource(categoryCheckedIcons[newCategory])
-            }
-            buttonCheck.setOnClickListener {
-                if (subtaskListAdapter.data[i].done) {
+        if (this::subtaskListAdapter.isInitialized) {
+            subtaskListAdapter.iconChecked = categoryCheckedIcons[newCategory]
+            subtaskListAdapter.iconUnchecked = categoryUncheckedIcons[newCategory]
+            for (i in 0 until subtaskListAdapter.itemCount) {
+                val v = recyclerViewSubtasks.getChildAt(i)
+                val buttonCheck = v.findViewById<ImageButton>(R.id.buttonCheck)
+                if (!subtaskListAdapter.data[i].done) {
                     buttonCheck.setImageResource(categoryUncheckedIcons[newCategory])
-                    subtaskListAdapter.data[i].done = false
                 } else {
                     buttonCheck.setImageResource(categoryCheckedIcons[newCategory])
-                    subtaskListAdapter.data[i].done = true
+                }
+                buttonCheck.setOnClickListener {
+                    if (subtaskListAdapter.data[i].done) {
+                        buttonCheck.setImageResource(categoryUncheckedIcons[newCategory])
+                        subtaskListAdapter.data[i].done = false
+                    } else {
+                        buttonCheck.setImageResource(categoryCheckedIcons[newCategory])
+                        subtaskListAdapter.data[i].done = true
+                    }
                 }
             }
         }
     }
 
-    interface DismissBottomSheet {
+    interface DismissBottomSheetListener {
         fun dismissBottomSheet()
     }
 

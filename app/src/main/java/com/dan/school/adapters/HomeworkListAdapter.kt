@@ -19,7 +19,8 @@ import com.dan.school.models.Subtask
 class HomeworkListAdapter(
     private val context: Context,
     private val doneListener: DoneListener,
-    private val showSubtasksListener: ShowSubtasksListener
+    private val showSubtasksListener: ShowSubtasksListener,
+    private val itemClickListener: ItemClickListener
 ) :
     ListAdapter<Item, HomeworkListAdapter.HomeworkViewHolder>(DIFF_CALLBACK) {
 
@@ -36,6 +37,9 @@ class HomeworkListAdapter(
 
     override fun onBindViewHolder(holder: HomeworkViewHolder, position: Int) {
         holder.textViewItem.text = getItem(position).title
+        holder.itemView.setOnClickListener {
+            itemClickListener.itemClicked(getItem(holder.adapterPosition))
+        }
         if (getItem(holder.adapterPosition).done) {
             holder.buttonCheckHomework.setImageResource(R.drawable.ic_homework_checked)
         } else {
@@ -62,6 +66,10 @@ class HomeworkListAdapter(
 
     interface ShowSubtasksListener {
         fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: Int)
+    }
+
+    interface ItemClickListener {
+        fun itemClicked(item: Item)
     }
 
     companion object {

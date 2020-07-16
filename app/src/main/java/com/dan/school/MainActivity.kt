@@ -4,15 +4,20 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.dan.school.fragments.*
+import com.dan.school.models.Item
+import com.dan.school.models.Reminder
+import com.dan.school.models.Subtask
 import kotlinx.android.synthetic.main.activity_main.*
+import java.text.SimpleDateFormat
 import java.util.*
 
 class MainActivity : AppCompatActivity(),
-        AddBottomSheetDialogFragment.GoToEditFragment,
-        EditFragment.DismissBottomSheet,
-        SettingsFragment.OnDismissListener,
-        AddBottomSheetDialogFragment.SelectedCategoryChangeListener,
-        HomeFragment.SelectedTabChangeListener, EditFragment.CategoryChangeListener {
+    AddBottomSheetDialogFragment.GoToEditFragment,
+    EditFragment.DismissBottomSheetListener,
+    SettingsFragment.OnDismissListener,
+    AddBottomSheetDialogFragment.SelectedCategoryChangeListener,
+    HomeFragment.SelectedTabChangeListener, EditFragment.CategoryChangeListener,
+    HomeFragment.ItemClickListener {
 
     private var addBottomSheetDialogFragment: AddBottomSheetDialogFragment? = null
     private var lastSelectedAddCategory = School.HOMEWORK
@@ -32,8 +37,8 @@ class MainActivity : AppCompatActivity(),
                     lastSelectedAddCategory
                 )
             addBottomSheetDialogFragment?.show(
-                    supportFragmentManager,
-                    "BottomSheet"
+                supportFragmentManager,
+                "BottomSheet"
             )
         }
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
@@ -73,76 +78,147 @@ class MainActivity : AppCompatActivity(),
 
         // Show HomeFragment
         supportFragmentManager.beginTransaction()
-                .add(R.id.frameLayoutBottomNavigation,
-                    HomeFragment(this), "home").commit()
+            .add(
+                R.id.frameLayoutBottomNavigation,
+                HomeFragment(this, this), "home"
+            ).commit()
     }
 
     private fun setFragment(tag: String) {
         if (tag == "home") {
             if (supportFragmentManager.findFragmentByTag("home") != null) {
                 supportFragmentManager.beginTransaction()
-                        .show(supportFragmentManager.findFragmentByTag("home")!!).commit()
+                    .show(supportFragmentManager.findFragmentByTag("home")!!).commit()
             } else {
                 supportFragmentManager.beginTransaction()
-                        .add(R.id.frameLayoutBottomNavigation,
-                            HomeFragment(this), "home").commit()
+                    .add(
+                        R.id.frameLayoutBottomNavigation,
+                        HomeFragment(this, this), "home"
+                    ).commit()
             }
             if (supportFragmentManager.findFragmentByTag("calendar") != null) {
                 supportFragmentManager.beginTransaction()
-                        .hide(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
+                    .hide(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
             }
             if (supportFragmentManager.findFragmentByTag("agenda") != null) {
                 supportFragmentManager.beginTransaction()
-                        .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
+                    .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
             }
-            lastSelectedAddCategory = (supportFragmentManager.findFragmentByTag("home") as HomeFragment).getSelectedTabPosition()
+            lastSelectedAddCategory =
+                (supportFragmentManager.findFragmentByTag("home") as HomeFragment).getSelectedTabPosition()
         } else if (tag == "calendar") {
             if (supportFragmentManager.findFragmentByTag("calendar") != null) {
                 supportFragmentManager.beginTransaction()
-                        .show(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
+                    .show(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
             } else {
                 supportFragmentManager.beginTransaction()
-                        .add(R.id.frameLayoutBottomNavigation,
-                            CalendarFragment(), "calendar").commit()
+                    .add(
+                        R.id.frameLayoutBottomNavigation,
+                        CalendarFragment(), "calendar"
+                    ).commit()
             }
             if (supportFragmentManager.findFragmentByTag("home") != null) {
                 supportFragmentManager.beginTransaction()
-                        .hide(supportFragmentManager.findFragmentByTag("home")!!).commit()
+                    .hide(supportFragmentManager.findFragmentByTag("home")!!).commit()
             }
             if (supportFragmentManager.findFragmentByTag("agenda") != null) {
                 supportFragmentManager.beginTransaction()
-                        .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
+                    .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
             }
         } else if (tag == "agenda") {
             if (supportFragmentManager.findFragmentByTag("agenda") != null) {
                 supportFragmentManager.beginTransaction()
-                        .show(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
+                    .show(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
             } else {
                 supportFragmentManager.beginTransaction()
-                        .add(R.id.frameLayoutBottomNavigation,
-                            AgendaFragment(), "agenda").commit()
+                    .add(
+                        R.id.frameLayoutBottomNavigation,
+                        AgendaFragment(), "agenda"
+                    ).commit()
             }
             if (supportFragmentManager.findFragmentByTag("home") != null) {
                 supportFragmentManager.beginTransaction()
-                        .hide(supportFragmentManager.findFragmentByTag("home")!!).commit()
+                    .hide(supportFragmentManager.findFragmentByTag("home")!!).commit()
             }
             if (supportFragmentManager.findFragmentByTag("calendar") != null) {
                 supportFragmentManager.beginTransaction()
-                        .hide(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
+                    .hide(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
             }
         }
     }
 
-    override fun goToEditFragment(category: Int, title: String, chipGroupDateSelected: Int, date: Calendar?) {
+//    override fun goToEditFragment(
+//        category: Int,
+//        title: String,
+//        subtasks: ArrayList<Subtask>?,
+//        reminders: ArrayList<Reminder>?,
+//        notes: String?,
+//        chipGroupDateSelected: Int,
+//        date: Calendar?
+//    ) {
+//        val editFragment = EditFragment(
+//            this,
+//            this,
+//            category,
+//            title,
+//            chipGroupDateSelected,
+//            date
+//        )
+//        editFragment.show(supportFragmentManager, "editFragment")
+//    }
+
+    private fun showEditFragment(
+        category: Int,
+        title: String,
+        subtasks: ArrayList<Subtask>,
+        reminders: ArrayList<Reminder>,
+        notes: String,
+        date: Calendar?
+    ) {
         val editFragment = EditFragment(
-            this,
-            this,
-            category,
-            title,
-            chipGroupDateSelected,
-            date
+            categoryChangeListener = this,
+            dismissBottomSheetListener = this,
+            category = category,
+            title = title,
+            subtasks = subtasks,
+            reminders = reminders,
+            notes = notes,
+            chipGroupSelected = School.PICK_DATE,
+            selectedDate = date,
+            isEdit = true
         )
         editFragment.show(supportFragmentManager, "editFragment")
+    }
+
+    private fun showEditFragment(
+        category: Int,
+        title: String,
+        chipGroupDateSelected: Int,
+        date: Calendar?
+    ) {
+        val editFragment = EditFragment(
+            categoryChangeListener = this,
+            dismissBottomSheetListener = this,
+            category = category,
+            title = title,
+            chipGroupSelected = chipGroupDateSelected,
+            selectedDate = date
+        )
+        editFragment.show(supportFragmentManager, "editFragment")
+    }
+
+    override fun goToEditFragment(
+        category: Int,
+        title: String,
+        chipGroupDateSelected: Int,
+        date: Calendar?
+    ) {
+        showEditFragment(
+            category = category,
+            title = title,
+            chipGroupDateSelected = chipGroupDateSelected,
+            date = date
+        )
     }
 
     override fun dismissBottomSheet() {
@@ -159,5 +235,18 @@ class MainActivity : AppCompatActivity(),
 
     override fun selectedTabChanged(category: Int) {
         lastSelectedAddCategory = category
+    }
+
+    override fun itemClicked(item: Item) {
+        val calendar = Calendar.getInstance()
+        calendar.time = SimpleDateFormat(School.dateFormat, Locale.getDefault()).parse(item.date)!!
+        showEditFragment(
+            item.category,
+            item.title,
+            item.subtasks,
+            item.reminders,
+            item.notes,
+            calendar
+        )
     }
 }
