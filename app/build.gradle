@@ -42,7 +42,7 @@ dependencies {
     implementation 'com.google.code.gson:gson:2.8.5'
     implementation 'androidx.activity:activity-ktx:1.1.0'
     implementation 'androidx.fragment:fragment-ktx:1.2.5'
-    implementation 'com.github.sundeepk:compact-calendar-view:3.0.0'
+    implementation 'com.github.prolificinteractive:material-calendarview:2.0.0'
     kapt 'androidx.room:room-compiler:2.2.5'
     testImplementation 'junit:junit:4.12'
     androidTestImplementation 'androidx.test.ext:junit:1.1.1'
