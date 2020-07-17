@@ -33,6 +33,10 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         itemRepository.insert(item)
     }
 
+    fun update(item: Item) = viewModelScope.launch(Dispatchers.IO) {
+        itemRepository.update(item)
+    }
+
     fun updateItemSubtasks(item: Item) = viewModelScope.launch(Dispatchers.IO) {
         itemRepository.insert(item)
     }

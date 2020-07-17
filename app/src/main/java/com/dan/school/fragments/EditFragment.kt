@@ -44,7 +44,8 @@ class EditFragment(
     private val notes: String = "",
     private var chipGroupSelected: Int = School.TODAY,
     private var selectedDate: Calendar?,
-    private val isEdit: Boolean = false
+    private val isEdit: Boolean = false,
+    private val itemId: Int? = null
 ) : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     DateTimePicker.DoneListener, DatePickerDialog.OnDateSetListener,
     DatePickerFragment.OnCancelListener {
@@ -212,15 +213,30 @@ class EditFragment(
                 } else {
                     ArrayList()
                 }
-            val item = Item(
-                category = category,
-                title = editTextTitle.text.toString(),
-                date = dateFormat.format(selectedDate!!.time),
-                subtasks = subtaskListAdapter.data,
-                reminders = remindersList,
-                notes = editTextNotes.text.toString()
-            )
-            dataViewModel.insert(item)
+            if (isEdit) {
+                if (itemId != null) {
+                    val item = Item(
+                        id = itemId,
+                        category = category,
+                        title = editTextTitle.text.toString(),
+                        date = dateFormat.format(selectedDate!!.time),
+                        subtasks = subtaskListAdapter.data,
+                        reminders = remindersList,
+                        notes = editTextNotes.text.toString()
+                    )
+                    dataViewModel.update(item)
+                }
+            } else {
+                val item = Item(
+                    category = category,
+                    title = editTextTitle.text.toString(),
+                    date = dateFormat.format(selectedDate!!.time),
+                    subtasks = subtaskListAdapter.data,
+                    reminders = remindersList,
+                    notes = editTextNotes.text.toString()
+                )
+                dataViewModel.insert(item)
+            }
             dismiss()
         }
 

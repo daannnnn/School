@@ -173,7 +173,8 @@ class MainActivity : AppCompatActivity(),
         subtasks: ArrayList<Subtask>,
         reminders: ArrayList<Reminder>,
         notes: String,
-        date: Calendar?
+        date: Calendar?,
+        itemId: Int
     ) {
         val editFragment = EditFragment(
             categoryChangeListener = this,
@@ -185,7 +186,8 @@ class MainActivity : AppCompatActivity(),
             notes = notes,
             chipGroupSelected = School.PICK_DATE,
             selectedDate = date,
-            isEdit = true
+            isEdit = true,
+            itemId = itemId
         )
         editFragment.show(supportFragmentManager, "editFragment")
     }
@@ -246,7 +248,8 @@ class MainActivity : AppCompatActivity(),
             item.subtasks,
             item.reminders,
             item.notes,
-            calendar
+            calendar,
+            item.id
         )
     }
 }

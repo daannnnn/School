@@ -1,10 +1,7 @@
 package com.dan.school
 
 import androidx.lifecycle.LiveData
-import androidx.room.Dao
-import androidx.room.Delete
-import androidx.room.Insert
-import androidx.room.Query
+import androidx.room.*
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 
@@ -24,8 +21,11 @@ interface ItemDao {
     fun setItemSubtasks(id: Int, subtasks: ArrayList<Subtask>)
 
     @Insert
-    fun insert(user: Item)
+    fun insert(item: Item)
+
+    @Update
+    fun update(item: Item)
 
     @Delete
-    fun delete(user: Item)
+    fun delete(item: Item)
 }

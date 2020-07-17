@@ -17,6 +17,9 @@ class ItemRepository(private val itemDao: ItemDao) {
     fun insert(item: Item) {
         itemDao.insert(item)
     }
+    fun update(item: Item) {
+        itemDao.update(item)
+    }
     fun delete(item: Item) {
         itemDao.delete(item)
     }
