@@ -206,12 +206,18 @@ class EditFragment(
             datePicker.show(childFragmentManager, "date picker")
         }
         buttonCheck.setOnClickListener {
+            val remindersList =
+                if (switchReminder.isChecked) {
+                    reminderListAdapter.data
+                } else {
+                    ArrayList()
+                }
             val item = Item(
                 category = category,
                 title = editTextTitle.text.toString(),
                 date = dateFormat.format(selectedDate!!.time),
                 subtasks = subtaskListAdapter.data,
-                reminders = reminderListAdapter.data,
+                reminders = remindersList,
                 notes = editTextNotes.text.toString()
             )
             dataViewModel.insert(item)
@@ -278,6 +284,9 @@ class EditFragment(
         constraintLayoutMore.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         if (!isEdit) {
             editTextTitle.requestFocus()
+        }
+        if (reminders.isNotEmpty()) {
+            switchReminder.isChecked = true
         }
         buttonAddReminder.isEnabled = switchReminder.isChecked
         // [END] initialize
