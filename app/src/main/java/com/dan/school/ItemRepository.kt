@@ -7,6 +7,8 @@ import com.dan.school.models.Subtask
 class ItemRepository(private val itemDao: ItemDao) {
 
     val allHomeworks: LiveData<List<Item>> = itemDao.getAllUndoneDataByCategory(School.HOMEWORK)
+    val allExams: LiveData<List<Item>> = itemDao.getAllUndoneDataByCategory(School.EXAM)
+    val allTasks: LiveData<List<Item>> = itemDao.getAllUndoneDataByCategory(School.TASK)
 
     fun setDone(id: Int, done: Boolean) {
         itemDao.setDone(id, done)

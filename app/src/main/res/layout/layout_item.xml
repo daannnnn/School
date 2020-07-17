@@ -5,15 +5,14 @@
     android:gravity="center">
 
     <ImageButton
-        android:id="@+id/buttonCheckHomework"
+        android:id="@+id/buttonCheck"
         android:layout_width="24dp"
         android:layout_height="24dp"
         android:layout_marginStart="16dp"
         android:layout_marginTop="8dp"
         android:layout_marginBottom="8dp"
         android:background="?attr/selectableItemBackgroundBorderless"
-        android:scaleType="fitCenter"
-        android:src="@drawable/ic_homework_unchecked" />
+        android:scaleType="fitCenter" />
 
     <TextView
         android:id="@+id/textViewItem"

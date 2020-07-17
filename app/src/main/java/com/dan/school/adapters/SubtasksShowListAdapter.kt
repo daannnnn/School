@@ -13,7 +13,9 @@ import com.dan.school.models.Subtask
 class SubtasksShowListAdapter(
     private val context: Context,
     private val subtasks: ArrayList<Subtask>,
-    private val subtaskChangedListener: SubtaskChangedListener
+    private val subtaskChangedListener: SubtaskChangedListener,
+    private val uncheckedIcon: Int,
+    private val checkedIcon: Int
 ) :
     RecyclerView.Adapter<SubtasksShowListAdapter.SubtasksShowViewHolder>() {
 
@@ -35,18 +37,18 @@ class SubtasksShowListAdapter(
     override fun onBindViewHolder(holder: SubtasksShowViewHolder, position: Int) {
         holder.textViewSubtaskTitle.text = subtasks[position].title
         if (subtasks[position].done) {
-            holder.buttonCheck.setImageResource(R.drawable.ic_homework_checked)
+            holder.buttonCheck.setImageResource(checkedIcon)
         } else {
-            holder.buttonCheck.setImageResource(R.drawable.ic_homework_unchecked)
+            holder.buttonCheck.setImageResource(uncheckedIcon)
         }
         holder.buttonCheck.setOnClickListener {
             val subtask = subtasks[holder.adapterPosition]
             if (subtask.done) {
-                holder.buttonCheck.setImageResource(R.drawable.ic_homework_unchecked)
+                holder.buttonCheck.setImageResource(uncheckedIcon)
                 subtasks[holder.adapterPosition].done = false
                 subtaskChangedListener.subtaskChanged()
             } else {
-                holder.buttonCheck.setImageResource(R.drawable.ic_homework_checked)
+                holder.buttonCheck.setImageResource(checkedIcon)
                 subtasks[holder.adapterPosition].done = true
                 subtaskChangedListener.subtaskChanged()
             }

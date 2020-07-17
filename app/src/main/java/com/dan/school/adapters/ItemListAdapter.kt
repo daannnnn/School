@@ -1,57 +1,56 @@
 package com.dan.school.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageButton
 import android.widget.TextView
-import android.widget.Toast
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dan.school.R
-import com.dan.school.fragments.SubtasksBottomSheetDialogFragment
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 
-class HomeworkListAdapter(
+class ItemListAdapter(
     private val context: Context,
     private val doneListener: DoneListener,
     private val showSubtasksListener: ShowSubtasksListener,
-    private val itemClickListener: ItemClickListener
+    private val itemClickListener: ItemClickListener,
+    private val uncheckedIcon: Int,
+    private val checkedIcon: Int
 ) :
-    ListAdapter<Item, HomeworkListAdapter.HomeworkViewHolder>(DIFF_CALLBACK) {
+    ListAdapter<Item, ItemListAdapter.ItemViewHolder>(DIFF_CALLBACK) {
 
-    class HomeworkViewHolder(view: View) : RecyclerView.ViewHolder(view) {
+    class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val textViewItem: TextView = view.findViewById(R.id.textViewItem)
-        val buttonCheckHomework: ImageButton = view.findViewById(R.id.buttonCheckHomework)
+        val buttonCheckItem: ImageButton = view.findViewById(R.id.buttonCheck)
         val buttonSubtask: ImageButton = view.findViewById(R.id.buttonSubtask)
     }
 
-    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): HomeworkViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.layout_homework, parent, false)
-        return HomeworkViewHolder(view)
+    override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
+        val view = LayoutInflater.from(context).inflate(R.layout.layout_item, parent, false)
+        return ItemViewHolder(view)
     }
 
-    override fun onBindViewHolder(holder: HomeworkViewHolder, position: Int) {
+    override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.textViewItem.text = getItem(position).title
         holder.itemView.setOnClickListener {
             itemClickListener.itemClicked(getItem(holder.adapterPosition))
         }
         if (getItem(holder.adapterPosition).done) {
-            holder.buttonCheckHomework.setImageResource(R.drawable.ic_homework_checked)
+            holder.buttonCheckItem.setImageResource(checkedIcon)
         } else {
-            holder.buttonCheckHomework.setImageResource(R.drawable.ic_homework_unchecked)
+            holder.buttonCheckItem.setImageResource(uncheckedIcon)
         }
         if (getItem(holder.adapterPosition).subtasks.isEmpty()) {
             holder.buttonSubtask.visibility = View.GONE
         } else {
             holder.buttonSubtask.visibility = View.VISIBLE
         }
-        holder.buttonCheckHomework.setOnClickListener {
-            holder.buttonCheckHomework.setImageResource(R.drawable.ic_homework_checked)
+        holder.buttonCheckItem.setOnClickListener {
+            holder.buttonCheckItem.setImageResource(checkedIcon)
             doneListener.setDone(getItem(holder.adapterPosition).id, true)
         }
         holder.buttonSubtask.setOnClickListener {

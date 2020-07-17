@@ -3,7 +3,6 @@ package com.dan.school.fragments
 import android.animation.ObjectAnimator
 import android.animation.StateListAnimator
 import android.os.Bundle
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -21,7 +20,9 @@ import kotlinx.android.synthetic.main.layout_subtasks_bottom_sheet.*
 class SubtasksBottomSheetDialogFragment(
     private val subtasks: ArrayList<Subtask>,
     private val itemTitle: String,
-    private val itemId: Int
+    private val itemId: Int,
+    private val uncheckedIcon: Int,
+    private val checkedIcon: Int
 ) : BottomSheetDialogFragment(), SubtasksShowListAdapter.SubtaskChangedListener {
 
     var float4dp = 0f
@@ -50,7 +51,8 @@ class SubtasksBottomSheetDialogFragment(
         recyclerViewSubtasks.layoutManager = LinearLayoutManager(context)
         recyclerViewSubtasks.adapter = SubtasksShowListAdapter(
             requireContext(), subtasks,
-            this
+            this,
+            uncheckedIcon, checkedIcon
         )
         textViewItemTitle.text = itemTitle
 
@@ -63,7 +65,6 @@ class SubtasksBottomSheetDialogFragment(
                     } else {
                         appBar.elevation = 0f
                     }
-                    Log.i("Test", "called")
                 }
             })
         }

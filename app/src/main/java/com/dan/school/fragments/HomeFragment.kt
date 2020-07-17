@@ -8,12 +8,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.dan.school.adapters.HomeworkExamTaskTabLayoutAdapter
 import com.dan.school.R
+import com.dan.school.School
 import com.dan.school.models.Item
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment(var selectedTabChangeListener: SelectedTabChangeListener, private val itemClickListener: ItemClickListener) : Fragment(),
-    HomeworksFragment.ItemClickListener {
+    ItemsFragment.ItemClickListener {
 
     val categoryColors = ArrayList<Int>()
 
@@ -39,9 +40,9 @@ class HomeFragment(var selectedTabChangeListener: SelectedTabChangeListener, pri
         ))
 
         // [START configure TabLayout and ViewPager]
-        val homeworksFragment = HomeworksFragment(this)
-        val examsFragment = ExamsFragment()
-        val tasksFragment = TasksFragment()
+        val homeworksFragment = ItemsFragment(School.HOMEWORK, this)
+        val examsFragment = ItemsFragment(School.EXAM, this)
+        val tasksFragment = ItemsFragment(School.TASK, this)
 
         val mListFragments = ArrayList<Fragment>()
         mListFragments.add(homeworksFragment)
