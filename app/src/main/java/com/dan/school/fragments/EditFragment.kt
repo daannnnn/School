@@ -190,10 +190,12 @@ class EditFragment(
             when (checkedId) {
                 R.id.chipToday -> {
                     textViewDatePicked.text = dateFormat.format(dateToday.time)
+                    selectedDate = dateToday
                     chipGroupSelected = School.TODAY
                 }
                 R.id.chipTomorrow -> {
                     textViewDatePicked.text = dateFormat.format(dateTomorrow.time)
+                    selectedDate = dateTomorrow
                     chipGroupSelected = School.TOMORROW
                 }
             }
