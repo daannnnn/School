@@ -147,26 +147,6 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-//    override fun goToEditFragment(
-//        category: Int,
-//        title: String,
-//        subtasks: ArrayList<Subtask>?,
-//        reminders: ArrayList<Reminder>?,
-//        notes: String?,
-//        chipGroupDateSelected: Int,
-//        date: Calendar?
-//    ) {
-//        val editFragment = EditFragment(
-//            this,
-//            this,
-//            category,
-//            title,
-//            chipGroupDateSelected,
-//            date
-//        )
-//        editFragment.show(supportFragmentManager, "editFragment")
-//    }
-
     private fun showEditFragment(
         category: Int,
         title: String,
