@@ -1,6 +1,5 @@
 <resources>
     <string name="app_name">School</string>
-    <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
     <string name="home">Home</string>
     <string name="calendar">Calendar</string>
@@ -33,4 +32,11 @@
     <string name="enter_title">Enter title</string>
     <string name="enter_subtask">Enter Subtask</string>
     <string name="edit">Edit</string>
+    <string name="sat">SAT</string>
+    <string name="fri">FRI</string>
+    <string name="thu">THU</string>
+    <string name="wed">WED</string>
+    <string name="tue">TUE</string>
+    <string name="mon">MON</string>
+    <string name="sun">SUN</string>
 </resources>

@@ -76,11 +76,16 @@ class MainActivity : AppCompatActivity(),
             return@setNavigationItemSelectedListener true
         }
 
-        // Show HomeFragment
+//        // Show HomeFragment
+//        supportFragmentManager.beginTransaction()
+//            .add(
+//                R.id.frameLayoutBottomNavigation,
+//                HomeFragment(this, this), "home"
+//            ).commit()
         supportFragmentManager.beginTransaction()
             .add(
                 R.id.frameLayoutBottomNavigation,
-                HomeFragment(this, this), "home"
+                CalendarFragment(), "calendar"
             ).commit()
     }
 
@@ -104,8 +109,8 @@ class MainActivity : AppCompatActivity(),
                 supportFragmentManager.beginTransaction()
                     .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
             }
-            lastSelectedAddCategory =
-                (supportFragmentManager.findFragmentByTag("home") as HomeFragment).getSelectedTabPosition()
+//            lastSelectedAddCategory =
+//                (supportFragmentManager.findFragmentByTag("home") as HomeFragment).getSelectedTabPosition()
         } else if (tag == "calendar") {
             if (supportFragmentManager.findFragmentByTag("calendar") != null) {
                 supportFragmentManager.beginTransaction()
