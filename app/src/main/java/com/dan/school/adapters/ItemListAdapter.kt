@@ -37,24 +37,24 @@ class ItemListAdapter(
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.textViewItem.text = getItem(position).title
         holder.itemView.setOnClickListener {
-            itemClickListener.itemClicked(getItem(holder.adapterPosition))
+            itemClickListener.itemClicked(getItem(holder.bindingAdapterPosition))
         }
-        if (getItem(holder.adapterPosition).done) {
+        if (getItem(holder.bindingAdapterPosition).done) {
             holder.buttonCheckItem.setImageResource(checkedIcon)
         } else {
             holder.buttonCheckItem.setImageResource(uncheckedIcon)
         }
-        if (getItem(holder.adapterPosition).subtasks.isEmpty()) {
+        if (getItem(holder.bindingAdapterPosition).subtasks.isEmpty()) {
             holder.buttonSubtask.visibility = View.GONE
         } else {
             holder.buttonSubtask.visibility = View.VISIBLE
         }
         holder.buttonCheckItem.setOnClickListener {
             holder.buttonCheckItem.setImageResource(checkedIcon)
-            doneListener.setDone(getItem(holder.adapterPosition).id, true)
+            doneListener.setDone(getItem(holder.bindingAdapterPosition).id, true)
         }
         holder.buttonSubtask.setOnClickListener {
-            val item = getItem(holder.adapterPosition)
+            val item = getItem(holder.bindingAdapterPosition)
             showSubtasksListener.showSubtasks(item.subtasks, item.title, item.id)
         }
     }

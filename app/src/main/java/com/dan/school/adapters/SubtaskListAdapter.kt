@@ -43,24 +43,24 @@ class SubtaskListAdapter(
     }
 
     override fun onBindViewHolder(holder: SubtaskViewHolder, position: Int) {
-        holder.editTextSubtaskTitle.setText(data[holder.adapterPosition].title)
+        holder.editTextSubtaskTitle.setText(data[holder.bindingAdapterPosition].title)
         holder.editTextSubtaskTitle.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (holder.editTextSubtaskTitle.text.toString() == "") {
-                    if (holder.adapterPosition == itemCount - 1) {
-                        data.removeAt(holder.adapterPosition)
-                        notifyItemRemoved(holder.adapterPosition)
+                    if (holder.bindingAdapterPosition == itemCount - 1) {
+                        data.removeAt(holder.bindingAdapterPosition)
+                        notifyItemRemoved(holder.bindingAdapterPosition)
                         inputMethodManager.toggleSoftInput(
                             InputMethodManager.HIDE_IMPLICIT_ONLY,
                             0
                         )
                     }
                 } else {
-                    if (holder.adapterPosition == itemCount - 1) {
+                    if (holder.bindingAdapterPosition == itemCount - 1) {
                         data.add(Subtask())
                         notifyItemInserted(itemCount - 1)
                     } else {
-                        setFocusListener.setFocus(holder.adapterPosition + 1)
+                        setFocusListener.setFocus(holder.bindingAdapterPosition + 1)
                     }
                 }
             }
@@ -76,37 +76,37 @@ class SubtaskListAdapter(
             ) {
             }
             override fun onTextChanged(s: CharSequence?, start: Int, before: Int, count: Int) {
-                data[holder.adapterPosition].title = s.toString()
+                data[holder.bindingAdapterPosition].title = s.toString()
             }
         })
         holder.buttonCheck.setImageResource(iconUnchecked)
         holder.buttonCheck.setOnClickListener {
-            if (data[holder.adapterPosition].done) {
+            if (data[holder.bindingAdapterPosition].done) {
                 holder.buttonCheck.setImageResource(iconUnchecked)
-                data[holder.adapterPosition].done = false
+                data[holder.bindingAdapterPosition].done = false
             } else {
                 holder.buttonCheck.setImageResource(iconChecked)
-                data[holder.adapterPosition].done = true
+                data[holder.bindingAdapterPosition].done = true
             }
         }
         holder.buttonRemove.setOnClickListener {
             if (holder.editTextSubtaskTitle.hasFocus()) {
                 holder.editTextSubtaskTitle.clearFocus()
-                if (holder.adapterPosition == data.size - 1) {
+                if (holder.bindingAdapterPosition == data.size - 1) {
                     if (data.size == 1) {
                         setFocusListener.setFocus(-1)
                     } else {
-                        setFocusListener.setFocus(holder.adapterPosition - 1)
+                        setFocusListener.setFocus(holder.bindingAdapterPosition - 1)
                     }
                 } else {
-                    setFocusListener.setFocus(holder.adapterPosition + 1)
+                    setFocusListener.setFocus(holder.bindingAdapterPosition + 1)
                 }
             }
-            data.removeAt(holder.adapterPosition)
-            notifyItemRemoved(holder.adapterPosition)
+            data.removeAt(holder.bindingAdapterPosition)
+            notifyItemRemoved(holder.bindingAdapterPosition)
         }
 
-        if (holder.adapterPosition == itemCount - 1) {
+        if (holder.bindingAdapterPosition == itemCount - 1) {
             holder.editTextSubtaskTitle.post(Runnable {
                 if (getFocus) {
                     holder.editTextSubtaskTitle.requestFocus()

@@ -42,14 +42,14 @@ class SubtasksShowListAdapter(
             holder.buttonCheck.setImageResource(uncheckedIcon)
         }
         holder.buttonCheck.setOnClickListener {
-            val subtask = subtasks[holder.adapterPosition]
+            val subtask = subtasks[holder.bindingAdapterPosition]
             if (subtask.done) {
                 holder.buttonCheck.setImageResource(uncheckedIcon)
-                subtasks[holder.adapterPosition].done = false
+                subtasks[holder.bindingAdapterPosition].done = false
                 subtaskChangedListener.subtaskChanged()
             } else {
                 holder.buttonCheck.setImageResource(checkedIcon)
-                subtasks[holder.adapterPosition].done = true
+                subtasks[holder.bindingAdapterPosition].done = true
                 subtaskChangedListener.subtaskChanged()
             }
         }

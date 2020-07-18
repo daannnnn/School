@@ -37,8 +37,8 @@ class ReminderListAdapter(
         holder.textViewReminderDate.text = data[position].getDateString()
         holder.textViewReminderTime.text = data[position].getTimeString()
         holder.buttonRemoveReminder.setOnClickListener {
-            data.removeAt(holder.adapterPosition)
-            notifyItemRemoved(holder.adapterPosition)
+            data.removeAt(holder.bindingAdapterPosition)
+            notifyItemRemoved(holder.bindingAdapterPosition)
         }
     }
 }
