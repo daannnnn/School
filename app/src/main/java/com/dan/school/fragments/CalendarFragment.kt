@@ -26,6 +26,7 @@ import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
+import com.kizitonwose.calendarview.utils.yearMonth
 import kotlinx.android.synthetic.main.fragment_calendar.*
 import java.text.SimpleDateFormat
 import java.time.LocalDate
@@ -47,6 +48,8 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
 
     private val titleMonthFormatter = DateTimeFormatter.ofPattern("MMMM")
     private val titleMonthWithYearFormatter = DateTimeFormatter.ofPattern("MMM yyyy")
+
+    private var setSelectedToFirstDay = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -75,15 +78,16 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             init {
                 view.setOnClickListener {
                     if (day.owner == DayOwner.THIS_MONTH) {
-                        selectDate(day.date)
+                        selectDate(day.date, false)
+                    } else {
+                        setSelectedToFirstDay = false
+                        selectDate(day.date, true)
                     }
                 }
             }
         }
 
-        class MonthViewContainer(view: View) : ViewContainer(view) {
-            val legendLayout = view.findViewById<LinearLayout>(R.id.legendLayout)
-        }
+        class MonthViewContainer(view: View) : ViewContainer(view)
 
         calendarView.dayBinder = object : DayBinder<DayViewContainer> {
             override fun create(view: View) = DayViewContainer(view)
@@ -162,13 +166,17 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
                     titleMonthWithYearFormatter.format(it.yearMonth)
                 }
             )
-            selectDate(it.yearMonth.atDay(1))
+            if (setSelectedToFirstDay) {
+                selectDate(it.yearMonth.atDay(1), false)
+            } else {
+                setSelectedToFirstDay = true
+            }
         }
 
         // set calendar dayHeight and dayWidth
         val displayMetrics = DisplayMetrics()
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val dayView = View.inflate(context, R.layout.layout_calendar_day, null);
+        val dayView = View.inflate(context, R.layout.layout_calendar_day, null)
         val widthMeasureSpec =
             MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, MeasureSpec.AT_MOST)
         val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
@@ -230,12 +238,15 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
         })
     }
 
-    fun selectDate(date: LocalDate) {
+    fun selectDate(date: LocalDate, scrollToMonth: Boolean) {
         if (selectedDate == null) {
             selectedDate = LocalDate.now()
             calendarView.notifyDateChanged(date)
         } else {
             if (selectedDate != date) {
+                if (scrollToMonth) {
+                    calendarView.scrollToMonth(date.yearMonth)
+                }
                 val oldDate = selectedDate
                 selectedDate = date
                 calendarView.notifyDateChanged(date)
