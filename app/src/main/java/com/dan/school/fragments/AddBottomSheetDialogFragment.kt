@@ -61,7 +61,7 @@ class AddBottomSheetDialogFragment(
         R.color.chip_task_stroke_color_state_list,
         R.color.chip_stroke_color_state_list
     )
-    private val selectedDate = Calendar.getInstance()
+    private var selectedDate = Calendar.getInstance()
     private val dateToday = Calendar.getInstance()
     private val dateTomorrow = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat(School.dateFormat, Locale.getDefault())
@@ -134,10 +134,12 @@ class AddBottomSheetDialogFragment(
             when (checkedId) {
                 R.id.chipToday -> {
                     textViewDatePicked.text = dateFormat.format(dateToday.time)
+                    selectedDate = dateToday
                     chipGroupSelected = School.TODAY
                 }
                 R.id.chipTomorrow -> {
                     textViewDatePicked.text = dateFormat.format(dateTomorrow.time)
+                    selectedDate = dateTomorrow
                     chipGroupSelected = School.TOMORROW
                 }
             }
