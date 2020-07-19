@@ -4,10 +4,13 @@ import android.app.Application
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
+import com.dan.school.models.DateItem
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
+import java.util.*
+import kotlin.collections.ArrayList
 
 class DataViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -16,6 +19,9 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     val allHomeworks: LiveData<List<Item>>
     val allExams: LiveData<List<Item>>
     val allTasks: LiveData<List<Item>>
+    val homeworkAllDates: LiveData<List<DateItem>>
+    val examAllDates: LiveData<List<DateItem>>
+    val taskAllDates: LiveData<List<DateItem>>
 
     init {
         val itemsDao = ItemDatabase.getInstance(application).itemDao()
@@ -23,6 +29,9 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         allHomeworks = itemRepository.allHomeworks
         allExams = itemRepository.allExams
         allTasks = itemRepository.allTasks
+        homeworkAllDates = itemRepository.homeworkAllDates
+        examAllDates = itemRepository.examAllDates
+        taskAllDates = itemRepository.taskAllDates
     }
 
     fun setDone(id: Int, done: Boolean) = viewModelScope.launch(Dispatchers.IO) {

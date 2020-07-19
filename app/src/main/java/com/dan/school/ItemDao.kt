@@ -2,9 +2,10 @@ package com.dan.school
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import com.dan.school.models.DateItem
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
-
+import kotlin.collections.ArrayList
 
 @Dao
 interface ItemDao {
@@ -19,6 +20,9 @@ interface ItemDao {
 
     @Query("UPDATE items SET subtasks = :subtasks WHERE id=:id")
     fun setItemSubtasks(id: Int, subtasks: ArrayList<Subtask>)
+
+    @Query("SELECT date, id, title from items WHERE category=:category")
+    fun getAllItemOnDateByCategory(category: Int): LiveData<List<DateItem>>
 
     @Insert
     fun insert(item: Item)

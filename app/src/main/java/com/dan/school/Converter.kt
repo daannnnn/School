@@ -6,8 +6,16 @@ import com.dan.school.models.Subtask
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.lang.reflect.Type
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 class Converter {
+    @TypeConverter
+    fun fromDateString(value: String): Date {
+        return SimpleDateFormat(School.dateFormat, Locale.getDefault()).parse(value)!!
+    }
+
     @TypeConverter
     fun fromReminderString(value: String?): ArrayList<Reminder> {
         val listType: Type = object : TypeToken<ArrayList<Reminder?>?>() {}.type

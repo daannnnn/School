@@ -40,30 +40,36 @@
         android:id="@+id/linearLayoutIndicators"
         android:layout_width="wrap_content"
         android:layout_height="10dp"
+        app:layout_constraintBottom_toBottomOf="@id/textViewCalendarDay"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintBottom_toBottomOf="@id/textViewCalendarDay">
+        app:layout_constraintStart_toStartOf="parent">
 
         <View
+            android:id="@+id/viewHomeworkDotIndicator"
             android:layout_width="4dp"
             android:layout_height="4dp"
             android:layout_marginStart="1dp"
             android:layout_marginEnd="1dp"
-            android:background="@drawable/homework_dot_indicator" />
+            android:background="@drawable/homework_dot_indicator"
+            android:visibility="gone" />
 
         <View
+            android:id="@+id/viewExamDotIndicator"
             android:layout_width="4dp"
             android:layout_height="4dp"
             android:layout_marginStart="1dp"
             android:layout_marginEnd="1dp"
-            android:background="@drawable/exam_dot_indicator" />
+            android:background="@drawable/exam_dot_indicator"
+            android:visibility="gone" />
 
         <View
+            android:id="@+id/viewTaskDotIndicator"
             android:layout_width="4dp"
             android:layout_height="4dp"
             android:layout_marginStart="1dp"
             android:layout_marginEnd="1dp"
-            android:background="@drawable/task_dot_indicator" />
+            android:background="@drawable/task_dot_indicator"
+            android:visibility="gone" />
 
     </LinearLayout>
 
