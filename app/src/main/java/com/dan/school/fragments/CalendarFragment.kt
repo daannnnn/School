@@ -3,13 +3,11 @@ package com.dan.school.fragments
 import android.app.Activity
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -28,9 +26,7 @@ import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.yearMonth
 import kotlinx.android.synthetic.main.fragment_calendar.*
-import java.text.SimpleDateFormat
 import java.time.LocalDate
-import java.time.LocalTime
 import java.time.YearMonth
 import java.time.ZoneId
 import java.time.format.DateTimeFormatter
@@ -257,5 +253,14 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
 
     interface TitleChangeListener {
         fun changeTitle(title: String)
+    }
+
+    fun getSelectedMonth(): String {
+        val month = selectedDate?.yearMonth
+        return if (month?.year == today.year) {
+            titleMonthFormatter.format(month)
+        } else {
+            titleMonthWithYearFormatter.format(month)
+        }
     }
 }

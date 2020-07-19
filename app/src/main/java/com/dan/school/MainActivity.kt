@@ -45,12 +45,14 @@ class MainActivity : AppCompatActivity(),
             when (item.itemId) {
                 R.id.homeFragment -> {
                     setFragment("home")
+                    textViewAppBarTitle.text = getString(R.string.app_name)
                 }
                 R.id.calendarFragment -> {
                     setFragment("calendar")
                 }
                 R.id.agendaFragment -> {
                     setFragment("agenda")
+                    textViewAppBarTitle.text = getString(R.string.app_name)
                 }
             }
             return@setOnNavigationItemSelectedListener true
@@ -115,6 +117,8 @@ class MainActivity : AppCompatActivity(),
             if (supportFragmentManager.findFragmentByTag("calendar") != null) {
                 supportFragmentManager.beginTransaction()
                     .show(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
+                textViewAppBarTitle.text =
+                    (supportFragmentManager.findFragmentByTag("calendar") as CalendarFragment).getSelectedMonth()
             } else {
                 supportFragmentManager.beginTransaction()
                     .add(
