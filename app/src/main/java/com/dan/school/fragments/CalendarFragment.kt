@@ -131,13 +131,21 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
                             container.imageViewIndicator.background = null
                         }
                     }
-                    container.viewHomeworkDotIndicator.isVisible =
-                        events[day.date]?.get(School.HOMEWORK).orEmpty().isNotEmpty()
-                    container.viewExamDotIndicator.isVisible =
-                        events[day.date]?.get(School.EXAM).orEmpty().isNotEmpty()
-                    container.viewTaskDotIndicator.isVisible =
-                        events[day.date]?.get(School.TASK).orEmpty().isNotEmpty()
+                } else {
+                    container.textViewCalendarDay.setTextColor(
+                        ContextCompat.getColor(
+                            requireContext(),
+                            android.R.color.darker_gray
+                        )
+                    )
+                    container.imageViewIndicator.background = null
                 }
+                container.viewHomeworkDotIndicator.isVisible =
+                    events[day.date]?.get(School.HOMEWORK).orEmpty().isNotEmpty()
+                container.viewExamDotIndicator.isVisible =
+                    events[day.date]?.get(School.EXAM).orEmpty().isNotEmpty()
+                container.viewTaskDotIndicator.isVisible =
+                    events[day.date]?.get(School.TASK).orEmpty().isNotEmpty()
             }
         }
 
@@ -154,7 +162,6 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
                     titleMonthWithYearFormatter.format(it.yearMonth)
                 }
             )
-            Log.i("Test", it.toString())
             selectDate(it.yearMonth.atDay(1))
         }
 
