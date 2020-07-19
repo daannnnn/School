@@ -17,7 +17,7 @@ class MainActivity : AppCompatActivity(),
     SettingsFragment.OnDismissListener,
     AddBottomSheetDialogFragment.SelectedCategoryChangeListener,
     HomeFragment.SelectedTabChangeListener, EditFragment.CategoryChangeListener,
-    HomeFragment.ItemClickListener {
+    HomeFragment.ItemClickListener, CalendarFragment.TitleChangeListener {
 
     private var addBottomSheetDialogFragment: AddBottomSheetDialogFragment? = null
     private var lastSelectedAddCategory = School.HOMEWORK
@@ -85,7 +85,7 @@ class MainActivity : AppCompatActivity(),
         supportFragmentManager.beginTransaction()
             .add(
                 R.id.frameLayoutBottomNavigation,
-                CalendarFragment(), "calendar"
+                CalendarFragment(this), "calendar"
             ).commit()
     }
 
@@ -119,7 +119,7 @@ class MainActivity : AppCompatActivity(),
                 supportFragmentManager.beginTransaction()
                     .add(
                         R.id.frameLayoutBottomNavigation,
-                        CalendarFragment(), "calendar"
+                        CalendarFragment(this), "calendar"
                     ).commit()
             }
             if (supportFragmentManager.findFragmentByTag("home") != null) {
@@ -236,5 +236,9 @@ class MainActivity : AppCompatActivity(),
             calendar,
             item.id
         )
+    }
+
+    override fun changeTitle(title: String) {
+        textViewAppBarTitle.text = title
     }
 }

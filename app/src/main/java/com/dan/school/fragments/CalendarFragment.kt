@@ -27,20 +27,26 @@ import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import kotlinx.android.synthetic.main.fragment_calendar.*
+import java.text.SimpleDateFormat
 import java.time.LocalDate
+import java.time.LocalTime
 import java.time.YearMonth
 import java.time.ZoneId
+import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.collections.ArrayList
 import kotlin.collections.HashMap
 
-class CalendarFragment : Fragment() {
+class CalendarFragment(private val titleChangeListener: TitleChangeListener) : Fragment() {
 
-    private var selectedDate = LocalDate.now()
+    private var selectedDate: LocalDate? = null
     private val today = LocalDate.now()
     private lateinit var dataViewModel: DataViewModel
     private val events = mutableMapOf<LocalDate, HashMap<Int, ArrayList<Event>>>()
+
+    private val titleMonthFormatter = DateTimeFormatter.ofPattern("MMMM")
+    private val titleMonthWithYearFormatter = DateTimeFormatter.ofPattern("MMM yyyy")
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -69,12 +75,7 @@ class CalendarFragment : Fragment() {
             init {
                 view.setOnClickListener {
                     if (day.owner == DayOwner.THIS_MONTH) {
-                        if (selectedDate != day.date) {
-                            val oldDate = selectedDate
-                            selectedDate = day.date
-                            calendarView.notifyDateChanged(day.date)
-                            oldDate?.let { it1 -> calendarView.notifyDateChanged(it1) }
-                        }
+                        selectDate(day.date)
                     }
                 }
             }
@@ -145,6 +146,18 @@ class CalendarFragment : Fragment() {
             override fun bind(container: MonthViewContainer, month: CalendarMonth) {}
         }
 
+        calendarView.monthScrollListener = {
+            titleChangeListener.changeTitle(
+                if (it.year == today.year) {
+                    titleMonthFormatter.format(it.yearMonth)
+                } else {
+                    titleMonthWithYearFormatter.format(it.yearMonth)
+                }
+            )
+            Log.i("Test", it.toString())
+            selectDate(it.yearMonth.atDay(1))
+        }
+
         // set calendar dayHeight and dayWidth
         val displayMetrics = DisplayMetrics()
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
@@ -208,5 +221,23 @@ class CalendarFragment : Fragment() {
                 calendarView.notifyDateChanged(localDate)
             }
         })
+    }
+
+    fun selectDate(date: LocalDate) {
+        if (selectedDate == null) {
+            selectedDate = LocalDate.now()
+            calendarView.notifyDateChanged(date)
+        } else {
+            if (selectedDate != date) {
+                val oldDate = selectedDate
+                selectedDate = date
+                calendarView.notifyDateChanged(date)
+                oldDate?.let { it -> calendarView.notifyDateChanged(it) }
+            }
+        }
+    }
+
+    interface TitleChangeListener {
+        fun changeTitle(title: String)
     }
 }
