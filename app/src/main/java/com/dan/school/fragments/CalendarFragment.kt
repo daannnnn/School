@@ -199,9 +199,6 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
                     dateItem.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
                 val event = Event(dateItem.id, dateItem.title, School.HOMEWORK, dateItem.done)
                 addEventToDate(localDate, event)
-                if (selectedDate == localDate) {
-                    recyclerViewEventsParent.adapter = ParentEventListAdapter(events[localDate]?.getCategorySortedList()!!, requireContext())
-                }
             }
         })
 
@@ -211,9 +208,6 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
                     dateItem.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
                 val event = Event(dateItem.id, dateItem.title, School.EXAM, dateItem.done)
                 addEventToDate(localDate, event)
-                if (selectedDate == localDate) {
-                    recyclerViewEventsParent.adapter = ParentEventListAdapter(events[localDate]?.getCategorySortedList()!!, requireContext())
-                }
             }
         })
 
@@ -223,9 +217,6 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
                     dateItem.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
                 val event = Event(dateItem.id, dateItem.title, School.TASK, dateItem.done)
                 addEventToDate(localDate, event)
-                if (selectedDate == localDate) {
-                    recyclerViewEventsParent.adapter = ParentEventListAdapter(events[localDate]?.getCategorySortedList()!!, requireContext())
-                }
             }
         })
 
@@ -238,8 +229,20 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             events[localDate] = EventList()
         }
         if (!events[localDate]!!.contains(event)) {
-            events[localDate]!!.add(event)
+            val eventInvertDone = Event(event.id, event.title, event.category, !event.done)
+            val index = events[localDate]!!.indexOf(eventInvertDone)
+            if (index != -1) {
+                events[localDate]!![index] = event
+            } else {
+                events[localDate]!!.add(event)
+            }
             calendarView.notifyDateChanged(localDate)
+        }
+        if (selectedDate == localDate) {
+            recyclerViewEventsParent.adapter = ParentEventListAdapter(
+                events[localDate]?.getCategorySortedList()!!,
+                requireContext()
+            )
         }
     }
 
@@ -249,7 +252,10 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             calendarView.notifyDateChanged(date)
             if (events[date] != null) {
                 recyclerViewEventsParent.adapter =
-                    ParentEventListAdapter(events[date]?.getCategorySortedList()!!, requireContext())
+                    ParentEventListAdapter(
+                        events[date]?.getCategorySortedList()!!,
+                        requireContext()
+                    )
             }
         } else {
             if (selectedDate != date) {
@@ -262,7 +268,10 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
                 oldDate?.let { it -> calendarView.notifyDateChanged(it) }
                 if (events[date] != null) {
                     recyclerViewEventsParent.adapter =
-                        ParentEventListAdapter(events[date]?.getCategorySortedList()!!, requireContext())
+                        ParentEventListAdapter(
+                            events[date]?.getCategorySortedList()!!,
+                            requireContext()
+                        )
                 }
             }
         }
