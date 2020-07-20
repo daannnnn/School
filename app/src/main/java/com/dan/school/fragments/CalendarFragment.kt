@@ -3,21 +3,26 @@ package com.dan.school.fragments
 import android.app.Activity
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
+import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.DataViewModel
 import com.dan.school.R
 import com.dan.school.School
+import com.dan.school.adapters.ParentEventListAdapter
 import com.dan.school.models.Event
+import com.dan.school.models.EventList
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
@@ -40,7 +45,7 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
     private var selectedDate: LocalDate? = null
     private val today = LocalDate.now()
     private lateinit var dataViewModel: DataViewModel
-    private val events = mutableMapOf<LocalDate, HashMap<Int, ArrayList<Event>>>()
+    private val events = mutableMapOf<LocalDate, EventList>()
 
     private val titleMonthFormatter = DateTimeFormatter.ofPattern("MMMM")
     private val titleMonthWithYearFormatter = DateTimeFormatter.ofPattern("MMM yyyy")
@@ -82,8 +87,6 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
                 }
             }
         }
-
-        class MonthViewContainer(view: View) : ViewContainer(view)
 
         calendarView.dayBinder = object : DayBinder<DayViewContainer> {
             override fun create(view: View) = DayViewContainer(view)
@@ -140,18 +143,20 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
                     )
                     container.imageViewIndicator.background = null
                 }
-                container.viewHomeworkDotIndicator.isVisible =
-                    events[day.date]?.get(School.HOMEWORK).orEmpty().isNotEmpty()
-                container.viewExamDotIndicator.isVisible =
-                    events[day.date]?.get(School.EXAM).orEmpty().isNotEmpty()
-                container.viewTaskDotIndicator.isVisible =
-                    events[day.date]?.get(School.TASK).orEmpty().isNotEmpty()
+                if (events[day.date] != null) {
+                    container.viewHomeworkDotIndicator.isVisible =
+                        events[day.date]!!.hasCategory(School.HOMEWORK)
+                    container.viewExamDotIndicator.isVisible =
+                        events[day.date]!!.hasCategory(School.EXAM)
+                    container.viewTaskDotIndicator.isVisible =
+                        events[day.date]!!.hasCategory(School.TASK)
+                }
             }
         }
 
-        calendarView.monthHeaderBinder = object : MonthHeaderFooterBinder<MonthViewContainer> {
-            override fun create(view: View) = MonthViewContainer(view)
-            override fun bind(container: MonthViewContainer, month: CalendarMonth) {}
+        calendarView.monthHeaderBinder = object : MonthHeaderFooterBinder<ViewContainer> {
+            override fun create(view: View) = ViewContainer(view)
+            override fun bind(container: ViewContainer, month: CalendarMonth) {}
         }
 
         calendarView.monthScrollListener = {
@@ -192,14 +197,11 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             for (dateItem in dateItems) {
                 val localDate =
                     dateItem.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                if (events[localDate] == null) {
-                    events[localDate] = HashMap()
+                val event = Event(dateItem.id, dateItem.title, School.HOMEWORK, dateItem.done)
+                addEventToDate(localDate, event)
+                if (selectedDate == localDate) {
+                    recyclerViewEventsParent.adapter = ParentEventListAdapter(events[localDate]?.getCategorySortedList()!!, requireContext())
                 }
-                if (events[localDate]?.get(School.HOMEWORK) == null) {
-                    events[localDate]?.put(School.HOMEWORK, ArrayList())
-                }
-                events[localDate]?.get(School.HOMEWORK)?.add((Event(dateItem.id, dateItem.title)))
-                calendarView.notifyDateChanged(localDate)
             }
         })
 
@@ -207,14 +209,11 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             for (dateItem in dateItems) {
                 val localDate =
                     dateItem.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                if (events[localDate] == null) {
-                    events[localDate] = HashMap()
+                val event = Event(dateItem.id, dateItem.title, School.EXAM, dateItem.done)
+                addEventToDate(localDate, event)
+                if (selectedDate == localDate) {
+                    recyclerViewEventsParent.adapter = ParentEventListAdapter(events[localDate]?.getCategorySortedList()!!, requireContext())
                 }
-                if (events[localDate]?.get(School.EXAM) == null) {
-                    events[localDate]?.put(School.EXAM, ArrayList())
-                }
-                events[localDate]?.get(School.EXAM)?.add((Event(dateItem.id, dateItem.title)))
-                calendarView.notifyDateChanged(localDate)
             }
         })
 
@@ -222,22 +221,36 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             for (dateItem in dateItems) {
                 val localDate =
                     dateItem.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                if (events[localDate] == null) {
-                    events[localDate] = HashMap()
+                val event = Event(dateItem.id, dateItem.title, School.TASK, dateItem.done)
+                addEventToDate(localDate, event)
+                if (selectedDate == localDate) {
+                    recyclerViewEventsParent.adapter = ParentEventListAdapter(events[localDate]?.getCategorySortedList()!!, requireContext())
                 }
-                if (events[localDate]?.get(School.TASK) == null) {
-                    events[localDate]?.put(School.TASK, ArrayList())
-                }
-                events[localDate]?.get(School.TASK)?.add((Event(dateItem.id, dateItem.title)))
-                calendarView.notifyDateChanged(localDate)
             }
         })
+
+        recyclerViewEventsParent.layoutManager = LinearLayoutManager(requireContext())
+
+    }
+
+    private fun addEventToDate(localDate: LocalDate, event: Event) {
+        if (events[localDate] == null) {
+            events[localDate] = EventList()
+        }
+        if (!events[localDate]!!.contains(event)) {
+            events[localDate]!!.add(event)
+            calendarView.notifyDateChanged(localDate)
+        }
     }
 
     fun selectDate(date: LocalDate, scrollToMonth: Boolean) {
         if (selectedDate == null) {
             selectedDate = LocalDate.now()
             calendarView.notifyDateChanged(date)
+            if (events[date] != null) {
+                recyclerViewEventsParent.adapter =
+                    ParentEventListAdapter(events[date]?.getCategorySortedList()!!, requireContext())
+            }
         } else {
             if (selectedDate != date) {
                 if (scrollToMonth) {
@@ -247,6 +260,10 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
                 selectedDate = date
                 calendarView.notifyDateChanged(date)
                 oldDate?.let { it -> calendarView.notifyDateChanged(it) }
+                if (events[date] != null) {
+                    recyclerViewEventsParent.adapter =
+                        ParentEventListAdapter(events[date]?.getCategorySortedList()!!, requireContext())
+                }
             }
         }
     }

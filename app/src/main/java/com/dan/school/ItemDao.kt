@@ -21,7 +21,7 @@ interface ItemDao {
     @Query("UPDATE items SET subtasks = :subtasks WHERE id=:id")
     fun setItemSubtasks(id: Int, subtasks: ArrayList<Subtask>)
 
-    @Query("SELECT date, id, title from items WHERE category=:category")
+    @Query("SELECT date, id, title, done from items WHERE category=:category")
     fun getAllItemOnDateByCategory(category: Int): LiveData<List<DateItem>>
 
     @Insert

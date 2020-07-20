@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
+import com.dan.school.ItemViewHolder
 import com.dan.school.R
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
@@ -21,13 +22,7 @@ class ItemListAdapter(
     private val uncheckedIcon: Int,
     private val checkedIcon: Int
 ) :
-    ListAdapter<Item, ItemListAdapter.ItemViewHolder>(DIFF_CALLBACK) {
-
-    class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
-        val textViewItem: TextView = view.findViewById(R.id.textViewItem)
-        val buttonCheckItem: ImageButton = view.findViewById(R.id.buttonCheck)
-        val buttonSubtask: ImageButton = view.findViewById(R.id.buttonSubtask)
-    }
+    ListAdapter<Item, ItemViewHolder>(DIFF_CALLBACK) {
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_item, parent, false)
