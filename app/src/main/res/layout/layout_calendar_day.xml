@@ -27,7 +27,7 @@
         android:layout_centerInParent="true"
         android:fontFamily="@font/cabin_regular"
         android:gravity="center"
-        android:includeFontPadding="false"
+        android:includeFontPadding="true"
         android:paddingTop="8dp"
         android:textColor="@android:color/darker_gray"
         android:paddingBottom="18dp"
