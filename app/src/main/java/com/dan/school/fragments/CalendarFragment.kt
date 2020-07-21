@@ -11,6 +11,7 @@ import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
+import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -24,6 +25,7 @@ import com.dan.school.models.EventList
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
+import com.kizitonwose.calendarview.model.InDateStyle
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
@@ -43,12 +45,13 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
     private val today = LocalDate.now()
     private lateinit var dataViewModel: DataViewModel
     private lateinit var parentEventListAdapter: ParentEventListAdapter
+    private lateinit var lastMonth: YearMonth
     private val events = mutableMapOf<LocalDate, EventList>()
 
     private val titleMonthFormatter = DateTimeFormatter.ofPattern("MMMM")
     private val titleMonthWithYearFormatter = DateTimeFormatter.ofPattern("MMM yyyy")
 
-    private var setSelectedToFirstDay = true
+    private var setSelectedToFirstDay = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,9 +87,9 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             init {
                 view.setOnClickListener {
                     if (day.owner == DayOwner.THIS_MONTH) {
-                        selectDate(day.date, false)
+                        selectDate(day.date)
                     } else {
-                        setSelectedToFirstDay = false
+                        setSelectedToFirstDay = true
                         selectDate(day.date, true)
                     }
                 }
@@ -155,6 +158,10 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
                         events[day.date]!!.hasCategory(School.EXAM)
                     container.viewTaskDotIndicator.isVisible =
                         events[day.date]!!.hasCategory(School.TASK)
+                } else {
+                    container.viewHomeworkDotIndicator.isVisible = false
+                    container.viewExamDotIndicator.isVisible = false
+                    container.viewTaskDotIndicator.isVisible = false
                 }
             }
         }
@@ -165,17 +172,28 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
         }
 
         calendarView.monthScrollListener = {
-            titleChangeListener.changeTitle(
-                if (it.year == today.year) {
-                    titleMonthFormatter.format(it.yearMonth)
+            if (calendarView.maxRowCount == 6) {
+                titleChangeListener.changeTitle(
+                    if (it.year == today.year) {
+                        titleMonthFormatter.format(it.yearMonth)
+                    } else {
+                        titleMonthWithYearFormatter.format(it.yearMonth)
+                    }
+                )
+                if (setSelectedToFirstDay) {
+                    selectDate(it.yearMonth.atDay(1))
                 } else {
-                    titleMonthWithYearFormatter.format(it.yearMonth)
+                    selectDate()
+                    setSelectedToFirstDay = true
                 }
-            )
-            if (setSelectedToFirstDay) {
-                selectDate(it.yearMonth.atDay(1), false)
             } else {
-                setSelectedToFirstDay = true
+                val firstDate = it.weekDays.first().first().date
+                val lastDate = it.weekDays.last().last().date
+                if (firstDate.yearMonth == lastDate.yearMonth) {
+                    titleChangeListener.changeTitle(titleMonthFormatter.format(firstDate))
+                } else {
+                    titleChangeListener.changeTitle("${titleMonthFormatter.format(firstDate)} - ${titleMonthFormatter.format(lastDate)}")
+                }
             }
         }
 
@@ -192,7 +210,7 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
 
         val currentMonth = YearMonth.now()
         val firstMonth = currentMonth.minusMonths(10)
-        val lastMonth = currentMonth.plusMonths(10)
+        lastMonth = currentMonth.plusMonths(10)
         val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
         calendarView.setup(firstMonth, lastMonth, firstDayOfWeek)
         calendarView.scrollToMonth(currentMonth)
@@ -247,7 +265,7 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
         }
     }
 
-    fun selectDate(date: LocalDate, scrollToMonth: Boolean) {
+    fun selectDate(date: LocalDate = LocalDate.now(), scrollToMonth: Boolean = false) {
         if (selectedDate == null) {
             selectedDate = LocalDate.now()
             calendarView.notifyDateChanged(date)
@@ -285,6 +303,38 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             titleMonthFormatter.format(month)
         } else {
             titleMonthWithYearFormatter.format(month)
+        }
+    }
+
+    fun setCalendarView(isMonthView: Boolean) {
+
+        val oneWeekHeight = calendarView.dayHeight
+        val oneMonthHeight = oneWeekHeight * 6
+
+        val newHeight = if (isMonthView) oneWeekHeight else oneMonthHeight
+
+        calendarView.updateLayoutParams {
+            height = newHeight
+        }
+
+        if (!isMonthView) {
+            calendarView.apply {
+                maxRowCount = 6
+                hasBoundaries = true
+            }
+        }
+        if (isMonthView) {
+            calendarView.apply {
+                maxRowCount = 1
+                hasBoundaries = true
+            }
+        }
+
+        if (isMonthView) {
+            calendarView.scrollToDate(selectedDate!!)
+        } else {
+            setSelectedToFirstDay = false
+            calendarView.scrollToMonth(selectedDate!!.yearMonth)
         }
     }
 }

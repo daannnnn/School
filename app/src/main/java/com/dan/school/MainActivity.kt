@@ -1,6 +1,7 @@
 package com.dan.school
 
 import android.os.Bundle
+import android.widget.CalendarView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.dan.school.fragments.*
@@ -21,6 +22,7 @@ class MainActivity : AppCompatActivity(),
 
     private var addBottomSheetDialogFragment: AddBottomSheetDialogFragment? = null
     private var lastSelectedAddCategory = School.HOMEWORK
+    private var isMonthView = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -59,6 +61,12 @@ class MainActivity : AppCompatActivity(),
         }
         buttonMenu.setOnClickListener {
             drawerLayout.openDrawer(GravityCompat.START)
+        }
+        buttonCalendarView.setOnClickListener {
+            if (supportFragmentManager.findFragmentByTag("calendar") != null) {
+                (supportFragmentManager.findFragmentByTag("calendar") as CalendarFragment).setCalendarView(isMonthView)
+                isMonthView = !isMonthView
+            }
         }
         navigationView.setNavigationItemSelectedListener { item ->
             if (!item.isChecked) {
