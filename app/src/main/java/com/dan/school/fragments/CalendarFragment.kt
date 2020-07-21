@@ -22,6 +22,7 @@ import com.dan.school.School
 import com.dan.school.adapters.ParentEventListAdapter
 import com.dan.school.models.Event
 import com.dan.school.models.EventList
+import com.kizitonwose.calendarview.CalendarView
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
@@ -50,6 +51,9 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
 
     private val titleMonthFormatter = DateTimeFormatter.ofPattern("MMMM")
     private val titleMonthWithYearFormatter = DateTimeFormatter.ofPattern("MMM yyyy")
+
+    private lateinit var displayMetrics: DisplayMetrics
+    private lateinit var dayView: View
 
     private var setSelectedToFirstDay = false
 
@@ -198,9 +202,9 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
         }
 
         // set calendar dayHeight and dayWidth
-        val displayMetrics = DisplayMetrics()
+        displayMetrics = DisplayMetrics()
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
-        val dayView = View.inflate(context, R.layout.layout_calendar_day, null)
+        dayView = View.inflate(context, R.layout.layout_calendar_day, null)
         val widthMeasureSpec =
             MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, MeasureSpec.AT_MOST)
         val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
@@ -308,8 +312,8 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
 
     fun setCalendarView(isMonthView: Boolean) {
 
-        val oneWeekHeight = calendarView.dayHeight
-        val oneMonthHeight = oneWeekHeight * 6
+        val oneWeekHeight = calendarView.dayWidth
+        val oneMonthHeight = calendarView.dayHeight * 6
 
         val newHeight = if (isMonthView) oneWeekHeight else oneMonthHeight
 
@@ -326,7 +330,7 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
         if (isMonthView) {
             calendarView.apply {
                 maxRowCount = 1
-                hasBoundaries = true
+                hasBoundaries = false
             }
         }
 
