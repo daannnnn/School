@@ -3,13 +3,11 @@ package com.dan.school.fragments
 import android.app.Activity
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.widget.ImageView
-import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.view.isVisible
@@ -38,13 +36,13 @@ import java.time.format.DateTimeFormatter
 import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.collections.ArrayList
-import kotlin.collections.HashMap
 
 class CalendarFragment(private val titleChangeListener: TitleChangeListener) : Fragment() {
 
     private var selectedDate: LocalDate? = null
     private val today = LocalDate.now()
     private lateinit var dataViewModel: DataViewModel
+    private lateinit var parentEventListAdapter: ParentEventListAdapter
     private val events = mutableMapOf<LocalDate, EventList>()
 
     private val titleMonthFormatter = DateTimeFormatter.ofPattern("MMMM")
@@ -55,6 +53,10 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
+        parentEventListAdapter = ParentEventListAdapter(
+            ArrayList(),
+            requireContext()
+        )
     }
 
     override fun onCreateView(
@@ -66,6 +68,9 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        recyclerViewEventsParent.layoutManager = LinearLayoutManager(requireContext())
+        recyclerViewEventsParent.adapter = parentEventListAdapter
 
         // [START] CalendarView setup
         class DayViewContainer(view: View) : ViewContainer(view) {
@@ -220,8 +225,6 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             }
         })
 
-        recyclerViewEventsParent.layoutManager = LinearLayoutManager(requireContext())
-
     }
 
     private fun addEventToDate(localDate: LocalDate, event: Event) {
@@ -239,10 +242,8 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             calendarView.notifyDateChanged(localDate)
         }
         if (selectedDate == localDate) {
-            recyclerViewEventsParent.adapter = ParentEventListAdapter(
-                events[localDate]?.getCategorySortedList()!!,
-                requireContext()
-            )
+            parentEventListAdapter.events = events[localDate]?.getCategorySortedList()!!
+            parentEventListAdapter.notifyDataSetChanged()
         }
     }
 
@@ -251,11 +252,8 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             selectedDate = LocalDate.now()
             calendarView.notifyDateChanged(date)
             if (events[date] != null) {
-                recyclerViewEventsParent.adapter =
-                    ParentEventListAdapter(
-                        events[date]?.getCategorySortedList()!!,
-                        requireContext()
-                    )
+                parentEventListAdapter.events = events[date]?.getCategorySortedList()!!
+                parentEventListAdapter.notifyDataSetChanged()
             }
         } else {
             if (selectedDate != date) {
@@ -267,11 +265,11 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
                 calendarView.notifyDateChanged(date)
                 oldDate?.let { it -> calendarView.notifyDateChanged(it) }
                 if (events[date] != null) {
-                    recyclerViewEventsParent.adapter =
-                        ParentEventListAdapter(
-                            events[date]?.getCategorySortedList()!!,
-                            requireContext()
-                        )
+                    parentEventListAdapter.events = events[date]?.getCategorySortedList()!!
+                    parentEventListAdapter.notifyDataSetChanged()
+                } else {
+                    parentEventListAdapter.events.clear()
+                    parentEventListAdapter.notifyDataSetChanged()
                 }
             }
         }

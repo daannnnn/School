@@ -15,7 +15,7 @@ import com.dan.school.fragments.CalendarFragment
 import com.dan.school.models.CategoryEventList
 
 class ParentEventListAdapter(
-    private val events: ArrayList<CategoryEventList>,
+    var events: ArrayList<CategoryEventList>,
     private val context: Context
 ) :
     RecyclerView.Adapter<ParentEventListAdapter.EventViewHolder>() {
