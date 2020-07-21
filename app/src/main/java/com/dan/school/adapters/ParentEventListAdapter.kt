@@ -4,6 +4,7 @@ import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.TextView
 import androidx.lifecycle.LifecycleOwner
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -20,12 +21,14 @@ class ParentEventListAdapter(
 ) :
     RecyclerView.Adapter<ParentEventListAdapter.EventViewHolder>() {
 
-    class EventViewHolder(view: View): RecyclerView.ViewHolder(view) {
+    class EventViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val recyclerViewEventsChild: RecyclerView = view.findViewById(R.id.recyclerViewEventsChild)
+        val textViewCategory: TextView = view.findViewById(R.id.textViewCategory)
     }
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): EventViewHolder {
-        val view = LayoutInflater.from(context).inflate(R.layout.layout_events_parent_recycler_view, parent, false)
+        val view = LayoutInflater.from(context)
+            .inflate(R.layout.layout_events_parent_recycler_view, parent, false)
         return EventViewHolder(view)
     }
 
@@ -39,6 +42,18 @@ class ParentEventListAdapter(
             layoutManager = LinearLayoutManager(context)
             adapter = childEventListAdapter
         }
+        holder.textViewCategory.text =
+            when (events[position].category) {
+                School.HOMEWORK -> {
+                    "Homework"
+                }
+                School.EXAM -> {
+                    "Exam"
+                }
+                else -> {
+                    "Task"
+                }
+            }
     }
 
 
