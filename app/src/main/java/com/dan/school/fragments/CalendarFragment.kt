@@ -74,7 +74,7 @@ class CalendarFragment(
     private lateinit var displayMetrics: DisplayMetrics
     private lateinit var dayView: View
 
-    private var setSelectedToFirstDay = false
+    private var calendarScrolled = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -115,7 +115,7 @@ class CalendarFragment(
                     if (day.owner == DayOwner.THIS_MONTH) {
                         selectDate(day.date)
                     } else {
-                        setSelectedToFirstDay = true
+                        calendarScrolled = false
                         selectDate(day.date, true)
                     }
                 }
@@ -206,11 +206,15 @@ class CalendarFragment(
                         titleMonthWithYearFormatter.format(it.yearMonth)
                     }
                 )
-                if (setSelectedToFirstDay) {
+                if (calendarScrolled) {
                     selectDate(it.yearMonth.atDay(1))
                 } else {
-                    selectDate()
-                    setSelectedToFirstDay = true
+                    if (selectedDate == null) {
+                        selectDate()
+                    } else {
+                        selectDate(selectedDate!!)
+                    }
+                    calendarScrolled = true
                 }
             } else {
                 val firstDate = it.weekDays.first().first().date
@@ -380,7 +384,7 @@ class CalendarFragment(
         if (isMonthView) {
             calendarView.scrollToDate(selectedDate!!)
         } else {
-            setSelectedToFirstDay = false
+            calendarScrolled = false
             calendarView.scrollToMonth(selectedDate!!.yearMonth)
         }
     }
