@@ -2,6 +2,7 @@ package com.dan.school
 
 import android.os.Bundle
 import android.util.Log
+import android.view.View
 import android.widget.CalendarView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -128,6 +129,7 @@ class MainActivity : AppCompatActivity(),
             }
             lastSelectedAddCategory =
                 (supportFragmentManager.findFragmentByTag("home") as HomeFragment).getSelectedTabPosition()
+            buttonCalendarView.visibility = View.GONE
         } else if (tag == "calendar") {
             if (supportFragmentManager.findFragmentByTag("calendar") != null) {
                 supportFragmentManager.beginTransaction()
@@ -149,6 +151,7 @@ class MainActivity : AppCompatActivity(),
                 supportFragmentManager.beginTransaction()
                     .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
             }
+            buttonCalendarView.visibility = View.VISIBLE
         } else if (tag == "agenda") {
             if (supportFragmentManager.findFragmentByTag("agenda") != null) {
                 supportFragmentManager.beginTransaction()
@@ -168,6 +171,7 @@ class MainActivity : AppCompatActivity(),
                 supportFragmentManager.beginTransaction()
                     .hide(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
             }
+            buttonCalendarView.visibility = View.GONE
         }
     }
 
