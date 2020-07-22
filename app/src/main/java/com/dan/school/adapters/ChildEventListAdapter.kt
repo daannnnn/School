@@ -3,14 +3,17 @@ package com.dan.school.adapters
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.RecyclerView
 import com.dan.school.ItemViewHolder
 import com.dan.school.R
 import com.dan.school.models.Event
-import java.util.ArrayList
+import com.dan.school.models.Subtask
+import java.util.*
 
 class ChildEventListAdapter(
     private val itemClickListener: ItemClickListener,
+    private val showSubtasksListener: ShowSubtasksListener,
     private val events: ArrayList<Event>,
     private val context: Context
 ) :
@@ -43,13 +46,27 @@ class ChildEventListAdapter(
         } else {
             holder.buttonCheckItem.setImageResource(categoryUncheckedIcons[events[position].category])
         }
+        holder.buttonSubtask.isVisible = events[position].subtasks.isNotEmpty()
+
+        holder.buttonSubtask.setOnClickListener {
+            showSubtasksListener.showSubtasks(
+                events[holder.bindingAdapterPosition].subtasks,
+                events[holder.bindingAdapterPosition].title,
+                events[holder.bindingAdapterPosition].id,
+                events[holder.bindingAdapterPosition].category
+            )
+        }
         holder.textViewItem.text = events[position].title
         holder.buttonCheckItem.setOnClickListener {
-            itemClickListener.itemClicked(events[position].id, !events[position].done)
+            itemClickListener.itemClicked(events[holder.bindingAdapterPosition].id, !events[position].done)
         }
     }
 
     interface ItemClickListener {
         fun itemClicked(id: Int, done: Boolean)
+    }
+
+    interface ShowSubtasksListener {
+        fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: Int, category: Int)
     }
 }

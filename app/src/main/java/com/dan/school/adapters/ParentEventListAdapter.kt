@@ -14,14 +14,16 @@ import com.dan.school.R
 import com.dan.school.School
 import com.dan.school.fragments.CalendarFragment
 import com.dan.school.models.CategoryEventList
+import com.dan.school.models.Subtask
 
 class ParentEventListAdapter(
     var events: ArrayList<CategoryEventList>,
     private val context: Context,
-    private val itemClicked: ItemClickListener
+    private val itemClicked: ItemClickListener,
+    private val showSubtasksListener: ShowSubtasksListener
 ) :
     RecyclerView.Adapter<ParentEventListAdapter.EventViewHolder>(),
-    ChildEventListAdapter.ItemClickListener {
+    ChildEventListAdapter.ItemClickListener, ChildEventListAdapter.ShowSubtasksListener {
 
     class EventViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val recyclerViewEventsChild: RecyclerView = view.findViewById(R.id.recyclerViewEventsChild)
@@ -39,7 +41,7 @@ class ParentEventListAdapter(
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        val childEventListAdapter = ChildEventListAdapter(this, events[position].events, context)
+        val childEventListAdapter = ChildEventListAdapter(this, this, events[position].events, context)
         holder.recyclerViewEventsChild.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = childEventListAdapter
@@ -64,6 +66,14 @@ class ParentEventListAdapter(
 
     override fun itemClicked(id: Int, done: Boolean) {
         itemClicked.itemClicked(id, done)
+    }
+
+    override fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: Int, category: Int) {
+        showSubtasksListener.showSubtasks(subtasks, itemTitle, id, category)
+    }
+
+    interface ShowSubtasksListener {
+        fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: Int, category: Int)
     }
 
 }
