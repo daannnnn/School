@@ -31,6 +31,7 @@ class MainActivity : AppCompatActivity(),
         setContentView(R.layout.activity_main)
 
         navigationView.menu.getItem(0).isChecked = true
+        setButtonCalendarViewBackground()
 
         // Listeners
         floatingActionButton.setOnClickListener {
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity(),
             if (supportFragmentManager.findFragmentByTag("calendar") != null) {
                 (supportFragmentManager.findFragmentByTag("calendar") as CalendarFragment).setCalendarView(isMonthView)
                 isMonthView = !isMonthView
+                setButtonCalendarViewBackground()
             }
         }
         navigationView.setNavigationItemSelectedListener { item ->
@@ -99,6 +101,14 @@ class MainActivity : AppCompatActivity(),
                 R.id.frameLayoutBottomNavigation,
                 CalendarFragment(this, this), "calendar"
             ).commit()
+    }
+
+    private fun setButtonCalendarViewBackground() {
+        if (isMonthView) {
+            buttonCalendarView.setImageResource(R.drawable.ic_week_view)
+        } else {
+            buttonCalendarView.setImageResource(R.drawable.ic_month_view)
+        }
     }
 
     private fun setFragment(tag: String) {

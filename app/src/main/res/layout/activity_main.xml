@@ -53,8 +53,7 @@
                     android:layout_margin="16dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:scaleType="centerInside"
-                    android:layout_alignParentEnd="true"
-                    android:src="@drawable/ic_menu" />
+                    android:layout_alignParentEnd="true" />
 
             </RelativeLayout>
 
