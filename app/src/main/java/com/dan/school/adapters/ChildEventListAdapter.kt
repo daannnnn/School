@@ -9,7 +9,11 @@ import com.dan.school.R
 import com.dan.school.models.Event
 import java.util.ArrayList
 
-class ChildEventListAdapter(private val events: ArrayList<Event>, private val context: Context) :
+class ChildEventListAdapter(
+    private val itemClickListener: ItemClickListener,
+    private val events: ArrayList<Event>,
+    private val context: Context
+) :
     RecyclerView.Adapter<ItemViewHolder>() {
 
     private val categoryCheckedIcons = arrayOf(
@@ -40,5 +44,12 @@ class ChildEventListAdapter(private val events: ArrayList<Event>, private val co
             holder.buttonCheckItem.setImageResource(categoryUncheckedIcons[events[position].category])
         }
         holder.textViewItem.text = events[position].title
+        holder.buttonCheckItem.setOnClickListener {
+            itemClickListener.itemClicked(events[position].id, !events[position].done)
+        }
+    }
+
+    interface ItemClickListener {
+        fun itemClicked(id: Int, done: Boolean)
     }
 }

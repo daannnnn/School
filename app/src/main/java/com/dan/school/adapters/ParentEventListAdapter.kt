@@ -17,9 +17,11 @@ import com.dan.school.models.CategoryEventList
 
 class ParentEventListAdapter(
     var events: ArrayList<CategoryEventList>,
-    private val context: Context
+    private val context: Context,
+    private val itemClicked: ItemClickListener
 ) :
-    RecyclerView.Adapter<ParentEventListAdapter.EventViewHolder>() {
+    RecyclerView.Adapter<ParentEventListAdapter.EventViewHolder>(),
+    ChildEventListAdapter.ItemClickListener {
 
     class EventViewHolder(view: View) : RecyclerView.ViewHolder(view) {
         val recyclerViewEventsChild: RecyclerView = view.findViewById(R.id.recyclerViewEventsChild)
@@ -37,7 +39,7 @@ class ParentEventListAdapter(
     }
 
     override fun onBindViewHolder(holder: EventViewHolder, position: Int) {
-        val childEventListAdapter = ChildEventListAdapter(events[position].events, context)
+        val childEventListAdapter = ChildEventListAdapter(this, events[position].events, context)
         holder.recyclerViewEventsChild.apply {
             layoutManager = LinearLayoutManager(context)
             adapter = childEventListAdapter
@@ -56,5 +58,12 @@ class ParentEventListAdapter(
             }
     }
 
+    interface ItemClickListener {
+        fun itemClicked(id: Int, done: Boolean)
+    }
+
+    override fun itemClicked(id: Int, done: Boolean) {
+        itemClicked.itemClicked(id, done)
+    }
 
 }

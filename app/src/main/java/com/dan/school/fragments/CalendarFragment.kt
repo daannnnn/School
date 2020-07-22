@@ -3,6 +3,7 @@ package com.dan.school.fragments
 import android.app.Activity
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.MeasureSpec
@@ -22,6 +23,7 @@ import com.dan.school.School
 import com.dan.school.adapters.ParentEventListAdapter
 import com.dan.school.models.Event
 import com.dan.school.models.EventList
+import com.dan.school.models.Subtask
 import com.kizitonwose.calendarview.CalendarView
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
@@ -40,7 +42,8 @@ import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CalendarFragment(private val titleChangeListener: TitleChangeListener) : Fragment() {
+class CalendarFragment(private val titleChangeListener: TitleChangeListener) : Fragment(),
+    ParentEventListAdapter.ItemClickListener {
 
     private var selectedDate: LocalDate? = null
     private val today = LocalDate.now()
@@ -62,7 +65,8 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
         dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
         parentEventListAdapter = ParentEventListAdapter(
             ArrayList(),
-            requireContext()
+            requireContext(),
+            this
         )
     }
 
@@ -340,5 +344,9 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             setSelectedToFirstDay = false
             calendarView.scrollToMonth(selectedDate!!.yearMonth)
         }
+    }
+
+    override fun itemClicked(id: Int, done: Boolean) {
+        dataViewModel.setDone(id, done)
     }
 }
