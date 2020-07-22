@@ -24,6 +24,9 @@ interface ItemDao {
     @Query("SELECT date, id, title, subtasks, done from items WHERE category=:category")
     fun getAllItemOnDateByCategory(category: Int): LiveData<List<DateItem>>
 
+    @Query("SELECT * FROM items WHERE id=:id")
+    suspend fun getItemById(id: Int): Item
+
     @Insert
     fun insert(item: Item)
 

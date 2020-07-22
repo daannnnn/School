@@ -1,6 +1,7 @@
 package com.dan.school
 
 import android.os.Bundle
+import android.util.Log
 import android.widget.CalendarView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -18,7 +19,8 @@ class MainActivity : AppCompatActivity(),
     SettingsFragment.OnDismissListener,
     AddBottomSheetDialogFragment.SelectedCategoryChangeListener,
     HomeFragment.SelectedTabChangeListener, EditFragment.CategoryChangeListener,
-    HomeFragment.ItemClickListener, CalendarFragment.TitleChangeListener {
+    HomeFragment.ItemClickListener, CalendarFragment.TitleChangeListener,
+    CalendarFragment.CalendarItemClickListener {
 
     private var addBottomSheetDialogFragment: AddBottomSheetDialogFragment? = null
     private var lastSelectedAddCategory = School.HOMEWORK
@@ -95,7 +97,7 @@ class MainActivity : AppCompatActivity(),
         supportFragmentManager.beginTransaction()
             .add(
                 R.id.frameLayoutBottomNavigation,
-                CalendarFragment(this), "calendar"
+                CalendarFragment(this, this), "calendar"
             ).commit()
     }
 
@@ -131,7 +133,7 @@ class MainActivity : AppCompatActivity(),
                 supportFragmentManager.beginTransaction()
                     .add(
                         R.id.frameLayoutBottomNavigation,
-                        CalendarFragment(this), "calendar"
+                        CalendarFragment(this, this), "calendar"
                     ).commit()
             }
             if (supportFragmentManager.findFragmentByTag("home") != null) {
@@ -237,6 +239,20 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun itemClicked(item: Item) {
+        val calendar = Calendar.getInstance()
+        calendar.time = SimpleDateFormat(School.dateFormat, Locale.getDefault()).parse(item.date)!!
+        showEditFragment(
+            item.category,
+            item.title,
+            item.subtasks,
+            item.reminders,
+            item.notes,
+            calendar,
+            item.id
+        )
+    }
+
+    override fun calendarItemClicked(item: Item) {
         val calendar = Calendar.getInstance()
         calendar.time = SimpleDateFormat(School.dateFormat, Locale.getDefault()).parse(item.date)!!
         showEditFragment(

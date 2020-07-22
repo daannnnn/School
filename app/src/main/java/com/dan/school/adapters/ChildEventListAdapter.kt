@@ -8,12 +8,14 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dan.school.ItemViewHolder
 import com.dan.school.R
 import com.dan.school.models.Event
+import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import java.util.*
 
 class ChildEventListAdapter(
-    private val itemClickListener: ItemClickListener,
+    private val doneListener: DoneListener,
     private val showSubtasksListener: ShowSubtasksListener,
+    private val calendarItemClickListener: CalendarItemClickListener,
     private val events: ArrayList<Event>,
     private val context: Context
 ) :
@@ -56,17 +58,24 @@ class ChildEventListAdapter(
                 events[holder.bindingAdapterPosition].category
             )
         }
+        holder.itemView.setOnClickListener {
+            calendarItemClickListener.calendarItemClicked(events[holder.bindingAdapterPosition].id)
+        }
         holder.textViewItem.text = events[position].title
         holder.buttonCheckItem.setOnClickListener {
-            itemClickListener.itemClicked(events[holder.bindingAdapterPosition].id, !events[position].done)
+            doneListener.setDone(events[holder.bindingAdapterPosition].id, !events[position].done)
         }
     }
 
-    interface ItemClickListener {
-        fun itemClicked(id: Int, done: Boolean)
+    interface DoneListener {
+        fun setDone(id: Int, done: Boolean)
     }
 
     interface ShowSubtasksListener {
         fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: Int, category: Int)
+    }
+
+    interface CalendarItemClickListener {
+        fun calendarItemClicked(id: Int)
     }
 }

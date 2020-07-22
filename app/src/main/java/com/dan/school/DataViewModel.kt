@@ -1,14 +1,14 @@
 package com.dan.school
 
 import android.app.Application
+import android.os.AsyncTask
 import androidx.lifecycle.AndroidViewModel
 import androidx.lifecycle.LiveData
 import androidx.lifecycle.viewModelScope
 import com.dan.school.models.DateItem
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -56,5 +56,9 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
 
     fun delete(item: Item) = viewModelScope.launch(Dispatchers.IO) {
         itemRepository.delete(item)
+    }
+
+    fun getItemById(id: Int): Item = runBlocking {
+        itemRepository.getItemById(id)
     }
 }

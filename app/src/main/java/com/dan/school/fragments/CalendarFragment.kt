@@ -23,6 +23,7 @@ import com.dan.school.School
 import com.dan.school.adapters.ParentEventListAdapter
 import com.dan.school.models.Event
 import com.dan.school.models.EventList
+import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.kizitonwose.calendarview.CalendarView
 import com.kizitonwose.calendarview.model.CalendarDay
@@ -42,8 +43,12 @@ import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CalendarFragment(private val titleChangeListener: TitleChangeListener) : Fragment(),
-    ParentEventListAdapter.ItemClickListener, ParentEventListAdapter.ShowSubtasksListener {
+class CalendarFragment(
+    private val titleChangeListener: TitleChangeListener,
+    private val calendarItemClickListener: CalendarItemClickListener
+) : Fragment(),
+    ParentEventListAdapter.CalendarItemClickListener, ParentEventListAdapter.ShowSubtasksListener,
+    ParentEventListAdapter.DoneListener {
 
     private val categoryCheckedIcons = arrayOf(
         R.drawable.ic_homework_checked,
@@ -77,6 +82,7 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
         parentEventListAdapter = ParentEventListAdapter(
             ArrayList(),
             requireContext(),
+            this,
             this,
             this
         )
@@ -212,7 +218,11 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
                 if (firstDate.yearMonth == lastDate.yearMonth) {
                     titleChangeListener.changeTitle(titleMonthFormatter.format(firstDate))
                 } else {
-                    titleChangeListener.changeTitle("${titleMonthFormatter.format(firstDate)} - ${titleMonthFormatter.format(lastDate)}")
+                    titleChangeListener.changeTitle(
+                        "${titleMonthFormatter.format(firstDate)} - ${titleMonthFormatter.format(
+                            lastDate
+                        )}"
+                    )
                 }
             }
         }
@@ -240,7 +250,13 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             for (dateItem in dateItems) {
                 val localDate =
                     dateItem.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                val event = Event(dateItem.id, dateItem.title, School.HOMEWORK, dateItem.subtasks, dateItem.done)
+                val event = Event(
+                    dateItem.id,
+                    dateItem.title,
+                    School.HOMEWORK,
+                    dateItem.subtasks,
+                    dateItem.done
+                )
                 addEventToDate(localDate, event)
             }
         })
@@ -249,7 +265,13 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             for (dateItem in dateItems) {
                 val localDate =
                     dateItem.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                val event = Event(dateItem.id, dateItem.title, School.EXAM, dateItem.subtasks, dateItem.done)
+                val event = Event(
+                    dateItem.id,
+                    dateItem.title,
+                    School.EXAM,
+                    dateItem.subtasks,
+                    dateItem.done
+                )
                 addEventToDate(localDate, event)
             }
         })
@@ -258,7 +280,13 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             for (dateItem in dateItems) {
                 val localDate =
                     dateItem.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                val event = Event(dateItem.id, dateItem.title, School.TASK, dateItem.subtasks, dateItem.done)
+                val event = Event(
+                    dateItem.id,
+                    dateItem.title,
+                    School.TASK,
+                    dateItem.subtasks,
+                    dateItem.done
+                )
                 addEventToDate(localDate, event)
             }
         })
@@ -270,8 +298,7 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             events[localDate] = EventList()
         }
         if (!events[localDate]!!.contains(event)) {
-            val eventInvertDone = Event(event.id, event.title, event.category, event.subtasks, !event.done)
-            val index = events[localDate]!!.indexOf(eventInvertDone)
+            val index = events[localDate]!!.indexOfItemWithId(event.id)
             if (index != -1) {
                 events[localDate]!![index] = event
             } else {
@@ -358,11 +385,16 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
         }
     }
 
-    override fun itemClicked(id: Int, done: Boolean) {
+    override fun setDone(id: Int, done: Boolean) {
         dataViewModel.setDone(id, done)
     }
 
-    override fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: Int, category: Int) {
+    override fun showSubtasks(
+        subtasks: ArrayList<Subtask>,
+        itemTitle: String,
+        id: Int,
+        category: Int
+    ) {
         SubtasksBottomSheetDialogFragment(
             subtasks,
             itemTitle,
@@ -373,5 +405,13 @@ class CalendarFragment(private val titleChangeListener: TitleChangeListener) : F
             childFragmentManager,
             "subtasksBottomSheet"
         )
+    }
+
+    override fun calendarItemClicked(id: Int) {
+        calendarItemClickListener.calendarItemClicked(dataViewModel.getItemById(id))
+    }
+
+    interface CalendarItemClickListener {
+        fun calendarItemClicked(item: Item)
     }
 }

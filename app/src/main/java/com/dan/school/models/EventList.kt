@@ -42,4 +42,13 @@ class EventList: ArrayList<Event>() {
         }
         return lists
     }
+
+    fun indexOfItemWithId(id: Int): Int {
+        for (index in 0 until this.size) {
+            if (this[index].id == id) {
+                return index
+            }
+        }
+        return -1
+    }
 }

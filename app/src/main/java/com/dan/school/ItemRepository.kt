@@ -4,6 +4,8 @@ import androidx.lifecycle.LiveData
 import com.dan.school.models.DateItem
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.withContext
 import kotlin.collections.ArrayList
 
 class ItemRepository(private val itemDao: ItemDao) {
@@ -29,5 +31,8 @@ class ItemRepository(private val itemDao: ItemDao) {
     }
     fun delete(item: Item) {
         itemDao.delete(item)
+    }
+    suspend fun getItemById(id: Int) = withContext(Dispatchers.IO) {
+        itemDao.getItemById(id)
     }
 }
