@@ -48,7 +48,7 @@
             android:layout_marginEnd="24dp"
             android:elevation="0dp"
             android:outlineProvider="none"
-            android:visibility="visible"
+            android:visibility="gone"
             app:cardBackgroundColor="@color/colorPrimaryAlpha70"
             app:cardCornerRadius="8dp"
             app:layout_constraintEnd_toEndOf="parent"
@@ -83,7 +83,6 @@
                     android:id="@+id/buttonSeeTomorrow"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="wrap_content"
-                    app:strokeColor="#1FFFFFFF"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
@@ -98,7 +97,8 @@
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textViewMessage" />
+                    app:layout_constraintTop_toBottomOf="@id/textViewMessage"
+                    app:strokeColor="#1FFFFFFF" />
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
@@ -299,6 +299,34 @@
             </LinearLayout>
 
         </com.google.android.material.card.MaterialCardView>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupOverdue"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="cardViewOverdue, imageViewOverdueIcon, textViewOverdueLabel" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupHomework"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="cardViewHomework, imageViewHomeworkIcon, textViewHomeworkLabel" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupExam"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="cardViewExam, imageViewExamIcon, textViewExamLabel" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupTask"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="cardViewTask, imageViewTaskIcon, textViewTaskLabel" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 
