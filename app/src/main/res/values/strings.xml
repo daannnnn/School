@@ -39,6 +39,7 @@
     <string name="tue">TUE</string>
     <string name="mon">MON</string>
     <string name="sun">SUN</string>
-    <string name="see_what_s_for_tomorrow">See what\'s for tomorrow\?</string>
+    <string name="see_what_s_for_tomorrow">See what\'s for tomorrow?</string>
     <string name="overdue">Overdue</string>
+    <string name="you_don_t_have_anything_scheduled_for_today">You don\'t have anything scheduled for today!</string>
 </resources>

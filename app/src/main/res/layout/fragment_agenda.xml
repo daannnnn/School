@@ -46,7 +46,10 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="24dp"
             android:layout_marginEnd="24dp"
+            android:elevation="0dp"
+            android:outlineProvider="none"
             android:visibility="visible"
+            app:cardBackgroundColor="@color/colorPrimaryAlpha70"
             app:cardCornerRadius="8dp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
@@ -67,19 +70,20 @@
                     android:layout_marginEnd="24dp"
                     android:fontFamily="@font/cabin_regular"
                     android:gravity="center"
-                    android:textColor="@color/colorPrimaryAlpha70"
+                    android:text="@string/you_don_t_have_anything_scheduled_for_today"
+                    android:textColor="@android:color/white"
                     android:textSize="18sp"
                     app:layout_constraintBottom_toTopOf="@id/buttonSeeTomorrow"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent"
-                    app:layout_goneMarginBottom="16dp"
-                    tools:text="You don't have anything scheduled for today!" />
+                    app:layout_goneMarginBottom="16dp" />
 
                 <Button
                     android:id="@+id/buttonSeeTomorrow"
                     style="@style/Widget.MaterialComponents.Button.OutlinedButton"
                     android:layout_width="wrap_content"
+                    app:strokeColor="#1FFFFFFF"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="16dp"
                     android:layout_marginTop="16dp"
@@ -88,6 +92,7 @@
                     android:fontFamily="@font/cabin_bold"
                     android:text="@string/see_what_s_for_tomorrow"
                     android:textAllCaps="false"
+                    android:textColor="@android:color/white"
                     android:textSize="16sp"
                     android:visibility="visible"
                     app:layout_constraintBottom_toBottomOf="parent"
@@ -115,7 +120,7 @@
             android:id="@+id/textViewOverdueLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="16dp"
+            android:layout_marginTop="24dp"
             android:layout_marginEnd="24dp"
             android:fontFamily="@font/cabin_bold"
             android:text="@string/overdue"
@@ -131,14 +136,14 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
             android:elevation="0dp"
             android:outlineProvider="none"
-            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/cardViewRedBackgroundColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewOverdueLabel"
-            app:cardBackgroundColor="@color/cardViewRedBackgroundColor">
+            app:layout_constraintTop_toBottomOf="@id/textViewOverdueLabel">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -180,14 +185,14 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
             android:elevation="0dp"
             android:outlineProvider="none"
-            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/cardViewHomeworkBackgroundColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewHomeworkLabel"
-            app:cardBackgroundColor="@color/cardViewHomeworkColor">
+            app:layout_constraintTop_toBottomOf="@id/textViewHomeworkLabel">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -213,7 +218,7 @@
             android:id="@+id/textViewExamLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:fontFamily="@font/cabin_bold"
             android:text="@string/exam"
@@ -229,14 +234,14 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
             android:elevation="0dp"
             android:outlineProvider="none"
-            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/cardViewExamBackgroundColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewExamLabel"
-            app:cardBackgroundColor="@color/cardViewExamColor">
+            app:layout_constraintTop_toBottomOf="@id/textViewExamLabel">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -262,7 +267,7 @@
             android:id="@+id/textViewTaskLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginTop="8dp"
+            android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:fontFamily="@font/cabin_bold"
             android:text="@string/task"
@@ -278,14 +283,14 @@
             android:layout_width="match_parent"
             android:layout_height="100dp"
             android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
             android:elevation="0dp"
             android:outlineProvider="none"
-            android:layout_marginTop="8dp"
+            app:cardBackgroundColor="@color/cardViewTaskBackgroundColor"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewTaskLabel"
-            app:cardBackgroundColor="@color/cardViewTaskColor">
+            app:layout_constraintTop_toBottomOf="@id/textViewTaskLabel">
 
             <LinearLayout
                 android:layout_width="match_parent"
