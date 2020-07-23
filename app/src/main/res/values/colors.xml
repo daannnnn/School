@@ -21,4 +21,7 @@
     <color name="chipSelectedHomeworkColor">#4DE17055</color>
     <color name="chipSelectedExamColor">#4D00B894</color>
     <color name="chipSelectedTaskColor">#4D8534FF</color>
+
+    <color name="colorPrimaryAlpha70">#B3005287</color>
+    <color name="strokeColor">#1F000000</color>
 </resources>
