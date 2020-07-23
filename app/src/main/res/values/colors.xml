@@ -22,6 +22,13 @@
     <color name="chipSelectedExamColor">#4D00B894</color>
     <color name="chipSelectedTaskColor">#4D8534FF</color>
 
+    <color name="cardViewHomeworkColor">#FAF1EE</color>
+    <color name="cardViewExamColor">#E8F7F4</color>
+    <color name="cardViewTaskColor">#F2ECFC</color>
+    <color name="cardViewBackgroundColor">#F5F5F5</color>
+    <color name="cardViewRedBackgroundColor">#F9DBD9</color>
     <color name="colorPrimaryAlpha70">#B3005287</color>
     <color name="strokeColor">#1F000000</color>
+
+    <color name="red">#f44336</color>
 </resources>

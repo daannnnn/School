@@ -1,98 +1,300 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.AgendaFragment">
 
-    <TextView
-        android:id="@+id/textViewGreeting"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:layout_marginEnd="24dp"
-        android:fontFamily="@font/cabin_bold"
-        android:textColor="@color/colorPrimary"
-        android:textSize="28sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        tools:text="Good Morning, Dan!" />
-
-    <TextView
-        android:id="@+id/textViewDate"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:fontFamily="@font/cabin_bold"
-        android:textColor="#8A000000"
-        android:textSize="18sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewGreeting"
-        tools:text="Thursday, July 23, 2020" />
-
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardViewMessage"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="24dp"
-        android:layout_marginEnd="24dp"
-        android:visibility="visible"
-        app:cardCornerRadius="8dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewDate">
+        android:layout_height="wrap_content">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
+        <TextView
+            android:id="@+id/textViewGreeting"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:fontFamily="@font/cabin_bold"
+            android:textColor="@color/colorPrimary"
+            android:textSize="28sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            tools:text="Good Morning, Dan!" />
+
+        <TextView
+            android:id="@+id/textViewDate"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:fontFamily="@font/cabin_bold"
+            android:textColor="#8A000000"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewGreeting"
+            tools:text="Thursday, July 23, 2020" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardViewMessage"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:gravity="center"
-            android:orientation="vertical">
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:visibility="visible"
+            app:cardCornerRadius="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewDate">
 
-            <TextView
-                android:id="@+id/textViewMessage"
-                android:layout_width="0dp"
+            <androidx.constraintlayout.widget.ConstraintLayout
+                android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="24dp"
-                android:fontFamily="@font/cabin_regular"
                 android:gravity="center"
-                app:layout_goneMarginBottom="16dp"
-                android:textColor="@color/colorPrimaryAlpha70"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintBottom_toTopOf="@id/buttonSeeTomorrow"
-                tools:text="You don't have anything scheduled for today!" />
+                android:orientation="vertical">
 
-            <Button
-                android:id="@+id/buttonSeeTomorrow"
-                style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="16dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="16dp"
-                android:layout_marginBottom="16dp"
-                android:fontFamily="@font/cabin_bold"
-                android:text="@string/see_what_s_for_tomorrow"
-                android:textAllCaps="false"
-                android:textSize="16sp"
-                android:visibility="visible"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewMessage" />
+                <TextView
+                    android:id="@+id/textViewMessage"
+                    android:layout_width="0dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
+                    android:fontFamily="@font/cabin_regular"
+                    android:gravity="center"
+                    android:textColor="@color/colorPrimaryAlpha70"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toTopOf="@id/buttonSeeTomorrow"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_goneMarginBottom="16dp"
+                    tools:text="You don't have anything scheduled for today!" />
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
+                <Button
+                    android:id="@+id/buttonSeeTomorrow"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginStart="16dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="16dp"
+                    android:layout_marginBottom="16dp"
+                    android:fontFamily="@font/cabin_bold"
+                    android:text="@string/see_what_s_for_tomorrow"
+                    android:textAllCaps="false"
+                    android:textSize="16sp"
+                    android:visibility="visible"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewMessage" />
 
-    </com.google.android.material.card.MaterialCardView>
+            </androidx.constraintlayout.widget.ConstraintLayout>
 
-</androidx.constraintlayout.widget.ConstraintLayout>
+        </com.google.android.material.card.MaterialCardView>
+
+        <ImageView
+            android:id="@+id/imageViewOverdueIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/ic_overdue"
+            android:tint="@color/red"
+            app:layout_constraintBottom_toBottomOf="@id/textViewOverdueLabel"
+            app:layout_constraintDimensionRatio="W,1,1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textViewOverdueLabel" />
+
+        <TextView
+            android:id="@+id/textViewOverdueLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:fontFamily="@font/cabin_bold"
+            android:text="@string/overdue"
+            android:textAllCaps="true"
+            android:textColor="@color/red"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/imageViewOverdueIcon"
+            app:layout_constraintTop_toBottomOf="@id/cardViewMessage"
+            app:layout_goneMarginTop="24dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardViewOverdue"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:elevation="0dp"
+            android:outlineProvider="none"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewOverdueLabel"
+            app:cardBackgroundColor="@color/cardViewRedBackgroundColor">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <ImageView
+            android:id="@+id/imageViewHomeworkIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/ic_homework"
+            android:tint="@color/homeworkColor"
+            app:layout_constraintBottom_toBottomOf="@id/textViewHomeworkLabel"
+            app:layout_constraintDimensionRatio="W,1,1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textViewHomeworkLabel" />
+
+        <TextView
+            android:id="@+id/textViewHomeworkLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:fontFamily="@font/cabin_bold"
+            android:text="@string/homework"
+            android:textAllCaps="true"
+            android:textColor="@color/homeworkColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/imageViewHomeworkIcon"
+            app:layout_constraintTop_toBottomOf="@id/cardViewOverdue"
+            app:layout_goneMarginTop="24dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardViewHomework"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:elevation="0dp"
+            android:outlineProvider="none"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewHomeworkLabel"
+            app:cardBackgroundColor="@color/cardViewHomeworkColor">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <ImageView
+            android:id="@+id/imageViewExamIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/ic_exam"
+            android:tint="@color/examColor"
+            app:layout_constraintBottom_toBottomOf="@id/textViewExamLabel"
+            app:layout_constraintDimensionRatio="W,1,1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textViewExamLabel" />
+
+        <TextView
+            android:id="@+id/textViewExamLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:fontFamily="@font/cabin_bold"
+            android:text="@string/exam"
+            android:textAllCaps="true"
+            android:textColor="@color/examColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/imageViewExamIcon"
+            app:layout_constraintTop_toBottomOf="@id/cardViewHomework"
+            app:layout_goneMarginTop="24dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardViewExam"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:elevation="0dp"
+            android:outlineProvider="none"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewExamLabel"
+            app:cardBackgroundColor="@color/cardViewExamColor">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <ImageView
+            android:id="@+id/imageViewTaskIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/ic_task"
+            android:tint="@color/taskColor"
+            app:layout_constraintBottom_toBottomOf="@id/textViewTaskLabel"
+            app:layout_constraintDimensionRatio="W,1,1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textViewTaskLabel" />
+
+        <TextView
+            android:id="@+id/textViewTaskLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:fontFamily="@font/cabin_bold"
+            android:text="@string/task"
+            android:textAllCaps="true"
+            android:textColor="@color/taskColor"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/imageViewTaskIcon"
+            app:layout_constraintTop_toBottomOf="@id/cardViewExam"
+            app:layout_goneMarginTop="24dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardViewTask"
+            android:layout_width="match_parent"
+            android:layout_height="100dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginEnd="24dp"
+            android:elevation="0dp"
+            android:outlineProvider="none"
+            android:layout_marginTop="8dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewTaskLabel"
+            app:cardBackgroundColor="@color/cardViewTaskColor">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content">
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+    </androidx.constraintlayout.widget.ConstraintLayout>
+
+</androidx.core.widget.NestedScrollView>
