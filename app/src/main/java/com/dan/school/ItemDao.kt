@@ -41,6 +41,9 @@ interface ItemDao {
     @Query("SELECT * FROM items WHERE id=:id")
     suspend fun getItemById(id: Int): Item
 
+    @Query("SELECT EXISTS(SELECT * FROM items WHERE date = :date)")
+    fun hasItemsForDate(date: Int) : Boolean
+
     @Insert
     fun insert(item: Item)
 

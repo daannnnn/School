@@ -77,4 +77,8 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     fun getAllOverdueItemsByDate(date: Int): LiveData<List<Item>> = runBlocking {
         itemRepository.getAllOverdueItemsByDate(date)
     }
+
+    fun hasItemsForDate(date: Int): Boolean = runBlocking {
+        itemRepository.hasItemsForDate(date)
+    }
 }

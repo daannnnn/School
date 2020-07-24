@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -39,6 +40,7 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
     )
 
     private val dateToday = Calendar.getInstance()
+    private val dateTomorrow = Calendar.getInstance()
     private val hourOfDay = dateToday.get(Calendar.HOUR_OF_DAY)
     private val userName = "Dan"
 
@@ -50,6 +52,7 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
+        dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
     }
 
     override fun onCreateView(
@@ -130,6 +133,7 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
             } else {
                 groupHomework.visibility = View.VISIBLE
             }
+            refreshShowEmptyMessageVisibility()
             homeworkListAdapter.submitList(homeworks)
         })
 
@@ -144,6 +148,7 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
             } else {
                 groupOverdue.visibility = View.VISIBLE
             }
+            refreshShowEmptyMessageVisibility()
             overdueListAdapter.submitList(overdueItems)
         })
 
@@ -158,6 +163,7 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
             } else {
                 groupExam.visibility = View.VISIBLE
             }
+            refreshShowEmptyMessageVisibility()
             examListAdapter.submitList(exams)
         })
 
@@ -174,8 +180,29 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
             } else {
                 groupTask.visibility = View.VISIBLE
             }
+            refreshShowEmptyMessageVisibility()
             taskListAdapter.submitList(tasks)
         })
+    }
+
+    private fun refreshShowEmptyMessageVisibility() {
+        if (cardViewMessage.isVisible) {
+            if (groupOverdue.isVisible || groupHomework.isVisible || groupExam.isVisible || groupTask.isVisible) {
+                cardViewMessage.isVisible = false
+                return
+            }
+        } else {
+            if (groupOverdue.isVisible || groupHomework.isVisible || groupExam.isVisible || groupTask.isVisible) {
+                return
+            }
+            cardViewMessage.isVisible = true
+        }
+        buttonSeeTomorrow.isVisible = dataViewModel.hasItemsForDate(
+            SimpleDateFormat(
+                School.dateFormatOnDatabase,
+                Locale.getDefault()
+            ).format(dateTomorrow.time).toInt()
+        )
     }
 
     override fun setDone(id: Int, done: Boolean) {
