@@ -31,6 +31,7 @@ import com.dan.school.models.Subtask
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_edit.*
 import java.text.SimpleDateFormat
+import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -221,7 +222,10 @@ class EditFragment(
                         category = category,
                         done = done,
                         title = editTextTitle.text.toString(),
-                        date = dateFormat.format(selectedDate!!.time),
+                        date = SimpleDateFormat(
+                            School.dateFormatOnDatabase,
+                            Locale.getDefault()
+                        ).format(selectedDate!!.time).toInt(),
                         subtasks = subtaskListAdapter.data,
                         reminders = remindersList,
                         notes = editTextNotes.text.toString()
@@ -232,7 +236,10 @@ class EditFragment(
                 val item = Item(
                     category = category,
                     title = editTextTitle.text.toString(),
-                    date = dateFormat.format(selectedDate!!.time),
+                    date = SimpleDateFormat(
+                        School.dateFormatOnDatabase,
+                        Locale.getDefault()
+                    ).format(selectedDate!!.time).toInt(),
                     subtasks = subtaskListAdapter.data,
                     reminders = remindersList,
                     notes = editTextNotes.text.toString()

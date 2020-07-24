@@ -1,7 +1,6 @@
 package com.dan.school.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -17,11 +16,20 @@ class ItemListAdapter(
     private val context: Context,
     private val doneListener: DoneListener,
     private val showSubtasksListener: ShowSubtasksListener,
-    private val itemClickListener: ItemClickListener,
-    private val uncheckedIcon: Int,
-    private val checkedIcon: Int
+    private val itemClickListener: ItemClickListener
 ) :
     ListAdapter<Item, ItemViewHolder>(DIFF_CALLBACK) {
+
+    private val categoryCheckedIcons = arrayOf(
+        R.drawable.ic_homework_checked,
+        R.drawable.ic_exam_checked,
+        R.drawable.ic_task_checked
+    )
+    private val categoryUncheckedIcons = arrayOf(
+        R.drawable.ic_homework_unchecked,
+        R.drawable.ic_exam_unchecked,
+        R.drawable.ic_task_unchecked
+    )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_item, parent, false)
@@ -29,27 +37,28 @@ class ItemListAdapter(
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
-        Log.i("test", "test")
         holder.textViewItem.text = getItem(position).title
         holder.itemView.setOnClickListener {
             itemClickListener.itemClicked(getItem(holder.bindingAdapterPosition))
-        }
-        if (getItem(position).done) {
-            holder.buttonCheckItem.setImageResource(checkedIcon)
-        } else {
-            holder.buttonCheckItem.setImageResource(uncheckedIcon)
         }
         if (getItem(position).subtasks.isEmpty()) {
             holder.buttonSubtask.visibility = View.GONE
         } else {
             holder.buttonSubtask.visibility = View.VISIBLE
         }
+        val mItem = getItem(position)
+        val mItemCategory = mItem.category
+        if (getItem(position).done) {
+            holder.buttonCheckItem.setImageResource(categoryCheckedIcons[mItemCategory])
+        } else {
+            holder.buttonCheckItem.setImageResource(categoryUncheckedIcons[mItemCategory])
+        }
         holder.buttonCheckItem.setOnClickListener {
             if (getItem(holder.bindingAdapterPosition).done) {
-                holder.buttonCheckItem.setImageResource(uncheckedIcon)
+                holder.buttonCheckItem.setImageResource(categoryUncheckedIcons[mItemCategory])
                 doneListener.setDone(getItem(holder.bindingAdapterPosition).id, false)
             } else {
-                holder.buttonCheckItem.setImageResource(checkedIcon)
+                holder.buttonCheckItem.setImageResource(categoryCheckedIcons[mItemCategory])
                 doneListener.setDone(getItem(holder.bindingAdapterPosition).id, true)
             }
         }

@@ -153,7 +153,9 @@ class AddBottomSheetDialogFragment(
             val item = Item(
                 category = category,
                 title = editTextTitle.text.toString(),
-                date = dateFormat.format(selectedDate.time)
+                date = SimpleDateFormat(School.dateFormatOnDatabase, Locale.getDefault()).format(
+                    selectedDate.time
+                ).toInt()
             )
             dataViewModel.insert(item)
             dismiss()

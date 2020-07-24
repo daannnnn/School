@@ -2,6 +2,7 @@ package com.dan.school.fragments
 
 import android.animation.LayoutTransition
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -41,6 +42,7 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
     private val hourOfDay = dateToday.get(Calendar.HOUR_OF_DAY)
     private val userName = "Dan"
 
+    private lateinit var overdueListAdapter: ItemListAdapter
     private lateinit var homeworkListAdapter: ItemListAdapter
     private lateinit var examListAdapter: ItemListAdapter
     private lateinit var taskListAdapter: ItemListAdapter
@@ -72,31 +74,35 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
             }
         }
 
+        overdueListAdapter = ItemListAdapter(
+            requireContext(),
+            this,
+            this,
+            this
+        )
         homeworkListAdapter = ItemListAdapter(
             requireContext(),
             this,
             this,
-            this,
-            categoryUncheckedIcons[School.HOMEWORK],
-            categoryCheckedIcons[School.HOMEWORK]
+            this
         )
         examListAdapter = ItemListAdapter(
             requireContext(),
             this,
             this,
-            this,
-            categoryUncheckedIcons[School.EXAM],
-            categoryCheckedIcons[School.EXAM]
+            this
         )
         taskListAdapter = ItemListAdapter(
             requireContext(),
             this,
             this,
-            this,
-            categoryUncheckedIcons[School.TASK],
-            categoryCheckedIcons[School.TASK]
+            this
         )
 
+        recyclerViewOverdue.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = overdueListAdapter
+        }
         recyclerViewHomeworks.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = homeworkListAdapter
@@ -115,9 +121,9 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
 
         dataViewModel.getAllHomeworkByDate(
             SimpleDateFormat(
-                School.dateFormat,
+                School.dateFormatOnDatabase,
                 Locale.getDefault()
-            ).format(dateToday.time)
+            ).format(dateToday.time).toInt()
         ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { homeworks ->
             if (homeworks.isEmpty()) {
                 groupHomework.visibility = View.GONE
@@ -127,11 +133,25 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
             homeworkListAdapter.submitList(homeworks)
         })
 
+        dataViewModel.getAllOverdueItemsByDate(
+            SimpleDateFormat(
+                School.dateFormatOnDatabase,
+                Locale.getDefault()
+            ).format(dateToday.time).toInt()
+        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { overdueItems ->
+            if (overdueItems.isEmpty()) {
+                groupOverdue.visibility = View.GONE
+            } else {
+                groupOverdue.visibility = View.VISIBLE
+            }
+            overdueListAdapter.submitList(overdueItems)
+        })
+
         dataViewModel.getAllExamByDate(
             SimpleDateFormat(
-                School.dateFormat,
+                School.dateFormatOnDatabase,
                 Locale.getDefault()
-            ).format(dateToday.time)
+            ).format(dateToday.time).toInt()
         ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { exams ->
             if (exams.isEmpty()) {
                 groupExam.visibility = View.GONE
@@ -145,9 +165,9 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
 
         dataViewModel.getAllTaskByDate(
             SimpleDateFormat(
-                School.dateFormat,
+                School.dateFormatOnDatabase,
                 Locale.getDefault()
-            ).format(dateToday.time)
+            ).format(dateToday.time).toInt()
         ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { tasks ->
             if (tasks.isEmpty()) {
                 groupTask.visibility = View.GONE

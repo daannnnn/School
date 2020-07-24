@@ -62,15 +62,19 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         itemRepository.getItemById(id)
     }
 
-    fun getAllHomeworkByDate(date: String): LiveData<List<Item>> = runBlocking {
+    fun getAllHomeworkByDate(date: Int): LiveData<List<Item>> = runBlocking {
         itemRepository.getAllHomeworkByDate(date)
     }
 
-    fun getAllExamByDate(date: String): LiveData<List<Item>> = runBlocking {
+    fun getAllExamByDate(date: Int): LiveData<List<Item>> = runBlocking {
         itemRepository.getAllExamByDate(date)
     }
 
-    fun getAllTaskByDate(date: String): LiveData<List<Item>> = runBlocking {
+    fun getAllTaskByDate(date: Int): LiveData<List<Item>> = runBlocking {
         itemRepository.getAllTaskByDate(date)
+    }
+
+    fun getAllOverdueItemsByDate(date: Int): LiveData<List<Item>> = runBlocking {
+        itemRepository.getAllOverdueItemsByDate(date)
     }
 }

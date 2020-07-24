@@ -248,7 +248,7 @@ class MainActivity : AppCompatActivity(),
 
     override fun itemClicked(item: Item) {
         val calendar = Calendar.getInstance()
-        calendar.time = SimpleDateFormat(School.dateFormat, Locale.getDefault()).parse(item.date)!!
+        calendar.time = SimpleDateFormat(School.dateFormatOnDatabase, Locale.getDefault()).parse(item.date.toString())!!
         showEditFragment(
             item.category,
             item.done,

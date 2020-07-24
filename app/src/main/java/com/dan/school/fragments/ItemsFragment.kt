@@ -55,9 +55,7 @@ class ItemsFragment(private val category: Int, private val itemClickListener: It
             requireContext(),
             this,
             this,
-            this,
-            categoryUncheckedIcons[category],
-            categoryCheckedIcons[category]
+            this
         )
         recyclerViewItems.layoutManager = LinearLayoutManager(context)
         recyclerViewItems.adapter = itemListAdapter

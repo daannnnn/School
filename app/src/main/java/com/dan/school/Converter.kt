@@ -12,8 +12,8 @@ import kotlin.collections.ArrayList
 
 class Converter {
     @TypeConverter
-    fun fromDateString(value: String): Date {
-        return SimpleDateFormat(School.dateFormat, Locale.getDefault()).parse(value)!!
+    fun fromDateInt(value: Int): Date {
+        return SimpleDateFormat(School.dateFormatOnDatabase, Locale.getDefault()).parse(value.toString())!!
     }
 
     @TypeConverter

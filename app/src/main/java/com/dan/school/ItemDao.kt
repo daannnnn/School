@@ -27,13 +27,16 @@ interface ItemDao {
     fun getAllItemOnDateByCategory(category: Int): LiveData<List<DateItem>>
 
     @Query("SELECT * from items WHERE date=:date AND category=${School.HOMEWORK}")
-    fun getAllHomeworkByDate(date: String): LiveData<List<Item>>
+    fun getAllHomeworkByDate(date: Int): LiveData<List<Item>>
 
     @Query("SELECT * from items WHERE date=:date AND category=${School.EXAM}")
-    fun getAllExamByDate(date: String): LiveData<List<Item>>
+    fun getAllExamByDate(date: Int): LiveData<List<Item>>
 
     @Query("SELECT * from items WHERE date=:date AND category=${School.TASK}")
-    fun getAllTaskByDate(date: String): LiveData<List<Item>>
+    fun getAllTaskByDate(date: Int): LiveData<List<Item>>
+
+    @Query("SELECT * from items WHERE date<:date AND done=0")
+    fun getAllOverdueItemsByDate(date: Int): LiveData<List<Item>>
 
     @Query("SELECT * FROM items WHERE id=:id")
     suspend fun getItemById(id: Int): Item
