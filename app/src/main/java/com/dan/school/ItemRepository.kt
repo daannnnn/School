@@ -35,4 +35,13 @@ class ItemRepository(private val itemDao: ItemDao) {
     suspend fun getItemById(id: Int) = withContext(Dispatchers.IO) {
         itemDao.getItemById(id)
     }
+    suspend fun getAllHomeworkByDate(date: String) = withContext(Dispatchers.IO) {
+        itemDao.getAllHomeworkByDate(date)
+    }
+    suspend fun getAllExamByDate(date: String) = withContext(Dispatchers.IO) {
+        itemDao.getAllExamByDate(date)
+    }
+    suspend fun getAllTaskByDate(date: String) = withContext(Dispatchers.IO) {
+        itemDao.getAllTaskByDate(date)
+    }
 }

@@ -1,14 +1,13 @@
 package com.dan.school.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
-import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
-import androidx.recyclerview.widget.RecyclerView
+import com.dan.school.ItemClickListener
 import com.dan.school.ItemViewHolder
 import com.dan.school.R
 import com.dan.school.models.Item
@@ -30,27 +29,33 @@ class ItemListAdapter(
     }
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
+        Log.i("test", "test")
         holder.textViewItem.text = getItem(position).title
         holder.itemView.setOnClickListener {
             itemClickListener.itemClicked(getItem(holder.bindingAdapterPosition))
         }
-        if (getItem(holder.bindingAdapterPosition).done) {
+        if (getItem(position).done) {
             holder.buttonCheckItem.setImageResource(checkedIcon)
         } else {
             holder.buttonCheckItem.setImageResource(uncheckedIcon)
         }
-        if (getItem(holder.bindingAdapterPosition).subtasks.isEmpty()) {
+        if (getItem(position).subtasks.isEmpty()) {
             holder.buttonSubtask.visibility = View.GONE
         } else {
             holder.buttonSubtask.visibility = View.VISIBLE
         }
         holder.buttonCheckItem.setOnClickListener {
-            holder.buttonCheckItem.setImageResource(checkedIcon)
-            doneListener.setDone(getItem(holder.bindingAdapterPosition).id, true)
+            if (getItem(holder.bindingAdapterPosition).done) {
+                holder.buttonCheckItem.setImageResource(uncheckedIcon)
+                doneListener.setDone(getItem(holder.bindingAdapterPosition).id, false)
+            } else {
+                holder.buttonCheckItem.setImageResource(checkedIcon)
+                doneListener.setDone(getItem(holder.bindingAdapterPosition).id, true)
+            }
         }
         holder.buttonSubtask.setOnClickListener {
             val item = getItem(holder.bindingAdapterPosition)
-            showSubtasksListener.showSubtasks(item.subtasks, item.title, item.id)
+            showSubtasksListener.showSubtasks(item.subtasks, item.title, item.id, item.category)
         }
     }
 
@@ -59,11 +64,7 @@ class ItemListAdapter(
     }
 
     interface ShowSubtasksListener {
-        fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: Int)
-    }
-
-    interface ItemClickListener {
-        fun itemClicked(item: Item)
+        fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: Int, category: Int)
     }
 
     companion object {

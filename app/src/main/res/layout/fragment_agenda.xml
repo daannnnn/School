@@ -7,8 +7,10 @@
     tools:context=".fragments.AgendaFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
+        android:id="@+id/constraintLayoutAgendaMain"
         android:layout_width="match_parent"
-        android:layout_height="wrap_content">
+        android:layout_height="wrap_content"
+        android:animateLayoutChanges="true">
 
         <TextView
             android:id="@+id/textViewGreeting"
@@ -183,7 +185,7 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardViewHomework"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
@@ -194,11 +196,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewHomeworkLabel">
 
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewHomeworks"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:nestedScrollingEnabled="false" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -232,7 +236,7 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardViewExam"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
@@ -243,11 +247,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewExamLabel">
 
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewExams"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:nestedScrollingEnabled="false" />
 
         </com.google.android.material.card.MaterialCardView>
 
@@ -281,7 +287,7 @@
         <com.google.android.material.card.MaterialCardView
             android:id="@+id/cardViewTask"
             android:layout_width="match_parent"
-            android:layout_height="100dp"
+            android:layout_height="wrap_content"
             android:layout_marginStart="24dp"
             android:layout_marginTop="8dp"
             android:layout_marginEnd="24dp"
@@ -292,11 +298,13 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/textViewTaskLabel">
 
-            <LinearLayout
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewTasks"
                 android:layout_width="match_parent"
-                android:layout_height="wrap_content">
-
-            </LinearLayout>
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:nestedScrollingEnabled="false" />
 
         </com.google.android.material.card.MaterialCardView>
 

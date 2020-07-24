@@ -1,9 +1,7 @@
 package com.dan.school
 
 import android.os.Bundle
-import android.util.Log
 import android.view.View
-import android.widget.CalendarView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.dan.school.fragments.*
@@ -20,8 +18,7 @@ class MainActivity : AppCompatActivity(),
     SettingsFragment.OnDismissListener,
     AddBottomSheetDialogFragment.SelectedCategoryChangeListener,
     HomeFragment.SelectedTabChangeListener, EditFragment.CategoryChangeListener,
-    HomeFragment.ItemClickListener, CalendarFragment.TitleChangeListener,
-    CalendarFragment.CalendarItemClickListener {
+    ItemClickListener, CalendarFragment.TitleChangeListener {
 
     private var addBottomSheetDialogFragment: AddBottomSheetDialogFragment? = null
     private var lastSelectedAddCategory = School.HOMEWORK
@@ -160,7 +157,7 @@ class MainActivity : AppCompatActivity(),
                 supportFragmentManager.beginTransaction()
                     .add(
                         R.id.frameLayoutBottomNavigation,
-                        AgendaFragment(), "agenda"
+                        AgendaFragment(this), "agenda"
                     ).commit()
             }
             if (supportFragmentManager.findFragmentByTag("home") != null) {
@@ -177,6 +174,7 @@ class MainActivity : AppCompatActivity(),
 
     private fun showEditFragment(
         category: Int,
+        done: Boolean,
         title: String,
         subtasks: ArrayList<Subtask>,
         reminders: ArrayList<Reminder>,
@@ -188,6 +186,7 @@ class MainActivity : AppCompatActivity(),
             categoryChangeListener = this,
             dismissBottomSheetListener = this,
             category = category,
+            done = done,
             title = title,
             subtasks = subtasks,
             reminders = reminders,
@@ -252,20 +251,7 @@ class MainActivity : AppCompatActivity(),
         calendar.time = SimpleDateFormat(School.dateFormat, Locale.getDefault()).parse(item.date)!!
         showEditFragment(
             item.category,
-            item.title,
-            item.subtasks,
-            item.reminders,
-            item.notes,
-            calendar,
-            item.id
-        )
-    }
-
-    override fun calendarItemClicked(item: Item) {
-        val calendar = Calendar.getInstance()
-        calendar.time = SimpleDateFormat(School.dateFormat, Locale.getDefault()).parse(item.date)!!
-        showEditFragment(
-            item.category,
+            item.done,
             item.title,
             item.subtasks,
             item.reminders,

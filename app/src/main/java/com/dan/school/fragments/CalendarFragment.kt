@@ -3,7 +3,6 @@ package com.dan.school.fragments
 import android.app.Activity
 import android.os.Bundle
 import android.util.DisplayMetrics
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.MeasureSpec
@@ -18,18 +17,16 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.DataViewModel
+import com.dan.school.ItemClickListener
 import com.dan.school.R
 import com.dan.school.School
 import com.dan.school.adapters.ParentEventListAdapter
 import com.dan.school.models.Event
 import com.dan.school.models.EventList
-import com.dan.school.models.Item
 import com.dan.school.models.Subtask
-import com.kizitonwose.calendarview.CalendarView
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
-import com.kizitonwose.calendarview.model.InDateStyle
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
@@ -45,7 +42,7 @@ import kotlin.collections.ArrayList
 
 class CalendarFragment(
     private val titleChangeListener: TitleChangeListener,
-    private val calendarItemClickListener: CalendarItemClickListener
+    private val itemClickListener: ItemClickListener
 ) : Fragment(),
     ParentEventListAdapter.CalendarItemClickListener, ParentEventListAdapter.ShowSubtasksListener,
     ParentEventListAdapter.DoneListener {
@@ -412,10 +409,6 @@ class CalendarFragment(
     }
 
     override fun calendarItemClicked(id: Int) {
-        calendarItemClickListener.calendarItemClicked(dataViewModel.getItemById(id))
-    }
-
-    interface CalendarItemClickListener {
-        fun calendarItemClicked(item: Item)
+        itemClickListener.itemClicked(dataViewModel.getItemById(id))
     }
 }

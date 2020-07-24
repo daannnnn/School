@@ -1,21 +1,15 @@
 package com.dan.school.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.LifecycleOwner
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dan.school.R
 import com.dan.school.School
-import com.dan.school.fragments.CalendarFragment
 import com.dan.school.models.CategoryEventList
-import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 
 class ParentEventListAdapter(

@@ -8,7 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 import com.dan.school.ItemViewHolder
 import com.dan.school.R
 import com.dan.school.models.Event
-import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import java.util.*
 

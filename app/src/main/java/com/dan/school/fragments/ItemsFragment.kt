@@ -9,6 +9,7 @@ import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.DataViewModel
+import com.dan.school.ItemClickListener
 import com.dan.school.R
 import com.dan.school.School
 import com.dan.school.adapters.ItemListAdapter
@@ -19,7 +20,7 @@ import kotlinx.android.synthetic.main.fragment_items.*
 class ItemsFragment(private val category: Int, private val itemClickListener: ItemClickListener) :
     Fragment(),
     ItemListAdapter.DoneListener,
-    ItemListAdapter.ShowSubtasksListener, ItemListAdapter.ItemClickListener {
+    ItemListAdapter.ShowSubtasksListener, ItemClickListener {
 
     private lateinit var dataViewModel: DataViewModel
     private lateinit var itemListAdapter: ItemListAdapter
@@ -84,7 +85,7 @@ class ItemsFragment(private val category: Int, private val itemClickListener: It
         dataViewModel.setDone(id, done)
     }
 
-    override fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: Int) {
+    override fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: Int, category: Int) {
         SubtasksBottomSheetDialogFragment(
             subtasks,
             itemTitle,
@@ -99,9 +100,5 @@ class ItemsFragment(private val category: Int, private val itemClickListener: It
 
     override fun itemClicked(item: Item) {
         itemClickListener.itemClicked(item)
-    }
-
-    interface ItemClickListener {
-        fun itemClicked(item: Item)
     }
 }

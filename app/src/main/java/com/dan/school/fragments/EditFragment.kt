@@ -38,6 +38,7 @@ class EditFragment(
     private val categoryChangeListener: CategoryChangeListener,
     private val dismissBottomSheetListener: DismissBottomSheetListener,
     private var category: Int = School.HOMEWORK,
+    private var done: Boolean = false,
     private val title: String = "",
     private val subtasks: ArrayList<Subtask> = ArrayList(),
     private val reminders: ArrayList<Reminder> = ArrayList(),
@@ -218,6 +219,7 @@ class EditFragment(
                     val item = Item(
                         id = itemId,
                         category = category,
+                        done = done,
                         title = editTextTitle.text.toString(),
                         date = dateFormat.format(selectedDate!!.time),
                         subtasks = subtaskListAdapter.data,
