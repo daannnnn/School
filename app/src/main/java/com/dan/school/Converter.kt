@@ -1,7 +1,6 @@
 package com.dan.school
 
 import androidx.room.TypeConverter
-import com.dan.school.models.Reminder
 import com.dan.school.models.Subtask
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
@@ -14,17 +13,6 @@ class Converter {
     @TypeConverter
     fun fromDateInt(value: Int): Date {
         return SimpleDateFormat(School.dateFormatOnDatabase, Locale.getDefault()).parse(value.toString())!!
-    }
-
-    @TypeConverter
-    fun fromReminderString(value: String?): ArrayList<Reminder> {
-        val listType: Type = object : TypeToken<ArrayList<Reminder?>?>() {}.type
-        return Gson().fromJson(value, listType)
-    }
-
-    @TypeConverter
-    fun fromReminderArrayList(list: ArrayList<Reminder?>?): String {
-        return Gson().toJson(list)
     }
 
     @TypeConverter

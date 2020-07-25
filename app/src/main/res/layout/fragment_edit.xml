@@ -170,53 +170,6 @@
                 app:layout_constraintTop_toBottomOf="@id/scrollViewDateChoices">
 
                 <TextView
-                    android:id="@+id/textViewReminderLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="24dp"
-                    android:fontFamily="@font/cabin_bold"
-                    android:text="@string/reminder"
-                    android:textColor="@android:color/black"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <ImageButton
-                    android:id="@+id/buttonAddReminder"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginEnd="8dp"
-                    android:background="?attr/selectableItemBackgroundBorderless"
-                    android:scaleType="centerInside"
-                    android:src="@drawable/ic_add"
-                    app:layout_constraintBottom_toBottomOf="@id/textViewReminderLabel"
-                    app:layout_constraintEnd_toStartOf="@id/switchReminder"
-                    app:layout_constraintTop_toTopOf="@id/textViewReminderLabel" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switchReminder"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginEnd="24dp"
-                    app:layout_constraintBottom_toBottomOf="@id/textViewReminderLabel"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintTop_toTopOf="@id/textViewReminderLabel" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewReminders"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="36dp"
-                    android:layout_marginEnd="24dp"
-                    android:nestedScrollingEnabled="false"
-                    android:visibility="gone"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/switchReminder"
-                    tools:itemCount="2"
-                    tools:listitem="@layout/layout_reminder_item" />
-
-                <TextView
                     android:id="@+id/textViewSubtaskLabel"
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
@@ -226,7 +179,7 @@
                     android:textColor="@android:color/black"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/recyclerViewReminders" />
+                    app:layout_constraintTop_toTopOf="parent" />
 
                 <androidx.recyclerview.widget.RecyclerView
                     android:id="@+id/recyclerViewSubtasks"

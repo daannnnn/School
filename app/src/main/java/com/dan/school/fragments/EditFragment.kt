@@ -19,19 +19,15 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
 import com.dan.school.DataViewModel
-import com.dan.school.DateTimePicker
 import com.dan.school.R
 import com.dan.school.School
 import com.dan.school.adapters.CategoryViewPagerAdapter
-import com.dan.school.adapters.ReminderListAdapter
 import com.dan.school.adapters.SubtaskListAdapter
 import com.dan.school.models.Item
-import com.dan.school.models.Reminder
 import com.dan.school.models.Subtask
 import com.google.android.material.button.MaterialButton
 import kotlinx.android.synthetic.main.fragment_edit.*
 import java.text.SimpleDateFormat
-import java.time.LocalDate
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -42,14 +38,12 @@ class EditFragment(
     private var done: Boolean = false,
     private val title: String = "",
     private val subtasks: ArrayList<Subtask> = ArrayList(),
-    private val reminders: ArrayList<Reminder> = ArrayList(),
     private val notes: String = "",
     private var chipGroupSelected: Int = School.TODAY,
     private var selectedDate: Calendar?,
     private val isEdit: Boolean = false,
     private val itemId: Int? = null
-) : DialogFragment(), SubtaskListAdapter.SetFocusListener,
-    DateTimePicker.DoneListener, DatePickerDialog.OnDateSetListener,
+) : DialogFragment(), SubtaskListAdapter.SetFocusListener, DatePickerDialog.OnDateSetListener,
     DatePickerFragment.OnCancelListener {
 
     private val categoryColors =
@@ -67,16 +61,6 @@ class EditFragment(
         R.color.chip_homework_stroke_color_state_list,
         R.color.chip_exam_stroke_color_state_list,
         R.color.chip_task_stroke_color_state_list
-    )
-    private val categorySwitchThumbColorStateList = arrayOf(
-        R.color.switch_thumb_homework_color_state_list,
-        R.color.switch_thumb_exam_color_state_list,
-        R.color.switch_thumb_task_color_state_list
-    )
-    private val categorySwitchTrackColorStateList = arrayOf(
-        R.color.switch_track_homework_color_state_list,
-        R.color.switch_track_exam_color_state_list,
-        R.color.switch_track_task_color_state_list
     )
     private val categoryButtonAddColorStateList = arrayOf(
         R.color.button_add_homework_color_state_list,
@@ -103,7 +87,6 @@ class EditFragment(
     private val dateFormat = SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault())
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var subtaskListAdapter: SubtaskListAdapter
-    private lateinit var reminderListAdapter: ReminderListAdapter
 
     private lateinit var dataViewModel: DataViewModel
 
@@ -178,17 +161,6 @@ class EditFragment(
                 0
             )
         }
-        buttonAddReminder.setOnClickListener {
-            DateTimePicker(this, childFragmentManager).startGetDateTime()
-        }
-        switchReminder.setOnCheckedChangeListener { _, isChecked ->
-            buttonAddReminder.isEnabled = isChecked
-            if (isChecked) {
-                recyclerViewReminders.visibility = View.VISIBLE
-            } else {
-                recyclerViewReminders.visibility = View.GONE
-            }
-        }
         chipGroupDate.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.chipToday -> {
@@ -209,12 +181,6 @@ class EditFragment(
             datePicker.show(childFragmentManager, "date picker")
         }
         buttonCheck.setOnClickListener {
-            val remindersList =
-                if (switchReminder.isChecked) {
-                    reminderListAdapter.data
-                } else {
-                    ArrayList()
-                }
             if (isEdit) {
                 if (itemId != null) {
                     val item = Item(
@@ -227,7 +193,6 @@ class EditFragment(
                             Locale.getDefault()
                         ).format(selectedDate!!.time).toInt(),
                         subtasks = subtaskListAdapter.data,
-                        reminders = remindersList,
                         notes = editTextNotes.text.toString()
                     )
                     dataViewModel.update(item)
@@ -241,7 +206,6 @@ class EditFragment(
                         Locale.getDefault()
                     ).format(selectedDate!!.time).toInt(),
                     subtasks = subtaskListAdapter.data,
-                    reminders = remindersList,
                     notes = editTextNotes.text.toString()
                 )
                 dataViewModel.insert(item)
@@ -297,23 +261,10 @@ class EditFragment(
         recyclerViewSubtasks.adapter = subtaskListAdapter
         // [END] configure subtasks list
 
-        // [START] configure reminders list
-        reminderListAdapter = ReminderListAdapter(
-            requireContext(),
-            reminders
-        )
-        recyclerViewReminders.layoutManager = LinearLayoutManager(context)
-        recyclerViewReminders.adapter = reminderListAdapter
-        // [END] configure reminders list
-
         constraintLayoutMore.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         if (!isEdit) {
             editTextTitle.requestFocus()
         }
-        if (reminders.isNotEmpty()) {
-            switchReminder.isChecked = true
-        }
-        buttonAddReminder.isEnabled = switchReminder.isChecked
         // [END] initialize
     }
 
@@ -359,14 +310,6 @@ class EditFragment(
             requireContext(),
             categoryChipStrokeColorStateList[newCategory]
         )
-        switchReminder.thumbTintList = ContextCompat.getColorStateList(
-            requireContext(),
-            categorySwitchThumbColorStateList[newCategory]
-        )
-        switchReminder.trackTintList = ContextCompat.getColorStateList(
-            requireContext(),
-            categorySwitchTrackColorStateList[newCategory]
-        )
         (buttonAddSubtask as MaterialButton).iconTint = ContextCompat.getColorStateList(
             requireContext(),
             categoryButtonAddColorStateList[newCategory]
@@ -380,10 +323,6 @@ class EditFragment(
         (buttonAddSubtask as MaterialButton).rippleColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryButtonAddRippleColorStateList[newCategory]
-        )
-        buttonAddReminder.imageTintList = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryButtonAddColorStateList[newCategory]
         )
         changeSubtaskListColor(newCategory)
         categoryChangeListener.selectedCategoryChanged(newCategory)
@@ -431,19 +370,6 @@ class EditFragment(
                 recyclerViewSubtasks.getChildAt(position)
             ) as SubtaskListAdapter.SubtaskViewHolder).editTextSubtaskTitle.requestFocus()
         }
-    }
-
-    override fun done(calendar: Calendar) {
-        reminderListAdapter.data.add(
-            0,
-            Reminder(
-                SimpleDateFormat(
-                    School.dateTimeFormat,
-                    Locale.getDefault()
-                ).format(calendar.time)
-            )
-        )
-        reminderListAdapter.notifyItemInserted(0)
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {

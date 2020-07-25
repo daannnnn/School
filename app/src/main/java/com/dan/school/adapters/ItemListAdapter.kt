@@ -92,7 +92,6 @@ class ItemListAdapter(
                             oldItem.done == newItem.done &&
                             oldItem.title == newItem.title &&
                             oldItem.date == newItem.date &&
-                            oldItem.reminders == newItem.reminders &&
                             oldItem.subtasks == newItem.subtasks &&
                             oldItem.notes == newItem.notes
                 }

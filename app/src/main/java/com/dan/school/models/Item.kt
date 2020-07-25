@@ -10,7 +10,6 @@ data class Item(
     val done: Boolean = false,
     val title: String,
     val date: Int,
-    val reminders: ArrayList<Reminder> = ArrayList(),
     val subtasks: ArrayList<Subtask> = ArrayList(),
     val notes: String = ""
 )

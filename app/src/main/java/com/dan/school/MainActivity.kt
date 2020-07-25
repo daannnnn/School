@@ -6,7 +6,6 @@ import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.dan.school.fragments.*
 import com.dan.school.models.Item
-import com.dan.school.models.Reminder
 import com.dan.school.models.Subtask
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
@@ -177,7 +176,6 @@ class MainActivity : AppCompatActivity(),
         done: Boolean,
         title: String,
         subtasks: ArrayList<Subtask>,
-        reminders: ArrayList<Reminder>,
         notes: String,
         date: Calendar?,
         itemId: Int
@@ -189,7 +187,6 @@ class MainActivity : AppCompatActivity(),
             done = done,
             title = title,
             subtasks = subtasks,
-            reminders = reminders,
             notes = notes,
             chipGroupSelected = School.PICK_DATE,
             selectedDate = date,
@@ -254,7 +251,6 @@ class MainActivity : AppCompatActivity(),
             item.done,
             item.title,
             item.subtasks,
-            item.reminders,
             item.notes,
             calendar,
             item.id
