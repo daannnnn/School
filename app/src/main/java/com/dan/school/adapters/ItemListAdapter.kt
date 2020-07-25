@@ -39,10 +39,10 @@ class ItemListAdapter(
 
     override fun onBindViewHolder(holder: ItemViewHolder, position: Int) {
         holder.textViewItem.text = getItem(position).title
-        holder.itemView.setOnClickListener {
+        holder.textViewItem.setOnClickListener {
             itemClickListener.itemClicked(getItem(holder.bindingAdapterPosition))
         }
-        holder.itemView.setOnLongClickListener {
+        holder.textViewItem.setOnLongClickListener {
             itemLongClickListener.itemLongClicked(
                 getItem(holder.bindingAdapterPosition).title,
                 getItem(holder.bindingAdapterPosition).id)
