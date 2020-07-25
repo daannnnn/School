@@ -7,7 +7,7 @@ import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
 import com.dan.school.models.Item
 
-@Database(entities = [Item::class], version = 1)
+@Database(entities = [Item::class], version = 1, exportSchema = false)
 @TypeConverters(Converter::class)
 abstract class ItemDatabase : RoomDatabase(){
     abstract fun itemDao():ItemDao
