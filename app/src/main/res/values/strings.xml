@@ -42,4 +42,7 @@
     <string name="see_what_s_for_tomorrow">See what\'s for tomorrow?</string>
     <string name="overdue">Overdue</string>
     <string name="you_don_t_have_anything_scheduled_for_today">You don\'t have anything scheduled for today!</string>
+    <string name="cancel">Cancel</string>
+    <string name="are_you_sure_you_want_to_delete_this_item">Are you sure you want to delete this item?</string>
+    <string name="yes">Yes</string>
 </resources>

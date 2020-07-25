@@ -8,10 +8,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dan.school.DataViewModel
-import com.dan.school.ItemClickListener
-import com.dan.school.R
-import com.dan.school.School
+import com.dan.school.*
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
@@ -20,7 +17,8 @@ import kotlinx.android.synthetic.main.fragment_items.*
 class ItemsFragment(private val category: Int, private val itemClickListener: ItemClickListener) :
     Fragment(),
     ItemListAdapter.DoneListener,
-    ItemListAdapter.ShowSubtasksListener, ItemClickListener {
+    ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
+    ConfirmDeleteDialog.ConfirmDeleteListener {
 
     private lateinit var dataViewModel: DataViewModel
     private lateinit var itemListAdapter: ItemListAdapter
@@ -53,6 +51,7 @@ class ItemsFragment(private val category: Int, private val itemClickListener: It
 
         itemListAdapter = ItemListAdapter(
             requireContext(),
+            this,
             this,
             this,
             this
@@ -98,5 +97,13 @@ class ItemsFragment(private val category: Int, private val itemClickListener: It
 
     override fun itemClicked(item: Item) {
         itemClickListener.itemClicked(item)
+    }
+
+    override fun itemLongClicked(title: String, id: Int) {
+        ConfirmDeleteDialog(this, id, title).show(childFragmentManager, "confirmDeleteDialog")
+    }
+
+    override fun confirmDelete(itemId: Int) {
+        dataViewModel.deleteItemWithId(itemId)
     }
 }

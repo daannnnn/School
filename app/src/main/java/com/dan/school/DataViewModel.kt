@@ -54,8 +54,8 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         itemRepository.insert(item)
     }
 
-    fun delete(item: Item) = viewModelScope.launch(Dispatchers.IO) {
-        itemRepository.delete(item)
+    fun deleteItemWithId(id: Int) = viewModelScope.launch(Dispatchers.IO) {
+        itemRepository.deleteItemWithId(id)
     }
 
     fun getItemById(id: Int): Item = runBlocking {

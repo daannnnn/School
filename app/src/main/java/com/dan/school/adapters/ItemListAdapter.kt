@@ -16,7 +16,8 @@ class ItemListAdapter(
     private val context: Context,
     private val doneListener: DoneListener,
     private val showSubtasksListener: ShowSubtasksListener,
-    private val itemClickListener: ItemClickListener
+    private val itemClickListener: ItemClickListener,
+    private val itemLongClickListener: ItemLongClickListener
 ) :
     ListAdapter<Item, ItemViewHolder>(DIFF_CALLBACK) {
 
@@ -40,6 +41,12 @@ class ItemListAdapter(
         holder.textViewItem.text = getItem(position).title
         holder.itemView.setOnClickListener {
             itemClickListener.itemClicked(getItem(holder.bindingAdapterPosition))
+        }
+        holder.itemView.setOnLongClickListener {
+            itemLongClickListener.itemLongClicked(
+                getItem(holder.bindingAdapterPosition).title,
+                getItem(holder.bindingAdapterPosition).id)
+            return@setOnLongClickListener true
         }
         if (getItem(position).subtasks.isEmpty()) {
             holder.buttonSubtask.visibility = View.GONE
@@ -74,6 +81,10 @@ class ItemListAdapter(
 
     interface ShowSubtasksListener {
         fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: Int, category: Int)
+    }
+
+    interface ItemLongClickListener {
+        fun itemLongClicked(title: String, id: Int)
     }
 
     companion object {

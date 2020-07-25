@@ -10,10 +10,7 @@ import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dan.school.DataViewModel
-import com.dan.school.ItemClickListener
-import com.dan.school.R
-import com.dan.school.School
+import com.dan.school.*
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
@@ -24,7 +21,8 @@ import kotlin.collections.ArrayList
 
 class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragment(),
     ItemListAdapter.DoneListener,
-    ItemListAdapter.ShowSubtasksListener, ItemClickListener {
+    ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
+    ConfirmDeleteDialog.ConfirmDeleteListener {
 
     private lateinit var dataViewModel: DataViewModel
 
@@ -81,10 +79,12 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
             requireContext(),
             this,
             this,
+            this,
             this
         )
         homeworkListAdapter = ItemListAdapter(
             requireContext(),
+            this,
             this,
             this,
             this
@@ -93,10 +93,12 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
             requireContext(),
             this,
             this,
+            this,
             this
         )
         taskListAdapter = ItemListAdapter(
             requireContext(),
+            this,
             this,
             this,
             this
@@ -229,5 +231,13 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
 
     override fun itemClicked(item: Item) {
         itemClickListener.itemClicked(item)
+    }
+
+    override fun itemLongClicked(title: String, id: Int) {
+        ConfirmDeleteDialog(this, id, title).show(childFragmentManager, "confirmDeleteDialog")
+    }
+
+    override fun confirmDelete(itemId: Int) {
+        dataViewModel.deleteItemWithId(itemId)
     }
 }

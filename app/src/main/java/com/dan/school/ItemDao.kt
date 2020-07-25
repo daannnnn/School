@@ -44,12 +44,12 @@ interface ItemDao {
     @Query("SELECT EXISTS(SELECT * FROM items WHERE date = :date)")
     fun hasItemsForDate(date: Int) : Boolean
 
+    @Query("DELETE FROM items WHERE id = :id")
+    fun deleteItemWithId(id: Int)
+
     @Insert
     fun insert(item: Item)
 
     @Update
     fun update(item: Item)
-
-    @Delete
-    fun delete(item: Item)
 }

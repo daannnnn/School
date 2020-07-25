@@ -29,8 +29,8 @@ class ItemRepository(private val itemDao: ItemDao) {
     fun update(item: Item) {
         itemDao.update(item)
     }
-    fun delete(item: Item) {
-        itemDao.delete(item)
+    fun deleteItemWithId(id: Int) {
+        itemDao.deleteItemWithId(id)
     }
     suspend fun getItemById(id: Int) = withContext(Dispatchers.IO) {
         itemDao.getItemById(id)
