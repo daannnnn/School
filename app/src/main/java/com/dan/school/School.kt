@@ -14,4 +14,8 @@ object School {
     const val timeFormat = "hh:mm aaa"
     const val dateTimeFormat = "EEE, MMM d, yyyy - hh:mm aaa"
     const val displayDateFormat = "EEEE, MMMM d, yyyy"
+
+    const val HOME = "home"
+    const val CALENDAR = "calendar"
+    const val AGENDA = "agenda"
 }

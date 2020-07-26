@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import com.dan.school.School.AGENDA
+import com.dan.school.School.CALENDAR
+import com.dan.school.School.HOME
 import com.dan.school.fragments.*
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
@@ -46,14 +49,14 @@ class MainActivity : AppCompatActivity(),
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.homeFragment -> {
-                    setFragment("home")
+                    setFragment(HOME)
                     textViewAppBarTitle.text = getString(R.string.app_name)
                 }
                 R.id.calendarFragment -> {
-                    setFragment("calendar")
+                    setFragment(CALENDAR)
                 }
                 R.id.agendaFragment -> {
-                    setFragment("agenda")
+                    setFragment(AGENDA)
                     textViewAppBarTitle.text = getString(R.string.app_name)
                 }
             }
@@ -63,8 +66,8 @@ class MainActivity : AppCompatActivity(),
             drawerLayout.openDrawer(GravityCompat.START)
         }
         buttonCalendarView.setOnClickListener {
-            if (supportFragmentManager.findFragmentByTag("calendar") != null) {
-                (supportFragmentManager.findFragmentByTag("calendar") as CalendarFragment).setCalendarView(isMonthView)
+            if (supportFragmentManager.findFragmentByTag(CALENDAR) != null) {
+                (supportFragmentManager.findFragmentByTag(CALENDAR) as CalendarFragment).setCalendarView(isMonthView)
                 isMonthView = !isMonthView
                 setButtonCalendarViewBackground()
             }
@@ -91,7 +94,7 @@ class MainActivity : AppCompatActivity(),
         supportFragmentManager.beginTransaction()
             .add(
                 R.id.frameLayoutBottomNavigation,
-                HomeFragment(this, this), "home"
+                HomeFragment(this, this), HOME
             ).commit()
     }
 
@@ -104,71 +107,76 @@ class MainActivity : AppCompatActivity(),
     }
 
     private fun setFragment(tag: String) {
-        if (tag == "home") {
-            if (supportFragmentManager.findFragmentByTag("home") != null) {
-                supportFragmentManager.beginTransaction()
-                    .show(supportFragmentManager.findFragmentByTag("home")!!).commit()
-            } else {
-                supportFragmentManager.beginTransaction()
-                    .add(
-                        R.id.frameLayoutBottomNavigation,
-                        HomeFragment(this, this), "home"
-                    ).commit()
+        when (tag) {
+            HOME -> {
+                if (supportFragmentManager.findFragmentByTag(HOME) != null) {
+                    showFragment(HOME)
+                } else {
+                    supportFragmentManager.beginTransaction()
+                        .add(
+                            R.id.frameLayoutBottomNavigation,
+                            HomeFragment(this, this), HOME
+                        ).commit()
+                }
+                if (supportFragmentManager.findFragmentByTag(CALENDAR) != null) {
+                    hideFragment(CALENDAR)
+                }
+                if (supportFragmentManager.findFragmentByTag(AGENDA) != null) {
+                    hideFragment(AGENDA)
+                }
+                lastSelectedAddCategory =
+                    (supportFragmentManager.findFragmentByTag(HOME) as HomeFragment).getSelectedTabPosition()
+                buttonCalendarView.visibility = View.GONE
             }
-            if (supportFragmentManager.findFragmentByTag("calendar") != null) {
-                supportFragmentManager.beginTransaction()
-                    .hide(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
+            CALENDAR -> {
+                if (supportFragmentManager.findFragmentByTag(CALENDAR) != null) {
+                    showFragment(CALENDAR)
+                    textViewAppBarTitle.text =
+                        (supportFragmentManager.findFragmentByTag(CALENDAR) as CalendarFragment).getSelectedMonth()
+                } else {
+                    supportFragmentManager.beginTransaction()
+                        .add(
+                            R.id.frameLayoutBottomNavigation,
+                            CalendarFragment(this, this), CALENDAR
+                        ).commit()
+                }
+                if (supportFragmentManager.findFragmentByTag(HOME) != null) {
+                    hideFragment(HOME)
+                }
+                if (supportFragmentManager.findFragmentByTag(AGENDA) != null) {
+                    hideFragment(AGENDA)
+                }
+                buttonCalendarView.visibility = View.VISIBLE
             }
-            if (supportFragmentManager.findFragmentByTag("agenda") != null) {
-                supportFragmentManager.beginTransaction()
-                    .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
+            AGENDA -> {
+                if (supportFragmentManager.findFragmentByTag(AGENDA) != null) {
+                    showFragment(AGENDA)
+                } else {
+                    supportFragmentManager.beginTransaction()
+                        .add(
+                            R.id.frameLayoutBottomNavigation,
+                            AgendaFragment(this), AGENDA
+                        ).commit()
+                }
+                if (supportFragmentManager.findFragmentByTag(HOME) != null) {
+                    hideFragment(HOME)
+                }
+                if (supportFragmentManager.findFragmentByTag(CALENDAR) != null) {
+                    hideFragment(CALENDAR)
+                }
+                buttonCalendarView.visibility = View.GONE
             }
-            lastSelectedAddCategory =
-                (supportFragmentManager.findFragmentByTag("home") as HomeFragment).getSelectedTabPosition()
-            buttonCalendarView.visibility = View.GONE
-        } else if (tag == "calendar") {
-            if (supportFragmentManager.findFragmentByTag("calendar") != null) {
-                supportFragmentManager.beginTransaction()
-                    .show(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
-                textViewAppBarTitle.text =
-                    (supportFragmentManager.findFragmentByTag("calendar") as CalendarFragment).getSelectedMonth()
-            } else {
-                supportFragmentManager.beginTransaction()
-                    .add(
-                        R.id.frameLayoutBottomNavigation,
-                        CalendarFragment(this, this), "calendar"
-                    ).commit()
-            }
-            if (supportFragmentManager.findFragmentByTag("home") != null) {
-                supportFragmentManager.beginTransaction()
-                    .hide(supportFragmentManager.findFragmentByTag("home")!!).commit()
-            }
-            if (supportFragmentManager.findFragmentByTag("agenda") != null) {
-                supportFragmentManager.beginTransaction()
-                    .hide(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
-            }
-            buttonCalendarView.visibility = View.VISIBLE
-        } else if (tag == "agenda") {
-            if (supportFragmentManager.findFragmentByTag("agenda") != null) {
-                supportFragmentManager.beginTransaction()
-                    .show(supportFragmentManager.findFragmentByTag("agenda")!!).commit()
-            } else {
-                supportFragmentManager.beginTransaction()
-                    .add(
-                        R.id.frameLayoutBottomNavigation,
-                        AgendaFragment(this), "agenda"
-                    ).commit()
-            }
-            if (supportFragmentManager.findFragmentByTag("home") != null) {
-                supportFragmentManager.beginTransaction()
-                    .hide(supportFragmentManager.findFragmentByTag("home")!!).commit()
-            }
-            if (supportFragmentManager.findFragmentByTag("calendar") != null) {
-                supportFragmentManager.beginTransaction()
-                    .hide(supportFragmentManager.findFragmentByTag("calendar")!!).commit()
-            }
-            buttonCalendarView.visibility = View.GONE
         }
+    }
+
+    private fun hideFragment(tag: String) {
+        supportFragmentManager.beginTransaction()
+            .hide(supportFragmentManager.findFragmentByTag(tag)!!).commit()
+    }
+
+    private fun showFragment(tag: String) {
+        supportFragmentManager.beginTransaction()
+            .show(supportFragmentManager.findFragmentByTag(tag)!!).commit()
     }
 
     private fun showEditFragment(
