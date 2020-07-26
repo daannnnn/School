@@ -1,0 +1,249 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.coordinatorlayout.widget.CoordinatorLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.AgendaTomorrowFragment">
+
+    <com.google.android.material.appbar.AppBarLayout
+        android:id="@+id/appBar"
+        android:layout_width="match_parent"
+        android:layout_height="?attr/actionBarSize"
+        android:background="@android:color/white"
+        app:liftOnScroll="true">
+
+        <RelativeLayout
+            android:layout_width="match_parent"
+            android:layout_height="?attr/actionBarSize"
+            android:background="@android:color/white">
+
+            <ImageView
+                android:id="@+id/buttonBack"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_centerVertical="true"
+                android:layout_margin="16dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:src="@drawable/ic_chevron_left" />
+
+            <TextView
+                android:id="@+id/textViewTomorrow"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_centerInParent="true"
+                android:fontFamily="@font/cabin_bold"
+                android:text="@string/tomorrow"
+                android:textColor="@color/colorPrimary"
+                android:textSize="20sp" />
+
+        </RelativeLayout>
+
+    </com.google.android.material.appbar.AppBarLayout>
+
+    <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollViewContent"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        app:layout_behavior="@string/appbar_scrolling_view_behavior">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayoutAgendaTomorrowMain"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true">
+
+            <TextView
+                android:id="@+id/textViewDate"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="@font/cabin_bold"
+                android:textColor="@color/colorPrimary"
+                android:textSize="24sp"
+                android:layout_marginTop="16dp"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent"
+                tools:text="Thursday, July 23, 2020" />
+
+            <ImageView
+                android:id="@+id/imageViewHomeworkIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="24dp"
+                android:src="@drawable/ic_homework"
+                android:tint="@color/homeworkColor"
+                app:layout_constraintBottom_toBottomOf="@id/textViewHomeworkLabel"
+                app:layout_constraintDimensionRatio="W,1,1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/textViewHomeworkLabel" />
+
+            <TextView
+                android:id="@+id/textViewHomeworkLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="24dp"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="@font/cabin_bold"
+                android:text="@string/homework"
+                android:textAllCaps="true"
+                android:textColor="@color/homeworkColor"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@id/imageViewHomeworkIcon"
+                app:layout_constraintTop_toBottomOf="@id/textViewDate"
+                app:layout_goneMarginTop="24dp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardViewHomework"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:elevation="0dp"
+                android:outlineProvider="none"
+                app:cardBackgroundColor="@color/cardViewHomeworkBackgroundColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewHomeworkLabel">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewHomeworks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:nestedScrollingEnabled="false" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <ImageView
+                android:id="@+id/imageViewExamIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="24dp"
+                android:src="@drawable/ic_exam"
+                android:tint="@color/examColor"
+                app:layout_constraintBottom_toBottomOf="@id/textViewExamLabel"
+                app:layout_constraintDimensionRatio="W,1,1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/textViewExamLabel" />
+
+            <TextView
+                android:id="@+id/textViewExamLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="@font/cabin_bold"
+                android:text="@string/exam"
+                android:textAllCaps="true"
+                android:textColor="@color/examColor"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@id/imageViewExamIcon"
+                app:layout_constraintTop_toBottomOf="@id/cardViewHomework"
+                app:layout_goneMarginTop="24dp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardViewExam"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:elevation="0dp"
+                android:outlineProvider="none"
+                app:cardBackgroundColor="@color/cardViewExamBackgroundColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewExamLabel">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewExams"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:nestedScrollingEnabled="false" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <ImageView
+                android:id="@+id/imageViewTaskIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="24dp"
+                android:src="@drawable/ic_task"
+                android:tint="@color/taskColor"
+                app:layout_constraintBottom_toBottomOf="@id/textViewTaskLabel"
+                app:layout_constraintDimensionRatio="W,1,1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/textViewTaskLabel" />
+
+            <TextView
+                android:id="@+id/textViewTaskLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="24dp"
+                android:fontFamily="@font/cabin_bold"
+                android:text="@string/task"
+                android:textAllCaps="true"
+                android:textColor="@color/taskColor"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@id/imageViewTaskIcon"
+                app:layout_constraintTop_toBottomOf="@id/cardViewExam"
+                app:layout_goneMarginTop="24dp" />
+
+            <com.google.android.material.card.MaterialCardView
+                android:id="@+id/cardViewTask"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="24dp"
+                android:layout_marginTop="8dp"
+                android:layout_marginEnd="24dp"
+                android:elevation="0dp"
+                android:outlineProvider="none"
+                app:cardBackgroundColor="@color/cardViewTaskBackgroundColor"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewTaskLabel">
+
+                <androidx.recyclerview.widget.RecyclerView
+                    android:id="@+id/recyclerViewTasks"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:layout_marginBottom="8dp"
+                    android:nestedScrollingEnabled="false" />
+
+            </com.google.android.material.card.MaterialCardView>
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupHomework"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="cardViewHomework, imageViewHomeworkIcon, textViewHomeworkLabel" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupExam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="cardViewExam, imageViewExamIcon, textViewExamLabel" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupTask"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="gone"
+                app:constraint_referenced_ids="cardViewTask, imageViewTaskIcon, textViewTaskLabel" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
+
+</androidx.coordinatorlayout.widget.CoordinatorLayout>
