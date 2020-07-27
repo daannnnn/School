@@ -11,23 +11,161 @@
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:elevation="4dp"
         app:cv_dayViewResource="@layout/layout_calendar_day"
         app:cv_monthHeaderResource="@layout/layout_calendar_header"
         app:cv_orientation="horizontal"
         app:cv_outDateStyle="endOfGrid"
         app:cv_scrollMode="paged"
-        android:elevation="4dp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewEventsParent"
-        android:layout_width="match_parent"
+    <androidx.core.widget.NestedScrollView
+        android:layout_width="0dp"
         android:layout_height="0dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/calendarView" />
+        app:layout_constraintTop_toBottomOf="@id/calendarView">
+
+        <androidx.constraintlayout.widget.ConstraintLayout
+            android:id="@+id/constraintLayoutCalendar"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:animateLayoutChanges="true">
+
+            <ImageView
+                android:id="@+id/imageViewHomeworkIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_homework"
+                android:tint="@color/homeworkColor"
+                app:layout_constraintBottom_toBottomOf="@id/textViewHomeworkLabel"
+                app:layout_constraintDimensionRatio="W,1,1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/textViewHomeworkLabel" />
+
+            <TextView
+                android:id="@+id/textViewHomeworkLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/cabin_bold"
+                android:text="@string/homework"
+                android:textAllCaps="true"
+                android:textColor="@color/homeworkColor"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@id/imageViewHomeworkIcon"
+                app:layout_constraintTop_toTopOf="parent" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewCalendarHomework"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewHomeworkLabel" />
+
+            <ImageView
+                android:id="@+id/imageViewExamIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_exam"
+                android:tint="@color/examColor"
+                app:layout_constraintBottom_toBottomOf="@id/textViewExamLabel"
+                app:layout_constraintDimensionRatio="W,1,1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/textViewExamLabel" />
+
+            <TextView
+                android:id="@+id/textViewExamLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/cabin_bold"
+                android:text="@string/exam"
+                android:textAllCaps="true"
+                android:textColor="@color/examColor"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@id/imageViewExamIcon"
+                app:layout_constraintTop_toBottomOf="@id/recyclerViewCalendarHomework" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewCalendarExam"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewExamLabel" />
+
+            <ImageView
+                android:id="@+id/imageViewTaskIcon"
+                android:layout_width="wrap_content"
+                android:layout_height="0dp"
+                android:layout_marginStart="16dp"
+                android:src="@drawable/ic_task"
+                android:tint="@color/taskColor"
+                app:layout_constraintBottom_toBottomOf="@id/textViewTaskLabel"
+                app:layout_constraintDimensionRatio="W,1,1"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="@id/textViewTaskLabel" />
+
+            <TextView
+                android:id="@+id/textViewTaskLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="16dp"
+                android:fontFamily="@font/cabin_bold"
+                android:text="@string/task"
+                android:textAllCaps="true"
+                android:textColor="@color/taskColor"
+                android:textSize="14sp"
+                app:layout_constraintStart_toEndOf="@id/imageViewTaskIcon"
+                app:layout_constraintTop_toBottomOf="@id/recyclerViewCalendarExam" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewCalendarTask"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="16dp"
+                android:layout_marginTop="8dp"
+                android:nestedScrollingEnabled="false"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/textViewTaskLabel" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupHomework"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:constraint_referenced_ids="imageViewHomeworkIcon, textViewHomeworkLabel, recyclerViewCalendarHomework" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupExam"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:constraint_referenced_ids="imageViewExamIcon, textViewExamLabel, recyclerViewCalendarExam" />
+
+            <androidx.constraintlayout.widget.Group
+                android:id="@+id/groupTask"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:visibility="visible"
+                app:constraint_referenced_ids="imageViewTaskIcon, textViewTaskLabel, recyclerViewCalendarTask" />
+
+        </androidx.constraintlayout.widget.ConstraintLayout>
+
+    </androidx.core.widget.NestedScrollView>
 
 </androidx.constraintlayout.widget.ConstraintLayout>

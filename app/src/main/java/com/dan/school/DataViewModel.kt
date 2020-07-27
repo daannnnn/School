@@ -1,16 +1,14 @@
 package com.dan.school
 
 import android.app.Application
-import android.os.AsyncTask
-import androidx.lifecycle.AndroidViewModel
-import androidx.lifecycle.LiveData
-import androidx.lifecycle.viewModelScope
+import androidx.lifecycle.*
 import com.dan.school.models.DateItem
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
-import kotlinx.coroutines.*
-import java.util.*
-import kotlin.collections.ArrayList
+import kotlinx.coroutines.Dispatchers
+import kotlinx.coroutines.launch
+import kotlinx.coroutines.runBlocking
+
 
 class DataViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -23,6 +21,8 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     val examAllDates: LiveData<List<DateItem>>
     val taskAllDates: LiveData<List<DateItem>>
 
+    val calendarSelectedDate = MutableLiveData<Int>()
+
     init {
         val itemsDao = ItemDatabase.getInstance(application).itemDao()
         itemRepository = ItemRepository(itemsDao)
@@ -32,6 +32,43 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         homeworkAllDates = itemRepository.homeworkAllDates
         examAllDates = itemRepository.examAllDates
         taskAllDates = itemRepository.taskAllDates
+    }
+
+    fun setCalendarSelectedDate(date: Int) {
+        calendarSelectedDate.value = date
+    }
+
+    private val homeworks: LiveData<List<Item>> =
+        Transformations.switchMap<Int, List<Item>>(
+            calendarSelectedDate
+        ) { date: Int ->
+            return@switchMap getAllHomeworkByDate(date)
+        }
+
+    fun getCalendarHomeworks(): LiveData<List<Item>> {
+        return homeworks
+    }
+
+    private val exams: LiveData<List<Item>> =
+        Transformations.switchMap<Int, List<Item>>(
+            calendarSelectedDate
+        ) { date: Int ->
+            return@switchMap getAllExamByDate(date)
+        }
+
+    fun getCalendarExams(): LiveData<List<Item>> {
+        return exams
+    }
+
+    private val tasks: LiveData<List<Item>> =
+        Transformations.switchMap<Int, List<Item>>(
+            calendarSelectedDate
+        ) { date: Int ->
+            return@switchMap getAllTaskByDate(date)
+        }
+
+    fun getCalendarTasks(): LiveData<List<Item>> {
+        return tasks
     }
 
     fun setDone(id: Int, done: Boolean) = viewModelScope.launch(Dispatchers.IO) {

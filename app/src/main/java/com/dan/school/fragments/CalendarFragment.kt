@@ -1,5 +1,6 @@
 package com.dan.school.fragments
 
+import android.animation.LayoutTransition
 import android.app.Activity
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -10,19 +11,18 @@ import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
 import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dan.school.DataViewModel
-import com.dan.school.ItemClickListener
-import com.dan.school.R
-import com.dan.school.School
-import com.dan.school.adapters.ParentEventListAdapter
-import com.dan.school.models.Event
-import com.dan.school.models.EventList
+import com.dan.school.*
+import com.dan.school.adapters.ItemListAdapter
+import com.dan.school.models.CategoryCount
+import com.dan.school.models.DateItem
+import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.CalendarMonth
@@ -32,6 +32,7 @@ import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.yearMonth
 import kotlinx.android.synthetic.main.fragment_calendar.*
+import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.YearMonth
 import java.time.ZoneId
@@ -43,9 +44,9 @@ import kotlin.collections.ArrayList
 class CalendarFragment(
     private val titleChangeListener: TitleChangeListener,
     private val itemClickListener: ItemClickListener
-) : Fragment(),
-    ParentEventListAdapter.CalendarItemClickListener, ParentEventListAdapter.ShowSubtasksListener,
-    ParentEventListAdapter.DoneListener {
+) : Fragment(), ItemListAdapter.DoneListener,
+    ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
+    ConfirmDeleteDialog.ConfirmDeleteListener {
 
     private val categoryCheckedIcons = arrayOf(
         R.drawable.ic_homework_checked,
@@ -61,9 +62,8 @@ class CalendarFragment(
     private var selectedDate: LocalDate? = null
     private val today = LocalDate.now()
     private lateinit var dataViewModel: DataViewModel
-    private lateinit var parentEventListAdapter: ParentEventListAdapter
     private lateinit var lastMonth: YearMonth
-    private val events = mutableMapOf<LocalDate, EventList>()
+    private val events = mutableMapOf<LocalDate, CategoryCount>()
 
     private val titleMonthFormatter = DateTimeFormatter.ofPattern("MMMM")
     private val titleMonthWithYearFormatter = DateTimeFormatter.ofPattern("MMM yyyy")
@@ -73,16 +73,15 @@ class CalendarFragment(
 
     private var calendarScrolled = false
 
+    private lateinit var allHomeworks: ArrayList<DateItem>
+    private lateinit var allExams: ArrayList<DateItem>
+    private lateinit var allTasks: ArrayList<DateItem>
+
+    private var selectedDateChanged = arrayOf(true, true, true)
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
-        parentEventListAdapter = ParentEventListAdapter(
-            ArrayList(),
-            requireContext(),
-            this,
-            this,
-            this
-        )
     }
 
     override fun onCreateView(
@@ -94,9 +93,6 @@ class CalendarFragment(
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        recyclerViewEventsParent.layoutManager = LinearLayoutManager(requireContext())
-        recyclerViewEventsParent.adapter = parentEventListAdapter
 
         // [START] CalendarView setup
         class DayViewContainer(view: View) : ViewContainer(view) {
@@ -176,11 +172,11 @@ class CalendarFragment(
                 }
                 if (events[day.date] != null) {
                     container.viewHomeworkDotIndicator.isVisible =
-                        events[day.date]!!.hasCategory(School.HOMEWORK)
+                        events[day.date]!!.homeworkCount != 0
                     container.viewExamDotIndicator.isVisible =
-                        events[day.date]!!.hasCategory(School.EXAM)
+                        events[day.date]!!.examCount != 0
                     container.viewTaskDotIndicator.isVisible =
-                        events[day.date]!!.hasCategory(School.TASK)
+                        events[day.date]!!.taskCount != 0
                 } else {
                     container.viewHomeworkDotIndicator.isVisible = false
                     container.viewExamDotIndicator.isVisible = false
@@ -247,69 +243,234 @@ class CalendarFragment(
         calendarView.scrollToMonth(currentMonth)
         // [END] CalendarView setup
 
+        constraintLayoutCalendar.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+
         dataViewModel.homeworkAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
-            for (dateItem in dateItems) {
-                val localDate =
-                    dateItem.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                val event = Event(
-                    dateItem.id,
-                    dateItem.title,
-                    School.HOMEWORK,
-                    dateItem.subtasks,
-                    dateItem.done
+            if (this::allHomeworks.isInitialized) {
+                val addedData = ArrayList<DateItem>(dateItems)
+                val removedData = ArrayList<DateItem>(allHomeworks)
+
+                addedData.removeAll(ArrayList<DateItem>(allHomeworks))
+                removedData.removeAll(ArrayList<DateItem>(dateItems))
+
+                dataUpdated(
+                    dateItems,
+                    addedData,
+                    removedData,
+                    School.HOMEWORK
                 )
-                addEventToDate(localDate, event)
+            } else {
+                initializeData(School.HOMEWORK, dateItems)
             }
+
         })
 
         dataViewModel.examAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
-            for (dateItem in dateItems) {
-                val localDate =
-                    dateItem.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                val event = Event(
-                    dateItem.id,
-                    dateItem.title,
-                    School.EXAM,
-                    dateItem.subtasks,
-                    dateItem.done
+            if (this::allExams.isInitialized) {
+                val addedData = ArrayList<DateItem>(dateItems)
+                val removedData = ArrayList<DateItem>(allExams)
+
+                addedData.removeAll(ArrayList<DateItem>(allExams))
+                removedData.removeAll(ArrayList<DateItem>(dateItems))
+
+                dataUpdated(
+                    dateItems,
+                    addedData,
+                    removedData,
+                    School.EXAM
                 )
-                addEventToDate(localDate, event)
+            } else {
+                initializeData(School.EXAM, dateItems)
             }
         })
 
         dataViewModel.taskAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
-            for (dateItem in dateItems) {
-                val localDate =
-                    dateItem.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
-                val event = Event(
-                    dateItem.id,
-                    dateItem.title,
-                    School.TASK,
-                    dateItem.subtasks,
-                    dateItem.done
+            if (this::allTasks.isInitialized) {
+                val addedData = ArrayList<DateItem>(dateItems)
+                val removedData = ArrayList<DateItem>(allTasks)
+
+                addedData.removeAll(ArrayList<DateItem>(allTasks))
+                removedData.removeAll(ArrayList<DateItem>(dateItems))
+
+                dataUpdated(
+                    dateItems,
+                    addedData,
+                    removedData,
+                    School.TASK
                 )
-                addEventToDate(localDate, event)
+            } else {
+                initializeData(School.TASK, dateItems)
             }
         })
 
+        recyclerViewCalendarHomework.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = ItemListAdapter(
+                requireContext(),
+                this@CalendarFragment,
+                this@CalendarFragment,
+                this@CalendarFragment,
+                this@CalendarFragment
+            )
+        }
+
+        recyclerViewCalendarExam.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = ItemListAdapter(
+                requireContext(),
+                this@CalendarFragment,
+                this@CalendarFragment,
+                this@CalendarFragment,
+                this@CalendarFragment
+            )
+        }
+
+        recyclerViewCalendarTask.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = ItemListAdapter(
+                requireContext(),
+                this@CalendarFragment,
+                this@CalendarFragment,
+                this@CalendarFragment,
+                this@CalendarFragment
+            )
+        }
+
+        dataViewModel.getCalendarHomeworks().observe(viewLifecycleOwner, Observer {
+            if (selectedDateChanged[School.HOMEWORK]) {
+                recyclerViewCalendarHomework.adapter = ItemListAdapter(
+                    requireContext(),
+                    this,
+                    this,
+                    this,
+                    this
+                )
+                selectedDateChanged[School.HOMEWORK] = false
+            }
+            (recyclerViewCalendarHomework.adapter as ItemListAdapter).submitList(it)
+            groupHomework.isGone = it.isEmpty()
+        })
+        dataViewModel.getCalendarExams().observe(viewLifecycleOwner, Observer {
+            if (selectedDateChanged[School.EXAM]) {
+                recyclerViewCalendarExam.adapter = ItemListAdapter(
+                    requireContext(),
+                    this,
+                    this,
+                    this,
+                    this
+                )
+                selectedDateChanged[School.EXAM] = false
+            }
+            (recyclerViewCalendarExam.adapter as ItemListAdapter).submitList(it)
+            groupExam.isGone = it.isEmpty()
+        })
+        dataViewModel.getCalendarTasks().observe(viewLifecycleOwner, Observer {
+            if (selectedDateChanged[School.TASK]) {
+                recyclerViewCalendarTask.adapter = ItemListAdapter(
+                    requireContext(),
+                    this,
+                    this,
+                    this,
+                    this
+                )
+                selectedDateChanged[School.TASK] = false
+            }
+            (recyclerViewCalendarTask.adapter as ItemListAdapter).submitList(it)
+            groupTask.isGone = it.isEmpty()
+        })
     }
 
-    private fun addEventToDate(localDate: LocalDate, event: Event) {
-        if (events[localDate] == null) {
-            events[localDate] = EventList()
-        }
-        if (!events[localDate]!!.contains(event)) {
-            val index = events[localDate]!!.indexOfItemWithId(event.id)
-            if (index != -1) {
-                events[localDate]!![index] = event
-            } else {
-                events[localDate]!!.add(event)
+    private fun dataUpdated(
+        newItems: List<DateItem>,
+        addedData: List<DateItem>,
+        removedData: List<DateItem>,
+        category: Int
+    ) {
+        if (addedData.isNotEmpty()) {
+            for (data in addedData) {
+                val date =
+                    data.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                if (events[date] == null) {
+                    events[date] = CategoryCount()
+                }
+                when (category) {
+                    School.HOMEWORK -> {
+                        if (++events[date]!!.homeworkCount == 1) {
+                            calendarView.notifyDateChanged(date)
+                        }
+                    }
+                    School.EXAM -> {
+                        if (++events[date]!!.examCount == 1) {
+                            calendarView.notifyDateChanged(date)
+                        }
+                    }
+                    School.TASK -> {
+                        if (++events[date]!!.taskCount == 1) {
+                            calendarView.notifyDateChanged(date)
+                        }
+                    }
+                }
             }
-            calendarView.notifyDateChanged(localDate)
         }
-        if (selectedDate == localDate) {
-            parentEventListAdapter.events = events[localDate]?.getCategorySortedList()!!
-            parentEventListAdapter.notifyDataSetChanged()
+        if (removedData.isNotEmpty()) {
+            for (data in removedData) {
+                val date =
+                    data.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+
+                when (category) {
+                    School.HOMEWORK -> {
+                        if (--events[date]!!.homeworkCount == 0) {
+                            calendarView.notifyDateChanged(date)
+                        }
+                    }
+                    School.EXAM -> {
+                        if (--events[date]!!.examCount == 0) {
+                            calendarView.notifyDateChanged(date)
+                        }
+                    }
+                    School.TASK -> {
+                        if (--events[date]!!.taskCount == 0) {
+                            calendarView.notifyDateChanged(date)
+                        }
+                    }
+                }
+            }
+        }
+        when (category) {
+            School.HOMEWORK -> allHomeworks = ArrayList(newItems)
+            School.EXAM -> allExams = ArrayList(newItems)
+            School.TASK -> allTasks = ArrayList(newItems)
+        }
+    }
+
+    private fun initializeData(category: Int, newItems: List<DateItem>) {
+        when (category) {
+            School.HOMEWORK -> allHomeworks = ArrayList(newItems)
+            School.EXAM -> allExams = ArrayList(newItems)
+            School.TASK -> allTasks = ArrayList(newItems)
+        }
+        for (item in newItems) {
+            val date = item.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+            if (events[date] == null) {
+                events[date] = CategoryCount()
+            }
+            when (category) {
+                School.HOMEWORK -> {
+                    if (++events[date]!!.homeworkCount == 1) {
+                        calendarView.notifyDateChanged(date)
+                    }
+                }
+                School.EXAM -> {
+                    if (++events[date]!!.examCount == 1) {
+                        calendarView.notifyDateChanged(date)
+                    }
+                }
+                School.TASK -> {
+                    if (++events[date]!!.taskCount == 1) {
+                        calendarView.notifyDateChanged(date)
+                    }
+                }
+            }
         }
     }
 
@@ -317,10 +478,6 @@ class CalendarFragment(
         if (selectedDate == null) {
             selectedDate = LocalDate.now()
             calendarView.notifyDateChanged(date)
-            if (events[date] != null) {
-                parentEventListAdapter.events = events[date]?.getCategorySortedList()!!
-                parentEventListAdapter.notifyDataSetChanged()
-            }
         } else {
             if (selectedDate != date) {
                 if (scrollToMonth) {
@@ -330,15 +487,16 @@ class CalendarFragment(
                 selectedDate = date
                 calendarView.notifyDateChanged(date)
                 oldDate?.let { it -> calendarView.notifyDateChanged(it) }
-                if (events[date] != null) {
-                    parentEventListAdapter.events = events[date]?.getCategorySortedList()!!
-                    parentEventListAdapter.notifyDataSetChanged()
-                } else {
-                    parentEventListAdapter.events.clear()
-                    parentEventListAdapter.notifyDataSetChanged()
-                }
             }
         }
+        selectedDateChanged = arrayOf(true, true, true)
+        dataViewModel.setCalendarSelectedDate(
+            SimpleDateFormat(
+                School.dateFormatOnDatabase,
+                Locale.getDefault()
+            ).format(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()))
+                .toInt()
+        )
     }
 
     interface TitleChangeListener {
@@ -408,7 +566,15 @@ class CalendarFragment(
         )
     }
 
-    override fun calendarItemClicked(id: Int) {
-        itemClickListener.itemClicked(dataViewModel.getItemById(id))
+    override fun itemClicked(item: Item) {
+        itemClickListener.itemClicked(item)
+    }
+
+    override fun itemLongClicked(title: String, id: Int) {
+        ConfirmDeleteDialog(this, id, title).show(childFragmentManager, "confirmDeleteDialog")
+    }
+
+    override fun confirmDelete(itemId: Int) {
+        dataViewModel.deleteItemWithId(itemId)
     }
 }
