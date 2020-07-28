@@ -14,15 +14,4 @@ class Converter {
     fun fromDateInt(value: Int): Date {
         return SimpleDateFormat(School.dateFormatOnDatabase, Locale.getDefault()).parse(value.toString())!!
     }
-
-    @TypeConverter
-    fun fromSubtaskString(value: String?): ArrayList<Subtask> {
-        val listType: Type = object : TypeToken<ArrayList<Subtask?>?>() {}.type
-        return Gson().fromJson(value, listType)
-    }
-
-    @TypeConverter
-    fun fromSubtaskArrayList(list: ArrayList<Subtask?>?): String {
-        return Gson().toJson(list)
-    }
 }

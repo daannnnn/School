@@ -6,6 +6,6 @@ class DateItem(
     val date: Date,
     val id: Int,
     val title: String,
-    val subtasks: ArrayList<Subtask> = ArrayList(),
+    val subtasks: String,
     val done: Boolean
 )

@@ -10,6 +10,8 @@ import com.dan.school.School.HOME
 import com.dan.school.fragments.*
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.activity_main.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -258,7 +260,7 @@ class MainActivity : AppCompatActivity(),
             item.category,
             item.done,
             item.title,
-            item.subtasks,
+            Gson().fromJson(item.subtasks, object : TypeToken<ArrayList<Subtask?>?>() {}.type),
             item.notes,
             calendar,
             item.id

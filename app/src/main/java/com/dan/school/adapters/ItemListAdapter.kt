@@ -11,6 +11,8 @@ import com.dan.school.ItemViewHolder
 import com.dan.school.R
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 
 class ItemListAdapter(
     private val context: Context,
@@ -45,10 +47,15 @@ class ItemListAdapter(
         holder.textViewItem.setOnLongClickListener {
             itemLongClickListener.itemLongClicked(
                 getItem(holder.bindingAdapterPosition).title,
-                getItem(holder.bindingAdapterPosition).id)
+                getItem(holder.bindingAdapterPosition).id
+            )
             return@setOnLongClickListener true
         }
-        if (getItem(position).subtasks.isEmpty()) {
+        if ((Gson().fromJson(
+                getItem(position).subtasks,
+                object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type
+            ) as ArrayList<Subtask?>).isEmpty()
+        ) {
             holder.buttonSubtask.visibility = View.GONE
         } else {
             holder.buttonSubtask.visibility = View.VISIBLE
@@ -71,7 +78,12 @@ class ItemListAdapter(
         }
         holder.buttonSubtask.setOnClickListener {
             val item = getItem(holder.bindingAdapterPosition)
-            showSubtasksListener.showSubtasks(item.subtasks, item.title, item.id, item.category)
+            showSubtasksListener.showSubtasks(
+                Gson().fromJson(
+                    item.subtasks,
+                    object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type
+                ), item.title, item.id, item.category
+            )
         }
     }
 

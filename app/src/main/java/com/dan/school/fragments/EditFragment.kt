@@ -26,6 +26,7 @@ import com.dan.school.adapters.SubtaskListAdapter
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.google.android.material.button.MaterialButton
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_edit.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -192,7 +193,7 @@ class EditFragment(
                             School.dateFormatOnDatabase,
                             Locale.getDefault()
                         ).format(selectedDate!!.time).toInt(),
-                        subtasks = subtaskListAdapter.data,
+                        subtasks = Gson().toJson(subtaskListAdapter.data),
                         notes = editTextNotes.text.toString()
                     )
                     dataViewModel.update(item)
@@ -205,7 +206,7 @@ class EditFragment(
                         School.dateFormatOnDatabase,
                         Locale.getDefault()
                     ).format(selectedDate!!.time).toInt(),
-                    subtasks = subtaskListAdapter.data,
+                    subtasks = Gson().toJson(subtaskListAdapter.data),
                     notes = editTextNotes.text.toString()
                 )
                 dataViewModel.insert(item)

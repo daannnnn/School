@@ -75,7 +75,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         itemRepository.setDone(id, done)
     }
 
-    fun setItemSubtasks(id: Int, subtasks: ArrayList<Subtask>) = viewModelScope.launch(Dispatchers.IO) {
+    fun setItemSubtasks(id: Int, subtasks: String) = viewModelScope.launch(Dispatchers.IO) {
         itemRepository.setItemSubtasks(id, subtasks)
     }
 

@@ -21,7 +21,7 @@ interface ItemDao {
     fun setDone(id: Int, done: Boolean)
 
     @Query("UPDATE items SET subtasks = :subtasks WHERE id=:id")
-    fun setItemSubtasks(id: Int, subtasks: ArrayList<Subtask>)
+    fun setItemSubtasks(id: Int, subtasks: String)
 
     @Query("SELECT date, id, title, subtasks, done from items WHERE category=:category")
     fun getAllItemOnDateByCategory(category: Int): LiveData<List<DateItem>>

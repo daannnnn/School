@@ -20,7 +20,7 @@ class ItemRepository(private val itemDao: ItemDao) {
     fun setDone(id: Int, done: Boolean) {
         itemDao.setDone(id, done)
     }
-    fun setItemSubtasks(id: Int, subtasks: ArrayList<Subtask>) {
+    fun setItemSubtasks(id: Int, subtasks: String) {
         itemDao.setItemSubtasks(id, subtasks)
     }
     fun insert(item: Item) {

@@ -15,6 +15,7 @@ import com.dan.school.R
 import com.dan.school.adapters.SubtasksShowListAdapter
 import com.dan.school.models.Subtask
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
+import com.google.gson.Gson
 import kotlinx.android.synthetic.main.layout_subtasks_bottom_sheet.*
 
 class SubtasksBottomSheetDialogFragment(
@@ -74,6 +75,6 @@ class SubtasksBottomSheetDialogFragment(
     }
 
     override fun subtaskChanged() {
-        dataViewModel.setItemSubtasks(itemId, subtasks)
+        dataViewModel.setItemSubtasks(itemId, Gson().toJson(subtasks))
     }
 }
