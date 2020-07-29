@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProvider
@@ -196,34 +197,24 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
     }
 
     private fun refreshShowEmptyMessageVisibility() {
-        if (cardViewMessage.isVisible) {
-            if (overdueListAdapter.currentList.isEmpty() &&
-                homeworkListAdapter.allItemsDone() &&
-                examListAdapter.allItemsDone() &&
-                taskListAdapter.allItemsDone()
-            ) {
-                textViewMessage.setText(R.string.you_have_done_all_your_things_for_today)
-            } else if (groupOverdue.isVisible || groupHomework.isVisible || groupExam.isVisible || groupTask.isVisible) {
-                cardViewMessage.isVisible = false
-                return
-            }
+        if (overdueListAdapter.currentList.isEmpty() &&
+            homeworkListAdapter.currentList.isEmpty() &&
+            examListAdapter.currentList.isEmpty() &&
+            taskListAdapter.currentList.isEmpty()
+        ) {
             textViewMessage.setText(R.string.you_don_t_have_anything_scheduled_for_today)
+        } else if (overdueListAdapter.currentList.isEmpty() &&
+            homeworkListAdapter.allItemsDone() &&
+            examListAdapter.allItemsDone() &&
+            taskListAdapter.allItemsDone()
+        ) {
+            textViewMessage.setText(R.string.you_have_done_all_your_things_for_today)
         } else {
-            if (groupOverdue.isVisible || groupHomework.isVisible || groupExam.isVisible || groupTask.isVisible) {
-                if (overdueListAdapter.currentList.isEmpty() &&
-                    homeworkListAdapter.allItemsDone() &&
-                    examListAdapter.allItemsDone() &&
-                    taskListAdapter.allItemsDone()
-                ) {
-                    textViewMessage.setText(R.string.you_have_done_all_your_things_for_today)
-                } else {
-                    return
-                }
-            } else {
-                textViewMessage.setText(R.string.you_don_t_have_anything_scheduled_for_today)
-            }
-            cardViewMessage.isVisible = true
+            cardViewMessage.isGone = true
+            return
         }
+        cardViewMessage.isVisible = true
+
         buttonSeeTomorrow.isVisible = dataViewModel.hasItemsForDate(
             SimpleDateFormat(
                 School.dateFormatOnDatabase,
