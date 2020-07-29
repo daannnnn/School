@@ -45,4 +45,5 @@
     <string name="cancel">Cancel</string>
     <string name="are_you_sure_you_want_to_delete_this_item">Are you sure you want to delete this item?</string>
     <string name="yes">Yes</string>
+    <string name="you_have_done_all_your_things_for_today">You have done all your things for today!</string>
 </resources>

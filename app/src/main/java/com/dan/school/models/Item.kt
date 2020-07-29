@@ -10,6 +10,6 @@ data class Item(
     val done: Boolean = false,
     val title: String,
     val date: Int,
-    val subtasks: String = "",
+    val subtasks: String = "[]",
     val notes: String = ""
 )

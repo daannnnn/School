@@ -87,6 +87,15 @@ class ItemListAdapter(
         }
     }
 
+    fun allItemsDone(): Boolean {
+        for (item in currentList) {
+            if (!item.done) {
+                return false
+            }
+        }
+        return true
+    }
+
     interface DoneListener {
         fun setDone(id: Int, done: Boolean)
     }

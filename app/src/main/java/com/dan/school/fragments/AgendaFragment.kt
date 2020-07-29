@@ -135,8 +135,9 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
             } else {
                 groupOverdue.visibility = View.VISIBLE
             }
-            refreshShowEmptyMessageVisibility()
-            overdueListAdapter.submitList(overdueItems)
+            overdueListAdapter.submitList(overdueItems) {
+                refreshShowEmptyMessageVisibility()
+            }
         })
 
         dataViewModel.getAllHomeworkByDate(
@@ -150,8 +151,9 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
             } else {
                 groupHomework.visibility = View.VISIBLE
             }
-            refreshShowEmptyMessageVisibility()
-            homeworkListAdapter.submitList(homeworks)
+            homeworkListAdapter.submitList(homeworks) {
+                refreshShowEmptyMessageVisibility()
+            }
         })
 
         dataViewModel.getAllExamByDate(
@@ -165,8 +167,9 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
             } else {
                 groupExam.visibility = View.VISIBLE
             }
-            refreshShowEmptyMessageVisibility()
-            examListAdapter.submitList(exams)
+            examListAdapter.submitList(exams) {
+                refreshShowEmptyMessageVisibility()
+            }
         })
 
         constraintLayoutAgendaMain.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
@@ -182,8 +185,9 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
             } else {
                 groupTask.visibility = View.VISIBLE
             }
-            refreshShowEmptyMessageVisibility()
-            taskListAdapter.submitList(tasks)
+            taskListAdapter.submitList(tasks) {
+                refreshShowEmptyMessageVisibility()
+            }
         })
 
         buttonSeeTomorrow.setOnClickListener {
@@ -193,13 +197,30 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
 
     private fun refreshShowEmptyMessageVisibility() {
         if (cardViewMessage.isVisible) {
-            if (groupOverdue.isVisible || groupHomework.isVisible || groupExam.isVisible || groupTask.isVisible) {
+            if (overdueListAdapter.currentList.isEmpty() &&
+                homeworkListAdapter.allItemsDone() &&
+                examListAdapter.allItemsDone() &&
+                taskListAdapter.allItemsDone()
+            ) {
+                textViewMessage.setText(R.string.you_have_done_all_your_things_for_today)
+            } else if (groupOverdue.isVisible || groupHomework.isVisible || groupExam.isVisible || groupTask.isVisible) {
                 cardViewMessage.isVisible = false
                 return
             }
+            textViewMessage.setText(R.string.you_don_t_have_anything_scheduled_for_today)
         } else {
             if (groupOverdue.isVisible || groupHomework.isVisible || groupExam.isVisible || groupTask.isVisible) {
-                return
+                if (overdueListAdapter.currentList.isEmpty() &&
+                    homeworkListAdapter.allItemsDone() &&
+                    examListAdapter.allItemsDone() &&
+                    taskListAdapter.allItemsDone()
+                ) {
+                    textViewMessage.setText(R.string.you_have_done_all_your_things_for_today)
+                } else {
+                    return
+                }
+            } else {
+                textViewMessage.setText(R.string.you_don_t_have_anything_scheduled_for_today)
             }
             cardViewMessage.isVisible = true
         }
