@@ -147,21 +147,21 @@
                 android:id="@+id/groupHomework"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:constraint_referenced_ids="imageViewHomeworkIcon, textViewHomeworkLabel, recyclerViewCalendarHomework" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/groupExam"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:constraint_referenced_ids="imageViewExamIcon, textViewExamLabel, recyclerViewCalendarExam" />
 
             <androidx.constraintlayout.widget.Group
                 android:id="@+id/groupTask"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:visibility="visible"
+                android:visibility="gone"
                 app:constraint_referenced_ids="imageViewTaskIcon, textViewTaskLabel, recyclerViewCalendarTask" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
