@@ -44,6 +44,13 @@ class SubtaskListAdapter(
 
     override fun onBindViewHolder(holder: SubtaskViewHolder, position: Int) {
         holder.editTextSubtaskTitle.setText(data[holder.bindingAdapterPosition].title)
+
+        if (data[position].done) {
+            holder.buttonCheck.setImageResource(iconChecked)
+        } else {
+            holder.buttonCheck.setImageResource(iconUnchecked)
+        }
+
         holder.editTextSubtaskTitle.setOnEditorActionListener { _, actionId, _ ->
             if (actionId == EditorInfo.IME_ACTION_DONE) {
                 if (holder.editTextSubtaskTitle.text.toString() == "") {
@@ -79,7 +86,6 @@ class SubtaskListAdapter(
                 data[holder.bindingAdapterPosition].title = s.toString()
             }
         })
-        holder.buttonCheck.setImageResource(iconUnchecked)
         holder.buttonCheck.setOnClickListener {
             if (data[holder.bindingAdapterPosition].done) {
                 holder.buttonCheck.setImageResource(iconUnchecked)

@@ -6,6 +6,7 @@ import android.animation.ValueAnimator
 import android.app.DatePickerDialog
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -332,15 +333,13 @@ class EditFragment(
 
     private fun changeSubtaskListColor(newCategory: Int) {
         if (this::subtaskListAdapter.isInitialized) {
-            subtaskListAdapter.iconChecked = categoryCheckedIcons[newCategory]
-            subtaskListAdapter.iconUnchecked = categoryUncheckedIcons[newCategory]
             for (i in 0 until subtaskListAdapter.itemCount) {
                 val v = recyclerViewSubtasks.getChildAt(i)
                 val buttonCheck = v.findViewById<ImageButton>(R.id.buttonCheck)
-                if (!subtaskListAdapter.data[i].done) {
-                    buttonCheck.setImageResource(categoryUncheckedIcons[newCategory])
-                } else {
+                if (subtaskListAdapter.data[i].done) {
                     buttonCheck.setImageResource(categoryCheckedIcons[newCategory])
+                } else {
+                    buttonCheck.setImageResource(categoryUncheckedIcons[newCategory])
                 }
                 buttonCheck.setOnClickListener {
                     if (subtaskListAdapter.data[i].done) {
