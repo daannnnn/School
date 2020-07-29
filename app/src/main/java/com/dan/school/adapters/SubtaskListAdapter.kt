@@ -117,6 +117,9 @@ class SubtaskListAdapter(
                 if (getFocus) {
                     holder.editTextSubtaskTitle.requestFocus()
                 } else {
+                    if (itemCount == 1) {
+                        holder.editTextSubtaskTitle.requestFocus()
+                    }
                     getFocus = true
                 }
             })
