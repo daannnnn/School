@@ -214,6 +214,9 @@ class EditFragment(
             }
             dismiss()
         }
+        buttonBack.setOnClickListener {
+            dismiss()
+        }
 
         // [START] initialize
         dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
