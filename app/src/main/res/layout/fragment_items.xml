@@ -1,16 +1,43 @@
 <?xml version="1.0" encoding="utf-8"?>
-<LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<RelativeLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
-    tools:context=".fragments.ItemsFragment">
+    tools:context=".fragments.ItemsFragment"
+    android:animateLayoutChanges="true"
+    android:id="@+id/relativeLayoutItemsFragment">
 
     <androidx.recyclerview.widget.RecyclerView
-        android:paddingTop="8dp"
-        android:paddingBottom="8dp"
-        android:clipToPadding="false"
+        android:id="@+id/recyclerViewItems"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        android:id="@+id/recyclerViewItems"/>
+        android:clipToPadding="false"
+        android:paddingTop="8dp"
+        android:paddingBottom="8dp" />
 
-</LinearLayout>
+    <LinearLayout
+        android:id="@+id/linearLayoutNoItem"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_centerInParent="true"
+        android:orientation="vertical"
+        tools:ignore="UseCompoundDrawables"
+        android:gravity="center">
+
+        <ImageView
+            android:id="@+id/imageViewNoItem"
+            android:layout_width="86dp"
+            android:layout_height="86dp"
+            tools:src="@drawable/ic_homework_inside_circle" />
+
+        <TextView
+            android:id="@+id/textViewNoItem"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:fontFamily="@font/cabin_bold"
+            android:textSize="16sp"
+            android:layout_marginTop="8dp"/>
+
+    </LinearLayout>
+
+</RelativeLayout>

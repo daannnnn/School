@@ -4,6 +4,9 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.content.ContextCompat
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
@@ -33,6 +36,22 @@ class ItemsFragment(private val category: Int, private val itemClickListener: It
         R.drawable.ic_exam_unchecked,
         R.drawable.ic_task_unchecked
     )
+    private val categoryColors =
+        arrayOf(
+            R.color.homeworkColor,
+            R.color.examColor,
+            R.color.taskColor
+        )
+    private val categoryNoItemStrings = arrayOf(
+        R.string.no_homeworks,
+        R.string.no_exams,
+        R.string.no_tasks
+    )
+    private val categoryNoItemDrawables = arrayOf(
+        R.drawable.ic_homework_inside_circle,
+        R.drawable.ic_exam_inside_circle,
+        R.drawable.ic_task_inside_circle
+    )
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -49,6 +68,10 @@ class ItemsFragment(private val category: Int, private val itemClickListener: It
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        textViewNoItem.setText(categoryNoItemStrings[category])
+        textViewNoItem.setTextColor(ContextCompat.getColor(requireContext(), categoryColors[category]))
+        imageViewNoItem.setImageResource(categoryNoItemDrawables[category])
+
         itemListAdapter = ItemListAdapter(
             requireContext(),
             this,
@@ -63,16 +86,19 @@ class ItemsFragment(private val category: Int, private val itemClickListener: It
             School.HOMEWORK -> {
                 dataViewModel.allHomeworks.observe(viewLifecycleOwner, Observer { homeworks ->
                     homeworks?.let { itemListAdapter.submitList(it) }
+                    setVisibilities(homeworks.isEmpty())
                 })
             }
             School.EXAM -> {
                 dataViewModel.allExams.observe(viewLifecycleOwner, Observer { exams ->
                     exams?.let { itemListAdapter.submitList(it) }
+                    setVisibilities(exams.isEmpty())
                 })
             }
             School.TASK -> {
                 dataViewModel.allTasks.observe(viewLifecycleOwner, Observer { tasks ->
                     tasks?.let { itemListAdapter.submitList(it) }
+                    setVisibilities(tasks.isEmpty())
                 })
             }
         }
@@ -105,5 +131,19 @@ class ItemsFragment(private val category: Int, private val itemClickListener: It
 
     override fun confirmDelete(itemId: Int) {
         dataViewModel.deleteItemWithId(itemId)
+    }
+
+    fun setVisibilities(isEmpty: Boolean) {
+        if (isEmpty) {
+            if (linearLayoutNoItem.isGone) {
+                recyclerViewItems.isVisible = false
+                linearLayoutNoItem.isVisible = true
+            }
+        } else {
+            if (linearLayoutNoItem.isVisible) {
+                recyclerViewItems.isVisible = true
+                linearLayoutNoItem.isVisible = false
+            }
+        }
     }
 }
