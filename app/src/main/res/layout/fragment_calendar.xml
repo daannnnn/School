@@ -2,24 +2,35 @@
 <androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/constraintLayoutCalendar"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
     tools:context=".fragments.CalendarFragment">
 
+    <include
+        android:id="@+id/calendarHeader"
+        layout="@layout/layout_calendar_header"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <com.kizitonwose.calendarview.CalendarView
         android:id="@+id/calendarView"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:layout_marginTop="10dp"
         android:elevation="4dp"
         app:cv_dayViewResource="@layout/layout_calendar_day"
-        app:cv_monthHeaderResource="@layout/layout_calendar_header"
         app:cv_orientation="horizontal"
         app:cv_outDateStyle="endOfGrid"
         app:cv_scrollMode="paged"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toBottomOf="@id/calendarHeader" />
 
     <androidx.core.widget.NestedScrollView
         android:layout_width="0dp"
@@ -30,10 +41,8 @@
         app:layout_constraintTop_toBottomOf="@id/calendarView">
 
         <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayoutCalendar"
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:animateLayoutChanges="true">
+            android:layout_height="wrap_content">
 
             <ImageView
                 android:id="@+id/imageViewHomeworkIcon"

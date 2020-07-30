@@ -1,6 +1,7 @@
 package com.dan.school.fragments
 
 import android.animation.LayoutTransition
+import android.animation.ValueAnimator
 import android.app.Activity
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -10,6 +11,8 @@ import android.view.View.MeasureSpec
 import android.view.ViewGroup
 import android.widget.ImageView
 import android.widget.TextView
+import androidx.core.animation.doOnEnd
+import androidx.core.animation.doOnStart
 import androidx.core.content.ContextCompat
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -25,10 +28,8 @@ import com.dan.school.models.DateItem
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.kizitonwose.calendarview.model.CalendarDay
-import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
-import com.kizitonwose.calendarview.ui.MonthHeaderFooterBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.yearMonth
 import kotlinx.android.synthetic.main.fragment_calendar.*
@@ -185,11 +186,6 @@ class CalendarFragment(
             }
         }
 
-        calendarView.monthHeaderBinder = object : MonthHeaderFooterBinder<ViewContainer> {
-            override fun create(view: View) = ViewContainer(view)
-            override fun bind(container: ViewContainer, month: CalendarMonth) {}
-        }
-
         calendarView.monthScrollListener = {
             if (calendarView.maxRowCount == 6) {
                 titleChangeListener.changeTitle(
@@ -243,7 +239,7 @@ class CalendarFragment(
         calendarView.scrollToMonth(currentMonth)
         // [END] CalendarView setup
 
-        constraintLayoutCalendar.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+//        constraintLayoutCalendar.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
         dataViewModel.homeworkAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
             if (this::allHomeworks.isInitialized) {
@@ -513,35 +509,44 @@ class CalendarFragment(
     }
 
     fun setCalendarView(isMonthView: Boolean) {
+        val oneWeekHeight = calendarView.dayHeight
+        val oneMonthHeight = oneWeekHeight * 6
 
-        val oneWeekHeight = calendarView.dayWidth
-        val oneMonthHeight = calendarView.dayHeight * 6
-
+        val oldHeight = if (isMonthView) oneMonthHeight else oneWeekHeight
         val newHeight = if (isMonthView) oneWeekHeight else oneMonthHeight
 
-        calendarView.updateLayoutParams {
-            height = newHeight
-        }
-
-        if (!isMonthView) {
-            calendarView.apply {
-                maxRowCount = 6
-                hasBoundaries = true
-            }
-        }
-        if (isMonthView) {
-            calendarView.apply {
-                maxRowCount = 1
-                hasBoundaries = false
+        val animator = ValueAnimator.ofInt(oldHeight, newHeight)
+        animator.addUpdateListener { mAnimator ->
+            calendarView.updateLayoutParams {
+                height = mAnimator.animatedValue as Int
             }
         }
 
-        if (isMonthView) {
-            calendarView.scrollToDate(selectedDate!!)
-        } else {
-            calendarScrolled = false
-            calendarView.scrollToMonth(selectedDate!!.yearMonth)
+        animator.doOnStart {
+            if (!isMonthView) {
+                calendarView.apply {
+                    maxRowCount = 6
+                    hasBoundaries = true
+                }
+            }
         }
+        animator.doOnEnd {
+            if (isMonthView) {
+                calendarView.apply {
+                    maxRowCount = 1
+                    hasBoundaries = false
+                }
+            }
+
+            if (isMonthView) {
+                calendarView.scrollToDate(selectedDate!!)
+            } else {
+                calendarScrolled = false
+                calendarView.scrollToMonth(selectedDate!!.yearMonth)
+            }
+        }
+        animator.duration = 250
+        animator.start()
     }
 
     override fun setDone(id: Int, done: Boolean) {
