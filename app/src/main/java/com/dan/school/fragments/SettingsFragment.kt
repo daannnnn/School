@@ -26,6 +26,11 @@ class SettingsFragment(private val listener: OnDismissListener) : DialogFragment
             R.style.FullScreenDialog
         )
 
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+
         buttonBack.setOnClickListener {
             dismiss()
         }
@@ -36,7 +41,6 @@ class SettingsFragment(private val listener: OnDismissListener) : DialogFragment
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
-
     }
 
     override fun onCreateView(
