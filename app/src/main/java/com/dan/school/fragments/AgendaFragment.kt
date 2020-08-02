@@ -208,7 +208,7 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
             examListAdapter.allItemsDone() &&
             taskListAdapter.allItemsDone()
         ) {
-            textViewMessage.setText(R.string.you_have_done_all_your_events_for_today)
+            textViewMessage.setText(R.string.all_done)
         } else {
             cardViewMessage.isGone = true
             return

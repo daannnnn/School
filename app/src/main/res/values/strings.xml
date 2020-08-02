@@ -45,7 +45,7 @@
     <string name="cancel">Cancel</string>
     <string name="are_you_sure_you_want_to_delete_this_item">Are you sure you want to delete this item?</string>
     <string name="yes">Yes</string>
-    <string name="you_have_done_all_your_events_for_today">You have done all your events for today!</string>
+    <string name="all_done">All Done!</string>
     <string name="no_homeworks">No Homeworks</string>
     <string name="no_exams">No Exams</string>
     <string name="no_tasks">No Tasks</string>
