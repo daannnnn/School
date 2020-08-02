@@ -5,6 +5,7 @@ import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.app.DatePickerDialog
 import android.content.Context
+import android.content.DialogInterface
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -392,5 +393,10 @@ class EditFragment(
             School.TOMORROW -> chipGroupDate.check(R.id.chipTomorrow)
             School.PICK_DATE -> chipGroupDate.check(R.id.chipPickDate)
         }
+    }
+
+    override fun onDismiss(dialog: DialogInterface) {
+        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+        super.onDismiss(dialog)
     }
 }
