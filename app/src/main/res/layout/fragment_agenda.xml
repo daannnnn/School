@@ -316,28 +316,28 @@
             android:id="@+id/groupOverdue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="visible"
+            android:visibility="gone"
             app:constraint_referenced_ids="cardViewOverdue, imageViewOverdueIcon, textViewOverdueLabel" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/groupHomework"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="visible"
+            android:visibility="gone"
             app:constraint_referenced_ids="cardViewHomework, imageViewHomeworkIcon, textViewHomeworkLabel" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/groupExam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="visible"
+            android:visibility="gone"
             app:constraint_referenced_ids="cardViewExam, imageViewExamIcon, textViewExamLabel" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/groupTask"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:visibility="visible"
+            android:visibility="gone"
             app:constraint_referenced_ids="cardViewTask, imageViewTaskIcon, textViewTaskLabel" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
