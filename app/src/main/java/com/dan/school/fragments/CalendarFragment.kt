@@ -450,22 +450,17 @@ class CalendarFragment(
             }
             when (category) {
                 School.HOMEWORK -> {
-                    if (++events[date]!!.homeworkCount == 1) {
-                        calendarView.notifyDateChanged(date)
-                    }
+                    events[date]!!.homeworkCount++
                 }
                 School.EXAM -> {
-                    if (++events[date]!!.examCount == 1) {
-                        calendarView.notifyDateChanged(date)
-                    }
+                    events[date]!!.examCount++
                 }
                 School.TASK -> {
-                    if (++events[date]!!.taskCount == 1) {
-                        calendarView.notifyDateChanged(date)
-                    }
+                    events[date]!!.taskCount++
                 }
             }
         }
+        calendarView.notifyCalendarChanged()
     }
 
     fun selectDate(date: LocalDate = LocalDate.now(), scrollToMonth: Boolean = false) {
