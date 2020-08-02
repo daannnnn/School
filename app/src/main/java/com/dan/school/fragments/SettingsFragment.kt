@@ -5,10 +5,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.DialogFragment
 import com.dan.school.R
+import kotlinx.android.synthetic.main.fragment_settings.*
 
-class SettingsFragment(val listener: OnDismissListener) : DialogFragment() {
+class SettingsFragment(private val listener: OnDismissListener) : DialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -23,6 +25,18 @@ class SettingsFragment(val listener: OnDismissListener) : DialogFragment() {
             STYLE_NORMAL,
             R.style.FullScreenDialog
         )
+
+        buttonBack.setOnClickListener {
+            dismiss()
+        }
+        switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+            } else {
+                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+            }
+        }
+
     }
 
     override fun onCreateView(
