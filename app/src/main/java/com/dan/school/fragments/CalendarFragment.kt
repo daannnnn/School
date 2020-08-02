@@ -239,8 +239,6 @@ class CalendarFragment(
         calendarView.scrollToMonth(currentMonth)
         // [END] CalendarView setup
 
-//        constraintLayoutCalendar.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
-
         dataViewModel.homeworkAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
             if (this::allHomeworks.isInitialized) {
                 val addedData = ArrayList<DateItem>(dateItems)
