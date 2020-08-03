@@ -50,4 +50,5 @@
     <string name="no_exams">No Exams</string>
     <string name="no_tasks">No Tasks</string>
     <string name="dark_mode">Dark Mode</string>
+    <string name="profile">Profile</string>
 </resources>
