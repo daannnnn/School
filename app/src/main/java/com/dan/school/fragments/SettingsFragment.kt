@@ -7,10 +7,11 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
 import androidx.fragment.app.DialogFragment
+import com.dan.school.MainActivity
 import com.dan.school.R
 import kotlinx.android.synthetic.main.fragment_settings.*
 
-class SettingsFragment(private val listener: OnDismissListener) : DialogFragment() {
+class SettingsFragment : DialogFragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -50,12 +51,10 @@ class SettingsFragment(private val listener: OnDismissListener) : DialogFragment
         return inflater.inflate(R.layout.fragment_settings, container, false)
     }
 
-    interface OnDismissListener {
-        fun onDismiss()
-    }
-
     override fun onDismiss(dialog: DialogInterface) {
-        listener.onDismiss()
+        if (activity is MainActivity) {
+            (activity as MainActivity).onDismiss(dialog)
+        }
         super.onDismiss(dialog)
     }
 }

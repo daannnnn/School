@@ -1,6 +1,7 @@
 package com.dan.school.fragments
 
 import android.animation.LayoutTransition
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -20,10 +21,12 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragment(),
+class AgendaFragment : Fragment(),
     ItemListAdapter.DoneListener,
     ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialog.ConfirmDeleteListener {
+
+    private lateinit var itemClickListener: ItemClickListener
 
     private lateinit var dataViewModel: DataViewModel
 
@@ -47,6 +50,13 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
     private lateinit var homeworkListAdapter: ItemListAdapter
     private lateinit var examListAdapter: ItemListAdapter
     private lateinit var taskListAdapter: ItemListAdapter
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (activity is MainActivity) {
+            itemClickListener = (activity as MainActivity)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -192,7 +202,7 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
         })
 
         buttonSeeTomorrow.setOnClickListener {
-            AgendaTomorrowFragment(this).show(childFragmentManager, "agendaTomorrowFragment")
+            AgendaTomorrowFragment().show(childFragmentManager, "agendaTomorrowFragment")
         }
     }
 
@@ -246,7 +256,9 @@ class AgendaFragment(private val itemClickListener: ItemClickListener) : Fragmen
     }
 
     override fun itemClicked(item: Item) {
-        itemClickListener.itemClicked(item)
+        if (this::itemClickListener.isInitialized) {
+            itemClickListener.itemClicked(item)
+        }
     }
 
     override fun itemLongClicked(title: String, id: Int) {

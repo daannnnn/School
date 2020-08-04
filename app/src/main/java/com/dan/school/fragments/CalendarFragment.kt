@@ -3,6 +3,7 @@ package com.dan.school.fragments
 import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.app.Activity
+import android.content.Context
 import android.os.Bundle
 import android.util.DisplayMetrics
 import android.view.LayoutInflater
@@ -42,10 +43,7 @@ import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CalendarFragment(
-    private val titleChangeListener: TitleChangeListener,
-    private val itemClickListener: ItemClickListener
-) : Fragment(), ItemListAdapter.DoneListener,
+class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
     ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialog.ConfirmDeleteListener {
 
@@ -59,6 +57,9 @@ class CalendarFragment(
         R.drawable.ic_exam_unchecked,
         R.drawable.ic_task_unchecked
     )
+
+    private lateinit var titleChangeListener: TitleChangeListener
+    private lateinit var itemClickListener: ItemClickListener
 
     private var selectedDate: LocalDate? = null
     private val today = LocalDate.now()
@@ -79,6 +80,14 @@ class CalendarFragment(
     private lateinit var allTasks: ArrayList<DateItem>
 
     private var selectedDateChanged = arrayOf(true, true, true)
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (activity is MainActivity) {
+            titleChangeListener = (activity as MainActivity)
+            itemClickListener = (activity as MainActivity)
+        }
+    }
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -188,13 +197,15 @@ class CalendarFragment(
 
         calendarView.monthScrollListener = {
             if (calendarView.maxRowCount == 6) {
-                titleChangeListener.changeTitle(
-                    if (it.year == today.year) {
-                        titleMonthFormatter.format(it.yearMonth)
-                    } else {
-                        titleMonthWithYearFormatter.format(it.yearMonth)
-                    }
-                )
+                if (this::titleChangeListener.isInitialized) {
+                    titleChangeListener.changeTitle(
+                        if (it.year == today.year) {
+                            titleMonthFormatter.format(it.yearMonth)
+                        } else {
+                            titleMonthWithYearFormatter.format(it.yearMonth)
+                        }
+                    )
+                }
                 if (calendarScrolled) {
                     selectDate(it.yearMonth.atDay(1))
                 } else {
@@ -209,13 +220,17 @@ class CalendarFragment(
                 val firstDate = it.weekDays.first().first().date
                 val lastDate = it.weekDays.last().last().date
                 if (firstDate.yearMonth == lastDate.yearMonth) {
-                    titleChangeListener.changeTitle(titleMonthFormatter.format(firstDate))
+                    if (this::titleChangeListener.isInitialized) {
+                        titleChangeListener.changeTitle(titleMonthFormatter.format(firstDate))
+                    }
                 } else {
-                    titleChangeListener.changeTitle(
-                        "${titleMonthFormatter.format(firstDate)} - ${titleMonthFormatter.format(
-                            lastDate
-                        )}"
-                    )
+                    if (this::titleChangeListener.isInitialized) {
+                        titleChangeListener.changeTitle(
+                            "${titleMonthFormatter.format(firstDate)} - ${titleMonthFormatter.format(
+                                lastDate
+                            )}"
+                        )
+                    }
                 }
             }
         }
@@ -565,7 +580,9 @@ class CalendarFragment(
     }
 
     override fun itemClicked(item: Item) {
-        itemClickListener.itemClicked(item)
+        if (this::itemClickListener.isInitialized) {
+            itemClickListener.itemClicked(item)
+        }
     }
 
     override fun itemLongClicked(title: String, id: Int) {

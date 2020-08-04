@@ -1,5 +1,6 @@
 package com.dan.school.fragments
 
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -7,6 +8,7 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.dan.school.ItemClickListener
+import com.dan.school.MainActivity
 import com.dan.school.adapters.HomeworkExamTaskTabLayoutAdapter
 import com.dan.school.R
 import com.dan.school.School
@@ -14,13 +16,21 @@ import com.dan.school.models.Item
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_home.*
 
-class HomeFragment(
-    var selectedTabChangeListener: SelectedTabChangeListener,
-    private val itemClickListener: ItemClickListener
-) : Fragment(),
+class HomeFragment : Fragment(),
     ItemClickListener {
 
     val categoryColors = ArrayList<Int>()
+
+    private lateinit var selectedTabChangeListener: SelectedTabChangeListener
+    private lateinit var itemClickListener: ItemClickListener
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (activity is MainActivity) {
+            selectedTabChangeListener = (activity as MainActivity)
+            itemClickListener = (activity as MainActivity)
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -53,9 +63,9 @@ class HomeFragment(
         )
 
         // [START configure TabLayout and ViewPager]
-        val homeworksFragment = ItemsFragment(School.HOMEWORK, this)
-        val examsFragment = ItemsFragment(School.EXAM, this)
-        val tasksFragment = ItemsFragment(School.TASK, this)
+        val homeworksFragment = ItemsFragment.newInstance(School.HOMEWORK)
+        val examsFragment = ItemsFragment.newInstance(School.EXAM)
+        val tasksFragment = ItemsFragment.newInstance(School.TASK)
 
         val mListFragments = ArrayList<Fragment>()
         mListFragments.add(homeworksFragment)
@@ -84,7 +94,9 @@ class HomeFragment(
             override fun onTabSelected(tab: TabLayout.Tab?) {
                 // change color when selecting tab
                 val position = tab!!.position
-                selectedTabChangeListener.selectedTabChanged(position)
+                if (this@HomeFragment::selectedTabChangeListener.isInitialized) {
+                    selectedTabChangeListener.selectedTabChanged(position)
+                }
                 tabLayout.setSelectedTabIndicatorColor(categoryColors[position])
                 tabLayout.setTabTextColors(
                     tabLayout.tabTextColors!!.defaultColor,
@@ -104,6 +116,8 @@ class HomeFragment(
     }
 
     override fun itemClicked(item: Item) {
-        itemClickListener.itemClicked(item)
+        if (this::itemClickListener.isInitialized) {
+            itemClickListener.itemClicked(item)
+        }
     }
 }

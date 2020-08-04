@@ -15,12 +15,14 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import android.widget.ImageButton
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
 import com.dan.school.DataViewModel
+import com.dan.school.MainActivity
 import com.dan.school.R
 import com.dan.school.School
 import com.dan.school.adapters.CategoryViewPagerAdapter
@@ -34,20 +36,22 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
-class EditFragment(
-    private val categoryChangeListener: CategoryChangeListener,
-    private val dismissBottomSheetListener: DismissBottomSheetListener,
-    private var category: Int = School.HOMEWORK,
-    private var done: Boolean = false,
-    private val title: String = "",
-    private val subtasks: ArrayList<Subtask> = ArrayList(),
-    private val notes: String = "",
-    private var chipGroupSelected: Int = School.TODAY,
-    private var selectedDate: Calendar?,
-    private val isEdit: Boolean = false,
-    private val itemId: Int? = null
-) : DialogFragment(), SubtaskListAdapter.SetFocusListener, DatePickerDialog.OnDateSetListener,
+class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
+    DatePickerDialog.OnDateSetListener,
     DatePickerFragment.OnCancelListener {
+
+    private lateinit var categoryChangeListener: CategoryChangeListener
+    private lateinit var dismissBottomSheetListener: DismissBottomSheetListener
+
+    private var category: Int = School.HOMEWORK
+    private var done: Boolean = false
+    private var title: String = ""
+    private var subtasks: ArrayList<Subtask> = ArrayList()
+    private var notes: String = ""
+    private var chipGroupSelected: Int = School.TODAY
+    private var selectedDate: Calendar? = null
+    private var isEdit: Boolean = false
+    private var itemId: Int? = null
 
     private val categoryColors =
         arrayOf(
@@ -102,6 +106,10 @@ class EditFragment(
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        if (activity is MainActivity) {
+            categoryChangeListener = (activity as MainActivity)
+            dismissBottomSheetListener = (activity as MainActivity)
+        }
         inputMethodManager =
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
     }
@@ -113,6 +121,25 @@ class EditFragment(
             R.style.FullScreenDialog
         )
         dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
+
+        category = requireArguments().getInt("category", School.HOMEWORK)
+        done = requireArguments().getBoolean("done", false)
+        title = requireArguments().getString("title", "")
+        subtasks =
+            requireArguments().getParcelableArrayList<Subtask>("subtasks") as ArrayList<Subtask>
+        notes = requireArguments().getString("notes", "")
+        chipGroupSelected = requireArguments().getInt("chipGroupSelected", School.TODAY)
+
+        val selectedDateString = requireArguments().getString("selectedDate", "")
+        if (selectedDateString == "") {
+            selectedDate = null
+        } else {
+            selectedDate = Calendar.getInstance()
+            selectedDate?.time = SimpleDateFormat(School.dateFormatOnDatabase, Locale.getDefault()).parse(selectedDateString)!!
+        }
+
+        isEdit = requireArguments().getBoolean("isEdit", false)
+        itemId = requireArguments().getInt("itemId", 0)
     }
 
     override fun onCreateView(
@@ -126,7 +153,9 @@ class EditFragment(
         super.onViewCreated(view, savedInstanceState)
 
         dialog?.setOnShowListener {
-            dismissBottomSheetListener.dismissBottomSheet()
+            if (this::dismissBottomSheetListener.isInitialized) {
+                dismissBottomSheetListener.dismissBottomSheet()
+            }
         }
 
         val viewPagerAdapter = InfinitePagerAdapter(
@@ -187,7 +216,7 @@ class EditFragment(
             if (isEdit) {
                 if (itemId != null) {
                     val item = Item(
-                        id = itemId,
+                        id = itemId!!,
                         category = category,
                         done = done,
                         title = editTextTitle.text.toString(),
@@ -241,9 +270,7 @@ class EditFragment(
             }
             School.PICK_DATE -> {
                 chipGroupDate.check(R.id.chipPickDate)
-                if (selectedDate != null) {
-                    textViewDatePicked.text = dateFormat.format(selectedDate!!.time)
-                }
+                textViewDatePicked.text = dateFormat.format(selectedDate!!.time)
             }
         }
 
@@ -331,7 +358,9 @@ class EditFragment(
             categoryButtonAddRippleColorStateList[newCategory]
         )
         changeSubtaskListColor(newCategory)
-        categoryChangeListener.selectedCategoryChanged(newCategory)
+        if (this::categoryChangeListener.isInitialized) {
+            categoryChangeListener.selectedCategoryChanged(newCategory)
+        }
         category = newCategory
     }
 
@@ -398,5 +427,36 @@ class EditFragment(
     override fun onDismiss(dialog: DialogInterface) {
         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
         super.onDismiss(dialog)
+    }
+
+    companion object {
+        fun newInstance(
+            category: Int = School.HOMEWORK,
+            done: Boolean = false,
+            title: String = "",
+            subtasks: ArrayList<Subtask> = ArrayList(),
+            notes: String = "",
+            chipGroupSelected: Int = School.TODAY,
+            selectedDate: Calendar?,
+            isEdit: Boolean = false,
+            itemId: Int? = null
+        ) = EditFragment().apply {
+            arguments = bundleOf(
+                "category" to category,
+                "done" to done,
+                "title" to title,
+                "subtasks" to subtasks,
+                "notes" to notes,
+                "chipGroupSelected" to chipGroupSelected,
+                "selectedDate" to if (selectedDate == null) "" else SimpleDateFormat(
+                    School.dateFormatOnDatabase,
+                    Locale.getDefault()
+                ).format(
+                    selectedDate.time
+                ),
+                "isEdit" to isEdit,
+                "itemId" to itemId
+            )
+        }
     }
 }

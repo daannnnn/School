@@ -1,6 +1,7 @@
 package com.dan.school.fragments
 
 import android.animation.LayoutTransition
+import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -17,10 +18,12 @@ import kotlinx.android.synthetic.main.fragment_agenda_tomorrow.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class AgendaTomorrowFragment(private val itemClickListener: ItemClickListener) : DialogFragment(),
+class AgendaTomorrowFragment : DialogFragment(),
     ItemListAdapter.DoneListener,
     ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialog.ConfirmDeleteListener {
+
+    private lateinit var itemClickListener: ItemClickListener
 
     private val dateTomorrow = Calendar.getInstance()
 
@@ -44,6 +47,13 @@ class AgendaTomorrowFragment(private val itemClickListener: ItemClickListener) :
         R.drawable.ic_exam_unchecked,
         R.drawable.ic_task_unchecked
     )
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (parentFragment is AgendaFragment) {
+            itemClickListener = (parentFragment as AgendaFragment)
+        }
+    }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -200,7 +210,9 @@ class AgendaTomorrowFragment(private val itemClickListener: ItemClickListener) :
     }
 
     override fun itemClicked(item: Item) {
-        itemClickListener.itemClicked(item)
+        if (this::itemClickListener.isInitialized) {
+            itemClickListener.itemClicked(item)
+        }
     }
 
     override fun itemLongClicked(title: String, id: Int) {

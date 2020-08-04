@@ -1,10 +1,13 @@
 package com.dan.school.fragments
 
+import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
+import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -17,14 +20,17 @@ import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import kotlinx.android.synthetic.main.fragment_items.*
 
-class ItemsFragment(private val category: Int, private val itemClickListener: ItemClickListener) :
-    Fragment(),
+class ItemsFragment : Fragment(),
     ItemListAdapter.DoneListener,
     ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialog.ConfirmDeleteListener {
 
     private lateinit var dataViewModel: DataViewModel
     private lateinit var itemListAdapter: ItemListAdapter
+
+    private lateinit var itemClickListener: ItemClickListener
+
+    private var category = 0
 
     private val categoryCheckedIcons = arrayOf(
         R.drawable.ic_homework_checked,
@@ -53,8 +59,16 @@ class ItemsFragment(private val category: Int, private val itemClickListener: It
         R.drawable.ic_task_inside_circle
     )
 
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (parentFragment is HomeFragment) {
+            itemClickListener = (parentFragment as HomeFragment)
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        category = requireArguments().getInt("category", 0)
         dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
     }
 
@@ -69,7 +83,12 @@ class ItemsFragment(private val category: Int, private val itemClickListener: It
         super.onViewCreated(view, savedInstanceState)
 
         textViewNoItem.setText(categoryNoItemStrings[category])
-        textViewNoItem.setTextColor(ContextCompat.getColor(requireContext(), categoryColors[category]))
+        textViewNoItem.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                categoryColors[category]
+            )
+        )
         imageViewNoItem.setImageResource(categoryNoItemDrawables[category])
 
         itemListAdapter = ItemListAdapter(
@@ -106,9 +125,15 @@ class ItemsFragment(private val category: Int, private val itemClickListener: It
 
     override fun setDone(id: Int, done: Boolean) {
         dataViewModel.setDone(id, done)
+        Log.i("TAGDAN", "setDone: DONE")
     }
 
-    override fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: Int, category: Int) {
+    override fun showSubtasks(
+        subtasks: ArrayList<Subtask>,
+        itemTitle: String,
+        id: Int,
+        category: Int
+    ) {
         SubtasksBottomSheetDialogFragment(
             subtasks,
             itemTitle,
@@ -122,7 +147,9 @@ class ItemsFragment(private val category: Int, private val itemClickListener: It
     }
 
     override fun itemClicked(item: Item) {
-        itemClickListener.itemClicked(item)
+        if (this::itemClickListener.isInitialized) {
+            itemClickListener.itemClicked(item)
+        }
     }
 
     override fun itemLongClicked(title: String, id: Int) {
@@ -144,6 +171,12 @@ class ItemsFragment(private val category: Int, private val itemClickListener: It
                 recyclerViewItems.isVisible = true
                 linearLayoutNoItem.isVisible = false
             }
+        }
+    }
+
+    companion object {
+        fun newInstance(category: Int) = ItemsFragment().apply {
+            arguments = bundleOf("category" to category)
         }
     }
 }

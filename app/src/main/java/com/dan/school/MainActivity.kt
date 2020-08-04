@@ -1,5 +1,6 @@
 package com.dan.school
 
+import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -19,10 +20,10 @@ import java.util.*
 class MainActivity : AppCompatActivity(),
     AddBottomSheetDialogFragment.GoToEditFragment,
     EditFragment.DismissBottomSheetListener,
-    SettingsFragment.OnDismissListener,
     AddBottomSheetDialogFragment.SelectedCategoryChangeListener,
     HomeFragment.SelectedTabChangeListener, EditFragment.CategoryChangeListener,
-    ItemClickListener, CalendarFragment.TitleChangeListener {
+    ItemClickListener, CalendarFragment.TitleChangeListener,
+    DialogInterface.OnDismissListener {
 
     private var addBottomSheetDialogFragment: AddBottomSheetDialogFragment? = null
     private var lastSelectedAddCategory = School.HOMEWORK
@@ -32,8 +33,17 @@ class MainActivity : AppCompatActivity(),
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        navigationView.menu.getItem(0).isChecked = true
-        setButtonCalendarViewBackground()
+        if (savedInstanceState == null) {
+            navigationView.menu.getItem(0).isChecked = true
+            setButtonCalendarViewBackground()
+
+            // Show HomeFragment
+            supportFragmentManager.beginTransaction()
+                .add(
+                    R.id.frameLayoutBottomNavigation,
+                    HomeFragment(), HOME
+                ).commit()
+        }
 
         // Listeners
         floatingActionButton.setOnClickListener {
@@ -69,7 +79,9 @@ class MainActivity : AppCompatActivity(),
         }
         buttonCalendarView.setOnClickListener {
             if (supportFragmentManager.findFragmentByTag(CALENDAR) != null) {
-                (supportFragmentManager.findFragmentByTag(CALENDAR) as CalendarFragment).setCalendarView(isMonthView)
+                (supportFragmentManager.findFragmentByTag(CALENDAR) as CalendarFragment).setCalendarView(
+                    isMonthView
+                )
                 isMonthView = !isMonthView
                 setButtonCalendarViewBackground()
             }
@@ -82,7 +94,7 @@ class MainActivity : AppCompatActivity(),
                 when (item.itemId) {
                     R.id.settings -> {
                         val settingsFragment =
-                            SettingsFragment(this)
+                            SettingsFragment()
                         settingsFragment.show(supportFragmentManager, "settingsFragment")
                     }
                 }
@@ -91,13 +103,6 @@ class MainActivity : AppCompatActivity(),
             }
             return@setNavigationItemSelectedListener true
         }
-
-        // Show HomeFragment
-        supportFragmentManager.beginTransaction()
-            .add(
-                R.id.frameLayoutBottomNavigation,
-                HomeFragment(this, this), HOME
-            ).commit()
     }
 
     private fun setButtonCalendarViewBackground() {
@@ -117,7 +122,7 @@ class MainActivity : AppCompatActivity(),
                     supportFragmentManager.beginTransaction()
                         .add(
                             R.id.frameLayoutBottomNavigation,
-                            HomeFragment(this, this), HOME
+                            HomeFragment(), HOME
                         ).commit()
                 }
                 if (supportFragmentManager.findFragmentByTag(CALENDAR) != null) {
@@ -139,7 +144,7 @@ class MainActivity : AppCompatActivity(),
                     supportFragmentManager.beginTransaction()
                         .add(
                             R.id.frameLayoutBottomNavigation,
-                            CalendarFragment(this, this), CALENDAR
+                            CalendarFragment(), CALENDAR
                         ).commit()
                 }
                 if (supportFragmentManager.findFragmentByTag(HOME) != null) {
@@ -157,7 +162,7 @@ class MainActivity : AppCompatActivity(),
                     supportFragmentManager.beginTransaction()
                         .add(
                             R.id.frameLayoutBottomNavigation,
-                            AgendaFragment(this), AGENDA
+                            AgendaFragment(), AGENDA
                         ).commit()
                 }
                 if (supportFragmentManager.findFragmentByTag(HOME) != null) {
@@ -190,9 +195,7 @@ class MainActivity : AppCompatActivity(),
         date: Calendar?,
         itemId: Int
     ) {
-        val editFragment = EditFragment(
-            categoryChangeListener = this,
-            dismissBottomSheetListener = this,
+        val editFragment = EditFragment.newInstance(
             category = category,
             done = done,
             title = title,
@@ -212,9 +215,7 @@ class MainActivity : AppCompatActivity(),
         chipGroupDateSelected: Int,
         date: Calendar?
     ) {
-        val editFragment = EditFragment(
-            categoryChangeListener = this,
-            dismissBottomSheetListener = this,
+        val editFragment = EditFragment.newInstance(
             category = category,
             title = title,
             chipGroupSelected = chipGroupDateSelected,
@@ -241,10 +242,6 @@ class MainActivity : AppCompatActivity(),
         addBottomSheetDialogFragment?.dismiss()
     }
 
-    override fun onDismiss() {
-        navigationView.setCheckedItem(R.id.overview)
-    }
-
     override fun selectedCategoryChanged(category: Int) {
         lastSelectedAddCategory = category
     }
@@ -255,7 +252,10 @@ class MainActivity : AppCompatActivity(),
 
     override fun itemClicked(item: Item) {
         val calendar = Calendar.getInstance()
-        calendar.time = SimpleDateFormat(School.dateFormatOnDatabase, Locale.getDefault()).parse(item.date.toString())!!
+        calendar.time = SimpleDateFormat(
+            School.dateFormatOnDatabase,
+            Locale.getDefault()
+        ).parse(item.date.toString())!!
         showEditFragment(
             item.category,
             item.done,
@@ -269,5 +269,9 @@ class MainActivity : AppCompatActivity(),
 
     override fun changeTitle(title: String) {
         textViewAppBarTitle.text = title
+    }
+
+    override fun onDismiss(dialog: DialogInterface?) {
+        navigationView.setCheckedItem(R.id.overview)
     }
 }
