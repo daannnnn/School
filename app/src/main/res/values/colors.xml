@@ -31,4 +31,7 @@
     <color name="strokeColor">#1F000000</color>
 
     <color name="red">#f44336</color>
+
+    <color name="tabLayoutColor">#ffffff</color>
+    <color name="appBarLayoutColor">#ffffff</color>
 </resources>

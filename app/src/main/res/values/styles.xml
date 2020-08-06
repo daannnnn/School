@@ -23,7 +23,7 @@
     </style>
 
     <style name="NavigationTab" parent="Widget.MaterialComponents.TabLayout">
-        <item name="tabBackground">@android:color/white</item>
+        <item name="tabBackground">@color/tabLayoutColor</item>
         <item name="tabSelectedTextColor">@color/homeworkColor</item>
         <item name="fontFamily">@font/cabin_bold</item>
         <item name="tabIndicatorColor">@color/homeworkColor</item>
