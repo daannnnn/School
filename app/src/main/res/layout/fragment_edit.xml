@@ -10,13 +10,12 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/white"
+        android:background="?colorSurface"
         app:liftOnScroll="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white">
+            android:layout_height="?attr/actionBarSize">
 
             <ImageView
                 android:id="@+id/buttonBack"
@@ -25,7 +24,8 @@
                 android:layout_centerVertical="true"
                 android:layout_margin="16dp"
                 android:background="?selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_chevron_left" />
+                android:src="@drawable/ic_chevron_left"
+                android:tint="?android:textColorPrimary" />
 
             <com.antonyt.infiniteviewpager.InfiniteViewPager
                 android:id="@+id/viewPagerCategory"
@@ -44,7 +44,8 @@
                 android:layout_centerVertical="true"
                 android:layout_margin="16dp"
                 android:background="?selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_check" />
+                android:src="@drawable/ic_check"
+                android:tint="?android:textColorPrimary" />
 
         </RelativeLayout>
 
@@ -69,7 +70,7 @@
                 android:fontFamily="@font/cabin_regular"
                 android:hint="@string/title"
                 android:inputType="textCapSentences"
-                android:textColor="@android:color/black"
+                android:textColor="?android:textColorPrimary"
                 android:textSize="36sp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
@@ -82,7 +83,7 @@
                 android:layout_margin="24dp"
                 android:fontFamily="@font/cabin_bold"
                 android:text="@string/date"
-                android:textColor="@android:color/black"
+                android:textColor="?android:textColorPrimary"
                 android:textSize="18sp"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/editTextTitle" />
@@ -126,6 +127,7 @@
                         app:chipBackgroundColor="@color/chip_background_state_list"
                         app:chipIcon="@drawable/ic_chip_pick_date"
                         app:chipIconEnabled="true"
+                        app:chipIconTint="?android:textColorPrimary"
                         app:chipStrokeColor="@color/chip_stroke_color_state_list"
                         app:chipStrokeWidth="1dp" />
 
@@ -176,7 +178,7 @@
                     android:layout_margin="24dp"
                     android:fontFamily="@font/cabin_bold"
                     android:text="@string/subtasks"
-                    android:textColor="@android:color/black"
+                    android:textColor="?android:textColorPrimary"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent" />
@@ -215,7 +217,7 @@
                     android:layout_margin="24dp"
                     android:fontFamily="@font/cabin_bold"
                     android:text="@string/notes"
-                    android:textColor="@android:color/black"
+                    android:textColor="?android:textColorPrimary"
                     android:textSize="18sp"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toBottomOf="@id/buttonAddSubtask" />
@@ -229,9 +231,9 @@
                     android:layout_marginEnd="32dp"
                     android:layout_marginBottom="24dp"
                     android:background="@null"
-                    android:inputType="textCapSentences"
                     android:fontFamily="@font/cabin_regular"
                     android:hint="@string/enter_note_here"
+                    android:inputType="textCapSentences"
                     app:layout_constraintBottom_toBottomOf="parent"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
