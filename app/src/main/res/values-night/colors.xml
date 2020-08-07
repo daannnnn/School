@@ -14,6 +14,11 @@
     <color name="add_button_color_normal">#32afe2</color>
 
     <color name="dividerColor">#1FFFFFFF</color>
+    <color name="chipStrokeColor">#1FFFFFFF</color>
+    <color name="chipSelectedColor">#4D66d3ff</color>
+    <color name="chipSelectedHomeworkColor">#4Deba999</color>
+    <color name="chipSelectedExamColor">#4D80d7c0</color>
+    <color name="chipSelectedTaskColor">#4Dbc92fe</color>
 
     <color name="cardViewHomeworkBackgroundColor">#3Deba999</color>
     <color name="cardViewExamBackgroundColor">#3D80d7c0</color>

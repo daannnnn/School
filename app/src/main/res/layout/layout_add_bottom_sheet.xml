@@ -103,6 +103,7 @@
                     app:chipBackgroundColor="@color/chip_background_state_list"
                     app:chipIcon="@drawable/ic_chip_pick_date"
                     app:chipIconEnabled="true"
+                    app:chipIconTint="?android:textColorPrimary"
                     app:chipStrokeColor="@color/chip_stroke_color_state_list"
                     app:chipStrokeWidth="1dp" />
 
@@ -117,6 +118,7 @@
                     app:chipBackgroundColor="@color/chip_background_state_list"
                     app:chipIcon="@drawable/ic_chip_today_tomorrow"
                     app:chipIconEnabled="true"
+                    app:chipIconTint="?android:textColorPrimary"
                     app:chipStrokeColor="@color/chip_stroke_color_state_list"
                     app:chipStrokeWidth="1dp" />
 
@@ -131,6 +133,7 @@
                     app:chipBackgroundColor="@color/chip_background_state_list"
                     app:chipIcon="@drawable/ic_chip_today_tomorrow"
                     app:chipIconEnabled="true"
+                    app:chipIconTint="?android:textColorPrimary"
                     app:chipStrokeColor="@color/chip_stroke_color_state_list"
                     app:chipStrokeWidth="1dp" />
 

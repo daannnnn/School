@@ -17,7 +17,7 @@
 
     <color name="dividerColor">#1F000000</color>
     <color name="chipStrokeColor">#1F000000</color>
-    <color name="chipSelectedColor">#4D3CB3FF</color>
+    <color name="chipSelectedColor">#4D66d3ff</color>
     <color name="chipSelectedHomeworkColor">#4DE17055</color>
     <color name="chipSelectedExamColor">#4D00B894</color>
     <color name="chipSelectedTaskColor">#4D8534FF</color>
