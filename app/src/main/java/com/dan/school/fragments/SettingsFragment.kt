@@ -43,6 +43,8 @@ class SettingsFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        switchDarkMode.isChecked = sharedPref.getBoolean(School.IS_DARK_MODE, false)
+
         buttonBack.setOnClickListener {
             dismiss()
         }
