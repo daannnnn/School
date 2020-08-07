@@ -1,5 +1,26 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
+    <color name="colorPrimary">#32afe2</color>
+    <color name="colorPrimaryDark">#0073ac</color>
+    <color name="colorAccent">#66d3ff</color>
+
+    <color name="homeworkColor">#eba999</color>
+    <color name="examColor">#80d7c0</color>
+    <color name="taskColor">#bc92fe</color>
+    <color name="homeworkColorAccent">#B3eba999</color>
+    <color name="examColorAccent">#B380d7c0</color>
+    <color name="taskColorAccent">#B3bc92fe</color>
+
+    <color name="add_button_color_normal">#32afe2</color>
+
+    <color name="cardViewHomeworkBackgroundColor">#3Deba999</color>
+    <color name="cardViewExamBackgroundColor">#3D80d7c0</color>
+    <color name="cardViewTaskBackgroundColor">#3Dbc92fe</color>
+    <color name="cardViewColorPrimaryBackgroundColor">#3D32afe2</color>
+    <color name="cardViewRedBackgroundColor">#3DF44336</color>
+    <color name="colorPrimaryAlpha70">#B332afe2</color>
+    <color name="strokeColor">#1F000000</color>
+
     <color name="tabLayoutColor">#272727</color>
     <color name="appBarLayoutColor">#272727</color>
 </resources>

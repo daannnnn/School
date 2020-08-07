@@ -1,8 +1,8 @@
 <?xml version="1.0" encoding="utf-8"?>
 <resources>
-    <color name="colorPrimary">#005287</color>
-    <color name="colorPrimaryDark">#003D65</color>
-    <color name="colorAccent">#3CB3FF</color>
+    <color name="colorPrimary">#0682bd</color>
+    <color name="colorPrimaryDark">#0073ac</color>
+    <color name="colorAccent">#66d3ff</color>
 
     <color name="homeworkColor">#E17055</color>
     <color name="examColor">#00B894</color>
@@ -12,7 +12,7 @@
     <color name="taskColorAccent">#B38534FF</color>
 
     <color name="black_semi_transparent">#B2000000</color>
-    <color name="add_button_color_normal">#005287</color>
+    <color name="add_button_color_normal">#0682bd</color>
     <color name="add_button_color_pressed">#0085DC</color>
 
     <color name="dividerColor">#1F000000</color>
@@ -25,9 +25,9 @@
     <color name="cardViewHomeworkBackgroundColor">#3DE17055</color>
     <color name="cardViewExamBackgroundColor">#3D00B894</color>
     <color name="cardViewTaskBackgroundColor">#3D8534FF</color>
-    <color name="cardViewColorPrimaryBackgroundColor">#3D005287</color>
+    <color name="cardViewColorPrimaryBackgroundColor">#3D0682bd</color>
     <color name="cardViewRedBackgroundColor">#3DF44336</color>
-    <color name="colorPrimaryAlpha70">#B3005287</color>
+    <color name="colorPrimaryAlpha70">#B30682bd</color>
     <color name="strokeColor">#1F000000</color>
 
     <color name="red">#f44336</color>
