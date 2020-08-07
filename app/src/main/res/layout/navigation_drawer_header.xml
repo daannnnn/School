@@ -23,7 +23,7 @@
         android:layout_marginTop="16dp"
         android:textSize="20sp"
         android:fontFamily="@font/cabin_bold"
-        android:textColor="@android:color/black"
+        android:textColor="?android:textColorPrimary"
         android:id="@+id/textViewName"
         android:text="Full Name"/>
 
@@ -38,7 +38,7 @@
         android:text="Email"
         android:textSize="16sp"
         android:fontFamily="@font/cabin_regular"
-        android:textColor="@android:color/black"/>
+        android:textColor="?android:textColorPrimary"/>
 
     <View
         android:layout_width="0dp"

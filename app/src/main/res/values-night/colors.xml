@@ -13,6 +13,8 @@
 
     <color name="add_button_color_normal">#32afe2</color>
 
+    <color name="dividerColor">#1FFFFFFF</color>
+
     <color name="cardViewHomeworkBackgroundColor">#3Deba999</color>
     <color name="cardViewExamBackgroundColor">#3D80d7c0</color>
     <color name="cardViewTaskBackgroundColor">#3Dbc92fe</color>
