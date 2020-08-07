@@ -45,6 +45,12 @@ class MainActivity : AppCompatActivity(),
                 ).commit()
         }
 
+        if (isMonthView) {
+            buttonCalendarView.setImageResource(R.drawable.ic_week_view)
+        } else {
+            buttonCalendarView.setImageResource(R.drawable.ic_month_view)
+        }
+
         // Listeners
         floatingActionButton.setOnClickListener {
             addBottomSheetDialogFragment =
