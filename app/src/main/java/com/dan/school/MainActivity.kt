@@ -1,13 +1,18 @@
 package com.dan.school
 
+import android.content.Context
 import android.content.DialogInterface
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import com.dan.school.School.AGENDA
+import com.dan.school.School.AGENDA_SELECTED
 import com.dan.school.School.CALENDAR
+import com.dan.school.School.CALENDAR_SELECTED
 import com.dan.school.School.HOME
+import com.dan.school.School.HOME_SELECTED
 import com.dan.school.fragments.*
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
@@ -29,26 +34,55 @@ class MainActivity : AppCompatActivity(),
     private var lastSelectedAddCategory = School.HOMEWORK
     private var isMonthView = true
 
+    private var selectedFragment = 0
+
+    private lateinit var sharedPref: SharedPreferences
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
+        sharedPref = this.getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
+        selectedFragment = sharedPref.getInt(School.SELECTED_BOTTOM_NAVIGATION_FRAGMENT, HOME_SELECTED)
+
         if (savedInstanceState == null) {
             navigationView.menu.getItem(0).isChecked = true
-            setButtonCalendarViewBackground()
 
-            // Show HomeFragment
-            supportFragmentManager.beginTransaction()
-                .add(
-                    R.id.frameLayoutBottomNavigation,
-                    HomeFragment(), HOME
-                ).commit()
+            // Show last selected fragment saved on SharedPreferences
+            when (selectedFragment) {
+                HOME_SELECTED -> {
+                    supportFragmentManager.beginTransaction()
+                        .add(
+                            R.id.frameLayoutBottomNavigation,
+                            HomeFragment(), HOME
+                        ).commit()
+                    bottomNavigation.selectedItemId = R.id.homeFragment
+                }
+                CALENDAR_SELECTED -> {
+                    supportFragmentManager.beginTransaction()
+                        .add(
+                            R.id.frameLayoutBottomNavigation,
+                            CalendarFragment(), CALENDAR
+                        ).commit()
+                    buttonCalendarView.visibility = View.VISIBLE
+                    bottomNavigation.selectedItemId = R.id.calendarFragment
+                }
+                AGENDA_SELECTED -> {
+                    supportFragmentManager.beginTransaction()
+                        .add(
+                            R.id.frameLayoutBottomNavigation,
+                            AgendaFragment(), AGENDA
+                        ).commit()
+                    bottomNavigation.selectedItemId = R.id.agendaFragment
+                }
+            }
         }
 
-        if (isMonthView) {
-            buttonCalendarView.setImageResource(R.drawable.ic_week_view)
-        } else {
-            buttonCalendarView.setImageResource(R.drawable.ic_month_view)
+        setButtonCalendarViewBackground()
+        if (selectedFragment == CALENDAR_SELECTED) {
+            buttonCalendarView.visibility = View.VISIBLE
         }
 
         // Listeners
@@ -137,9 +171,16 @@ class MainActivity : AppCompatActivity(),
                 if (supportFragmentManager.findFragmentByTag(AGENDA) != null) {
                     hideFragment(AGENDA)
                 }
-                lastSelectedAddCategory =
+
+                lastSelectedAddCategory = if (supportFragmentManager.findFragmentByTag(HOME) != null) {
                     (supportFragmentManager.findFragmentByTag(HOME) as HomeFragment).getSelectedTabPosition()
+                } else {
+                    School.HOMEWORK
+                }
+
                 buttonCalendarView.visibility = View.GONE
+
+                setLastSelectedFragment(HOME_SELECTED)
             }
             CALENDAR -> {
                 if (supportFragmentManager.findFragmentByTag(CALENDAR) != null) {
@@ -160,6 +201,8 @@ class MainActivity : AppCompatActivity(),
                     hideFragment(AGENDA)
                 }
                 buttonCalendarView.visibility = View.VISIBLE
+
+                setLastSelectedFragment(CALENDAR_SELECTED)
             }
             AGENDA -> {
                 if (supportFragmentManager.findFragmentByTag(AGENDA) != null) {
@@ -178,6 +221,8 @@ class MainActivity : AppCompatActivity(),
                     hideFragment(CALENDAR)
                 }
                 buttonCalendarView.visibility = View.GONE
+
+                setLastSelectedFragment(AGENDA_SELECTED)
             }
         }
     }
@@ -228,6 +273,15 @@ class MainActivity : AppCompatActivity(),
             selectedDate = date
         )
         editFragment.show(supportFragmentManager, "editFragment")
+    }
+
+    private fun setLastSelectedFragment(fragment: Int) {
+        if (this::sharedPref.isInitialized) {
+            with(sharedPref.edit()) {
+                putInt(School.SELECTED_BOTTOM_NAVIGATION_FRAGMENT, fragment)
+                commit()
+            }
+        }
     }
 
     override fun goToEditFragment(

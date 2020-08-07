@@ -19,5 +19,10 @@ object School {
     const val CALENDAR = "calendar"
     const val AGENDA = "agenda"
 
+    const val HOME_SELECTED = 0
+    const val CALENDAR_SELECTED = 1
+    const val AGENDA_SELECTED = 2
+
     const val IS_DARK_MODE = "is_dark_mode"
+    const val SELECTED_BOTTOM_NAVIGATION_FRAGMENT = "selected_bottom_navigation_fragment"
 }
