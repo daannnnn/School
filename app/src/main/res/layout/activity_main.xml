@@ -12,11 +12,11 @@
         android:layout_height="match_parent">
 
         <com.google.android.material.appbar.AppBarLayout
-            app:liftOnScroll="true"
             android:id="@+id/appBar"
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
-            android:background="@color/appBarLayoutColor">
+            android:background="@color/appBarLayoutColor"
+            app:liftOnScroll="true">
 
             <RelativeLayout
                 android:layout_width="match_parent"
@@ -28,10 +28,10 @@
                     android:layout_height="24dp"
                     android:layout_centerVertical="true"
                     android:layout_margin="16dp"
-                    android:tint="?android:textColorPrimary"
                     android:background="?selectableItemBackgroundBorderless"
                     android:scaleType="centerInside"
-                    android:src="@drawable/ic_menu" />
+                    android:src="@drawable/ic_menu"
+                    android:tint="?android:textColorPrimary" />
 
                 <TextView
                     android:id="@+id/textViewAppBarTitle"
@@ -52,6 +52,7 @@
                     android:layout_margin="16dp"
                     android:background="?selectableItemBackgroundBorderless"
                     android:scaleType="centerInside"
+                    android:tint="?android:textColorPrimary"
                     android:visibility="gone" />
 
             </RelativeLayout>
@@ -62,9 +63,9 @@
             android:id="@+id/frameLayoutBottomNavigation"
             android:layout_width="match_parent"
             android:layout_height="match_parent"
-            android:elevation="4dp"
             android:layout_marginBottom="?attr/actionBarSize"
-            app:layout_behavior="@string/appbar_scrolling_view_behavior"/>
+            android:elevation="4dp"
+            app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
         <com.google.android.material.bottomnavigation.BottomNavigationView
             android:id="@+id/bottomNavigation"
@@ -81,8 +82,8 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="72dp"
-            app:backgroundTint="@color/colorPrimary"
             android:src="@drawable/ic_add"
+            app:backgroundTint="@color/colorPrimary"
             app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
             app:layout_constraintEnd_toEndOf="parent"
             app:tint="?colorSurface" />

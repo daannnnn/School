@@ -3,7 +3,11 @@
     android:layout_width="match_parent"
     android:layout_height="wrap_content"
     android:id="@+id/legendLayout"
-    android:gravity="center">
+    android:gravity="center"
+    android:paddingTop="8dp"
+    android:paddingBottom="8dp"
+    android:background="@color/tabLayoutColor"
+    android:elevation="4dp">
 
     <TextView
         android:id="@+id/calendarSunLabel"
@@ -13,7 +17,7 @@
         android:fontFamily="@font/cabin_bold"
         android:gravity="center"
         android:text="@string/sun"
-        android:textColor="@android:color/black"
+        android:textColor="?android:textColorPrimary"
         android:textSize="14sp" />
 
     <TextView
@@ -24,7 +28,7 @@
         android:fontFamily="@font/cabin_bold"
         android:gravity="center"
         android:text="@string/mon"
-        android:textColor="@android:color/black"
+        android:textColor="?android:textColorPrimary"
         android:textSize="14sp" />
 
     <TextView
@@ -35,7 +39,7 @@
         android:fontFamily="@font/cabin_bold"
         android:gravity="center"
         android:text="@string/tue"
-        android:textColor="@android:color/black"
+        android:textColor="?android:textColorPrimary"
         android:textSize="14sp" />
 
     <TextView
@@ -46,7 +50,7 @@
         android:fontFamily="@font/cabin_bold"
         android:gravity="center"
         android:text="@string/wed"
-        android:textColor="@android:color/black"
+        android:textColor="?android:textColorPrimary"
         android:textSize="14sp" />
 
     <TextView
@@ -57,7 +61,7 @@
         android:fontFamily="@font/cabin_bold"
         android:gravity="center"
         android:text="@string/thu"
-        android:textColor="@android:color/black"
+        android:textColor="?android:textColorPrimary"
         android:textSize="14sp" />
 
     <TextView
@@ -68,7 +72,7 @@
         android:fontFamily="@font/cabin_bold"
         android:gravity="center"
         android:text="@string/fri"
-        android:textColor="@android:color/black"
+        android:textColor="?android:textColorPrimary"
         android:textSize="14sp" />
 
     <TextView
@@ -79,7 +83,7 @@
         android:fontFamily="@font/cabin_bold"
         android:gravity="center"
         android:text="@string/sat"
-        android:textColor="@android:color/black"
+        android:textColor="?android:textColorPrimary"
         android:textSize="14sp" />
 
 </LinearLayout>

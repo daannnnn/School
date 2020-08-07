@@ -1,11 +1,13 @@
 package com.dan.school.fragments
 
-import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
+import android.content.res.TypedArray
 import android.os.Bundle
 import android.util.DisplayMetrics
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.View.MeasureSpec
@@ -125,6 +127,10 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             }
         }
 
+        val typedValue = TypedValue()
+        val theme: Resources.Theme = requireContext().theme
+        theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
+
         calendarView.dayBinder = object : DayBinder<DayViewContainer> {
             override fun create(view: View) = DayViewContainer(view)
             override fun bind(container: DayViewContainer, day: CalendarDay) {
@@ -162,22 +168,24 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
                             container.imageViewIndicator.setBackgroundResource(R.drawable.date_selected_background)
                         }
                         else -> {
-                            container.textViewCalendarDay.setTextColor(
-                                ContextCompat.getColor(
-                                    requireContext(),
-                                    android.R.color.black
+                            val textColorPrimary: TypedArray = requireContext().obtainStyledAttributes(
+                                typedValue.data, intArrayOf(
+                                    android.R.attr.textColorPrimary
                                 )
                             )
+                            container.textViewCalendarDay.setTextColor(textColorPrimary.getColor(0, -1))
+                            textColorPrimary.recycle()
                             container.imageViewIndicator.background = null
                         }
                     }
                 } else {
-                    container.textViewCalendarDay.setTextColor(
-                        ContextCompat.getColor(
-                            requireContext(),
-                            android.R.color.darker_gray
+                    val textColorSecondary: TypedArray = requireContext().obtainStyledAttributes(
+                        typedValue.data, intArrayOf(
+                            android.R.attr.textColorSecondary
                         )
                     )
+                    container.textViewCalendarDay.setTextColor(textColorSecondary.getColor(0, -1))
+                    textColorSecondary.recycle()
                     container.imageViewIndicator.background = null
                 }
                 if (events[day.date] != null) {
