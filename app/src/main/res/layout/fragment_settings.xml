@@ -11,13 +11,12 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/white"
+        android:background="?colorSurface"
         app:liftOnScroll="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white">
+            android:layout_height="?attr/actionBarSize">
 
             <ImageView
                 android:id="@+id/buttonBack"
@@ -26,7 +25,8 @@
                 android:layout_centerVertical="true"
                 android:layout_margin="16dp"
                 android:background="?selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_chevron_left" />
+                android:src="@drawable/ic_chevron_left"
+                android:tint="?android:textColorPrimary" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -34,7 +34,7 @@
                 android:layout_centerInParent="true"
                 android:fontFamily="@font/cabin_bold"
                 android:text="@string/settings"
-                android:textColor="@android:color/black"
+                android:textColor="?android:textColorPrimary"
                 android:textSize="20sp" />
 
         </RelativeLayout>
@@ -74,7 +74,7 @@
                     android:layout_toEndOf="@id/imageViewProfileIcon"
                     android:fontFamily="@font/cabin_regular"
                     android:text="@string/profile"
-                    android:textColor="@android:color/black"
+                    android:textColor="?android:textColorPrimary"
                     android:textSize="18sp" />
 
             </RelativeLayout>
@@ -102,7 +102,7 @@
                     android:layout_toEndOf="@id/imageViewDarkModeIcon"
                     android:fontFamily="@font/cabin_regular"
                     android:text="@string/dark_mode"
-                    android:textColor="@android:color/black"
+                    android:textColor="?android:textColorPrimary"
                     android:textSize="18sp" />
 
                 <com.google.android.material.switchmaterial.SwitchMaterial
