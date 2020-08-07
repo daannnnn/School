@@ -6,8 +6,7 @@
     android:gravity="center"
     android:paddingTop="8dp"
     android:paddingBottom="8dp"
-    android:background="@color/tabLayoutColor"
-    android:elevation="4dp">
+    android:background="@color/tabLayoutColor">
 
     <TextView
         android:id="@+id/calendarSunLabel"
