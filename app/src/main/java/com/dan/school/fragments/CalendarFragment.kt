@@ -516,7 +516,11 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
     }
 
     fun getSelectedMonth(): String {
-        val month = selectedDate?.yearMonth
+        val month = if (selectedDate != null) {
+            selectedDate?.yearMonth
+        } else {
+            LocalDate.now().yearMonth
+        }
         return if (month?.year == today.year) {
             titleMonthFormatter.format(month)
         } else {
