@@ -81,11 +81,11 @@
             android:layout_gravity="bottom|end"
             android:layout_marginEnd="16dp"
             android:layout_marginBottom="72dp"
-            android:backgroundTint="@color/colorPrimary"
+            app:backgroundTint="@color/colorPrimary"
             android:src="@drawable/ic_add"
             app:layout_constraintBottom_toTopOf="@id/bottomNavigation"
             app:layout_constraintEnd_toEndOf="parent"
-            app:tint="@android:color/white" />
+            app:tint="?colorSurface" />
 
     </androidx.coordinatorlayout.widget.CoordinatorLayout>
 
