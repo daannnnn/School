@@ -24,9 +24,11 @@
     <color name="cardViewExamBackgroundColor">#3D80d7c0</color>
     <color name="cardViewTaskBackgroundColor">#3Dbc92fe</color>
     <color name="cardViewColorPrimaryBackgroundColor">#3D32afe2</color>
-    <color name="cardViewRedBackgroundColor">#3DF44336</color>
+    <color name="cardViewRedBackgroundColor">#3Def5350</color>
     <color name="colorPrimaryAlpha70">#B332afe2</color>
     <color name="strokeColor">#1F000000</color>
+
+    <color name="red">#ef5350</color>
 
     <color name="tabLayoutColor">#272727</color>
     <color name="appBarLayoutColor">#272727</color>
