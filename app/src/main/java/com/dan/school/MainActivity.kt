@@ -59,6 +59,7 @@ class MainActivity : AppCompatActivity(),
                             HomeFragment(), HOME
                         ).commit()
                     bottomNavigation.selectedItemId = R.id.homeFragment
+                    appBar.isLiftOnScroll = false
                 }
                 CALENDAR_SELECTED -> {
                     supportFragmentManager.beginTransaction()
@@ -68,6 +69,7 @@ class MainActivity : AppCompatActivity(),
                         ).commit()
                     buttonCalendarView.visibility = View.VISIBLE
                     bottomNavigation.selectedItemId = R.id.calendarFragment
+                    appBar.isLiftOnScroll = false
                 }
                 AGENDA_SELECTED -> {
                     supportFragmentManager.beginTransaction()
@@ -76,13 +78,23 @@ class MainActivity : AppCompatActivity(),
                             AgendaFragment(), AGENDA
                         ).commit()
                     bottomNavigation.selectedItemId = R.id.agendaFragment
+                    appBar.isLiftOnScroll = true
                 }
             }
         }
 
         setButtonCalendarViewBackground()
-        if (selectedFragment == CALENDAR_SELECTED) {
-            buttonCalendarView.visibility = View.VISIBLE
+        when (selectedFragment) {
+            HOME_SELECTED -> {
+                appBar.isLiftOnScroll = false
+            }
+            CALENDAR_SELECTED -> {
+                buttonCalendarView.visibility = View.VISIBLE
+                appBar.isLiftOnScroll = false
+            }
+            AGENDA_SELECTED -> {
+                appBar.isLiftOnScroll = true
+            }
         }
 
         // Listeners
@@ -103,13 +115,16 @@ class MainActivity : AppCompatActivity(),
                 R.id.homeFragment -> {
                     setFragment(HOME)
                     textViewAppBarTitle.text = getString(R.string.app_name)
+                    appBar.isLiftOnScroll = false
                 }
                 R.id.calendarFragment -> {
                     setFragment(CALENDAR)
+                    appBar.isLiftOnScroll = false
                 }
                 R.id.agendaFragment -> {
                     setFragment(AGENDA)
                     textViewAppBarTitle.text = getString(R.string.app_name)
+                    appBar.isLiftOnScroll = true
                 }
             }
             return@setOnNavigationItemSelectedListener true
