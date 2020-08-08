@@ -45,7 +45,8 @@ class MainActivity : AppCompatActivity(),
         sharedPref = this.getSharedPreferences(
             getString(R.string.preference_file_key), Context.MODE_PRIVATE
         )
-        selectedFragment = sharedPref.getInt(School.SELECTED_BOTTOM_NAVIGATION_FRAGMENT, HOME_SELECTED)
+        selectedFragment =
+            sharedPref.getInt(School.SELECTED_BOTTOM_NAVIGATION_FRAGMENT, HOME_SELECTED)
 
         if (savedInstanceState == null) {
             navigationView.menu.getItem(0).isChecked = true
@@ -59,7 +60,6 @@ class MainActivity : AppCompatActivity(),
                             HomeFragment(), HOME
                         ).commit()
                     bottomNavigation.selectedItemId = R.id.homeFragment
-                    appBar.isLiftOnScroll = false
                 }
                 CALENDAR_SELECTED -> {
                     supportFragmentManager.beginTransaction()
@@ -69,7 +69,6 @@ class MainActivity : AppCompatActivity(),
                         ).commit()
                     buttonCalendarView.visibility = View.VISIBLE
                     bottomNavigation.selectedItemId = R.id.calendarFragment
-                    appBar.isLiftOnScroll = false
                 }
                 AGENDA_SELECTED -> {
                     supportFragmentManager.beginTransaction()
@@ -78,23 +77,13 @@ class MainActivity : AppCompatActivity(),
                             AgendaFragment(), AGENDA
                         ).commit()
                     bottomNavigation.selectedItemId = R.id.agendaFragment
-                    appBar.isLiftOnScroll = true
                 }
             }
         }
 
         setButtonCalendarViewBackground()
-        when (selectedFragment) {
-            HOME_SELECTED -> {
-                appBar.isLiftOnScroll = false
-            }
-            CALENDAR_SELECTED -> {
-                buttonCalendarView.visibility = View.VISIBLE
-                appBar.isLiftOnScroll = false
-            }
-            AGENDA_SELECTED -> {
-                appBar.isLiftOnScroll = true
-            }
+        if (selectedFragment == CALENDAR_SELECTED) {
+            buttonCalendarView.visibility = View.VISIBLE
         }
 
         // Listeners
@@ -115,16 +104,13 @@ class MainActivity : AppCompatActivity(),
                 R.id.homeFragment -> {
                     setFragment(HOME)
                     textViewAppBarTitle.text = getString(R.string.app_name)
-                    appBar.isLiftOnScroll = false
                 }
                 R.id.calendarFragment -> {
                     setFragment(CALENDAR)
-                    appBar.isLiftOnScroll = false
                 }
                 R.id.agendaFragment -> {
                     setFragment(AGENDA)
                     textViewAppBarTitle.text = getString(R.string.app_name)
-                    appBar.isLiftOnScroll = true
                 }
             }
             return@setOnNavigationItemSelectedListener true
@@ -187,11 +173,12 @@ class MainActivity : AppCompatActivity(),
                     hideFragment(AGENDA)
                 }
 
-                lastSelectedAddCategory = if (supportFragmentManager.findFragmentByTag(HOME) != null) {
-                    (supportFragmentManager.findFragmentByTag(HOME) as HomeFragment).getSelectedTabPosition()
-                } else {
-                    School.HOMEWORK
-                }
+                lastSelectedAddCategory =
+                    if (supportFragmentManager.findFragmentByTag(HOME) != null) {
+                        (supportFragmentManager.findFragmentByTag(HOME) as HomeFragment).getSelectedTabPosition()
+                    } else {
+                        School.HOMEWORK
+                    }
 
                 buttonCalendarView.visibility = View.GONE
 
