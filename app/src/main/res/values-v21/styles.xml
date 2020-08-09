@@ -9,4 +9,9 @@
 
         <item name="bottomSheetDialogTheme">@style/BottomSheetDialogTheme</item>
     </style>
+
+    <style name="SplashScreenTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
+        <item name="android:windowBackground">@drawable/splash_screen_background</item>
+        <item name="android:statusBarColor">@android:color/white</item>
+    </style>
 </resources>
