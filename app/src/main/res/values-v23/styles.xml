@@ -8,7 +8,7 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="android:windowLightStatusBar">@bool/windowLightStatusBar</item>
-        <item name="android:statusBarColor">?backgroundColor</item>
+        <item name="android:statusBarColor">@color/appBarLayoutColor</item>
 
         <item name="bottomSheetDialogTheme">@style/BottomSheetDialogTheme</item>
     </style>
