@@ -16,7 +16,8 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize"
             android:background="@color/appBarLayoutColor"
-            android:elevation="4dp">
+            android:elevation="4dp"
+            app:liftOnScroll="true">
 
             <RelativeLayout
                 android:layout_width="match_parent"
