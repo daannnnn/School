@@ -35,7 +35,9 @@ class MainActivity : AppCompatActivity(),
                         if (supportFragmentManager.backStackEntryCount == 1) {
                             supportFragmentManager.popBackStackImmediate()
                             if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
-                                showFragment(School.OVERVIEW)
+                                supportFragmentManager.beginTransaction()
+                                    .show(supportFragmentManager.findFragmentByTag(School.OVERVIEW)!!)
+                                    .commit()
                             }
                         }
                     }
@@ -46,7 +48,9 @@ class MainActivity : AppCompatActivity(),
                                 CompletedFragment()
                             ).addToBackStack(null).commit()
                         if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
-                            hideFragment(School.OVERVIEW)
+                            supportFragmentManager.beginTransaction()
+                                .hide(supportFragmentManager.findFragmentByTag(School.OVERVIEW)!!)
+                                .commit()
                         }
                     }
                     R.id.settings -> {
@@ -62,16 +66,6 @@ class MainActivity : AppCompatActivity(),
         }
     }
 
-    private fun hideFragment(tag: String) {
-        supportFragmentManager.beginTransaction()
-            .hide(supportFragmentManager.findFragmentByTag(tag)!!).commit()
-    }
-
-    private fun showFragment(tag: String) {
-        supportFragmentManager.beginTransaction()
-            .show(supportFragmentManager.findFragmentByTag(tag)!!).commit()
-    }
-
     override fun onDismiss(dialog: DialogInterface?) {
         navigationView.setCheckedItem(R.id.overview)
     }
@@ -85,7 +79,9 @@ class MainActivity : AppCompatActivity(),
             supportFragmentManager.popBackStackImmediate()
             if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
                 navigationView.setCheckedItem(R.id.overview)
-                showFragment(School.OVERVIEW)
+                supportFragmentManager.beginTransaction()
+                    .show(supportFragmentManager.findFragmentByTag(School.OVERVIEW)!!)
+                    .commit()
             }
         } else super.onBackPressed()
     }
