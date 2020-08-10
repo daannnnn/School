@@ -2,9 +2,10 @@ package com.dan.school
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import com.dan.school.fragments.CompletedFragment
+import com.dan.school.fragments.OverviewFragment
 import com.dan.school.fragments.SettingsFragment
 import kotlinx.android.synthetic.main.activity_main.*
 

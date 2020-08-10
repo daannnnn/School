@@ -1,4 +1,4 @@
-package com.dan.school
+package com.dan.school.fragments
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -7,7 +7,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.dan.school.fragments.*
+import com.dan.school.ItemClickListener
+import com.dan.school.MainActivity
+import com.dan.school.R
+import com.dan.school.School
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.google.gson.Gson
@@ -55,7 +58,10 @@ class OverviewFragment : Fragment(),
         super.onViewCreated(view, savedInstanceState)
 
         selectedFragment =
-            sharedPref.getInt(School.SELECTED_BOTTOM_NAVIGATION_FRAGMENT, School.HOME_SELECTED)
+            sharedPref.getInt(
+                School.SELECTED_BOTTOM_NAVIGATION_FRAGMENT,
+                School.HOME_SELECTED
+            )
 
         // Show last selected fragment saved on SharedPreferences
         when (selectedFragment) {
@@ -65,7 +71,8 @@ class OverviewFragment : Fragment(),
                         R.id.frameLayoutBottomNavigation,
                         HomeFragment(), School.HOME
                     ).commit()
-                bottomNavigation.selectedItemId = R.id.homeFragment
+                bottomNavigation.selectedItemId =
+                    R.id.homeFragment
             }
             School.CALENDAR_SELECTED -> {
                 childFragmentManager.beginTransaction()
@@ -74,7 +81,8 @@ class OverviewFragment : Fragment(),
                         CalendarFragment(), School.CALENDAR
                     ).commit()
                 buttonCalendarView.visibility = View.VISIBLE
-                bottomNavigation.selectedItemId = R.id.calendarFragment
+                bottomNavigation.selectedItemId =
+                    R.id.calendarFragment
             }
             School.AGENDA_SELECTED -> {
                 childFragmentManager.beginTransaction()
@@ -82,7 +90,8 @@ class OverviewFragment : Fragment(),
                         R.id.frameLayoutBottomNavigation,
                         AgendaFragment(), School.AGENDA
                     ).commit()
-                bottomNavigation.selectedItemId = R.id.agendaFragment
+                bottomNavigation.selectedItemId =
+                    R.id.agendaFragment
             }
         }
 
