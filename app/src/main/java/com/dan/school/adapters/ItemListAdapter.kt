@@ -13,6 +13,8 @@ import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
+import java.util.*
+import kotlin.collections.ArrayList
 
 class ItemListAdapter(
     private val context: Context,
@@ -70,10 +72,10 @@ class ItemListAdapter(
         holder.buttonCheckItem.setOnClickListener {
             if (getItem(holder.bindingAdapterPosition).done) {
                 holder.buttonCheckItem.setImageResource(categoryUncheckedIcons[mItemCategory])
-                doneListener.setDone(getItem(holder.bindingAdapterPosition).id, false)
+                doneListener.setDone(getItem(holder.bindingAdapterPosition).id, false, null)
             } else {
                 holder.buttonCheckItem.setImageResource(categoryCheckedIcons[mItemCategory])
-                doneListener.setDone(getItem(holder.bindingAdapterPosition).id, true)
+                doneListener.setDone(getItem(holder.bindingAdapterPosition).id, true, Calendar.getInstance().timeInMillis)
             }
         }
         holder.buttonSubtask.setOnClickListener {
@@ -97,7 +99,7 @@ class ItemListAdapter(
     }
 
     interface DoneListener {
-        fun setDone(id: Int, done: Boolean)
+        fun setDone(id: Int, done: Boolean, doneTime: Long?)
     }
 
     interface ShowSubtasksListener {

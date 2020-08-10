@@ -2,7 +2,6 @@ package com.dan.school.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -123,9 +122,8 @@ class ItemsFragment : Fragment(),
         }
     }
 
-    override fun setDone(id: Int, done: Boolean) {
-        dataViewModel.setDone(id, done)
-        Log.i("TAGDAN", "setDone: DONE")
+    override fun setDone(id: Int, done: Boolean, doneTime: Long?) {
+        dataViewModel.setDone(id, done, doneTime)
     }
 
     override fun showSubtasks(

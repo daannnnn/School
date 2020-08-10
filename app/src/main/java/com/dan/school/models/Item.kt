@@ -8,6 +8,7 @@ data class Item(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val category: Int,
     val done: Boolean = false,
+    val doneTime: Long? = null,
     val title: String,
     val date: Int,
     val subtasks: String = "[]",

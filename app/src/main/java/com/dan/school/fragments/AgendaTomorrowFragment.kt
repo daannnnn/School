@@ -187,8 +187,8 @@ class AgendaTomorrowFragment : DialogFragment(),
         }
     }
 
-    override fun setDone(id: Int, done: Boolean) {
-        dataViewModel.setDone(id, done)
+    override fun setDone(id: Int, done: Boolean, doneTime: Long?) {
+        dataViewModel.setDone(id, done, doneTime)
     }
 
     override fun showSubtasks(

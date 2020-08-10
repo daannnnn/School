@@ -71,8 +71,8 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         return tasks
     }
 
-    fun setDone(id: Int, done: Boolean) = viewModelScope.launch(Dispatchers.IO) {
-        itemRepository.setDone(id, done)
+    fun setDone(id: Int, done: Boolean, doneTime: Long?) = viewModelScope.launch(Dispatchers.IO) {
+        itemRepository.setDone(id, done, doneTime)
     }
 
     fun setItemSubtasks(id: Int, subtasks: String) = viewModelScope.launch(Dispatchers.IO) {

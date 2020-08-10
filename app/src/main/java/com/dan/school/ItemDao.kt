@@ -17,8 +17,8 @@ interface ItemDao {
     @Query("SELECT * FROM items WHERE category=:category AND done=0")
     fun getAllUndoneDataByCategory(category: Int): LiveData<List<Item>>
 
-    @Query("UPDATE items SET done = :done WHERE id=:id")
-    fun setDone(id: Int, done: Boolean)
+    @Query("UPDATE items SET done = :done, doneTime = :doneTime WHERE id=:id")
+    fun setDone(id: Int, done: Boolean, doneTime: Long?)
 
     @Query("UPDATE items SET subtasks = :subtasks WHERE id=:id")
     fun setItemSubtasks(id: Int, subtasks: String)
@@ -42,7 +42,7 @@ interface ItemDao {
     suspend fun getItemById(id: Int): Item
 
     @Query("SELECT EXISTS(SELECT * FROM items WHERE date = :date)")
-    fun hasItemsForDate(date: Int) : Boolean
+    fun hasItemsForDate(date: Int): Boolean
 
     @Query("DELETE FROM items WHERE id = :id")
     fun deleteItemWithId(id: Int)

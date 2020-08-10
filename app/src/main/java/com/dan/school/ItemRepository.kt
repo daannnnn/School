@@ -17,8 +17,8 @@ class ItemRepository(private val itemDao: ItemDao) {
     val examAllDates: LiveData<List<DateItem>> = itemDao.getAllItemOnDateByCategory(School.EXAM)
     val taskAllDates: LiveData<List<DateItem>> = itemDao.getAllItemOnDateByCategory(School.TASK)
 
-    fun setDone(id: Int, done: Boolean) {
-        itemDao.setDone(id, done)
+    fun setDone(id: Int, done: Boolean, doneTime: Long?) {
+        itemDao.setDone(id, done, doneTime)
     }
     fun setItemSubtasks(id: Int, subtasks: String) {
         itemDao.setItemSubtasks(id, subtasks)
