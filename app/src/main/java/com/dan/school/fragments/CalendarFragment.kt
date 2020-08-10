@@ -85,9 +85,9 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (activity is MainActivity) {
-            titleChangeListener = (activity as MainActivity)
-            itemClickListener = (activity as MainActivity)
+        if (parentFragment is OverviewFragment) {
+            titleChangeListener = (parentFragment as OverviewFragment)
+            itemClickListener = (parentFragment as OverviewFragment)
         }
     }
 

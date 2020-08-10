@@ -21,10 +21,7 @@ import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
-import com.dan.school.DataViewModel
-import com.dan.school.MainActivity
-import com.dan.school.R
-import com.dan.school.School
+import com.dan.school.*
 import com.dan.school.adapters.CategoryViewPagerAdapter
 import com.dan.school.adapters.SubtaskListAdapter
 import com.dan.school.models.Item
@@ -106,9 +103,9 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (activity is MainActivity) {
-            categoryChangeListener = (activity as MainActivity)
-            dismissBottomSheetListener = (activity as MainActivity)
+        if (parentFragment is OverviewFragment) {
+            categoryChangeListener = (parentFragment as OverviewFragment)
+            dismissBottomSheetListener = (parentFragment as OverviewFragment)
         }
         inputMethodManager =
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager

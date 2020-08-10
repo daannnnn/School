@@ -53,8 +53,8 @@ class AgendaFragment : Fragment(),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (activity is MainActivity) {
-            itemClickListener = (activity as MainActivity)
+        if (parentFragment is OverviewFragment) {
+            itemClickListener = (parentFragment as OverviewFragment)
         }
     }
 

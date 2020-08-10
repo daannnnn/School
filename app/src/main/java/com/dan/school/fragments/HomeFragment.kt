@@ -7,11 +7,8 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
-import com.dan.school.ItemClickListener
-import com.dan.school.MainActivity
+import com.dan.school.*
 import com.dan.school.adapters.HomeworkExamTaskTabLayoutAdapter
-import com.dan.school.R
-import com.dan.school.School
 import com.dan.school.models.Item
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -26,9 +23,9 @@ class HomeFragment : Fragment(),
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        if (activity is MainActivity) {
-            selectedTabChangeListener = (activity as MainActivity)
-            itemClickListener = (activity as MainActivity)
+        if (parentFragment is OverviewFragment) {
+            selectedTabChangeListener = (parentFragment as OverviewFragment)
+            itemClickListener = (parentFragment as OverviewFragment)
         }
     }
 

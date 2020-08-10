@@ -25,4 +25,7 @@ object School {
 
     const val IS_DARK_MODE = "is_dark_mode"
     const val SELECTED_BOTTOM_NAVIGATION_FRAGMENT = "selected_bottom_navigation_fragment"
+
+    const val OVERVIEW = "overview"
+    const val COMPLETED = "completed"
 }
