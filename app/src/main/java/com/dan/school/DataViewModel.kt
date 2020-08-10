@@ -8,6 +8,7 @@ import com.dan.school.models.Subtask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
+import java.util.*
 
 
 class DataViewModel(application: Application) : AndroidViewModel(application) {
@@ -17,9 +18,9 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     val allHomeworks: LiveData<List<Item>>
     val allExams: LiveData<List<Item>>
     val allTasks: LiveData<List<Item>>
-    val homeworkAllDates: LiveData<List<DateItem>>
-    val examAllDates: LiveData<List<DateItem>>
-    val taskAllDates: LiveData<List<DateItem>>
+    val homeworkAllDates: LiveData<List<Date>>
+    val examAllDates: LiveData<List<Date>>
+    val taskAllDates: LiveData<List<Date>>
 
     val calendarSelectedDate = MutableLiveData<Int>()
 
