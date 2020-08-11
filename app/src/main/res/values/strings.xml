@@ -53,4 +53,11 @@
     <string name="profile">Profile</string>
     <string name="preference_file_key">preferences</string>
     <string name="completed">Completed</string>
+    <string name="options">Options</string>
+    <string name="sort_by">Sort by:</string>
+    <string name="group_by_category">Group by category:</string>
+    <string-array name="sort_by_array">
+        <item>Time Completed</item>
+        <item>Title</item>
+    </string-array>
 </resources>
