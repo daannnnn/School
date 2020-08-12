@@ -2,6 +2,7 @@
 <LinearLayout xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/linearLayoutOptionsFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:animateLayoutChanges="true"
@@ -77,13 +78,12 @@
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
         android:orientation="vertical"
-        android:visibility="gone">
+        android:visibility="visible">
 
         <RelativeLayout
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
-            android:paddingTop="8dp"
-            android:paddingEnd="8dp">
+            android:paddingTop="8dp">
 
             <ImageView
                 android:id="@+id/imageViewSortIcon"
@@ -104,16 +104,17 @@
                 android:textColor="?android:textColorPrimary"
                 android:textSize="16sp" />
 
-            <Spinner
-                android:id="@+id/spinnerSortBy"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
+            <TextSwitcher
+                android:id="@+id/textSwitcherSortBy"
                 android:layout_alignParentEnd="true"
                 android:layout_centerVertical="true"
                 android:layout_marginEnd="24dp"
-                app:layout_constraintBottom_toBottomOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="parent" />
+                android:paddingStart="12dp"
+                android:paddingEnd="12dp"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:inAnimation="@android:anim/slide_in_left"
+                android:outAnimation="@android:anim/slide_out_right" />
 
         </RelativeLayout>
 
