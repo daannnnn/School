@@ -119,4 +119,8 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     fun hasItemsForDate(date: Int): Boolean = runBlocking {
         itemRepository.hasItemsForDate(date)
     }
+
+    fun getAllDoneItems(): LiveData<List<Item>> = runBlocking {
+        itemRepository.getAllDoneItems()
+    }
 }
