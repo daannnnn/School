@@ -1,5 +1,6 @@
 package com.dan.school.fragments
 
+import android.animation.LayoutTransition
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
@@ -9,13 +10,11 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import android.widget.ViewSwitcher
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import com.dan.school.R
 import kotlinx.android.synthetic.main.fragment_completed.*
-
 
 class CompletedFragment : DialogFragment() {
 
@@ -38,6 +37,7 @@ class CompletedFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        linearLayoutOptionsFragment.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         textSwitcherSortBy.setFactory {
             val textView = TextView(requireContext())
             textView.apply {
