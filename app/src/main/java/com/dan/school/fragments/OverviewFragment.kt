@@ -63,35 +63,37 @@ class OverviewFragment : Fragment(),
                 School.HOME_SELECTED
             )
 
-        // Show last selected fragment saved on SharedPreferences
-        when (selectedFragment) {
-            School.HOME_SELECTED -> {
-                childFragmentManager.beginTransaction()
-                    .add(
-                        R.id.frameLayoutBottomNavigation,
-                        HomeFragment(), School.HOME
-                    ).commit()
-                bottomNavigation.selectedItemId =
-                    R.id.homeFragment
-            }
-            School.CALENDAR_SELECTED -> {
-                childFragmentManager.beginTransaction()
-                    .add(
-                        R.id.frameLayoutBottomNavigation,
-                        CalendarFragment(), School.CALENDAR
-                    ).commit()
-                buttonCalendarView.visibility = View.VISIBLE
-                bottomNavigation.selectedItemId =
-                    R.id.calendarFragment
-            }
-            School.AGENDA_SELECTED -> {
-                childFragmentManager.beginTransaction()
-                    .add(
-                        R.id.frameLayoutBottomNavigation,
-                        AgendaFragment(), School.AGENDA
-                    ).commit()
-                bottomNavigation.selectedItemId =
-                    R.id.agendaFragment
+        if (savedInstanceState == null) {
+            // Show last selected fragment saved on SharedPreferences
+            when (selectedFragment) {
+                School.HOME_SELECTED -> {
+                    childFragmentManager.beginTransaction()
+                        .add(
+                            R.id.frameLayoutBottomNavigation,
+                            HomeFragment(), School.HOME
+                        ).commit()
+                    bottomNavigation.selectedItemId =
+                        R.id.homeFragment
+                }
+                School.CALENDAR_SELECTED -> {
+                    childFragmentManager.beginTransaction()
+                        .add(
+                            R.id.frameLayoutBottomNavigation,
+                            CalendarFragment(), School.CALENDAR
+                        ).commit()
+                    buttonCalendarView.visibility = View.VISIBLE
+                    bottomNavigation.selectedItemId =
+                        R.id.calendarFragment
+                }
+                School.AGENDA_SELECTED -> {
+                    childFragmentManager.beginTransaction()
+                        .add(
+                            R.id.frameLayoutBottomNavigation,
+                            AgendaFragment(), School.AGENDA
+                        ).commit()
+                    bottomNavigation.selectedItemId =
+                        R.id.agendaFragment
+                }
             }
         }
 
