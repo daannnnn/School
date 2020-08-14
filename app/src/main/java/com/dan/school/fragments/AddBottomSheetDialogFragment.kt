@@ -11,6 +11,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.dan.school.DataViewModel
 import com.dan.school.R
@@ -66,12 +67,7 @@ class AddBottomSheetDialogFragment(
 
     private var chipGroupSelected: Int = School.TODAY
 
-    private lateinit var dataViewModel: DataViewModel
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
-    }
+    private val dataViewModel: DataViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,

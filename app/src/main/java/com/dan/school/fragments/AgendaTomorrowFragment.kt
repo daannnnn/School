@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
@@ -31,7 +32,7 @@ class AgendaTomorrowFragment : DialogFragment(),
     private lateinit var examListAdapter: ItemListAdapter
     private lateinit var taskListAdapter: ItemListAdapter
 
-    private lateinit var dataViewModel: DataViewModel
+    private val dataViewModel: DataViewModel by activityViewModels()
 
     private var homeworkEmpty = false
     private var examEmpty = false
@@ -68,7 +69,6 @@ class AgendaTomorrowFragment : DialogFragment(),
             STYLE_NORMAL,
             R.style.FullScreenDialog
         )
-        dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
         dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
     }
 

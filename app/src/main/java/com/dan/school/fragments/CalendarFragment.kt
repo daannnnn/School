@@ -21,6 +21,7 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -64,7 +65,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
 
     private var selectedDate: LocalDate? = null
     private val today = LocalDate.now()
-    private lateinit var dataViewModel: DataViewModel
+    private val dataViewModel: DataViewModel by activityViewModels()
     private lateinit var lastMonth: YearMonth
     private val events = mutableMapOf<LocalDate, CategoryCount>()
 
@@ -88,11 +89,6 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             titleChangeListener = (parentFragment as OverviewFragment)
             itemClickListener = (parentFragment as OverviewFragment)
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
     }
 
     override fun onCreateView(

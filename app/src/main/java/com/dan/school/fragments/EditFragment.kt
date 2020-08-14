@@ -16,6 +16,7 @@ import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
@@ -91,7 +92,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var subtaskListAdapter: SubtaskListAdapter
 
-    private lateinit var dataViewModel: DataViewModel
+    private val dataViewModel: DataViewModel by activityViewModels()
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
@@ -116,7 +117,6 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             STYLE_NORMAL,
             R.style.FullScreenDialog
         )
-        dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
 
         category = requireArguments().getInt("category", School.HOMEWORK)
         done = requireArguments().getBoolean("done", false)

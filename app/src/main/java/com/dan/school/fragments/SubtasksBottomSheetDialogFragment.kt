@@ -7,6 +7,7 @@ import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -27,7 +28,7 @@ class SubtasksBottomSheetDialogFragment(
 ) : BottomSheetDialogFragment(), SubtasksShowListAdapter.SubtaskChangedListener {
 
     var float4dp = 0f
-    private lateinit var dataViewModel: DataViewModel
+    private val dataViewModel: DataViewModel by activityViewModels()
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -43,7 +44,6 @@ class SubtasksBottomSheetDialogFragment(
             TypedValue.COMPLEX_UNIT_DIP, 4f,
             requireContext().resources.displayMetrics
         )
-        dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {

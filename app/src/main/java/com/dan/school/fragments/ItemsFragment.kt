@@ -10,6 +10,7 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -24,7 +25,7 @@ class ItemsFragment : Fragment(),
     ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialog.ConfirmDeleteListener {
 
-    private lateinit var dataViewModel: DataViewModel
+    private val dataViewModel: DataViewModel by activityViewModels()
     private lateinit var itemListAdapter: ItemListAdapter
 
     private lateinit var itemClickListener: ItemClickListener
@@ -68,7 +69,6 @@ class ItemsFragment : Fragment(),
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         category = requireArguments().getInt("category", 0)
-        dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
     }
 
     override fun onCreateView(

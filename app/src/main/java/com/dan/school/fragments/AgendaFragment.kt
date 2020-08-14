@@ -9,6 +9,7 @@ import android.view.ViewGroup
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
@@ -27,7 +28,7 @@ class AgendaFragment : Fragment(),
 
     private lateinit var itemClickListener: ItemClickListener
 
-    private lateinit var dataViewModel: DataViewModel
+    private val dataViewModel: DataViewModel by activityViewModels()
 
     private val categoryCheckedIcons = arrayOf(
         R.drawable.ic_homework_checked,
@@ -59,7 +60,6 @@ class AgendaFragment : Fragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
         dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
     }
 
