@@ -1,6 +1,7 @@
 package com.dan.school.fragments
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -12,6 +13,7 @@ import com.dan.school.adapters.HomeworkExamTaskTabLayoutAdapter
 import com.dan.school.models.Item
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_home.*
+import kotlinx.android.synthetic.main.fragment_overview.*
 
 class HomeFragment : Fragment(),
     ItemClickListener {
@@ -21,12 +23,17 @@ class HomeFragment : Fragment(),
     private lateinit var selectedTabChangeListener: SelectedTabChangeListener
     private lateinit var itemClickListener: ItemClickListener
 
+    private lateinit var sharedPref: SharedPreferences
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (parentFragment is OverviewFragment) {
             selectedTabChangeListener = (parentFragment as OverviewFragment)
             itemClickListener = (parentFragment as OverviewFragment)
         }
+        sharedPref = context.getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
     }
 
     override fun onCreateView(
@@ -99,9 +106,28 @@ class HomeFragment : Fragment(),
                     tabLayout.tabTextColors!!.defaultColor,
                     categoryColors[position]
                 )
+                setLastSelectedTab(position)
             }
         })
         // [END configure TabLayout and ViewPager]
+
+        tabLayout.selectTab(
+            tabLayout.getTabAt(
+                sharedPref.getInt(
+                    School.SELECTED_TAB_FRAGMENT,
+                    School.HOMEWORK
+                )
+            )
+        )
+    }
+
+    private fun setLastSelectedTab(tabPosition: Int) {
+        if (this::sharedPref.isInitialized) {
+            with(sharedPref.edit()) {
+                putInt(School.SELECTED_TAB_FRAGMENT, tabPosition)
+                commit()
+            }
+        }
     }
 
     fun getSelectedTabPosition(): Int {
