@@ -56,122 +56,136 @@
             android:orientation="vertical"
             android:animateLayoutChanges="true">
 
-            <LinearLayout
-                android:id="@+id/buttonOptions"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:padding="16dp">
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:fontFamily="@font/cabin_bold"
-                    android:text="@string/options"
-                    android:textAllCaps="true"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="18sp"
-                    app:icon="@drawable/ic_chevron_up"
-                    app:iconGravity="end"
-                    app:iconSize="24dp" />
-
-                <ImageView
-                    android:id="@+id/imageViewOptions"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_marginStart="8dp"
-                    android:src="@drawable/ic_chevron_down"
-                    android:tint="@color/colorPrimary" />
-
-            </LinearLayout>
-
-            <LinearLayout
-                android:id="@+id/linearLayoutOptions"
+            <androidx.cardview.widget.CardView
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:orientation="vertical"
-                android:visibility="gone">
+                app:cardCornerRadius="8dp"
+                android:layout_marginTop="16dp"
+                android:layout_marginStart="24dp"
+                android:layout_marginEnd="24dp">
 
-                <RelativeLayout
+                <LinearLayout
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:paddingTop="8dp">
+                    android:gravity="center_horizontal"
+                    android:orientation="vertical">
 
-                    <ImageView
-                        android:id="@+id/imageViewSortIcon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="24dp"
-                        android:src="@drawable/ic_sort" />
-
-                    <TextView
+                    <LinearLayout
+                        android:id="@+id/buttonOptions"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="8dp"
-                        android:layout_toEndOf="@id/imageViewSortIcon"
-                        android:fontFamily="@font/cabin_bold"
-                        android:text="@string/sort_by"
-                        android:textColor="?android:textColorPrimary"
-                        android:textSize="16sp" />
+                        android:padding="16dp">
 
-                    <TextSwitcher
-                        android:id="@+id/textSwitcherSortBy"
-                        android:layout_width="wrap_content"
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/cabin_bold"
+                            android:text="@string/options"
+                            style="@style/TextAppearance.MaterialComponents.Button"
+                            android:textAllCaps="true"
+                            android:textColor="@color/colorPrimary"
+                            android:textSize="16sp"
+                            app:icon="@drawable/ic_chevron_up"
+                            app:iconGravity="end"
+                            app:iconSize="24dp" />
+
+                        <ImageView
+                            android:id="@+id/imageViewOptions"
+                            android:layout_width="24dp"
+                            android:layout_height="24dp"
+                            android:layout_marginStart="8dp"
+                            android:src="@drawable/ic_chevron_down"
+                            android:tint="@color/colorPrimary" />
+
+                    </LinearLayout>
+
+                    <LinearLayout
+                        android:id="@+id/linearLayoutOptions"
+                        android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="24dp"
-                        android:inAnimation="@android:anim/slide_in_left"
-                        android:outAnimation="@android:anim/slide_out_right"
-                        android:paddingStart="12dp"
-                        android:paddingEnd="12dp" />
+                        android:orientation="vertical"
+                        android:visibility="gone">
 
-                </RelativeLayout>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:paddingTop="8dp">
 
-                <RelativeLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content">
+                            <ImageView
+                                android:id="@+id/imageViewSortIcon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="24dp"
+                                android:src="@drawable/ic_sort" />
 
-                    <ImageView
-                        android:id="@+id/imageViewGroupByCategoryIcon"
-                        android:layout_width="24dp"
-                        android:layout_height="24dp"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="24dp"
-                        android:src="@drawable/ic_group" />
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="8dp"
+                                android:layout_toEndOf="@id/imageViewSortIcon"
+                                android:fontFamily="@font/cabin_bold"
+                                android:text="@string/sort_by"
+                                android:textColor="?android:textColorPrimary"
+                                android:textSize="16sp" />
 
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_centerVertical="true"
-                        android:layout_marginStart="8dp"
-                        android:layout_toEndOf="@id/imageViewGroupByCategoryIcon"
-                        android:fontFamily="@font/cabin_bold"
-                        android:text="@string/group_by_category"
-                        android:textColor="?android:textColorPrimary"
-                        android:textSize="16sp" />
+                            <TextSwitcher
+                                android:id="@+id/textSwitcherSortBy"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="24dp"
+                                android:inAnimation="@android:anim/slide_in_left"
+                                android:outAnimation="@android:anim/slide_out_right"
+                                android:paddingStart="12dp"
+                                android:paddingEnd="12dp" />
 
-                    <com.google.android.material.switchmaterial.SwitchMaterial
-                        android:id="@+id/switchGroupByCategory"
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:layout_alignParentEnd="true"
-                        android:layout_centerVertical="true"
-                        android:layout_marginEnd="24dp"
-                        app:layout_constraintBottom_toBottomOf="parent"
-                        app:layout_constraintEnd_toEndOf="parent"
-                        app:layout_constraintTop_toTopOf="parent" />
+                        </RelativeLayout>
 
-                </RelativeLayout>
+                        <RelativeLayout
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginBottom="8dp">
 
-                <View
-                    android:layout_width="match_parent"
-                    android:layout_height="1dp"
-                    android:layout_marginTop="8dp"
-                    android:background="@color/dividerColor" />
+                            <ImageView
+                                android:id="@+id/imageViewGroupByCategoryIcon"
+                                android:layout_width="24dp"
+                                android:layout_height="24dp"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="24dp"
+                                android:src="@drawable/ic_group" />
 
-            </LinearLayout>
+                            <TextView
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_centerVertical="true"
+                                android:layout_marginStart="8dp"
+                                android:layout_toEndOf="@id/imageViewGroupByCategoryIcon"
+                                android:fontFamily="@font/cabin_bold"
+                                android:text="@string/group_by_category"
+                                android:textColor="?android:textColorPrimary"
+                                android:textSize="16sp" />
+
+                            <com.google.android.material.switchmaterial.SwitchMaterial
+                                android:id="@+id/switchGroupByCategory"
+                                android:layout_width="wrap_content"
+                                android:layout_height="wrap_content"
+                                android:layout_alignParentEnd="true"
+                                android:layout_centerVertical="true"
+                                android:layout_marginEnd="24dp"
+                                app:layout_constraintBottom_toBottomOf="parent"
+                                app:layout_constraintEnd_toEndOf="parent"
+                                app:layout_constraintTop_toTopOf="parent" />
+
+                        </RelativeLayout>
+
+                    </LinearLayout>
+
+                </LinearLayout>
+
+            </androidx.cardview.widget.CardView>
 
             <FrameLayout
                 android:id="@+id/frameLayoutCompleted"
