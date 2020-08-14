@@ -3,6 +3,7 @@ package com.dan.school.fragments
 import android.animation.LayoutTransition
 import android.animation.ObjectAnimator
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
@@ -16,6 +17,7 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import com.dan.school.DataViewModel
+import com.dan.school.MainActivity
 import com.dan.school.R
 import com.dan.school.School
 import kotlinx.android.synthetic.main.fragment_completed.*
@@ -30,9 +32,14 @@ class CompletedFragment : DialogFragment() {
 
     private val sortByArray = arrayOf(School.DONE_TIME, School.TITLE)
 
+    private lateinit var openDrawerListener: OverviewFragment.OpenDrawerListener
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         displaySortByStringArray = resources.getStringArray(R.array.sort_by_array)
+        if (activity is MainActivity) {
+            openDrawerListener = activity as MainActivity
+        }
     }
 
     override fun onCreateView(
@@ -101,6 +108,11 @@ class CompletedFragment : DialogFragment() {
                         R.id.frameLayoutCompleted,
                         CompletedNotGroupedFragment()
                     ).commit()
+            }
+        }
+        buttonMenu.setOnClickListener {
+            if (this::openDrawerListener.isInitialized) {
+                openDrawerListener.openDrawer()
             }
         }
     }
