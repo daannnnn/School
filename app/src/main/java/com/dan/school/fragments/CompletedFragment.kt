@@ -13,18 +13,26 @@ import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.ViewModelProvider
+import com.dan.school.DataViewModel
 import com.dan.school.R
+import com.dan.school.School
 import kotlinx.android.synthetic.main.fragment_completed.*
 
 class CompletedFragment : DialogFragment() {
 
     private var isOptionsExpanded = false
-    private lateinit var sortByArray: Array<String>
+    private lateinit var displaySortByStringArray: Array<String>
     private var selectedIndex = 0
+
+    private val dataViewModel: DataViewModel by activityViewModels()
+
+    private val sortByArray = arrayOf(School.DONE_TIME, School.TITLE)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        sortByArray = resources.getStringArray(R.array.sort_by_array)
+        displaySortByStringArray = resources.getStringArray(R.array.sort_by_array)
     }
 
     override fun onCreateView(
@@ -40,7 +48,7 @@ class CompletedFragment : DialogFragment() {
         childFragmentManager.beginTransaction()
             .add(
                 R.id.frameLayoutCompleted,
-                CompletedGroupedFragment()
+                CompletedNotGroupedFragment()
             ).commit()
 
         linearLayoutOptionsFragment.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
@@ -54,7 +62,7 @@ class CompletedFragment : DialogFragment() {
             }
             textView
         }
-        textSwitcherSortBy.setText(sortByArray[selectedIndex])
+        textSwitcherSortBy.setText(displaySortByStringArray[selectedIndex])
 
         textSwitcherSortBy.setOnClickListener {
             if (selectedIndex > 0) {
@@ -62,7 +70,8 @@ class CompletedFragment : DialogFragment() {
             } else {
                 selectedIndex++
             }
-            textSwitcherSortBy.setText(sortByArray[selectedIndex])
+            textSwitcherSortBy.setText(displaySortByStringArray[selectedIndex])
+            dataViewModel.setSortBy(sortByArray[selectedIndex])
         }
         buttonOptions.setOnClickListener {
             isOptionsExpanded = if (isOptionsExpanded) {
@@ -77,6 +86,21 @@ class CompletedFragment : DialogFragment() {
                     .start()
                 linearLayoutOptions.visibility = View.VISIBLE
                 true
+            }
+        }
+        switchGroupByCategory.setOnCheckedChangeListener { _, isChecked ->
+            if (isChecked) {
+                childFragmentManager.beginTransaction()
+                    .replace(
+                        R.id.frameLayoutCompleted,
+                        CompletedGroupedFragment()
+                    ).commit()
+            } else {
+                childFragmentManager.beginTransaction()
+                    .replace(
+                        R.id.frameLayoutCompleted,
+                        CompletedNotGroupedFragment()
+                    ).commit()
             }
         }
     }

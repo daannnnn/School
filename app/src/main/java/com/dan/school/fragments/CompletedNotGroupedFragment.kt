@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
@@ -24,7 +25,7 @@ class CompletedNotGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
 
     private lateinit var completedNotGroupedListAdapter: ItemListAdapter
 
-    private lateinit var dataViewModel: DataViewModel
+    private val dataViewModel: DataViewModel by activityViewModels()
 
     private val categoryCheckedIcons = arrayOf(
         R.drawable.ic_homework_checked,
@@ -36,11 +37,6 @@ class CompletedNotGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
         R.drawable.ic_exam_unchecked,
         R.drawable.ic_task_unchecked
     )
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -65,7 +61,7 @@ class CompletedNotGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
             adapter = completedNotGroupedListAdapter
         }
 
-        dataViewModel.getAllDoneItems().observe(viewLifecycleOwner, androidx.lifecycle.Observer { overdueItems ->
+        dataViewModel.getDoneItems().observe(viewLifecycleOwner, androidx.lifecycle.Observer { overdueItems ->
             completedNotGroupedListAdapter.submitList(overdueItems)
         })
     }

@@ -5,6 +5,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
@@ -16,13 +17,14 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.fragment_completed_grouped.*
 import java.text.SimpleDateFormat
 import java.util.*
+import androidx.lifecycle.Observer
 import kotlin.collections.ArrayList
 
 class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
     ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialog.ConfirmDeleteListener {
 
-    private lateinit var dataViewModel: DataViewModel
+    private val dataViewModel: DataViewModel by activityViewModels()
 
     private lateinit var homeworkListAdapter: ItemListAdapter
     private lateinit var examListAdapter: ItemListAdapter
@@ -38,11 +40,6 @@ class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
         R.drawable.ic_exam_unchecked,
         R.drawable.ic_task_unchecked
     )
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        dataViewModel = ViewModelProvider(this).get(DataViewModel::class.java)
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -89,8 +86,8 @@ class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
             adapter = taskListAdapter
         }
 
-        dataViewModel.getAllDoneHomeworks()
-            .observe(viewLifecycleOwner, androidx.lifecycle.Observer { homeworks ->
+        dataViewModel.getDoneHomeworks()
+            .observe(viewLifecycleOwner, Observer { homeworks ->
                 if (homeworks.isEmpty()) {
                     groupHomework.visibility = View.GONE
                 } else {
@@ -99,8 +96,8 @@ class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
                 homeworkListAdapter.submitList(homeworks)
             })
 
-        dataViewModel.getAllDoneExams()
-            .observe(viewLifecycleOwner, androidx.lifecycle.Observer { exams ->
+        dataViewModel.getDoneExams()
+            .observe(viewLifecycleOwner, Observer { exams ->
                 if (exams.isEmpty()) {
                     groupExam.visibility = View.GONE
                 } else {
@@ -109,8 +106,8 @@ class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
                 examListAdapter.submitList(exams)
             })
 
-        dataViewModel.getAllDoneTasks()
-            .observe(viewLifecycleOwner, androidx.lifecycle.Observer { tasks ->
+        dataViewModel.getDoneTasks()
+            .observe(viewLifecycleOwner, Observer { tasks ->
                 if (tasks.isEmpty()) {
                     groupTask.visibility = View.GONE
                 } else {

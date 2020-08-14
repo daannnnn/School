@@ -2,14 +2,12 @@ package com.dan.school
 
 import android.app.Application
 import androidx.lifecycle.*
-import com.dan.school.models.DateItem
+import androidx.sqlite.db.SimpleSQLiteQuery
 import com.dan.school.models.Item
-import com.dan.school.models.Subtask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
 import java.util.*
-
 
 class DataViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -22,7 +20,8 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     val examAllDates: LiveData<List<Date>>
     val taskAllDates: LiveData<List<Date>>
 
-    val calendarSelectedDate = MutableLiveData<Int>()
+    private val calendarSelectedDate = MutableLiveData<Int>()
+    private val sortBy = MutableLiveData<String>(School.DONE_TIME)
 
     init {
         val itemsDao = ItemDatabase.getInstance(application).itemDao()
@@ -70,6 +69,66 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
 
     fun getCalendarTasks(): LiveData<List<Item>> {
         return tasks
+    }
+
+    private fun getQueryDoneItems(category: Int, orderByColumn: String): SimpleSQLiteQuery {
+        return SimpleSQLiteQuery(
+            "SELECT * from items WHERE done=1 AND category=$category ORDER BY $orderByColumn ${if (orderByColumn == School.TITLE) "ASC" else "DESC"}"
+        )
+    }
+
+    private fun getQueryDoneItems(orderByColumn: String): SimpleSQLiteQuery {
+        return SimpleSQLiteQuery(
+            "SELECT * from items WHERE done=1 ORDER BY $orderByColumn ${if (orderByColumn == School.TITLE) "ASC" else "DESC"}"
+        )
+    }
+
+    fun setSortBy(sortBy: String) {
+        this.sortBy.value = sortBy
+    }
+
+    private val doneHomeworks: LiveData<List<Item>> =
+        Transformations.switchMap<String, List<Item>>(
+            sortBy
+        ) { sortBy: String ->
+            return@switchMap runtimeQuery(getQueryDoneItems(School.HOMEWORK, sortBy))
+        }
+
+    fun getDoneHomeworks(): LiveData<List<Item>> {
+        return doneHomeworks
+    }
+
+    private val doneExams: LiveData<List<Item>> =
+        Transformations.switchMap<String, List<Item>>(
+            sortBy
+        ) { sortBy: String ->
+            return@switchMap runtimeQuery(getQueryDoneItems(School.EXAM, sortBy))
+        }
+
+    fun getDoneExams(): LiveData<List<Item>> {
+        return doneExams
+    }
+
+    private val doneTasks: LiveData<List<Item>> =
+        Transformations.switchMap<String, List<Item>>(
+            sortBy
+        ) { sortBy: String ->
+            return@switchMap runtimeQuery(getQueryDoneItems(School.TASK, sortBy))
+        }
+
+    fun getDoneTasks(): LiveData<List<Item>> {
+        return doneTasks
+    }
+
+    private val doneItems: LiveData<List<Item>> =
+        Transformations.switchMap<String, List<Item>>(
+            sortBy
+        ) { sortBy: String ->
+            return@switchMap runtimeQuery(getQueryDoneItems(sortBy))
+        }
+
+    fun getDoneItems(): LiveData<List<Item>> {
+        return doneItems
     }
 
     fun setDone(id: Int, done: Boolean, doneTime: Long?) = viewModelScope.launch(Dispatchers.IO) {
@@ -120,19 +179,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         itemRepository.hasItemsForDate(date)
     }
 
-    fun getAllDoneItems(): LiveData<List<Item>> = runBlocking {
-        itemRepository.getAllDoneItems()
-    }
-
-    fun getAllDoneHomeworks(): LiveData<List<Item>> = runBlocking {
-        itemRepository.getAllDoneHomeworks()
-    }
-
-    fun getAllDoneExams(): LiveData<List<Item>> = runBlocking {
-        itemRepository.getAllDoneExams()
-    }
-
-    fun getAllDoneTasks(): LiveData<List<Item>> = runBlocking {
-        itemRepository.getAllDoneTasks()
+    fun runtimeQuery(query: SimpleSQLiteQuery): LiveData<List<Item>> = runBlocking {
+        itemRepository.runtimeQuery(query)
     }
 }

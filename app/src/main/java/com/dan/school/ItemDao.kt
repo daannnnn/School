@@ -2,12 +2,13 @@ package com.dan.school
 
 import androidx.lifecycle.LiveData
 import androidx.room.*
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.dan.school.models.Item
 import java.util.*
 
+
 @Dao
 interface ItemDao {
-
     @Query("SELECT * FROM items")
     fun getAll(): List<Item>
 
@@ -35,17 +36,20 @@ interface ItemDao {
     @Query("SELECT * from items WHERE date<:date AND done=0")
     fun getAllOverdueItemsByDate(date: Int): LiveData<List<Item>>
 
-    @Query("SELECT * from items WHERE done=1 ORDER BY doneTime DESC")
-    fun getAllDoneItems(): LiveData<List<Item>>
+//    @Query("SELECT * from items WHERE done=1 ORDER BY :sortBy DESC")
+//    fun getAllDoneItems(sortBy: String): LiveData<List<Item>>
+//
+//    @Query("SELECT * from items WHERE done=1 AND category=${School.HOMEWORK} ORDER BY :sortBy DESC")
+//    fun getAllDoneHomeworks(sortBy: String): LiveData<List<Item>>
+//
+//    @Query("SELECT * from items WHERE done=1 AND category=${School.EXAM} ORDER BY :sortBy DESC")
+//    fun getAllDoneExams(sortBy: String): LiveData<List<Item>>
+//
+//    @Query("SELECT * from items WHERE done=1 AND category=${School.TASK} ORDER BY :sortBy DESC")
+//    fun getAllDoneTasks(sortBy: String): LiveData<List<Item>>
 
-    @Query("SELECT * from items WHERE done=1 AND category=${School.HOMEWORK} ORDER BY doneTime DESC")
-    fun getAllDoneHomeworks(): LiveData<List<Item>>
-
-    @Query("SELECT * from items WHERE done=1 AND category=${School.EXAM} ORDER BY doneTime DESC")
-    fun getAllDoneExams(): LiveData<List<Item>>
-
-    @Query("SELECT * from items WHERE done=1 AND category=${School.TASK} ORDER BY doneTime DESC")
-    fun getAllDoneTasks(): LiveData<List<Item>>
+    @RawQuery(observedEntities = [Item::class])
+    fun runtimeQuery(sortQuery: SupportSQLiteQuery): LiveData<List<Item>>
 
     @Query("SELECT * FROM items WHERE id=:id")
     suspend fun getItemById(id: Int): Item

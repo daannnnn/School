@@ -1,6 +1,7 @@
 package com.dan.school
 
 import androidx.lifecycle.LiveData
+import androidx.sqlite.db.SupportSQLiteQuery
 import com.dan.school.models.DateItem
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
@@ -51,16 +52,7 @@ class ItemRepository(private val itemDao: ItemDao) {
     suspend fun hasItemsForDate(date: Int) : Boolean = withContext(Dispatchers.IO) {
         itemDao.hasItemsForDate(date)
     }
-    suspend fun getAllDoneItems() = withContext(Dispatchers.IO) {
-        itemDao.getAllDoneItems()
-    }
-    suspend fun getAllDoneHomeworks() = withContext(Dispatchers.IO) {
-        itemDao.getAllDoneHomeworks()
-    }
-    suspend fun getAllDoneExams() = withContext(Dispatchers.IO) {
-        itemDao.getAllDoneExams()
-    }
-    suspend fun getAllDoneTasks() = withContext(Dispatchers.IO) {
-        itemDao.getAllDoneTasks()
+    suspend fun runtimeQuery(query: SupportSQLiteQuery) = withContext(Dispatchers.IO) {
+        itemDao.runtimeQuery(query)
     }
 }
