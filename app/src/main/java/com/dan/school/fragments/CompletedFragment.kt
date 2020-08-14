@@ -52,11 +52,13 @@ class CompletedFragment : DialogFragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        childFragmentManager.beginTransaction()
-            .add(
-                R.id.frameLayoutCompleted,
-                CompletedNotGroupedFragment()
-            ).commit()
+        if (savedInstanceState == null) {
+            childFragmentManager.beginTransaction()
+                .add(
+                    R.id.frameLayoutCompleted,
+                    CompletedNotGroupedFragment()
+                ).commit()
+        }
 
         linearLayoutOptionsFragment.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         textSwitcherSortBy.setFactory {
