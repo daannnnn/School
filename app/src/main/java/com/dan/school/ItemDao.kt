@@ -38,6 +38,15 @@ interface ItemDao {
     @Query("SELECT * from items WHERE done=1 ORDER BY doneTime DESC")
     fun getAllDoneItems(): LiveData<List<Item>>
 
+    @Query("SELECT * from items WHERE done=1 AND category=${School.HOMEWORK} ORDER BY doneTime DESC")
+    fun getAllDoneHomeworks(): LiveData<List<Item>>
+
+    @Query("SELECT * from items WHERE done=1 AND category=${School.EXAM} ORDER BY doneTime DESC")
+    fun getAllDoneExams(): LiveData<List<Item>>
+
+    @Query("SELECT * from items WHERE done=1 AND category=${School.TASK} ORDER BY doneTime DESC")
+    fun getAllDoneTasks(): LiveData<List<Item>>
+
     @Query("SELECT * FROM items WHERE id=:id")
     suspend fun getItemById(id: Int): Item
 

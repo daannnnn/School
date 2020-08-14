@@ -123,4 +123,16 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     fun getAllDoneItems(): LiveData<List<Item>> = runBlocking {
         itemRepository.getAllDoneItems()
     }
+
+    fun getAllDoneHomeworks(): LiveData<List<Item>> = runBlocking {
+        itemRepository.getAllDoneHomeworks()
+    }
+
+    fun getAllDoneExams(): LiveData<List<Item>> = runBlocking {
+        itemRepository.getAllDoneExams()
+    }
+
+    fun getAllDoneTasks(): LiveData<List<Item>> = runBlocking {
+        itemRepository.getAllDoneTasks()
+    }
 }

@@ -1,0 +1,141 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    tools:context=".fragments.CompletedGroupedFragment"
+    android:layout_marginBottom="16dp">
+
+    <ImageView
+        android:id="@+id/imageViewHomeworkIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_homework"
+        android:tint="@color/homeworkColor"
+        app:layout_constraintBottom_toBottomOf="@id/textViewHomeworkLabel"
+        app:layout_constraintDimensionRatio="W,1,1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/textViewHomeworkLabel" />
+
+    <TextView
+        android:id="@+id/textViewHomeworkLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/cabin_bold"
+        android:text="@string/homework"
+        android:textAllCaps="true"
+        android:textColor="@color/homeworkColor"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@id/imageViewHomeworkIcon"
+        app:layout_constraintTop_toTopOf="parent"
+        app:layout_goneMarginTop="24dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewHomeworks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:nestedScrollingEnabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewHomeworkLabel" />
+
+    <ImageView
+        android:id="@+id/imageViewExamIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_exam"
+        android:tint="@color/examColor"
+        app:layout_constraintBottom_toBottomOf="@id/textViewExamLabel"
+        app:layout_constraintDimensionRatio="W,1,1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/textViewExamLabel" />
+
+    <TextView
+        android:id="@+id/textViewExamLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/cabin_bold"
+        android:text="@string/exam"
+        android:textAllCaps="true"
+        android:textColor="@color/examColor"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@id/imageViewExamIcon"
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewHomeworks"
+        app:layout_goneMarginTop="24dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewExams"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:nestedScrollingEnabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewExamLabel" />
+
+    <ImageView
+        android:id="@+id/imageViewTaskIcon"
+        android:layout_width="wrap_content"
+        android:layout_height="0dp"
+        android:src="@drawable/ic_task"
+        android:tint="@color/taskColor"
+        app:layout_constraintBottom_toBottomOf="@id/textViewTaskLabel"
+        app:layout_constraintDimensionRatio="W,1,1"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@id/textViewTaskLabel" />
+
+    <TextView
+        android:id="@+id/textViewTaskLabel"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="12dp"
+        android:fontFamily="@font/cabin_bold"
+        android:text="@string/task"
+        android:textAllCaps="true"
+        android:textColor="@color/taskColor"
+        android:textSize="14sp"
+        app:layout_constraintStart_toEndOf="@id/imageViewTaskIcon"
+        app:layout_constraintTop_toBottomOf="@id/recyclerViewExams"
+        app:layout_goneMarginTop="24dp" />
+
+    <androidx.recyclerview.widget.RecyclerView
+        android:id="@+id/recyclerViewTasks"
+        android:layout_width="match_parent"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginBottom="8dp"
+        android:nestedScrollingEnabled="false"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewTaskLabel" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupHomework"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="imageViewHomeworkIcon, textViewHomeworkLabel"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupExam"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="imageViewExamIcon, textViewExamLabel"
+        tools:visibility="visible" />
+
+    <androidx.constraintlayout.widget.Group
+        android:id="@+id/groupTask"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:visibility="gone"
+        app:constraint_referenced_ids="imageViewTaskIcon, textViewTaskLabel"
+        tools:visibility="visible" />
+
+</androidx.constraintlayout.widget.ConstraintLayout>

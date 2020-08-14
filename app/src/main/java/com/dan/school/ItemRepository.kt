@@ -54,4 +54,13 @@ class ItemRepository(private val itemDao: ItemDao) {
     suspend fun getAllDoneItems() = withContext(Dispatchers.IO) {
         itemDao.getAllDoneItems()
     }
+    suspend fun getAllDoneHomeworks() = withContext(Dispatchers.IO) {
+        itemDao.getAllDoneHomeworks()
+    }
+    suspend fun getAllDoneExams() = withContext(Dispatchers.IO) {
+        itemDao.getAllDoneExams()
+    }
+    suspend fun getAllDoneTasks() = withContext(Dispatchers.IO) {
+        itemDao.getAllDoneTasks()
+    }
 }

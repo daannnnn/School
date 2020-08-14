@@ -40,7 +40,7 @@ class CompletedFragment : DialogFragment() {
         childFragmentManager.beginTransaction()
             .add(
                 R.id.frameLayoutCompleted,
-                CompletedNotGroupedFragment()
+                CompletedGroupedFragment()
             ).commit()
 
         linearLayoutOptionsFragment.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
