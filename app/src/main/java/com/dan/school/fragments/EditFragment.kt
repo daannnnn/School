@@ -15,6 +15,7 @@ import android.widget.DatePicker
 import android.widget.ImageButton
 import androidx.core.content.ContextCompat
 import androidx.core.os.bundleOf
+import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.ViewModelProvider
@@ -27,6 +28,7 @@ import com.dan.school.adapters.SubtaskListAdapter
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.google.android.material.button.MaterialButton
+import com.google.android.material.card.MaterialCardView
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.fragment_edit.*
 import java.text.SimpleDateFormat
@@ -42,6 +44,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
 
     private var category: Int = School.HOMEWORK
     private var done: Boolean = false
+    private var doneTime: Long? = null
     private var title: String = ""
     private var subtasks: ArrayList<Subtask> = ArrayList()
     private var notes: String = ""
@@ -86,6 +89,11 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         R.drawable.ic_exam_unchecked,
         R.drawable.ic_task_unchecked
     )
+    private val categoryCardViewBackgroundColors = arrayOf(
+        R.color.cardViewHomeworkBackgroundColor,
+        R.color.cardViewExamBackgroundColor,
+        R.color.cardViewTaskBackgroundColor
+    )
     private val dateToday = Calendar.getInstance()
     private val dateTomorrow = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault())
@@ -120,6 +128,11 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
 
         category = requireArguments().getInt("category", School.HOMEWORK)
         done = requireArguments().getBoolean("done", false)
+        doneTime = if (requireArguments().getLong(
+                "doneTime",
+                -1
+            ) == -1L
+        ) null else requireArguments().getLong("doneTime")
         title = requireArguments().getString("title", "")
         subtasks =
             requireArguments().getParcelableArrayList<Subtask>("subtasks") as ArrayList<Subtask>
@@ -131,7 +144,10 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             selectedDate = null
         } else {
             selectedDate = Calendar.getInstance()
-            selectedDate?.time = SimpleDateFormat(School.dateFormatOnDatabase, Locale.getDefault()).parse(selectedDateString)!!
+            selectedDate?.time =
+                SimpleDateFormat(School.dateFormatOnDatabase, Locale.getDefault()).parse(
+                    selectedDateString
+                )!!
         }
 
         isEdit = requireArguments().getBoolean("isEdit", false)
@@ -215,6 +231,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                         id = itemId!!,
                         category = category,
                         done = done,
+                        doneTime = doneTime,
                         title = editTextTitle.text.toString(),
                         date = SimpleDateFormat(
                             School.dateFormatOnDatabase,
@@ -290,9 +307,20 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         recyclerViewSubtasks.adapter = subtaskListAdapter
         // [END] configure subtasks list
 
+
         constraintLayoutMore.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         if (!isEdit) {
             editTextTitle.requestFocus()
+        }
+        cardViewCompleted.isVisible = done.apply {
+            if (this && doneTime != null) {
+                textViewDateCompleted.text =
+                    SimpleDateFormat(School.dateTimeFormat, Locale.getDefault()).format(
+                        Calendar.getInstance().apply {
+                            timeInMillis = doneTime!!
+                        }.time
+                    )
+            }
         }
         // [END] initialize
     }
@@ -352,6 +380,12 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         (buttonAddSubtask as MaterialButton).rippleColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryButtonAddRippleColorStateList[newCategory]
+        )
+        (cardViewCompleted as MaterialCardView).setCardBackgroundColor(
+            ContextCompat.getColor(
+                requireContext(),
+                categoryCardViewBackgroundColors[newCategory]
+            )
         )
         changeSubtaskListColor(newCategory)
         if (this::categoryChangeListener.isInitialized) {
@@ -429,17 +463,19 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         fun newInstance(
             category: Int = School.HOMEWORK,
             done: Boolean = false,
+            doneTime: Long? = null,
             title: String = "",
             subtasks: ArrayList<Subtask> = ArrayList(),
             notes: String = "",
             chipGroupSelected: Int = School.TODAY,
-            selectedDate: Calendar?,
+            selectedDate: Calendar? = null,
             isEdit: Boolean = false,
             itemId: Int? = null
         ) = EditFragment().apply {
             arguments = bundleOf(
                 "category" to category,
                 "done" to done,
+                "doneTime" to doneTime,
                 "title" to title,
                 "subtasks" to subtasks,
                 "notes" to notes,

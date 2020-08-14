@@ -12,7 +12,7 @@ object School {
     const val dateFormat = "EEE, MMM d, yyyy"
     const val dateFormatOnDatabase = "yyyyMMdd"
     const val timeFormat = "hh:mm aaa"
-    const val dateTimeFormat = "EEE, MMM d, yyyy - hh:mm aaa"
+    const val dateTimeFormat = "EEE, MMM d, yyyy hh:mm aaa"
     const val displayDateFormat = "EEEE, MMMM d, yyyy"
 
     const val HOME = "home"
