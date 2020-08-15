@@ -5,6 +5,8 @@
         <item name="colorAccent">@color/colorAccent</item>
 
         <item name="bottomSheetDialogTheme">@style/BottomSheetDialogTheme</item>
+
+        <item name="materialAlertDialogTheme">@style/DialogTheme</item>
     </style>
 
     <style name="SplashScreenTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -67,6 +69,25 @@
 
     <style name="ChipTextBold" parent="TextAppearance.MaterialComponents.Chip">
         <item name="android:fontFamily">@font/cabin_bold</item>
+    </style>
+
+    <style name="DialogTheme" parent="ThemeOverlay.MaterialComponents.MaterialAlertDialog">
+        <item name="materialAlertDialogTitleTextStyle">@style/DialogTitleText</item>
+        <item name="materialAlertDialogBodyTextStyle">@style/DialogBodyText</item>
+        <item name="buttonBarPositiveButtonStyle">@style/DialogButton</item>
+        <item name="buttonBarNegativeButtonStyle">@style/DialogButton</item>
+    </style>
+
+    <style name="DialogTitleText" parent="MaterialAlertDialog.MaterialComponents.Title.Text">
+        <item name="fontFamily">@font/cabin_bold</item>
+    </style>
+
+    <style name="DialogBodyText" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="fontFamily">@font/cabin_regular</item>
+    </style>
+
+    <style name="DialogButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
+        <item name="fontFamily">@font/cabin_bold</item>
     </style>
 
 </resources>

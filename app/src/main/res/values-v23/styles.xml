@@ -9,6 +9,8 @@
         <item name="android:statusBarColor">@color/appBarLayoutColor</item>
 
         <item name="bottomSheetDialogTheme">@style/BottomSheetDialogTheme</item>
+
+        <item name="materialAlertDialogTheme">@style/DialogTheme</item>
     </style>
 
     <style name="SplashScreenTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">

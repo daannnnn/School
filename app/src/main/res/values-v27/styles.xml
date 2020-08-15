@@ -12,6 +12,8 @@
         <item name="android:windowLightNavigationBar">@bool/windowLightNavigationBar</item>
 
         <item name="bottomSheetDialogTheme">@style/BottomSheetDialogTheme</item>
+
+        <item name="materialAlertDialogTheme">@style/DialogTheme</item>
     </style>
 
     <style name="SplashScreenTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">

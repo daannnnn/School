@@ -2,6 +2,9 @@ package com.dan.school.fragments
 
 import android.app.Dialog
 import android.os.Bundle
+import android.widget.Button
+import android.widget.TextView
+import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import com.dan.school.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -15,18 +18,19 @@ class ConfirmDeleteDialogFragment(
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
         return activity?.let {
-            val builder = MaterialAlertDialogBuilder(it)
-            builder.setMessage(R.string.are_you_sure_you_want_to_delete_this_item)
-                .setTitle(title)
-                .setPositiveButton(
-                    R.string.yes
-                ) { _, _ ->
-                    confirmDeleteListener.confirmDelete(itemId)
-                }
-                .setNegativeButton(
-                    R.string.cancel
-                ) { _, _ -> }
-            builder.create()
+            val dialog =
+                MaterialAlertDialogBuilder(it).setMessage(R.string.are_you_sure_you_want_to_delete_this_item)
+                    .setTitle(title)
+                    .setPositiveButton(
+                        R.string.yes
+                    ) { _, _ ->
+                        confirmDeleteListener.confirmDelete(itemId)
+                    }
+                    .setNegativeButton(
+                        R.string.cancel
+                    ) { _, _ -> }
+                    .create()
+            dialog
         } ?: throw IllegalStateException("Activity cannot be null")
     }
 
