@@ -3,7 +3,6 @@ package com.dan.school.fragments
 import android.animation.LayoutTransition
 import android.animation.ObjectAnimator
 import android.content.Context
-import android.content.SharedPreferences
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.Gravity
@@ -13,16 +12,15 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
-import androidx.fragment.app.DialogFragment
+import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import com.dan.school.DataViewModel
 import com.dan.school.MainActivity
 import com.dan.school.R
 import com.dan.school.School
 import kotlinx.android.synthetic.main.fragment_completed.*
 
-class CompletedFragment : DialogFragment() {
+class CompletedFragment : Fragment() {
 
     private var isOptionsExpanded = false
     private lateinit var displaySortByStringArray: Array<String>
