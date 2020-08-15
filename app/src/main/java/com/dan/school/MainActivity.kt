@@ -2,8 +2,11 @@ package com.dan.school
 
 import android.content.DialogInterface
 import android.os.Bundle
+import android.util.Log
+import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
+import androidx.drawerlayout.widget.DrawerLayout
 import com.dan.school.fragments.CompletedFragment
 import com.dan.school.fragments.OverviewFragment
 import com.dan.school.fragments.SettingsFragment
@@ -11,6 +14,8 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(),
     DialogInterface.OnDismissListener, OverviewFragment.OpenDrawerListener {
+
+    private var navigationSelectedItemId: Int? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -31,39 +36,58 @@ class MainActivity : AppCompatActivity(),
                 item.isChecked = true
                 drawerLayout.closeDrawers()
 
-                when (item.itemId) {
-                    R.id.overview -> {
-                        if (supportFragmentManager.backStackEntryCount == 1) {
-                            supportFragmentManager.popBackStackImmediate()
-                            if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
-                                supportFragmentManager.beginTransaction()
-                                    .show(supportFragmentManager.findFragmentByTag(School.OVERVIEW)!!)
-                                    .commit()
-                            }
-                        }
-                    }
-                    R.id.completed -> {
-                        supportFragmentManager.beginTransaction()
-                            .add(
-                                R.id.frameLayoutMain,
-                                CompletedFragment()
-                            ).addToBackStack(null).commit()
-                        if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
-                            supportFragmentManager.beginTransaction()
-                                .hide(supportFragmentManager.findFragmentByTag(School.OVERVIEW)!!)
-                                .commit()
-                        }
-                    }
-                    R.id.settings -> {
-                        val settingsFragment =
-                            SettingsFragment()
-                        settingsFragment.show(supportFragmentManager, "settingsFragment")
-                    }
-                }
+                navigationSelectedItemId = item.itemId
             } else {
                 drawerLayout.closeDrawer(GravityCompat.START)
             }
             return@setNavigationItemSelectedListener true
+        }
+
+        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
+            override fun onDrawerStateChanged(newState: Int) {}
+            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
+            override fun onDrawerOpened(drawerView: View) {}
+
+            override fun onDrawerClosed(drawerView: View) {
+                Log.i("Test", navigationSelectedItemId.toString())
+                navigationSelectedItemId?.let {
+                    navigationItemSelected(it)
+                    navigationSelectedItemId = null
+                }
+                Log.i("Test", navigationSelectedItemId.toString())
+            }
+        })
+    }
+
+    private fun navigationItemSelected(itemId: Int) {
+        when (itemId) {
+            R.id.overview -> {
+                if (supportFragmentManager.backStackEntryCount == 1) {
+                    supportFragmentManager.popBackStackImmediate()
+                    if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
+                        supportFragmentManager.beginTransaction()
+                            .show(supportFragmentManager.findFragmentByTag(School.OVERVIEW)!!)
+                            .commit()
+                    }
+                }
+            }
+            R.id.completed -> {
+                supportFragmentManager.beginTransaction()
+                    .add(
+                        R.id.frameLayoutMain,
+                        CompletedFragment()
+                    ).addToBackStack(null).commit()
+                if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
+                    supportFragmentManager.beginTransaction()
+                        .hide(supportFragmentManager.findFragmentByTag(School.OVERVIEW)!!)
+                        .commit()
+                }
+            }
+            R.id.settings -> {
+                val settingsFragment =
+                    SettingsFragment()
+                settingsFragment.show(supportFragmentManager, "settingsFragment")
+            }
         }
     }
 
