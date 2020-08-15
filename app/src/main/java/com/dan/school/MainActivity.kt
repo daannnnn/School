@@ -2,7 +2,6 @@ package com.dan.school
 
 import android.content.DialogInterface
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -49,12 +48,10 @@ class MainActivity : AppCompatActivity(),
             override fun onDrawerOpened(drawerView: View) {}
 
             override fun onDrawerClosed(drawerView: View) {
-                Log.i("Test", navigationSelectedItemId.toString())
                 navigationSelectedItemId?.let {
                     navigationItemSelected(it)
                     navigationSelectedItemId = null
                 }
-                Log.i("Test", navigationSelectedItemId.toString())
             }
         })
     }
