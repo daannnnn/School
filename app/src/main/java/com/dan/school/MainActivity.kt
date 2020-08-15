@@ -1,6 +1,5 @@
 package com.dan.school
 
-import android.content.DialogInterface
 import android.os.Bundle
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
@@ -11,8 +10,7 @@ import com.dan.school.fragments.OverviewFragment
 import com.dan.school.fragments.SettingsFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(),
-    DialogInterface.OnDismissListener, OverviewFragment.OpenDrawerListener {
+class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
 
     private var navigationSelectedItemId: Int? = null
 
@@ -59,37 +57,30 @@ class MainActivity : AppCompatActivity(),
     private fun navigationItemSelected(itemId: Int) {
         when (itemId) {
             R.id.overview -> {
-                if (supportFragmentManager.backStackEntryCount == 1) {
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                if (supportFragmentManager.backStackEntryCount == 0) {
+                    supportFragmentManager.beginTransaction()
+                        .replace(R.id.frameLayoutMain, OverviewFragment())
+                        .commit()
+                } else {
                     supportFragmentManager.popBackStackImmediate()
-                    if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
-                        supportFragmentManager.beginTransaction()
-                            .show(supportFragmentManager.findFragmentByTag(School.OVERVIEW)!!)
-                            .commit()
-                    }
                 }
             }
             R.id.completed -> {
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                 supportFragmentManager.beginTransaction()
-                    .add(
-                        R.id.frameLayoutMain,
-                        CompletedFragment()
-                    ).addToBackStack(null).commit()
-                if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
-                    supportFragmentManager.beginTransaction()
-                        .hide(supportFragmentManager.findFragmentByTag(School.OVERVIEW)!!)
-                        .commit()
-                }
+                    .replace(R.id.frameLayoutMain, CompletedFragment())
+                    .addToBackStack(School.COMPLETED)
+                    .commit()
             }
             R.id.settings -> {
-                val settingsFragment =
-                    SettingsFragment()
-                settingsFragment.show(supportFragmentManager, "settingsFragment")
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                supportFragmentManager.beginTransaction()
+                    .replace(R.id.frameLayoutMain, SettingsFragment())
+                    .addToBackStack(School.SETTINGS)
+                    .commit()
             }
         }
-    }
-
-    override fun onDismiss(dialog: DialogInterface?) {
-        navigationView.setCheckedItem(R.id.overview)
     }
 
     override fun openDrawer() {
@@ -97,13 +88,16 @@ class MainActivity : AppCompatActivity(),
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount == 1) {
-            supportFragmentManager.popBackStackImmediate()
-            if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            if (supportFragmentManager.backStackEntryCount == 1) {
+                supportFragmentManager.popBackStackImmediate()
                 navigationView.setCheckedItem(R.id.overview)
-                supportFragmentManager.beginTransaction()
-                    .show(supportFragmentManager.findFragmentByTag(School.OVERVIEW)!!)
-                    .commit()
+            } else if (supportFragmentManager
+                    .getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 2)
+                    .name == School.COMPLETED
+            ) {
+                supportFragmentManager.popBackStackImmediate()
+                navigationView.setCheckedItem(R.id.completed)
             }
         } else super.onBackPressed()
     }

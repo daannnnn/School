@@ -29,6 +29,7 @@ object School {
 
     const val OVERVIEW = "overview"
     const val COMPLETED = "completed"
+    const val SETTINGS = "settings"
 
     const val DONE_TIME = "doneTime"
     const val TITLE = "title"
