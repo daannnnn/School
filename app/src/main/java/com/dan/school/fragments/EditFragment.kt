@@ -18,7 +18,6 @@ import androidx.core.os.bundleOf
 import androidx.core.view.isVisible
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
@@ -37,7 +36,7 @@ import kotlin.collections.ArrayList
 
 class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     DatePickerDialog.OnDateSetListener,
-    DatePickerFragment.OnCancelListener, ConfirmDeleteDialog.ConfirmDeleteListener {
+    DatePickerFragment.OnCancelListener, ConfirmDeleteDialogFragment.ConfirmDeleteListener {
 
     private lateinit var categoryChangeListener: CategoryChangeListener
     private lateinit var dismissBottomSheetListener: DismissBottomSheetListener
@@ -262,7 +261,11 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         }
         buttonDelete.setOnClickListener {
             if (isEdit) {
-                itemId?.let { it1 -> ConfirmDeleteDialog(this, it1, title).show(childFragmentManager, "confirmDeleteDialog") }
+                itemId?.let { it1 -> ConfirmDeleteDialogFragment(
+                    this,
+                    it1,
+                    title
+                ).show(childFragmentManager, "confirmDeleteDialog") }
             }
         }
         buttonFinish.setOnClickListener {

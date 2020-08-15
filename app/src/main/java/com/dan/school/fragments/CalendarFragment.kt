@@ -23,7 +23,6 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
 import com.dan.school.adapters.ItemListAdapter
@@ -47,7 +46,7 @@ import kotlin.collections.ArrayList
 
 class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
     ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
-    ConfirmDeleteDialog.ConfirmDeleteListener {
+    ConfirmDeleteDialogFragment.ConfirmDeleteListener {
 
     private val categoryCheckedIcons = arrayOf(
         R.drawable.ic_homework_checked,
@@ -593,7 +592,8 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
     }
 
     override fun itemLongClicked(title: String, id: Int) {
-        ConfirmDeleteDialog(this, id, title).show(childFragmentManager, "confirmDeleteDialog")
+        ConfirmDeleteDialogFragment(this, id, title)
+            .show(childFragmentManager, "confirmDeleteDialog")
     }
 
     override fun confirmDelete(itemId: Int) {

@@ -1,13 +1,12 @@
-package com.dan.school
+package com.dan.school.fragments
 
-import android.app.AlertDialog
 import android.app.Dialog
-import android.content.DialogInterface
 import android.os.Bundle
 import androidx.fragment.app.DialogFragment
+import com.dan.school.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class ConfirmDeleteDialog(
+class ConfirmDeleteDialogFragment(
     private val confirmDeleteListener: ConfirmDeleteListener,
     private val itemId: Int,
     private val title: String

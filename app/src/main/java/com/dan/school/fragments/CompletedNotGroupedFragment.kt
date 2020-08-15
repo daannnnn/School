@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
 import com.dan.school.adapters.ItemListAdapter
@@ -21,7 +20,7 @@ import kotlin.collections.ArrayList
 
 class CompletedNotGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
     ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
-    ConfirmDeleteDialog.ConfirmDeleteListener {
+    ConfirmDeleteDialogFragment.ConfirmDeleteListener {
 
     private lateinit var completedNotGroupedListAdapter: ItemListAdapter
 
@@ -107,7 +106,8 @@ class CompletedNotGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
     }
 
     override fun itemLongClicked(title: String, id: Int) {
-        ConfirmDeleteDialog(this, id, title).show(childFragmentManager, "confirmDeleteDialog")
+        ConfirmDeleteDialogFragment(this, id, title)
+            .show(childFragmentManager, "confirmDeleteDialog")
     }
 
     override fun confirmDelete(itemId: Int) {
