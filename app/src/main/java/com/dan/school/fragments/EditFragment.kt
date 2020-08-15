@@ -37,7 +37,7 @@ import kotlin.collections.ArrayList
 
 class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     DatePickerDialog.OnDateSetListener,
-    DatePickerFragment.OnCancelListener {
+    DatePickerFragment.OnCancelListener, ConfirmDeleteDialog.ConfirmDeleteListener {
 
     private lateinit var categoryChangeListener: CategoryChangeListener
     private lateinit var dismissBottomSheetListener: DismissBottomSheetListener
@@ -260,6 +260,30 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         buttonBack.setOnClickListener {
             dismiss()
         }
+        buttonDelete.setOnClickListener {
+            if (isEdit) {
+                itemId?.let { it1 -> ConfirmDeleteDialog(this, it1, title).show(childFragmentManager, "confirmDeleteDialog") }
+            }
+        }
+        buttonFinish.setOnClickListener {
+            if (isEdit) {
+                val item = Item(
+                    id = itemId!!,
+                    category = category,
+                    done = !done,
+                    doneTime = Calendar.getInstance().timeInMillis,
+                    title = editTextTitle.text.toString(),
+                    date = SimpleDateFormat(
+                        School.dateFormatOnDatabase,
+                        Locale.getDefault()
+                    ).format(selectedDate!!.time).toInt(),
+                    subtasks = Gson().toJson(subtaskListAdapter.data),
+                    notes = editTextNotes.text.toString()
+                )
+                dataViewModel.update(item)
+                dismiss()
+            }
+        }
 
         // [START] initialize
         dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
@@ -307,11 +331,11 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         recyclerViewSubtasks.adapter = subtaskListAdapter
         // [END] configure subtasks list
 
-
         constraintLayoutMore.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         if (!isEdit) {
             editTextTitle.requestFocus()
         }
+        linearLayoutBottomButtons.isVisible = isEdit
         cardViewCompleted.isVisible = done.apply {
             if (this && doneTime != null) {
                 textViewDateCompleted.text =
@@ -322,6 +346,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                     )
             }
         }
+        buttonFinish.text = if (done) resources.getString(R.string.uncheck) else resources.getString(R.string.check)
         // [END] initialize
     }
 
@@ -490,5 +515,10 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                 "itemId" to itemId
             )
         }
+    }
+
+    override fun confirmDelete(itemId: Int) {
+        dataViewModel.deleteItemWithId(itemId)
+        dismiss()
     }
 }

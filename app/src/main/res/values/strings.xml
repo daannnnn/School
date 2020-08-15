@@ -56,6 +56,9 @@
     <string name="options">Options</string>
     <string name="sort_by">Sort by:</string>
     <string name="group_by_category">Group by category:</string>
+    <string name="delete">Delete</string>
+    <string name="check">Check</string>
+    <string name="uncheck">Uncheck</string>
     <string-array name="sort_by_array">
         <item>Time Completed</item>
         <item>Title</item>
