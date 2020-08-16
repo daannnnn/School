@@ -2,11 +2,14 @@ package com.dan.school.fragments
 
 import android.content.Context
 import android.content.SharedPreferences
+import android.content.res.TypedArray
 import android.os.Bundle
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.dan.school.R
 import com.dan.school.School
@@ -16,10 +19,22 @@ class SettingsFragment : Fragment() {
 
     private lateinit var sharedPref: SharedPreferences
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        val colorBackground: TypedArray = requireContext().obtainStyledAttributes(
+            TypedValue().data, intArrayOf(
+                android.R.attr.colorBackground
+            )
+        )
+        requireActivity().window.statusBarColor = colorBackground.getColor(0, -1)
+        colorBackground.recycle()
+    }
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         sharedPref = context.getSharedPreferences(
-            getString(R.string.preference_file_key), Context.MODE_PRIVATE)
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -50,5 +65,11 @@ class SettingsFragment : Fragment() {
             this?.putBoolean(School.IS_DARK_MODE, isDarkMode)
             this?.commit()
         }
+    }
+
+    override fun onDestroy() {
+        requireActivity().window.statusBarColor =
+            ContextCompat.getColor(requireContext(), R.color.appBarLayoutColor)
+        super.onDestroy()
     }
 }
