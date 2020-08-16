@@ -58,27 +58,35 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
         when (itemId) {
             R.id.overview -> {
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                if (supportFragmentManager.backStackEntryCount == 0) {
-                    supportFragmentManager.beginTransaction()
-                        .replace(R.id.frameLayoutMain, OverviewFragment())
-                        .commit()
-                } else {
+                if (supportFragmentManager.backStackEntryCount != 0) {
                     supportFragmentManager.popBackStackImmediate()
+                    if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
+                        showFragment(School.OVERVIEW)
+                    }
                 }
             }
             R.id.completed -> {
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frameLayoutMain, CompletedFragment())
+                    .add(R.id.frameLayoutMain, CompletedFragment(), School.COMPLETED)
                     .addToBackStack(School.COMPLETED)
                     .commit()
+                if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
+                    hideFragment(School.OVERVIEW)
+                }
             }
             R.id.settings -> {
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                 supportFragmentManager.beginTransaction()
-                    .replace(R.id.frameLayoutMain, SettingsFragment())
+                    .add(R.id.frameLayoutMain, SettingsFragment(), School.SETTINGS)
                     .addToBackStack(School.SETTINGS)
                     .commit()
+                if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
+                    hideFragment(School.OVERVIEW)
+                }
+                if (supportFragmentManager.findFragmentByTag(School.COMPLETED) != null) {
+                    hideFragment(School.COMPLETED)
+                }
             }
         }
     }
@@ -91,14 +99,32 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
         if (supportFragmentManager.backStackEntryCount > 0) {
             if (supportFragmentManager.backStackEntryCount == 1) {
                 supportFragmentManager.popBackStackImmediate()
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
+                    showFragment(School.OVERVIEW)
+                }
                 navigationView.setCheckedItem(R.id.overview)
             } else if (supportFragmentManager
                     .getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 2)
                     .name == School.COMPLETED
             ) {
                 supportFragmentManager.popBackStackImmediate()
+                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                if (supportFragmentManager.findFragmentByTag(School.COMPLETED) != null) {
+                    showFragment(School.COMPLETED)
+                }
                 navigationView.setCheckedItem(R.id.completed)
             }
         } else super.onBackPressed()
+    }
+
+    private fun hideFragment(tag: String) {
+        supportFragmentManager.beginTransaction()
+            .hide(supportFragmentManager.findFragmentByTag(tag)!!).commit()
+    }
+
+    private fun showFragment(tag: String) {
+        supportFragmentManager.beginTransaction()
+            .show(supportFragmentManager.findFragmentByTag(tag)!!).commit()
     }
 }
