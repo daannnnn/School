@@ -296,10 +296,11 @@
             <LinearLayout
                 android:id="@+id/linearLayoutBottomButtons"
                 android:layout_width="match_parent"
-                android:layout_height="match_parent"
-                app:layout_constraintTop_toBottomOf="@id/constraintLayoutMore"
+                android:layout_height="?actionBarSize"
+                android:visibility="visible"
+                app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent">
+                app:layout_constraintTop_toBottomOf="@id/constraintLayoutMore">
 
                 <Button
                     android:id="@+id/buttonDelete"
@@ -309,7 +310,8 @@
                     android:layout_weight="1"
                     android:text="@string/delete"
                     app:icon="@drawable/ic_delete"
-                    app:iconGravity="textStart" />
+                    app:iconGravity="textStart"
+                    app:iconSize="24dp" />
 
                 <Button
                     android:id="@+id/buttonFinish"
@@ -319,7 +321,8 @@
                     android:layout_weight="1"
                     android:text="@string/check"
                     app:icon="@drawable/ic_check"
-                    app:iconGravity="textStart" />
+                    app:iconGravity="textStart"
+                    app:iconSize="24dp" />
 
             </LinearLayout>
 

@@ -7,6 +7,7 @@
         <item name="bottomSheetDialogTheme">@style/BottomSheetDialogTheme</item>
 
         <item name="materialAlertDialogTheme">@style/DialogTheme</item>
+        <item name="textAppearanceButton">@style/ButtonTextAppearance</item>
     </style>
 
     <style name="SplashScreenTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -88,6 +89,10 @@
 
     <style name="DialogButton" parent="Widget.MaterialComponents.Button.TextButton.Dialog">
         <item name="fontFamily">@font/cabin_bold</item>
+    </style>
+
+    <style name="ButtonTextAppearance" parent="TextAppearance.MaterialComponents.Button">
+        <item name="fontFamily">@font/cabin_medium</item>
     </style>
 
 </resources>

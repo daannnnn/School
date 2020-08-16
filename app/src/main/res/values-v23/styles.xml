@@ -11,6 +11,7 @@
         <item name="bottomSheetDialogTheme">@style/BottomSheetDialogTheme</item>
 
         <item name="materialAlertDialogTheme">@style/DialogTheme</item>
+        <item name="textAppearanceButton">@style/ButtonTextAppearance</item>
     </style>
 
     <style name="SplashScreenTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
