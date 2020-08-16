@@ -74,7 +74,8 @@
                         android:id="@+id/buttonOptions"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
-                        android:padding="16dp">
+                        android:padding="16dp"
+                        android:gravity="center">
 
                         <TextView
                             style="@style/TextAppearance.MaterialComponents.Button"
