@@ -121,10 +121,6 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             }
         }
 
-        val typedValue = TypedValue()
-        val theme: Resources.Theme = requireContext().theme
-        theme.resolveAttribute(android.R.attr.textColorPrimary, typedValue, true)
-
         calendarView.dayBinder = object : DayBinder<DayViewContainer> {
             override fun create(view: View) = DayViewContainer(view)
             override fun bind(container: DayViewContainer, day: CalendarDay) {
@@ -163,7 +159,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
                         }
                         else -> {
                             val textColorPrimary: TypedArray = requireContext().obtainStyledAttributes(
-                                typedValue.data, intArrayOf(
+                                TypedValue().data, intArrayOf(
                                     android.R.attr.textColorPrimary
                                 )
                             )
@@ -174,7 +170,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
                     }
                 } else {
                     val textColorSecondary: TypedArray = requireContext().obtainStyledAttributes(
-                        typedValue.data, intArrayOf(
+                        TypedValue().data, intArrayOf(
                             android.R.attr.textColorSecondary
                         )
                     )
