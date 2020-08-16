@@ -19,8 +19,11 @@ class SettingsFragment : Fragment() {
 
     private lateinit var sharedPref: SharedPreferences
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        sharedPref = context.getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
         val colorBackground: TypedArray = requireContext().obtainStyledAttributes(
             TypedValue().data, intArrayOf(
                 android.R.attr.colorBackground
@@ -28,13 +31,6 @@ class SettingsFragment : Fragment() {
         )
         requireActivity().window.statusBarColor = colorBackground.getColor(0, -1)
         colorBackground.recycle()
-    }
-
-    override fun onAttach(context: Context) {
-        super.onAttach(context)
-        sharedPref = context.getSharedPreferences(
-            getString(R.string.preference_file_key), Context.MODE_PRIVATE
-        )
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
