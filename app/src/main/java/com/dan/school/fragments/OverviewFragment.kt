@@ -18,6 +18,7 @@ import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.fragment_overview.*
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.concurrent.schedule
 
 class OverviewFragment : Fragment(),
     AddBottomSheetDialogFragment.GoToEditFragment,
@@ -36,6 +37,8 @@ class OverviewFragment : Fragment(),
     private lateinit var openDrawerListener: OpenDrawerListener
 
     private lateinit var sharedPref: SharedPreferences
+
+    private var canSelectItem = true
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -259,19 +262,22 @@ class OverviewFragment : Fragment(),
         date: Calendar?,
         itemId: Int
     ) {
-        val editFragment = EditFragment.newInstance(
-            category = category,
-            done = done,
-            doneTime = doneTime,
-            title = title,
-            subtasks = subtasks,
-            notes = notes,
-            chipGroupSelected = School.PICK_DATE,
-            selectedDate = date,
-            isEdit = true,
-            itemId = itemId
-        )
-        editFragment.show(childFragmentManager, "editFragment")
+        if (canSelectItem) {
+            canSelectItem = false
+            val editFragment = EditFragment.newInstance(
+                category = category,
+                done = done,
+                doneTime = doneTime,
+                title = title,
+                subtasks = subtasks,
+                notes = notes,
+                chipGroupSelected = School.PICK_DATE,
+                selectedDate = date,
+                isEdit = true,
+                itemId = itemId
+            )
+            editFragment.show(childFragmentManager, "editFragment")
+        }
     }
 
     private fun showEditFragment(
@@ -280,13 +286,16 @@ class OverviewFragment : Fragment(),
         chipGroupDateSelected: Int,
         date: Calendar?
     ) {
-        val editFragment = EditFragment.newInstance(
-            category = category,
-            title = title,
-            chipGroupSelected = chipGroupDateSelected,
-            selectedDate = date
-        )
-        editFragment.show(childFragmentManager, "editFragment")
+        if (canSelectItem) {
+            canSelectItem = false
+            val editFragment = EditFragment.newInstance(
+                category = category,
+                title = title,
+                chipGroupSelected = chipGroupDateSelected,
+                selectedDate = date
+            )
+            editFragment.show(childFragmentManager, "editFragment")
+        }
     }
 
     override fun goToEditFragment(
@@ -309,6 +318,9 @@ class OverviewFragment : Fragment(),
 
     override fun dismissBottomSheet() {
         addBottomSheetDialogFragment?.dismiss()
+        Timer( false).schedule(resources.getInteger(android.R.integer.config_shortAnimTime).toLong()) {
+            canSelectItem = true
+        }
     }
 
     override fun itemClicked(item: Item) {
