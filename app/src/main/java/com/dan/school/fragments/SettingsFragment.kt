@@ -47,6 +47,9 @@ class SettingsFragment : Fragment() {
                 AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
             }
         }
+        buttonBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
     }
 
     override fun onCreateView(
