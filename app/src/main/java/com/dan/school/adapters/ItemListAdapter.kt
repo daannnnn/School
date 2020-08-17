@@ -70,12 +70,18 @@ class ItemListAdapter(
             holder.buttonCheckItem.setImageResource(categoryUncheckedIcons[mItemCategory])
         }
         holder.buttonCheckItem.setOnClickListener {
-            if (getItem(holder.bindingAdapterPosition).done) {
-                holder.buttonCheckItem.setImageResource(categoryUncheckedIcons[mItemCategory])
-                doneListener.setDone(getItem(holder.bindingAdapterPosition).id, false, null)
-            } else {
-                holder.buttonCheckItem.setImageResource(categoryCheckedIcons[mItemCategory])
-                doneListener.setDone(getItem(holder.bindingAdapterPosition).id, true, Calendar.getInstance().timeInMillis)
+            if (holder.bindingAdapterPosition != -1) {
+                if (getItem(holder.bindingAdapterPosition).done) {
+                    holder.buttonCheckItem.setImageResource(categoryUncheckedIcons[mItemCategory])
+                    doneListener.setDone(getItem(holder.bindingAdapterPosition).id, false, null)
+                } else {
+                    holder.buttonCheckItem.setImageResource(categoryCheckedIcons[mItemCategory])
+                    doneListener.setDone(
+                        getItem(holder.bindingAdapterPosition).id,
+                        true,
+                        Calendar.getInstance().timeInMillis
+                    )
+                }
             }
         }
         holder.buttonSubtask.setOnClickListener {
