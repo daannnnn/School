@@ -91,6 +91,9 @@ class SettingsFragment : Fragment(), SettingsContentFragment.SettingsItemOnClick
             }
         } else {
             childFragmentManager.popBackStackImmediate()
+            if (childFragmentManager.backStackEntryCount == 0) {
+                textViewSettingsTitle.setText(R.string.settings)
+            }
         }
     }
 
