@@ -9,6 +9,12 @@ object School {
     const val TODAY = 4
     const val TOMORROW = 5
 
+    const val HOME_SELECTED = 6
+    const val CALENDAR_SELECTED = 7
+    const val AGENDA_SELECTED = 8
+
+    const val PROFILE = 9
+
     const val dateFormat = "EEE, MMM d, yyyy"
     const val dateFormatOnDatabase = "yyyyMMdd"
     const val timeFormat = "hh:mm aaa"
@@ -18,10 +24,6 @@ object School {
     const val HOME = "home"
     const val CALENDAR = "calendar"
     const val AGENDA = "agenda"
-
-    const val HOME_SELECTED = 6
-    const val CALENDAR_SELECTED = 7
-    const val AGENDA_SELECTED = 8
 
     const val IS_DARK_MODE = "is_dark_mode"
     const val SELECTED_BOTTOM_NAVIGATION_FRAGMENT = "selected_bottom_navigation_fragment"

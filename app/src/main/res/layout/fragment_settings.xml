@@ -29,6 +29,7 @@
                 android:tint="?android:textColorPrimary" />
 
             <TextView
+                android:id="@+id/textViewSettingsTitle"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_centerInParent="true"
@@ -41,80 +42,10 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <ScrollView
+    <FrameLayout
+        android:id="@+id/frameLayoutSettings"
         android:layout_width="match_parent"
         android:layout_height="match_parent"
-        app:layout_behavior="@string/appbar_scrolling_view_behavior">
-
-        <LinearLayout
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:orientation="vertical">
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp">
-
-                <ImageView
-                    android:id="@+id/imageViewProfileIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
-                    android:src="@drawable/ic_profile" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="8dp"
-                    android:layout_toEndOf="@id/imageViewProfileIcon"
-                    android:fontFamily="@font/cabin_regular"
-                    android:text="@string/profile"
-                    android:textColor="?android:textColorPrimary"
-                    android:textSize="18sp" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp">
-
-                <ImageView
-                    android:id="@+id/imageViewDarkModeIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
-                    android:src="@drawable/ic_dark_mode" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="8dp"
-                    android:layout_toEndOf="@id/imageViewDarkModeIcon"
-                    android:fontFamily="@font/cabin_regular"
-                    android:text="@string/dark_mode"
-                    android:textColor="?android:textColorPrimary"
-                    android:textSize="18sp" />
-
-                <com.google.android.material.switchmaterial.SwitchMaterial
-                    android:id="@+id/switchDarkMode"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_alignParentEnd="true" />
-
-            </RelativeLayout>
-
-        </LinearLayout>
-
-    </ScrollView>
+        app:layout_behavior="@string/appbar_scrolling_view_behavior" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

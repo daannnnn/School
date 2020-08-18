@@ -1,6 +1,7 @@
 package com.dan.school
 
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -13,6 +14,7 @@ import kotlinx.android.synthetic.main.activity_main.*
 class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
 
     private var navigationSelectedItemId: Int? = null
+    var settingsBackPressedListener: SettingsBackPressedListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -52,6 +54,38 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
                 }
             }
         })
+
+        supportFragmentManager.addOnBackStackChangedListener {
+            if (supportFragmentManager.backStackEntryCount == 0) {
+                if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
+                    showFragment(School.OVERVIEW)
+                    navigationView.setCheckedItem(R.id.overview)
+                }
+            } else {
+                when (supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name) {
+                    School.COMPLETED -> {
+                        if (supportFragmentManager.findFragmentByTag(School.COMPLETED) != null) {
+                            showFragment(School.COMPLETED)
+                            navigationView.setCheckedItem(R.id.completed)
+                        }
+                        if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
+                            hideFragment(School.OVERVIEW)
+                        }
+                        if (supportFragmentManager.findFragmentByTag(School.SETTINGS) != null) {
+                            hideFragment(School.SETTINGS)
+                        }
+                    }
+                    School.SETTINGS -> {
+                        if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
+                            hideFragment(School.OVERVIEW)
+                        }
+                        if (supportFragmentManager.findFragmentByTag(School.COMPLETED) != null) {
+                            hideFragment(School.COMPLETED)
+                        }
+                    }
+                }
+            }
+        }
     }
 
     private fun navigationItemSelected(itemId: Int) {
@@ -71,9 +105,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
                     .add(R.id.frameLayoutMain, CompletedFragment(), School.COMPLETED)
                     .addToBackStack(School.COMPLETED)
                     .commit()
-                if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
-                    hideFragment(School.OVERVIEW)
-                }
             }
             R.id.settings -> {
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
@@ -81,12 +112,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
                     .add(R.id.frameLayoutMain, SettingsFragment(), School.SETTINGS)
                     .addToBackStack(School.SETTINGS)
                     .commit()
-                if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
-                    hideFragment(School.OVERVIEW)
-                }
-                if (supportFragmentManager.findFragmentByTag(School.COMPLETED) != null) {
-                    hideFragment(School.COMPLETED)
-                }
             }
         }
     }
@@ -96,35 +121,41 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            if (supportFragmentManager.backStackEntryCount == 1) {
-                supportFragmentManager.popBackStackImmediate()
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
-                    showFragment(School.OVERVIEW)
+        if (settingsBackPressedListener == null) {
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                if (supportFragmentManager.backStackEntryCount == 1) {
+                    supportFragmentManager.popBackStackImmediate()
+                    drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                } else if (supportFragmentManager
+                        .getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 2)
+                        .name == School.COMPLETED
+                ) {
+                    supportFragmentManager.popBackStackImmediate()
+                    drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                 }
-                navigationView.setCheckedItem(R.id.overview)
-            } else if (supportFragmentManager
-                    .getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 2)
-                    .name == School.COMPLETED
-            ) {
-                supportFragmentManager.popBackStackImmediate()
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                if (supportFragmentManager.findFragmentByTag(School.COMPLETED) != null) {
-                    showFragment(School.COMPLETED)
-                }
-                navigationView.setCheckedItem(R.id.completed)
-            }
-        } else super.onBackPressed()
+            } else super.onBackPressed()
+        } else {
+            settingsBackPressedListener?.backPressed()
+        }
     }
 
     private fun hideFragment(tag: String) {
+        if (supportFragmentManager.findFragmentByTag(tag)!!.isHidden) {
+            return
+        }
         supportFragmentManager.beginTransaction()
             .hide(supportFragmentManager.findFragmentByTag(tag)!!).commit()
     }
 
     private fun showFragment(tag: String) {
+        if (supportFragmentManager.findFragmentByTag(tag)!!.isVisible) {
+            return
+        }
         supportFragmentManager.beginTransaction()
             .show(supportFragmentManager.findFragmentByTag(tag)!!).commit()
+    }
+
+    interface SettingsBackPressedListener {
+        fun backPressed()
     }
 }
