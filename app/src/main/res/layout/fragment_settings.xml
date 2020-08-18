@@ -18,13 +18,14 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/buttonBack"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_centerVertical="true"
                 android:layout_margin="16dp"
                 android:background="?selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_chevron_left"
                 android:tint="?android:textColorPrimary" />
 
@@ -37,6 +38,18 @@
                 android:text="@string/settings"
                 android:textColor="?android:textColorPrimary"
                 android:textSize="20sp" />
+
+            <ImageButton
+                android:id="@+id/buttonSettingsAppBarRight"
+                android:layout_width="24dp"
+                android:layout_height="24dp"
+                android:layout_alignParentEnd="true"
+                android:layout_centerVertical="true"
+                android:layout_margin="16dp"
+                android:background="?selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
+                android:tint="?android:textColorPrimary"
+                android:visibility="visible" />
 
         </RelativeLayout>
 

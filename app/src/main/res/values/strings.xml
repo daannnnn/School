@@ -59,6 +59,11 @@
     <string name="delete">Delete</string>
     <string name="check">Check</string>
     <string name="uncheck">Uncheck</string>
+    <string name="name">Name</string>
+    <string name="full_name">Full Name</string>
+    <string name="nickname">Nickname</string>
+    <string name="what_do_you_want_us_to_call_you">What do you want us to call you?</string>
+    <string name="email">Email</string>
     <string-array name="sort_by_array">
         <item>Time Completed</item>
         <item>Title</item>

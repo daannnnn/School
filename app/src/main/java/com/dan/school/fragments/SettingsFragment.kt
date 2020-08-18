@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.activity.OnBackPressedCallback
 import androidx.core.content.ContextCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.dan.school.*
 import kotlinx.android.synthetic.main.fragment_settings.*
@@ -102,5 +103,19 @@ class SettingsFragment : Fragment(), SettingsContentFragment.SettingsItemOnClick
             (requireActivity() as MainActivity).settingsBackPressedListener = null
         }
         super.onDetach()
+    }
+
+    fun setAppBarButtonRight(
+        clickListener: View.OnClickListener,
+        isVisible: Boolean,
+        imageRes: Int
+    ) {
+        buttonSettingsAppBarRight.isVisible = isVisible
+        buttonSettingsAppBarRight.setImageResource(imageRes)
+        buttonSettingsAppBarRight.setOnClickListener(clickListener)
+    }
+
+    fun setAppBarButtonRight(imageRes: Int) {
+        buttonSettingsAppBarRight.setImageResource(imageRes)
     }
 }

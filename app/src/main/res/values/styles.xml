@@ -95,4 +95,16 @@
         <item name="fontFamily">@font/cabin_medium</item>
     </style>
 
+    <style name="InputTextTextAppearance" parent="TextAppearance.MaterialComponents.Subtitle1">
+        <item name="fontFamily">@font/cabin_regular</item>
+    </style>
+
+    <style name="TextFieldHintTextAppearance" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="fontFamily">@font/cabin_regular</item>
+    </style>
+
+    <style name="TextFieldHelperTextTextAppearance" parent="TextAppearance.MaterialComponents.Caption">
+        <item name="fontFamily">@font/cabin_regular</item>
+    </style>
+
 </resources>

@@ -43,7 +43,6 @@ class AgendaFragment : Fragment(),
     private val dateToday = Calendar.getInstance()
     private val dateTomorrow = Calendar.getInstance()
     private val hourOfDay = dateToday.get(Calendar.HOUR_OF_DAY)
-    private val userName = "Dan"
 
     private lateinit var overdueListAdapter: ItemListAdapter
     private lateinit var homeworkListAdapter: ItemListAdapter
@@ -72,6 +71,9 @@ class AgendaFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        val userName = requireContext().getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        ).getString(School.NICKNAME, "")
         textViewGreeting.text = when (hourOfDay) {
             in 5..11 -> {
                 "Good Morning, $userName!"

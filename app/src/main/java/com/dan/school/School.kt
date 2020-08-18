@@ -35,4 +35,8 @@ object School {
 
     const val DONE_TIME = "doneTime"
     const val TITLE = "title"
+
+    const val FULL_NAME = "fullName"
+    const val NICKNAME = "nickname"
+    const val EMAIL = "email"
 }

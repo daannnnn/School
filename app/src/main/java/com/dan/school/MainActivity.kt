@@ -1,8 +1,10 @@
 package com.dan.school
 
+import android.content.Context
 import android.os.Bundle
 import android.util.Log
 import android.view.View
+import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -29,6 +31,14 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
                     OverviewFragment(), School.OVERVIEW
                 ).commit()
         }
+
+        val sharedPref = getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
+        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewName).text =
+            sharedPref.getString(School.FULL_NAME, "")
+        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewEmail).text =
+            sharedPref.getString(School.EMAIL, "")
 
         navigationView.setNavigationItemSelectedListener { item ->
             if (!item.isChecked) {
