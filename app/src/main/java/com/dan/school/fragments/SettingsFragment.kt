@@ -106,7 +106,7 @@ class SettingsFragment : Fragment(), SettingsContentFragment.SettingsItemOnClick
     }
 
     fun setAppBarButtonRight(
-        clickListener: View.OnClickListener,
+        clickListener: View.OnClickListener?,
         isVisible: Boolean,
         imageRes: Int
     ) {
