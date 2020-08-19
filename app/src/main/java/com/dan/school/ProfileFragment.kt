@@ -68,7 +68,7 @@ class ProfileFragment : Fragment() {
             textFieldFullName.editText?.setText(sharedPref.getString(School.FULL_NAME, ""))
             textFieldEmail.editText?.setText(sharedPref.getString(School.EMAIL, ""))
         } else {
-            inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+            hideKeyboard()
             val nickname = textFieldNickname.editText?.text.toString()
             val fullName = textFieldFullName.editText?.text.toString()
             val email = textFieldEmail.editText?.text.toString()
@@ -85,8 +85,15 @@ class ProfileFragment : Fragment() {
         isEditMode = editMode
     }
 
-
     override fun onDetach() {
+        hideKeyboard()
+        if (parentFragment is SettingsFragment) {
+            (parentFragment as SettingsFragment).setAppBarButtonRight(null, false, R.drawable.ic_edit)
+        }
+        super.onDetach()
+    }
+
+    private fun hideKeyboard() {
         val currentFocusedView = requireActivity().currentFocus
         if (currentFocusedView != null) {
             inputMethodManager.hideSoftInputFromWindow(
@@ -94,9 +101,5 @@ class ProfileFragment : Fragment() {
                 InputMethodManager.HIDE_NOT_ALWAYS
             )
         }
-        if (parentFragment is SettingsFragment) {
-            (parentFragment as SettingsFragment).setAppBarButtonRight(null, false, R.drawable.ic_edit)
-        }
-        super.onDetach()
     }
 }
