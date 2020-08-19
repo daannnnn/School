@@ -35,10 +35,18 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
         val sharedPref = getSharedPreferences(
             getString(R.string.preference_file_key), Context.MODE_PRIVATE
         )
-        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewName).text =
-            sharedPref.getString(School.FULL_NAME, "")
-        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewEmail).text =
-            sharedPref.getString(School.EMAIL, "")
+
+        sharedPref.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (key == School.FULL_NAME) {
+                setNavigationViewHeaderName(sharedPreferences.getString(School.FULL_NAME, ""))
+            }
+            if (key == School.EMAIL) {
+                setNavigationViewHeaderEmail(sharedPreferences.getString(School.EMAIL, ""))
+            }
+        }
+
+        setNavigationViewHeaderName(sharedPref.getString(School.FULL_NAME, ""))
+        setNavigationViewHeaderEmail(sharedPref.getString(School.EMAIL, ""))
 
         navigationView.setNavigationItemSelectedListener { item ->
             if (!item.isChecked) {
@@ -96,6 +104,14 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
                 }
             }
         }
+    }
+
+    private fun setNavigationViewHeaderEmail(email: String?) {
+        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewEmail).text = email
+    }
+
+    private fun setNavigationViewHeaderName(name: String?) {
+        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewName).text = name
     }
 
     private fun navigationItemSelected(itemId: Int) {

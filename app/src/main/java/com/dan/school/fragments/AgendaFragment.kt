@@ -2,6 +2,7 @@ package com.dan.school.fragments
 
 import android.animation.LayoutTransition
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -49,8 +50,13 @@ class AgendaFragment : Fragment(),
     private lateinit var examListAdapter: ItemListAdapter
     private lateinit var taskListAdapter: ItemListAdapter
 
+    private lateinit var sharedPref: SharedPreferences
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        sharedPref = context.getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
         if (parentFragment is OverviewFragment) {
             itemClickListener = (parentFragment as OverviewFragment)
         }
@@ -71,20 +77,13 @@ class AgendaFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        val userName = requireContext().getSharedPreferences(
-            getString(R.string.preference_file_key), Context.MODE_PRIVATE
-        ).getString(School.NICKNAME, "")
-        textViewGreeting.text = when (hourOfDay) {
-            in 5..11 -> {
-                "Good Morning, $userName!"
-            }
-            in 12..16 -> {
-                "Good Afternoon, $userName!"
-            }
-            else -> {
-                "Good Evening, $userName!"
+        sharedPref.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
+            if (key == School.NICKNAME) {
+                updateGreeting(sharedPreferences.getString(School.NICKNAME, ""))
             }
         }
+
+        updateGreeting(sharedPref.getString(School.NICKNAME, ""))
 
         overdueListAdapter = ItemListAdapter(
             requireContext(),
@@ -203,6 +202,20 @@ class AgendaFragment : Fragment(),
 
         buttonSeeTomorrow.setOnClickListener {
             AgendaTomorrowFragment().show(childFragmentManager, "agendaTomorrowFragment")
+        }
+    }
+
+    private fun updateGreeting(nickname: String?) {
+        textViewGreeting.text = when (hourOfDay) {
+            in 5..11 -> {
+                "Good Morning, $nickname!"
+            }
+            in 12..16 -> {
+                "Good Afternoon, $nickname!"
+            }
+            else -> {
+                "Good Evening, $nickname!"
+            }
         }
     }
 
