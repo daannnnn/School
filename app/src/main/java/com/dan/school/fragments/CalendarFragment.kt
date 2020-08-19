@@ -3,7 +3,6 @@ package com.dan.school.fragments
 import android.animation.ValueAnimator
 import android.app.Activity
 import android.content.Context
-import android.content.res.Resources
 import android.content.res.TypedArray
 import android.os.Bundle
 import android.util.DisplayMetrics
@@ -33,6 +32,7 @@ import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
+import com.kizitonwose.calendarview.utils.Size
 import com.kizitonwose.calendarview.utils.yearMonth
 import kotlinx.android.synthetic.main.fragment_calendar.*
 import java.text.SimpleDateFormat
@@ -241,8 +241,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, MeasureSpec.AT_MOST)
         val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         dayView.measure(widthMeasureSpec, heightMeasureSpec)
-        calendarView.dayHeight = dayView.measuredHeight
-        calendarView.dayWidth = ((displayMetrics.widthPixels / 7f) + 0.5).toInt()
+        calendarView.daySize = Size(((displayMetrics.widthPixels / 7f) + 0.5).toInt(), dayView.measuredHeight)
 
         val currentMonth = YearMonth.now()
         val firstMonth = currentMonth.minusMonths(10)
@@ -519,7 +518,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
     }
 
     fun setCalendarView(isMonthView: Boolean) {
-        val oneWeekHeight = calendarView.dayHeight
+        val oneWeekHeight = calendarView.daySize.height
         val oneMonthHeight = oneWeekHeight * 6
 
         val oldHeight = if (isMonthView) oneMonthHeight else oneWeekHeight
