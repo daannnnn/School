@@ -24,6 +24,8 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
+import com.dan.school.School.categoryCheckedIcons
+import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.CategoryCount
 import com.dan.school.models.Item
@@ -48,39 +50,37 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
     ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialogFragment.ConfirmDeleteListener {
 
-    private val categoryCheckedIcons = arrayOf(
-        R.drawable.ic_homework_checked,
-        R.drawable.ic_exam_checked,
-        R.drawable.ic_task_checked
-    )
-    private val categoryUncheckedIcons = arrayOf(
-        R.drawable.ic_homework_unchecked,
-        R.drawable.ic_exam_unchecked,
-        R.drawable.ic_task_unchecked
-    )
-
     private lateinit var titleChangeListener: TitleChangeListener
     private lateinit var itemClickListener: ItemClickListener
 
     private var selectedDate: LocalDate? = null
     private val today = LocalDate.now()
+
     private val dataViewModel: DataViewModel by activityViewModels()
-    private lateinit var lastMonth: YearMonth
+
     private val events = mutableMapOf<LocalDate, CategoryCount>()
 
     private val titleMonthFormatter = DateTimeFormatter.ofPattern("MMMM")
     private val titleMonthWithYearFormatter = DateTimeFormatter.ofPattern("MMM yyyy")
 
-    private lateinit var displayMetrics: DisplayMetrics
     private lateinit var dayView: View
 
-    private var calendarScrolled = false
-
+    // Used to compare old and new data after updating
     private lateinit var allHomeworks: ArrayList<Date>
     private lateinit var allExams: ArrayList<Date>
     private lateinit var allTasks: ArrayList<Date>
 
     private var selectedDateChanged = arrayOf(true, true, true)
+
+    /**
+     * Set to true if [calendarView] is scrolled without
+     * selecting a date, false otherwise.
+     *
+     * If set to true, the first day of the month
+     * after scrolling will be selected, the date selected
+     * otherwise.
+     */
+    private var calendarScrolled = false
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -129,6 +129,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
 
                 if (day.owner == DayOwner.THIS_MONTH) {
                     when (day.date) {
+
                         today -> {
                             if (selectedDate == today) {
                                 container.imageViewIndicator.setBackgroundResource(R.drawable.date_selected_background)
@@ -178,6 +179,11 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
                     textColorSecondary.recycle()
                     container.imageViewIndicator.background = null
                 }
+
+                /**
+                 * Show category indicator if the count in the
+                 * category is not equal to 0
+                 */
                 if (events[day.date] != null) {
                     container.viewHomeworkDotIndicator.isVisible =
                         events[day.date]!!.homeworkCount != 0
@@ -194,7 +200,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         }
 
         calendarView.monthScrollListener = {
-            if (calendarView.maxRowCount == 6) {
+            if (calendarView.maxRowCount == 6) {  // If in month view
                 if (this::titleChangeListener.isInitialized) {
                     titleChangeListener.changeTitle(
                         if (it.year == today.year) {
@@ -214,7 +220,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
                     }
                     calendarScrolled = true
                 }
-            } else {
+            } else {  // If in week view
                 val firstDate = it.weekDays.first().first().date
                 val lastDate = it.weekDays.last().last().date
                 if (firstDate.yearMonth == lastDate.yearMonth) {
@@ -234,7 +240,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         }
 
         // set calendar dayHeight and dayWidth
-        displayMetrics = DisplayMetrics()
+        val displayMetrics = DisplayMetrics()
         (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
         dayView = View.inflate(context, R.layout.layout_calendar_day, null)
         val widthMeasureSpec =
@@ -245,7 +251,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
 
         val currentMonth = YearMonth.now()
         val firstMonth = currentMonth.minusMonths(10)
-        lastMonth = currentMonth.plusMonths(10)
+        val lastMonth = currentMonth.plusMonths(10)
         val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
         calendarView.setup(firstMonth, lastMonth, firstDayOfWeek)
         calendarView.scrollToMonth(currentMonth)
@@ -268,7 +274,6 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             } else {
                 initializeData(School.HOMEWORK, dateItems)
             }
-
         })
 
         dataViewModel.examAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
@@ -342,6 +347,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             )
         }
 
+        /** Observers for the items on the [selectedDate] */
         dataViewModel.getCalendarHomeworks().observe(viewLifecycleOwner, Observer {
             if (selectedDateChanged[School.HOMEWORK]) {
                 recyclerViewCalendarHomework.adapter = ItemListAdapter(
@@ -386,6 +392,25 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         })
     }
 
+    /**
+     * Updates indicators on [calendarView] dates and sets new
+     * updated data, [newItems], on one of [allHomeworks], [allExams] or
+     * [allTasks]
+     *
+     * [newItems] are saved to [allHomeworks],
+     * [allExams] or [allTasks] depending on the given
+     * [category] to be used for comparing new and updated
+     * data after data updates
+     *
+     * [addedData] are added items from the comparison of
+     * old and updated data
+     *
+     * [removedData] are removed items from the comparison
+     * of old and updated data
+     *
+     * [category] is the category of the data updated, one of
+     * [School.HOMEWORK], [School.EXAM] or [School.TASK]
+     */
     private fun dataUpdated(
         newItems: List<Date>,
         addedData: List<Date>,
@@ -449,6 +474,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         }
     }
 
+    /** Initializes [calendarView] date indicators */
     private fun initializeData(category: Int, newItems: List<Date>) {
         when (category) {
             School.HOMEWORK -> allHomeworks = ArrayList(newItems)
@@ -475,6 +501,14 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         calendarView.notifyCalendarChanged()
     }
 
+    /**
+     * Selects date and updates the recycler view with items
+     * on [date]
+     *
+     * [date] is the selected date
+     * [scrollToMonth] is true if the selected date is not
+     * in the current month
+     */
     fun selectDate(date: LocalDate = LocalDate.now(), scrollToMonth: Boolean = false) {
         if (selectedDate == null) {
             selectedDate = LocalDate.now()
@@ -500,10 +534,10 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         )
     }
 
-    interface TitleChangeListener {
-        fun changeTitle(title: String)
-    }
-
+    /**
+     * Returns the selected month in string by formatting
+     * it using [titleMonthFormatter] or [titleMonthWithYearFormatter]
+     */
     fun getSelectedMonth(): String {
         val month = if (selectedDate != null) {
             selectedDate?.yearMonth
@@ -517,6 +551,10 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         }
     }
 
+    /**
+     * Sets [calendarView] to month view or
+     * week view depending on [isMonthView]
+     */
     fun setCalendarView(isMonthView: Boolean) {
         val oneWeekHeight = calendarView.daySize.height
         val oneMonthHeight = oneWeekHeight * 6
@@ -593,5 +631,9 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
 
     override fun confirmDelete(itemId: Int) {
         dataViewModel.deleteItemWithId(itemId)
+    }
+
+    interface TitleChangeListener {
+        fun changeTitle(title: String)
     }
 }

@@ -10,6 +10,8 @@ import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
+import com.dan.school.School.categoryCheckedIcons
+import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
@@ -35,17 +37,6 @@ class AgendaTomorrowFragment : DialogFragment(),
     private var homeworkEmpty = false
     private var examEmpty = false
     private var taskEmpty = false
-
-    private val categoryCheckedIcons = arrayOf(
-        R.drawable.ic_homework_checked,
-        R.drawable.ic_exam_checked,
-        R.drawable.ic_task_checked
-    )
-    private val categoryUncheckedIcons = arrayOf(
-        R.drawable.ic_homework_unchecked,
-        R.drawable.ic_exam_unchecked,
-        R.drawable.ic_task_unchecked
-    )
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -179,6 +170,10 @@ class AgendaTomorrowFragment : DialogFragment(),
         }
     }
 
+    /**
+     * Calls [dismiss] when no items are found
+     * for this date
+     */
     private fun dismissIfEmpty() {
         if (homeworkEmpty && examEmpty && taskEmpty) {
             dismiss()

@@ -39,4 +39,49 @@ object School {
     const val FULL_NAME = "fullName"
     const val NICKNAME = "nickname"
     const val EMAIL = "email"
+
+    val categoryColors =
+        arrayOf(
+            R.color.homeworkColor,
+            R.color.examColor,
+            R.color.taskColor,
+            R.color.colorPrimary
+        )
+    val categoryChipBackgroundColorStateList = arrayOf(
+        R.color.chip_homework_background_state_list,
+        R.color.chip_exam_background_state_list,
+        R.color.chip_task_background_state_list,
+        R.color.chip_background_state_list
+    )
+    val categoryChipStrokeColorStateList = arrayOf(
+        R.color.chip_homework_stroke_color_state_list,
+        R.color.chip_exam_stroke_color_state_list,
+        R.color.chip_task_stroke_color_state_list,
+        R.color.chip_stroke_color_state_list
+    )
+    val categoryCheckedIcons = arrayOf(
+        R.drawable.ic_homework_checked,
+        R.drawable.ic_exam_checked,
+        R.drawable.ic_task_checked
+    )
+    val categoryUncheckedIcons = arrayOf(
+        R.drawable.ic_homework_unchecked,
+        R.drawable.ic_exam_unchecked,
+        R.drawable.ic_task_unchecked
+    )
+    val categoryButtonAddColorStateList = arrayOf(
+        R.color.button_add_homework_color_state_list,
+        R.color.button_add_exam_color_state_list,
+        R.color.button_add_task_color_state_list
+    )
+    val categoryButtonAddRippleColorStateList = arrayOf(
+        R.color.button_add_ripple_homework_color_state_list,
+        R.color.button_add_ripple_exam_color_state_list,
+        R.color.button_add_ripple_task_color_state_list
+    )
+    val categoryCardViewBackgroundColors = arrayOf(
+        R.color.cardViewHomeworkBackgroundColor,
+        R.color.cardViewExamBackgroundColor,
+        R.color.cardViewTaskBackgroundColor
+    )
 }

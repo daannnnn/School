@@ -150,6 +150,10 @@ class OverviewFragment : Fragment(),
         }
     }
 
+    /**
+     * Sets [buttonCalendarView] image resource depending
+     * on [isMonthView]
+     */
     private fun setButtonCalendarViewBackground() {
         if (isMonthView) {
             buttonCalendarView.setImageResource(R.drawable.ic_week_view)
@@ -158,6 +162,10 @@ class OverviewFragment : Fragment(),
         }
     }
 
+    /**
+     * Create fragment with tag [tag] if none exists,
+     * else just show fragment with tag [tag]
+     */
     private fun setFragment(tag: String) {
         when (tag) {
             School.HOME -> {
@@ -233,16 +241,24 @@ class OverviewFragment : Fragment(),
         }
     }
 
+    /** Hides fragment with tag [tag] */
     private fun hideFragment(tag: String) {
         childFragmentManager.beginTransaction()
             .hide(childFragmentManager.findFragmentByTag(tag)!!).commit()
     }
 
+    /** Shows fragment with tag [tag] */
     private fun showFragment(tag: String) {
         childFragmentManager.beginTransaction()
             .show(childFragmentManager.findFragmentByTag(tag)!!).commit()
     }
 
+    /**
+     * Saves last selected fragment on [sharedPref]
+     *
+     * [fragment] One of [School.HOME_SELECTED], [School.CALENDAR_SELECTED],
+     * or [School.AGENDA_SELECTED]
+     */
     private fun setLastSelectedFragment(fragment: Int) {
         if (this::sharedPref.isInitialized) {
             with(sharedPref.edit()) {
@@ -252,6 +268,12 @@ class OverviewFragment : Fragment(),
         }
     }
 
+    /**
+     * Shows [EditFragment] if [canSelectItem]
+     *
+     * Used when going to [EditFragment] to edit
+     * an existing item from when an item is clicked
+     */
     private fun showEditFragment(
         category: Int,
         done: Boolean,
@@ -280,6 +302,12 @@ class OverviewFragment : Fragment(),
         }
     }
 
+    /**
+     * Shows [EditFragment] if [canSelectItem]
+     *
+     * Used when going from [AddBottomSheetDialogFragment]
+     * to [EditFragment]
+     */
     private fun showEditFragment(
         category: Int,
         title: String,

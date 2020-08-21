@@ -8,6 +8,8 @@ import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
+import com.dan.school.School.categoryCheckedIcons
+import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
@@ -25,17 +27,6 @@ class CompletedNotGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
     private lateinit var completedNotGroupedListAdapter: ItemListAdapter
 
     private val dataViewModel: DataViewModel by activityViewModels()
-
-    private val categoryCheckedIcons = arrayOf(
-        R.drawable.ic_homework_checked,
-        R.drawable.ic_exam_checked,
-        R.drawable.ic_task_checked
-    )
-    private val categoryUncheckedIcons = arrayOf(
-        R.drawable.ic_homework_unchecked,
-        R.drawable.ic_exam_unchecked,
-        R.drawable.ic_task_unchecked
-    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

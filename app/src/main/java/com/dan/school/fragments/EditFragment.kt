@@ -22,6 +22,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.viewpager.widget.ViewPager
 import com.antonyt.infiniteviewpager.InfinitePagerAdapter
 import com.dan.school.*
+import com.dan.school.School.categoryButtonAddColorStateList
+import com.dan.school.School.categoryButtonAddRippleColorStateList
+import com.dan.school.School.categoryCardViewBackgroundColors
+import com.dan.school.School.categoryCheckedIcons
+import com.dan.school.School.categoryChipBackgroundColorStateList
+import com.dan.school.School.categoryChipStrokeColorStateList
+import com.dan.school.School.categoryColors
+import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.CategoryViewPagerAdapter
 import com.dan.school.adapters.SubtaskListAdapter
 import com.dan.school.models.Item
@@ -52,47 +60,6 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     private var isEdit: Boolean = false
     private var itemId: Int? = null
 
-    private val categoryColors =
-        arrayOf(
-            R.color.homeworkColor,
-            R.color.examColor,
-            R.color.taskColor
-        )
-    private val categoryChipBackgroundColorStateList = arrayOf(
-        R.color.chip_homework_background_state_list,
-        R.color.chip_exam_background_state_list,
-        R.color.chip_task_background_state_list
-    )
-    private val categoryChipStrokeColorStateList = arrayOf(
-        R.color.chip_homework_stroke_color_state_list,
-        R.color.chip_exam_stroke_color_state_list,
-        R.color.chip_task_stroke_color_state_list
-    )
-    private val categoryButtonAddColorStateList = arrayOf(
-        R.color.button_add_homework_color_state_list,
-        R.color.button_add_exam_color_state_list,
-        R.color.button_add_task_color_state_list
-    )
-    private val categoryButtonAddRippleColorStateList = arrayOf(
-        R.color.button_add_ripple_homework_color_state_list,
-        R.color.button_add_ripple_exam_color_state_list,
-        R.color.button_add_ripple_task_color_state_list
-    )
-    private val categoryCheckedIcons = arrayOf(
-        R.drawable.ic_homework_checked,
-        R.drawable.ic_exam_checked,
-        R.drawable.ic_task_checked
-    )
-    private val categoryUncheckedIcons = arrayOf(
-        R.drawable.ic_homework_unchecked,
-        R.drawable.ic_exam_unchecked,
-        R.drawable.ic_task_unchecked
-    )
-    private val categoryCardViewBackgroundColors = arrayOf(
-        R.color.cardViewHomeworkBackgroundColor,
-        R.color.cardViewExamBackgroundColor,
-        R.color.cardViewTaskBackgroundColor
-    )
     private val dateToday = Calendar.getInstance()
     private val dateTomorrow = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat("EEE, MMM d, yyyy", Locale.getDefault())
@@ -105,7 +72,6 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         super.onActivityCreated(savedInstanceState)
         dialog?.window?.attributes?.windowAnimations =
             R.style.DialogAnimation
-        View.GONE
     }
 
     override fun onAttach(context: Context) {
@@ -192,10 +158,6 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         })
 
         // listeners
-        buttonShowMore.setOnClickListener {
-            constraintLayoutMore.visibility = View.VISIBLE
-            buttonShowMore.visibility = View.GONE
-        }
         buttonAddSubtask.setOnClickListener {
             subtaskListAdapter.data.add(Subtask())
             subtaskListAdapter.notifyItemInserted(subtaskListAdapter.itemCount - 1)
@@ -224,48 +186,20 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             datePicker.show(childFragmentManager, "date picker")
         }
         buttonCheck.setOnClickListener {
-            if (isEdit) {
-                if (itemId != null) {
-                    val item = Item(
-                        id = itemId!!,
-                        category = category,
-                        done = done,
-                        doneTime = doneTime,
-                        title = editTextTitle.text.toString(),
-                        date = SimpleDateFormat(
-                            School.dateFormatOnDatabase,
-                            Locale.getDefault()
-                        ).format(selectedDate!!.time).toInt(),
-                        subtasks = Gson().toJson(subtaskListAdapter.data),
-                        notes = editTextNotes.text.toString()
-                    )
-                    dataViewModel.update(item)
-                }
-            } else {
-                val item = Item(
-                    category = category,
-                    title = editTextTitle.text.toString(),
-                    date = SimpleDateFormat(
-                        School.dateFormatOnDatabase,
-                        Locale.getDefault()
-                    ).format(selectedDate!!.time).toInt(),
-                    subtasks = Gson().toJson(subtaskListAdapter.data),
-                    notes = editTextNotes.text.toString()
-                )
-                dataViewModel.insert(item)
-            }
-            dismiss()
+            saveData()
         }
         buttonBack.setOnClickListener {
             dismiss()
         }
         buttonDelete.setOnClickListener {
             if (isEdit) {
-                itemId?.let { it1 -> ConfirmDeleteDialogFragment(
-                    this,
-                    it1,
-                    title
-                ).show(childFragmentManager, "confirmDeleteDialog") }
+                itemId?.let { it1 ->
+                    ConfirmDeleteDialogFragment(
+                        this,
+                        it1,
+                        title
+                    ).show(childFragmentManager, "confirmDeleteDialog")
+                }
             }
         }
         buttonFinish.setOnClickListener {
@@ -334,7 +268,6 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         recyclerViewSubtasks.adapter = subtaskListAdapter
         // [END] configure subtasks list
 
-        constraintLayoutMore.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         if (!isEdit) {
             editTextTitle.requestFocus()
         }
@@ -349,10 +282,56 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                     )
             }
         }
-        buttonFinish.text = if (done) resources.getString(R.string.uncheck) else resources.getString(R.string.check)
+        buttonFinish.text =
+            if (done) resources.getString(R.string.uncheck) else resources.getString(R.string.check)
         // [END] initialize
     }
 
+    /**
+     * Inserts or updates data on database depending
+     * on [isEdit] and calls [dismiss] after
+     */
+    private fun saveData() {
+        if (isEdit) {
+            if (itemId != null) {
+                val item = Item(
+                    id = itemId!!,
+                    category = category,
+                    done = done,
+                    doneTime = doneTime,
+                    title = editTextTitle.text.toString(),
+                    date = SimpleDateFormat(
+                        School.dateFormatOnDatabase,
+                        Locale.getDefault()
+                    ).format(selectedDate!!.time).toInt(),
+                    subtasks = Gson().toJson(subtaskListAdapter.data),
+                    notes = editTextNotes.text.toString()
+                )
+                dataViewModel.update(item)
+            }
+        } else {
+            val item = Item(
+                category = category,
+                title = editTextTitle.text.toString(),
+                date = SimpleDateFormat(
+                    School.dateFormatOnDatabase,
+                    Locale.getDefault()
+                ).format(selectedDate!!.time).toInt(),
+                subtasks = Gson().toJson(subtaskListAdapter.data),
+                notes = editTextNotes.text.toString()
+            )
+            dataViewModel.insert(item)
+        }
+        dismiss()
+    }
+
+    /**
+     * Changes views', not including subtask items,
+     * colors depending on the given [newCategory]
+     *
+     * See [changeSubtaskListColor] for the changing of
+     * subtask items' colors
+     */
     private fun changeColors(newCategory: Int) {
         val colorFrom = ContextCompat.getColor(requireContext(), categoryColors[category])
         val colorTo = ContextCompat.getColor(requireContext(), categoryColors[newCategory])
@@ -422,6 +401,10 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         category = newCategory
     }
 
+    /**
+     * Changes subtask items' colors depending on the
+     * given [newCategory]
+     */
     private fun changeSubtaskListColor(newCategory: Int) {
         if (this::subtaskListAdapter.isInitialized) {
             for (i in 0 until subtaskListAdapter.itemCount) {
@@ -443,14 +426,6 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                 }
             }
         }
-    }
-
-    interface DismissBottomSheetListener {
-        fun dismissBottomSheet()
-    }
-
-    interface CategoryChangeListener {
-        fun selectedCategoryChanged(category: Int)
     }
 
     override fun setFocus(position: Int) {
@@ -485,6 +460,14 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     override fun onDismiss(dialog: DialogInterface) {
         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
         super.onDismiss(dialog)
+    }
+
+    interface DismissBottomSheetListener {
+        fun dismissBottomSheet()
+    }
+
+    interface CategoryChangeListener {
+        fun selectedCategoryChanged(category: Int)
     }
 
     companion object {

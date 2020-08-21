@@ -1,4 +1,4 @@
-package com.dan.school
+package com.dan.school.fragments
 
 import android.animation.LayoutTransition
 import android.content.Context
@@ -11,7 +11,8 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
-import com.dan.school.fragments.SettingsFragment
+import com.dan.school.R
+import com.dan.school.School
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment : Fragment() {
@@ -94,7 +95,9 @@ class ProfileFragment : Fragment() {
             )
         }
         if (parentFragment is SettingsFragment) {
-            (parentFragment as SettingsFragment).setAppBarButtonRight(null, false, R.drawable.ic_edit)
+            (parentFragment as SettingsFragment).setAppBarButtonRight(null, false,
+                R.drawable.ic_edit
+            )
         }
         super.onDetach()
     }

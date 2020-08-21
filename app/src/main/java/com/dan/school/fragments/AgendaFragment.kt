@@ -13,6 +13,8 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
+import com.dan.school.School.categoryCheckedIcons
+import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
@@ -23,23 +25,14 @@ import kotlin.collections.ArrayList
 
 class AgendaFragment : Fragment(),
     ItemListAdapter.DoneListener,
-    ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
+    ItemListAdapter.ShowSubtasksListener,
+    ItemClickListener,
+    ItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialogFragment.ConfirmDeleteListener {
 
     private lateinit var itemClickListener: ItemClickListener
 
     private val dataViewModel: DataViewModel by activityViewModels()
-
-    private val categoryCheckedIcons = arrayOf(
-        R.drawable.ic_homework_checked,
-        R.drawable.ic_exam_checked,
-        R.drawable.ic_task_checked
-    )
-    private val categoryUncheckedIcons = arrayOf(
-        R.drawable.ic_homework_unchecked,
-        R.drawable.ic_exam_unchecked,
-        R.drawable.ic_task_unchecked
-    )
 
     private val dateToday = Calendar.getInstance()
     private val dateTomorrow = Calendar.getInstance()
@@ -131,9 +124,6 @@ class AgendaFragment : Fragment(),
             adapter = taskListAdapter
         }
 
-        textViewDate.text =
-            SimpleDateFormat(School.displayDateFormat, Locale.getDefault()).format(dateToday.time)
-
         dataViewModel.getAllOverdueItemsByDate(
             SimpleDateFormat(
                 School.dateFormatOnDatabase,
@@ -182,8 +172,6 @@ class AgendaFragment : Fragment(),
             }
         })
 
-        constraintLayoutAgendaMain.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
-
         dataViewModel.getAllTaskByDate(
             SimpleDateFormat(
                 School.dateFormatOnDatabase,
@@ -203,8 +191,17 @@ class AgendaFragment : Fragment(),
         buttonSeeTomorrow.setOnClickListener {
             AgendaTomorrowFragment().show(childFragmentManager, "agendaTomorrowFragment")
         }
+
+        textViewDate.text =
+            SimpleDateFormat(School.displayDateFormat, Locale.getDefault()).format(dateToday.time)
+
+        constraintLayoutAgendaMain.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
     }
 
+    /**
+     * Updates [textViewGreeting] text with
+     * appropriate greeting to given [nickname]
+     */
     private fun updateGreeting(nickname: String?) {
         textViewGreeting.text = when (hourOfDay) {
             in 5..11 -> {
@@ -219,6 +216,10 @@ class AgendaFragment : Fragment(),
         }
     }
 
+    /**
+     * Hides, shows and sets [textViewMessage] visibility
+     * and text depending on list contents
+     */
     private fun refreshShowEmptyMessageVisibility() {
         if (overdueListAdapter.currentList.isEmpty() &&
             homeworkListAdapter.currentList.isEmpty() &&

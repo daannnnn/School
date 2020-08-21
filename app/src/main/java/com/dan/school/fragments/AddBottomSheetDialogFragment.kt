@@ -8,14 +8,17 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.CalendarView
 import android.widget.DatePicker
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.ViewModelProvider
 import com.dan.school.DataViewModel
 import com.dan.school.R
 import com.dan.school.School
+import com.dan.school.School.categoryChipBackgroundColorStateList
+import com.dan.school.School.categoryChipStrokeColorStateList
+import com.dan.school.School.categoryColors
 import com.dan.school.models.Item
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
@@ -41,25 +44,7 @@ class AddBottomSheetDialogFragment(
     DatePickerFragment.OnCancelListener {
 
     private lateinit var inputMethodManager: InputMethodManager
-    private val categoryColors =
-        arrayOf(
-            R.color.homeworkColor,
-            R.color.examColor,
-            R.color.taskColor,
-            R.color.colorPrimary
-        )
-    private val categoryChipBackgroundColorStateList = arrayOf(
-        R.color.chip_homework_background_state_list,
-        R.color.chip_exam_background_state_list,
-        R.color.chip_task_background_state_list,
-        R.color.chip_background_state_list
-    )
-    private val categoryChipStrokeColorStateList = arrayOf(
-        R.color.chip_homework_stroke_color_state_list,
-        R.color.chip_exam_stroke_color_state_list,
-        R.color.chip_task_stroke_color_state_list,
-        R.color.chip_stroke_color_state_list
-    )
+
     private var selectedDate = Calendar.getInstance()
     private val dateToday = Calendar.getInstance()
     private val dateTomorrow = Calendar.getInstance()
@@ -161,20 +146,12 @@ class AddBottomSheetDialogFragment(
         chipGroupDate.check(R.id.chipToday)
     }
 
-    interface GoToEditFragment {
-        fun goToEditFragment(
-            category: Int,
-            title: String,
-            chipGroupDateSelected: Int,
-            date: Calendar?
-        )
-    }
-
-    override fun onDismiss(dialog: DialogInterface) {
-        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
-        super.onDismiss(dialog)
-    }
-
+    /**
+     * Changes views' colors depending on [newCategory]
+     *
+     * [newCategory] One of [School.HOMEWORK], [School.EXAM],
+     * or [School.TASK]
+     */
     private fun changeColors(newCategory: Int) {
         val colorTo = ContextCompat.getColorStateList(requireContext(), categoryColors[newCategory])
         when {
@@ -245,8 +222,9 @@ class AddBottomSheetDialogFragment(
         categoryChangeListener.selectedCategoryChanged(newCategory)
     }
 
-    interface SelectedCategoryChangeListener {
-        fun selectedCategoryChanged(category: Int)
+    override fun onDismiss(dialog: DialogInterface) {
+        inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
+        super.onDismiss(dialog)
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
@@ -263,5 +241,18 @@ class AddBottomSheetDialogFragment(
             School.TOMORROW -> chipGroupDate.check(R.id.chipTomorrow)
             School.PICK_DATE -> chipGroupDate.check(R.id.chipPickDate)
         }
+    }
+
+    interface SelectedCategoryChangeListener {
+        fun selectedCategoryChanged(category: Int)
+    }
+
+    interface GoToEditFragment {
+        fun goToEditFragment(
+            category: Int,
+            title: String,
+            chipGroupDateSelected: Int,
+            date: Calendar?
+        )
     }
 }

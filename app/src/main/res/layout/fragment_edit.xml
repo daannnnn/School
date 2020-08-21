@@ -202,96 +202,71 @@
 
             </HorizontalScrollView>
 
-            <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayoutMore"
+            <TextView
+                android:id="@+id/textViewSubtaskLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:fontFamily="@font/cabin_bold"
+                android:text="@string/subtasks"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/scrollViewDateChoices" />
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewSubtasks"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
-                android:animateLayoutChanges="true"
+                android:layout_marginStart="36dp"
+                android:layout_marginTop="4dp"
+                android:layout_marginEnd="36dp"
+                android:nestedScrollingEnabled="false"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/scrollViewDateChoices">
-
-                <TextView
-                    android:id="@+id/textViewSubtaskLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="24dp"
-                    android:fontFamily="@font/cabin_bold"
-                    android:text="@string/subtasks"
-                    android:textColor="?android:textColorPrimary"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <androidx.recyclerview.widget.RecyclerView
-                    android:id="@+id/recyclerViewSubtasks"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="36dp"
-                    android:layout_marginTop="4dp"
-                    android:layout_marginEnd="36dp"
-                    android:nestedScrollingEnabled="false"
-                    android:visibility="visible"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textViewSubtaskLabel"
-                    tools:itemCount="2"
-                    tools:listitem="@layout/layout_subtask_item" />
-
-                <Button
-                    android:id="@+id/buttonAddSubtask"
-                    style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="36dp"
-                    android:text="@string/add"
-                    app:icon="@drawable/ic_add"
-                    app:iconSize="24dp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/recyclerViewSubtasks" />
-
-                <TextView
-                    android:id="@+id/textViewNotesLabel"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="24dp"
-                    android:fontFamily="@font/cabin_bold"
-                    android:text="@string/notes"
-                    android:textColor="?android:textColorPrimary"
-                    android:textSize="18sp"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/buttonAddSubtask" />
-
-                <EditText
-                    android:id="@+id/editTextNotes"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="32dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginEnd="32dp"
-                    android:layout_marginBottom="24dp"
-                    android:background="@null"
-                    android:fontFamily="@font/cabin_regular"
-                    android:hint="@string/enter_note_here"
-                    android:inputType="textCapSentences"
-                    app:layout_constraintBottom_toBottomOf="parent"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textViewNotesLabel" />
-
-            </androidx.constraintlayout.widget.ConstraintLayout>
+                app:layout_constraintTop_toBottomOf="@id/textViewSubtaskLabel"
+                tools:itemCount="2"
+                tools:listitem="@layout/layout_subtask_item" />
 
             <Button
-                android:id="@+id/buttonShowMore"
-                style="@style/Widget.MaterialComponents.Button.TextButton"
+                android:id="@+id/buttonAddSubtask"
+                style="@style/Widget.MaterialComponents.Button.TextButton.Icon"
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
-                android:text="@string/show_more"
-                android:visibility="gone"
+                android:layout_marginStart="36dp"
+                android:text="@string/add"
+                app:icon="@drawable/ic_add"
+                app:iconSize="24dp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/recyclerViewSubtasks" />
+
+            <TextView
+                android:id="@+id/textViewNotesLabel"
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:fontFamily="@font/cabin_bold"
+                android:text="@string/notes"
+                android:textColor="?android:textColorPrimary"
+                android:textSize="18sp"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toBottomOf="@id/buttonAddSubtask" />
+
+            <EditText
+                android:id="@+id/editTextNotes"
+                android:layout_width="0dp"
+                android:layout_height="wrap_content"
+                android:layout_marginStart="32dp"
+                android:layout_marginTop="12dp"
+                android:layout_marginEnd="32dp"
+                android:background="@null"
+                android:fontFamily="@font/cabin_regular"
+                android:hint="@string/enter_note_here"
+                android:inputType="textCapSentences"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/scrollViewDateChoices" />
+                app:layout_constraintTop_toBottomOf="@id/textViewNotesLabel" />
 
             <LinearLayout
                 android:id="@+id/linearLayoutBottomButtons"
@@ -300,7 +275,8 @@
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/constraintLayoutMore">
+                android:layout_marginTop="24dp"
+                app:layout_constraintTop_toBottomOf="@id/editTextNotes">
 
                 <Button
                     android:id="@+id/buttonDelete"

@@ -13,18 +13,28 @@ import com.dan.school.fragments.OverviewFragment
 import com.dan.school.fragments.SettingsFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
+
 class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
 
+    /**
+     * Holds id of the item selected on [navigationView]
+     * for [navigationItemSelected] to access after [drawerLayout]
+     * is closed
+     */
     private var navigationSelectedItemId: Int? = null
+
+    /**
+     * Is set to not null on [SettingsFragment.onAttach]
+     * Is set to null on [SettingsFragment.onDetach]
+     */
     var settingsBackPressedListener: SettingsBackPressedListener? = null
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        if (savedInstanceState == null) {
+        if (savedInstanceState == null) {  // to prevent multiple creation of instances
             navigationView.menu.getItem(0).isChecked = true
-
             supportFragmentManager.beginTransaction()
                 .add(
                     R.id.frameLayoutMain,
@@ -36,6 +46,10 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
             getString(R.string.preference_file_key), Context.MODE_PRIVATE
         )
 
+        setNavigationViewHeaderName(sharedPref.getString(School.FULL_NAME, ""))
+        setNavigationViewHeaderEmail(sharedPref.getString(School.EMAIL, ""))
+
+        // listeners
         sharedPref.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == School.FULL_NAME) {
                 setNavigationViewHeaderName(sharedPreferences.getString(School.FULL_NAME, ""))
@@ -44,10 +58,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
                 setNavigationViewHeaderEmail(sharedPreferences.getString(School.EMAIL, ""))
             }
         }
-
-        setNavigationViewHeaderName(sharedPref.getString(School.FULL_NAME, ""))
-        setNavigationViewHeaderEmail(sharedPref.getString(School.EMAIL, ""))
-
         navigationView.setNavigationItemSelectedListener { item ->
             if (!item.isChecked) {
                 item.isChecked = true
@@ -59,7 +69,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
             }
             return@setNavigationItemSelectedListener true
         }
-
         drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
             override fun onDrawerStateChanged(newState: Int) {}
             override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
@@ -72,7 +81,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
                 }
             }
         })
-
         supportFragmentManager.addOnBackStackChangedListener {
             if (supportFragmentManager.backStackEntryCount == 0) {
                 if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
@@ -106,14 +114,20 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
         }
     }
 
+    /** Sets [R.id.textViewEmail] text to [email] */
     private fun setNavigationViewHeaderEmail(email: String?) {
         navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewEmail).text = email
     }
 
+    /** Sets [R.id.textViewName] text to [name] */
     private fun setNavigationViewHeaderName(name: String?) {
         navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewName).text = name
     }
 
+    /**
+     * Manages fragments when [navigationView] selected item is changed
+     * Called after [drawerLayout] is closed
+     */
     private fun navigationItemSelected(itemId: Int) {
         when (itemId) {
             R.id.overview -> {
@@ -142,6 +156,24 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
         }
     }
 
+    /** Hides fragment with tag [tag] */
+    private fun hideFragment(tag: String) {
+        if (supportFragmentManager.findFragmentByTag(tag)!!.isHidden) {
+            return
+        }
+        supportFragmentManager.beginTransaction()
+            .hide(supportFragmentManager.findFragmentByTag(tag)!!).commit()
+    }
+
+    /** Shows fragment with tag [tag] */
+    private fun showFragment(tag: String) {
+        if (supportFragmentManager.findFragmentByTag(tag)!!.isVisible) {
+            return
+        }
+        supportFragmentManager.beginTransaction()
+            .show(supportFragmentManager.findFragmentByTag(tag)!!).commit()
+    }
+
     override fun openDrawer() {
         drawerLayout.openDrawer(GravityCompat.START)
     }
@@ -165,22 +197,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
         }
     }
 
-    private fun hideFragment(tag: String) {
-        if (supportFragmentManager.findFragmentByTag(tag)!!.isHidden) {
-            return
-        }
-        supportFragmentManager.beginTransaction()
-            .hide(supportFragmentManager.findFragmentByTag(tag)!!).commit()
-    }
-
-    private fun showFragment(tag: String) {
-        if (supportFragmentManager.findFragmentByTag(tag)!!.isVisible) {
-            return
-        }
-        supportFragmentManager.beginTransaction()
-            .show(supportFragmentManager.findFragmentByTag(tag)!!).commit()
-    }
-
+    /** Used for back presses when in [SettingsFragment] */
     interface SettingsBackPressedListener {
         fun backPressed()
     }

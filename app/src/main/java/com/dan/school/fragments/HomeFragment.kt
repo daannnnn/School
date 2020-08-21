@@ -6,10 +6,12 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Adapter
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.dan.school.*
 import com.dan.school.adapters.HomeworkExamTaskTabLayoutAdapter
+import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.Item
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_home.*
@@ -121,6 +123,12 @@ class HomeFragment : Fragment(),
         )
     }
 
+    /**
+     * Saves last selected tab position on [sharedPref]
+     *
+     * [tabPosition] One of [School.HOMEWORK], [School.EXAM],
+     * or [School.TASK]
+     */
     private fun setLastSelectedTab(tabPosition: Int) {
         if (this::sharedPref.isInitialized) {
             with(sharedPref.edit()) {
@@ -134,13 +142,17 @@ class HomeFragment : Fragment(),
         return tabLayout.selectedTabPosition
     }
 
-    interface SelectedTabChangeListener {
-        fun selectedTabChanged(category: Int)
-    }
-
     override fun itemClicked(item: Item) {
         if (this::itemClickListener.isInitialized) {
             itemClickListener.itemClicked(item)
         }
+    }
+
+    /**
+     * Callback to be invoked every time [tabLayout]
+     * selected tab is changed
+     */
+    interface SelectedTabChangeListener {
+        fun selectedTabChanged(category: Int)
     }
 }

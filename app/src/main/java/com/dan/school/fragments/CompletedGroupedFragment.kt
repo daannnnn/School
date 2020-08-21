@@ -17,6 +17,8 @@ import kotlinx.android.synthetic.main.fragment_completed_grouped.*
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.lifecycle.Observer
+import com.dan.school.School.categoryCheckedIcons
+import com.dan.school.School.categoryUncheckedIcons
 import kotlin.collections.ArrayList
 
 class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
@@ -28,17 +30,6 @@ class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
     private lateinit var homeworkListAdapter: ItemListAdapter
     private lateinit var examListAdapter: ItemListAdapter
     private lateinit var taskListAdapter: ItemListAdapter
-
-    private val categoryCheckedIcons = arrayOf(
-        R.drawable.ic_homework_checked,
-        R.drawable.ic_exam_checked,
-        R.drawable.ic_task_checked
-    )
-    private val categoryUncheckedIcons = arrayOf(
-        R.drawable.ic_homework_unchecked,
-        R.drawable.ic_exam_unchecked,
-        R.drawable.ic_task_unchecked
-    )
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

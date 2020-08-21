@@ -14,6 +14,9 @@ import androidx.fragment.app.activityViewModels
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
+import com.dan.school.School.categoryCheckedIcons
+import com.dan.school.School.categoryColors
+import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
@@ -31,22 +34,6 @@ class ItemsFragment : Fragment(),
 
     private var category = 0
 
-    private val categoryCheckedIcons = arrayOf(
-        R.drawable.ic_homework_checked,
-        R.drawable.ic_exam_checked,
-        R.drawable.ic_task_checked
-    )
-    private val categoryUncheckedIcons = arrayOf(
-        R.drawable.ic_homework_unchecked,
-        R.drawable.ic_exam_unchecked,
-        R.drawable.ic_task_unchecked
-    )
-    private val categoryColors =
-        arrayOf(
-            R.color.homeworkColor,
-            R.color.examColor,
-            R.color.taskColor
-        )
     private val categoryNoItemStrings = arrayOf(
         R.string.no_homeworks,
         R.string.no_exams,

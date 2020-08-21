@@ -9,6 +9,8 @@ import androidx.recyclerview.widget.ListAdapter
 import com.dan.school.ItemClickListener
 import com.dan.school.ItemViewHolder
 import com.dan.school.R
+import com.dan.school.School.categoryCheckedIcons
+import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.google.gson.Gson
@@ -24,17 +26,6 @@ class ItemListAdapter(
     private val itemLongClickListener: ItemLongClickListener
 ) :
     ListAdapter<Item, ItemViewHolder>(DIFF_CALLBACK) {
-
-    private val categoryCheckedIcons = arrayOf(
-        R.drawable.ic_homework_checked,
-        R.drawable.ic_exam_checked,
-        R.drawable.ic_task_checked
-    )
-    private val categoryUncheckedIcons = arrayOf(
-        R.drawable.ic_homework_unchecked,
-        R.drawable.ic_exam_unchecked,
-        R.drawable.ic_task_unchecked
-    )
 
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): ItemViewHolder {
         val view = LayoutInflater.from(context).inflate(R.layout.layout_item, parent, false)
