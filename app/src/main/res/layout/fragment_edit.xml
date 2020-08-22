@@ -17,13 +17,14 @@
             android:layout_width="match_parent"
             android:layout_height="?attr/actionBarSize">
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/buttonBack"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
                 android:layout_centerVertical="true"
                 android:layout_margin="16dp"
                 android:background="?selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_chevron_left"
                 android:tint="?android:textColorPrimary" />
 
@@ -36,7 +37,7 @@
                 android:layout_toEndOf="@id/buttonBack"
                 android:fontFamily="@font/cabin_bold" />
 
-            <ImageView
+            <ImageButton
                 android:id="@+id/buttonCheck"
                 android:layout_width="24dp"
                 android:layout_height="24dp"
@@ -44,6 +45,7 @@
                 android:layout_centerVertical="true"
                 android:layout_margin="16dp"
                 android:background="?selectableItemBackgroundBorderless"
+                android:scaleType="centerInside"
                 android:src="@drawable/ic_check"
                 android:tint="?android:textColorPrimary" />
 
@@ -272,10 +274,10 @@
                 android:id="@+id/linearLayoutBottomButtons"
                 android:layout_width="match_parent"
                 android:layout_height="?actionBarSize"
+                android:layout_marginTop="24dp"
                 android:visibility="visible"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                android:layout_marginTop="24dp"
                 app:layout_constraintTop_toBottomOf="@id/editTextNotes">
 
                 <Button
