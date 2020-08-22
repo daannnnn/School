@@ -1,4 +1,4 @@
-package com.dan.school
+package com.dan.school.fragments
 
 import android.content.Context
 import android.content.SharedPreferences
@@ -8,7 +8,8 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.appcompat.app.AppCompatDelegate
-import com.dan.school.fragments.SettingsFragment
+import com.dan.school.R
+import com.dan.school.School
 import kotlinx.android.synthetic.main.fragment_settings_content.*
 
 class SettingsContentFragment : Fragment() {
