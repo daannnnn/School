@@ -95,7 +95,7 @@
                             android:layout_height="24dp"
                             android:layout_marginStart="8dp"
                             android:src="@drawable/ic_chevron_down"
-                            android:tint="@color/colorPrimary" />
+                            app:tint="@color/colorPrimary" />
 
                     </LinearLayout>
 
@@ -118,7 +118,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="24dp"
                                 android:src="@drawable/ic_sort"
-                                android:tint="?android:textColorPrimary"/>
+                                app:tint="?android:textColorPrimary"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
@@ -157,7 +157,7 @@
                                 android:layout_centerVertical="true"
                                 android:layout_marginStart="24dp"
                                 android:src="@drawable/ic_group"
-                                android:tint="?android:textColorPrimary"/>
+                                app:tint="?android:textColorPrimary"/>
 
                             <TextView
                                 android:layout_width="wrap_content"
