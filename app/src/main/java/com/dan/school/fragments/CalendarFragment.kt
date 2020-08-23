@@ -37,6 +37,7 @@ import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.Size
 import com.kizitonwose.calendarview.utils.yearMonth
 import kotlinx.android.synthetic.main.fragment_calendar.*
+import kotlinx.android.synthetic.main.fragment_items.*
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.YearMonth
@@ -81,6 +82,12 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
      * otherwise.
      */
     private var calendarScrolled = false
+
+    /**
+     * Used to check if there are no items for all
+     * categories on [selectedDate]
+     */
+    private var isEmpty = arrayOf(false, false, false)
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -159,12 +166,18 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
                             container.imageViewIndicator.setBackgroundResource(R.drawable.date_selected_background)
                         }
                         else -> {
-                            val textColorPrimary: TypedArray = requireContext().obtainStyledAttributes(
-                                TypedValue().data, intArrayOf(
-                                    android.R.attr.textColorPrimary
+                            val textColorPrimary: TypedArray =
+                                requireContext().obtainStyledAttributes(
+                                    TypedValue().data, intArrayOf(
+                                        android.R.attr.textColorPrimary
+                                    )
+                                )
+                            container.textViewCalendarDay.setTextColor(
+                                textColorPrimary.getColor(
+                                    0,
+                                    -1
                                 )
                             )
-                            container.textViewCalendarDay.setTextColor(textColorPrimary.getColor(0, -1))
                             textColorPrimary.recycle()
                             container.imageViewIndicator.background = null
                         }
@@ -230,9 +243,11 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
                 } else {
                     if (this::titleChangeListener.isInitialized) {
                         titleChangeListener.changeTitle(
-                            "${titleMonthFormatter.format(firstDate)} - ${titleMonthFormatter.format(
-                                lastDate
-                            )}"
+                            "${titleMonthFormatter.format(firstDate)} - ${
+                                titleMonthFormatter.format(
+                                    lastDate
+                                )
+                            }"
                         )
                     }
                 }
@@ -247,7 +262,8 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, MeasureSpec.AT_MOST)
         val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         dayView.measure(widthMeasureSpec, heightMeasureSpec)
-        calendarView.daySize = Size(((displayMetrics.widthPixels / 7f) + 0.5).toInt(), dayView.measuredHeight)
+        calendarView.daySize =
+            Size(((displayMetrics.widthPixels / 7f) + 0.5).toInt(), dayView.measuredHeight)
 
         val currentMonth = YearMonth.now()
         val firstMonth = currentMonth.minusMonths(10)
@@ -347,7 +363,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             )
         }
 
-        /** Observers for the items on the [selectedDate] */
+        /** Observers for the items on [selectedDate] */
         dataViewModel.getCalendarHomeworks().observe(viewLifecycleOwner, Observer {
             if (selectedDateChanged[School.HOMEWORK]) {
                 recyclerViewCalendarHomework.adapter = ItemListAdapter(
@@ -361,6 +377,8 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             }
             (recyclerViewCalendarHomework.adapter as ItemListAdapter).submitList(it)
             groupHomework.isGone = it.isEmpty()
+            isEmpty[School.HOMEWORK] = it.isEmpty()
+            showNoItemsTextIfAllEmpty()
         })
         dataViewModel.getCalendarExams().observe(viewLifecycleOwner, Observer {
             if (selectedDateChanged[School.EXAM]) {
@@ -375,6 +393,8 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             }
             (recyclerViewCalendarExam.adapter as ItemListAdapter).submitList(it)
             groupExam.isGone = it.isEmpty()
+            isEmpty[School.EXAM] = it.isEmpty()
+            showNoItemsTextIfAllEmpty()
         })
         dataViewModel.getCalendarTasks().observe(viewLifecycleOwner, Observer {
             if (selectedDateChanged[School.TASK]) {
@@ -389,6 +409,8 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             }
             (recyclerViewCalendarTask.adapter as ItemListAdapter).submitList(it)
             groupTask.isGone = it.isEmpty()
+            isEmpty[School.TASK] = it.isEmpty()
+            showNoItemsTextIfAllEmpty()
         })
     }
 
@@ -525,6 +547,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             }
         }
         selectedDateChanged = arrayOf(true, true, true)
+        isEmpty = arrayOf(false, false, false)
         dataViewModel.setCalendarSelectedDate(
             SimpleDateFormat(
                 School.dateFormatOnDatabase,
@@ -594,6 +617,18 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         }
         animator.duration = 250
         animator.start()
+    }
+
+    /**
+     * Show [textViewNoItemsForThisDate] and hide
+     * [scrollViewCalendarItems] if all items on
+     * [isEmpty] are true
+     */
+    private fun showNoItemsTextIfAllEmpty() {
+        textViewNoItemsForThisDate.isVisible =
+            (isEmpty[School.HOMEWORK] && isEmpty[School.EXAM] && isEmpty[School.TASK])
+        scrollViewCalendarItems.isGone =
+            (isEmpty[School.HOMEWORK] && isEmpty[School.EXAM] && isEmpty[School.TASK])
     }
 
     override fun setDone(id: Int, done: Boolean, doneTime: Long?) {

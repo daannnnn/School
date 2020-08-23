@@ -31,9 +31,25 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@id/calendarHeader" />
 
+    <TextView
+        android:id="@+id/textViewNoItemsForThisDate"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:fontFamily="@font/cabin_bold"
+        android:text="@string/no_items_for_this_date"
+        android:textColor="@color/colorPrimary"
+        android:textSize="18sp"
+        android:visibility="gone"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/calendarView" />
+
     <androidx.core.widget.NestedScrollView
+        android:id="@+id/scrollViewCalendarItems"
         android:layout_width="0dp"
         android:layout_height="0dp"
+        android:visibility="gone"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -49,11 +65,11 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
                 android:src="@drawable/ic_homework"
-                app:tint="@color/homeworkColor"
                 app:layout_constraintBottom_toBottomOf="@id/textViewHomeworkLabel"
                 app:layout_constraintDimensionRatio="W,1,1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewHomeworkLabel" />
+                app:layout_constraintTop_toTopOf="@id/textViewHomeworkLabel"
+                app:tint="@color/homeworkColor" />
 
             <TextView
                 android:id="@+id/textViewHomeworkLabel"
@@ -85,11 +101,11 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
                 android:src="@drawable/ic_exam"
-                app:tint="@color/examColor"
                 app:layout_constraintBottom_toBottomOf="@id/textViewExamLabel"
                 app:layout_constraintDimensionRatio="W,1,1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewExamLabel" />
+                app:layout_constraintTop_toTopOf="@id/textViewExamLabel"
+                app:tint="@color/examColor" />
 
             <TextView
                 android:id="@+id/textViewExamLabel"
@@ -121,11 +137,11 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="16dp"
                 android:src="@drawable/ic_task"
-                app:tint="@color/taskColor"
                 app:layout_constraintBottom_toBottomOf="@id/textViewTaskLabel"
                 app:layout_constraintDimensionRatio="W,1,1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewTaskLabel" />
+                app:layout_constraintTop_toTopOf="@id/textViewTaskLabel"
+                app:tint="@color/taskColor" />
 
             <TextView
                 android:id="@+id/textViewTaskLabel"
