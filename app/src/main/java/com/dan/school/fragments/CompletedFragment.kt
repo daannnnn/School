@@ -4,6 +4,7 @@ import android.animation.LayoutTransition
 import android.animation.ObjectAnimator
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.util.TypedValue
 import android.view.Gravity
 import android.view.LayoutInflater
@@ -12,6 +13,7 @@ import android.view.ViewGroup
 import android.widget.TextView
 import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import com.dan.school.DataViewModel
@@ -58,7 +60,17 @@ class CompletedFragment : Fragment() {
                 ).commit()
         }
 
-        linearLayoutOptionsFragment.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        dataViewModel.getDoneItems().observe(viewLifecycleOwner, androidx.lifecycle.Observer { overdueItems ->
+            if (overdueItems.isEmpty()) {
+                linearLayoutCompletedItems.isVisible = false
+                linearLayoutNoCompletedItems.isVisible = true
+            } else {
+                linearLayoutCompletedItems.isVisible = true
+                linearLayoutNoCompletedItems.isVisible = false
+            }
+        })
+
+        relativeLayoutOptionsFragment.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         textSwitcherSortBy.setFactory {
             val textView = TextView(requireContext())
             textView.apply {
