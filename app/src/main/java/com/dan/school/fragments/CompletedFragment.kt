@@ -71,6 +71,7 @@ class CompletedFragment : Fragment() {
         })
 
         relativeLayoutOptionsFragment.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        linearLayoutCompletedItems.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         textSwitcherSortBy.setFactory {
             val textView = TextView(requireContext())
             textView.apply {
