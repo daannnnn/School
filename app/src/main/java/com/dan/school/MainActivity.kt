@@ -134,9 +134,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
                 drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                 if (supportFragmentManager.backStackEntryCount != 0) {
                     supportFragmentManager.popBackStackImmediate()
-                    if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
-                        showFragment(School.OVERVIEW)
-                    }
                 }
             }
             R.id.completed -> {
