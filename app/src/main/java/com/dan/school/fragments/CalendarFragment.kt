@@ -21,7 +21,6 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
 import com.dan.school.School.categoryCheckedIcons
@@ -30,6 +29,9 @@ import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.CategoryCount
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import com.kizitonwose.calendarview.model.CalendarDay
 import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
@@ -37,7 +39,6 @@ import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.Size
 import com.kizitonwose.calendarview.utils.yearMonth
 import kotlinx.android.synthetic.main.fragment_calendar.*
-import kotlinx.android.synthetic.main.fragment_items.*
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.YearMonth
@@ -50,6 +51,7 @@ import kotlin.collections.ArrayList
 class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
     ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialogFragment.ConfirmDeleteListener {
+    private val db = Firebase.firestore
 
     private lateinit var titleChangeListener: TitleChangeListener
     private lateinit var itemClickListener: ItemClickListener
@@ -71,7 +73,19 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
     private lateinit var allExams: ArrayList<Date>
     private lateinit var allTasks: ArrayList<Date>
 
+    private var isUpdated = arrayOf(false, false, false)
     private var selectedDateChanged = arrayOf(true, true, true)
+    private var isNewDateSelected = false
+
+    private var calendarSelectedDate: Int = 0
+
+    private lateinit var homeworkSnapshotListener: ListenerRegistration
+    private lateinit var examSnapshotListener: ListenerRegistration
+    private lateinit var taskSnapshotListener: ListenerRegistration
+
+    private var updatedHomeworks: ArrayList<Item> = ArrayList()
+    private var updatedExams: ArrayList<Item> = ArrayList()
+    private var updatedTasks: ArrayList<Item> = ArrayList()
 
     /**
      * Set to true if [calendarView] is scrolled without
@@ -273,7 +287,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         calendarView.scrollToMonth(currentMonth)
         // [END] CalendarView setup
 
-        dataViewModel.homeworkAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
+        dataViewModel.homeworkAllDates.observe(viewLifecycleOwner, { dateItems ->
             if (this::allHomeworks.isInitialized) {
                 val addedData = ArrayList<Date>(dateItems)
                 val removedData = ArrayList<Date>(allHomeworks)
@@ -292,7 +306,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             }
         })
 
-        dataViewModel.examAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
+        dataViewModel.examAllDates.observe(viewLifecycleOwner, { dateItems ->
             if (this::allExams.isInitialized) {
                 val addedData = ArrayList<Date>(dateItems)
                 val removedData = ArrayList<Date>(allExams)
@@ -311,7 +325,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             }
         })
 
-        dataViewModel.taskAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
+        dataViewModel.taskAllDates.observe(viewLifecycleOwner, { dateItems ->
             if (this::allTasks.isInitialized) {
                 val addedData = ArrayList<Date>(dateItems)
                 val removedData = ArrayList<Date>(allTasks)
@@ -364,54 +378,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         }
 
         /** Observers for the items on [selectedDate] */
-        dataViewModel.getCalendarHomeworks().observe(viewLifecycleOwner, Observer {
-            if (selectedDateChanged[School.HOMEWORK]) {
-                recyclerViewCalendarHomework.adapter = ItemListAdapter(
-                    requireContext(),
-                    this,
-                    this,
-                    this,
-                    this
-                )
-                selectedDateChanged[School.HOMEWORK] = false
-            }
-            (recyclerViewCalendarHomework.adapter as ItemListAdapter).submitList(it)
-            groupHomework.isGone = it.isEmpty()
-            isEmpty[School.HOMEWORK] = it.isEmpty()
-            showNoItemsTextIfAllEmpty()
-        })
-        dataViewModel.getCalendarExams().observe(viewLifecycleOwner, Observer {
-            if (selectedDateChanged[School.EXAM]) {
-                recyclerViewCalendarExam.adapter = ItemListAdapter(
-                    requireContext(),
-                    this,
-                    this,
-                    this,
-                    this
-                )
-                selectedDateChanged[School.EXAM] = false
-            }
-            (recyclerViewCalendarExam.adapter as ItemListAdapter).submitList(it)
-            groupExam.isGone = it.isEmpty()
-            isEmpty[School.EXAM] = it.isEmpty()
-            showNoItemsTextIfAllEmpty()
-        })
-        dataViewModel.getCalendarTasks().observe(viewLifecycleOwner, Observer {
-            if (selectedDateChanged[School.TASK]) {
-                recyclerViewCalendarTask.adapter = ItemListAdapter(
-                    requireContext(),
-                    this,
-                    this,
-                    this,
-                    this
-                )
-                selectedDateChanged[School.TASK] = false
-            }
-            (recyclerViewCalendarTask.adapter as ItemListAdapter).submitList(it)
-            groupTask.isGone = it.isEmpty()
-            isEmpty[School.TASK] = it.isEmpty()
-            showNoItemsTextIfAllEmpty()
-        })
+
     }
 
     /**
@@ -548,13 +515,157 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         }
         selectedDateChanged = arrayOf(true, true, true)
         isEmpty = arrayOf(false, false, false)
-        dataViewModel.setCalendarSelectedDate(
-            SimpleDateFormat(
-                School.dateFormatOnDatabase,
-                Locale.getDefault()
-            ).format(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()))
-                .toInt()
-        )
+        isNewDateSelected = true
+        calendarSelectedDate = SimpleDateFormat(
+            School.dateFormatOnDatabase,
+            Locale.getDefault()
+        ).format(Date.from(date.atStartOfDay(ZoneId.systemDefault()).toInstant()))
+            .toInt()
+        calendarSelectedDateUpdated()
+    }
+
+    private fun calendarSelectedDateUpdated() {
+        if (this::homeworkSnapshotListener.isInitialized) {
+            homeworkSnapshotListener.remove()
+        }
+        if (this::examSnapshotListener.isInitialized) {
+            examSnapshotListener.remove()
+        }
+        if (this::taskSnapshotListener.isInitialized) {
+            taskSnapshotListener.remove()
+        }
+
+        homeworkSnapshotListener = db.collection("USER_ID/itemData/items")
+            .whereEqualTo("category", School.HOMEWORK)
+            .whereEqualTo("date", calendarSelectedDate)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    isUpdated = arrayOf(false, false, false)
+                    return@addSnapshotListener
+                }
+                val list = ArrayList<Item>()
+                for (document in value!!.documents) {
+                    list.add(document.toObject(Item::class.java)!!)
+                }
+
+                updatedHomeworks = list
+                if (!isNewDateSelected) {
+                    updateHomeworks()
+                } else {
+                    isUpdated[School.HOMEWORK] = true
+                    updateCalendarList()
+                }
+                showNoItemsTextIfAllEmpty()
+            }
+
+        examSnapshotListener = db.collection("USER_ID/itemData/items")
+            .whereEqualTo("category", School.EXAM)
+            .whereEqualTo("date", calendarSelectedDate)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    isUpdated = arrayOf(false, false, false)
+                    return@addSnapshotListener
+                }
+                val list = ArrayList<Item>()
+                for (document in value!!.documents) {
+                    list.add(document.toObject(Item::class.java)!!)
+                }
+
+                updatedExams = list
+                if (!isNewDateSelected) {
+                    updateExams()
+                } else {
+                    isUpdated[School.EXAM] = true
+                    updateCalendarList()
+                }
+                showNoItemsTextIfAllEmpty()
+            }
+
+        taskSnapshotListener = db.collection("USER_ID/itemData/items")
+            .whereEqualTo("category", School.TASK)
+            .whereEqualTo("date", calendarSelectedDate)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    isUpdated = arrayOf(false, false, false)
+                    return@addSnapshotListener
+                }
+                val list = ArrayList<Item>()
+                for (document in value!!.documents) {
+                    list.add(document.toObject(Item::class.java)!!)
+                }
+
+                updatedTasks = list
+                if (!isNewDateSelected) {
+                    updateTasks()
+                } else {
+                    isUpdated[School.TASK] = true
+                    updateCalendarList()
+                }
+                showNoItemsTextIfAllEmpty()
+            }
+    }
+
+    private fun updateCalendarList() {
+        if (isUpdated[School.HOMEWORK] && isUpdated[School.EXAM] && isUpdated[School.TASK]) {
+
+            updateHomeworks()
+            updateExams()
+            updateTasks()
+
+            isUpdated = arrayOf(false, false, false)
+            isNewDateSelected = false
+        }
+    }
+
+    private fun updateHomeworks() {
+        if (selectedDateChanged[School.HOMEWORK]) {
+            recyclerViewCalendarHomework.adapter = ItemListAdapter(
+                requireContext(),
+                this,
+                this,
+                this,
+                this
+            )
+            selectedDateChanged[School.HOMEWORK] = false
+        }
+
+        (recyclerViewCalendarHomework.adapter as ItemListAdapter).submitList(updatedHomeworks)
+        groupHomework.isGone = updatedHomeworks.isEmpty()
+        isEmpty[School.HOMEWORK] = updatedHomeworks.isEmpty()
+    }
+
+    private fun updateExams() {
+        if (selectedDateChanged[School.EXAM]) {
+            recyclerViewCalendarExam.adapter = ItemListAdapter(
+                requireContext(),
+                this,
+                this,
+                this,
+                this
+            )
+            selectedDateChanged[School.EXAM] = false
+        }
+
+        (recyclerViewCalendarExam.adapter as ItemListAdapter).submitList(updatedExams)
+        groupExam.isGone = updatedExams.isEmpty()
+        isEmpty[School.EXAM] = updatedExams.isEmpty()
+    }
+
+    private fun updateTasks() {
+        if (selectedDateChanged[School.TASK]) {
+            recyclerViewCalendarTask.adapter = ItemListAdapter(
+                requireContext(),
+                this,
+                this,
+                this,
+                this
+            )
+            selectedDateChanged[School.TASK] = false
+        }
+
+        (recyclerViewCalendarTask.adapter as ItemListAdapter).submitList(updatedTasks)
+        groupTask.isGone = updatedTasks.isEmpty()
+        isEmpty[School.TASK] = updatedTasks.isEmpty()
     }
 
     /**
@@ -631,14 +742,14 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             (isEmpty[School.HOMEWORK] && isEmpty[School.EXAM] && isEmpty[School.TASK])
     }
 
-    override fun setDone(id: Int, done: Boolean, doneTime: Long?) {
+    override fun setDone(id: String, done: Boolean, doneTime: Long?) {
         dataViewModel.setDone(id, done, doneTime)
     }
 
     override fun showSubtasks(
         subtasks: ArrayList<Subtask>,
         itemTitle: String,
-        id: Int,
+        id: String,
         category: Int
     ) {
         SubtasksBottomSheetDialogFragment(
@@ -659,12 +770,12 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         }
     }
 
-    override fun itemLongClicked(title: String, id: Int) {
+    override fun itemLongClicked(title: String, id: String) {
         ConfirmDeleteDialogFragment(this, id, title)
             .show(childFragmentManager, "confirmDeleteDialog")
     }
 
-    override fun confirmDelete(itemId: Int) {
+    override fun confirmDelete(itemId: String) {
         dataViewModel.deleteItemWithId(itemId)
     }
 

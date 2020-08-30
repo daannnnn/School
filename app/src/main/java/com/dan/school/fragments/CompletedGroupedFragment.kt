@@ -6,19 +6,21 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.fragment_completed_grouped.*
 import java.text.SimpleDateFormat
 import java.util.*
 import androidx.lifecycle.Observer
 import com.dan.school.School.categoryCheckedIcons
 import com.dan.school.School.categoryUncheckedIcons
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlin.collections.ArrayList
 
 class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
@@ -27,15 +29,45 @@ class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
 
     private val dataViewModel: DataViewModel by activityViewModels()
 
+    private val doneHomeworks: MutableLiveData<List<Item>> = MutableLiveData()
+    private val doneExams: MutableLiveData<List<Item>> = MutableLiveData()
+    private val doneTasks: MutableLiveData<List<Item>> = MutableLiveData()
+
+    private lateinit var doneHomeworksListener: ListenerRegistration
+    private lateinit var doneExamsListener: ListenerRegistration
+    private lateinit var doneTasksListener: ListenerRegistration
+
     private lateinit var homeworkListAdapter: ItemListAdapter
     private lateinit var examListAdapter: ItemListAdapter
     private lateinit var taskListAdapter: ItemListAdapter
+
+    private val db = Firebase.firestore
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
         return inflater.inflate(R.layout.fragment_completed_grouped, container, false)
+    }
+
+    override fun onStart() {
+        super.onStart()
+        doneHomeworksListener = getCompletedItemsByCategory(School.HOMEWORK)
+        doneExamsListener = getCompletedItemsByCategory(School.EXAM)
+        doneTasksListener = getCompletedItemsByCategory(School.TASK)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (this::doneHomeworksListener.isInitialized) {
+            doneHomeworksListener.remove()
+        }
+        if (this::doneExamsListener.isInitialized) {
+            doneExamsListener.remove()
+        }
+        if (this::doneTasksListener.isInitialized) {
+            doneTasksListener.remove()
+        }
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -76,7 +108,7 @@ class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
             adapter = taskListAdapter
         }
 
-        dataViewModel.getDoneHomeworks()
+        doneHomeworks
             .observe(viewLifecycleOwner, Observer { homeworks ->
                 if (homeworks.isEmpty()) {
                     groupHomework.visibility = View.GONE
@@ -86,7 +118,7 @@ class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
                 homeworkListAdapter.submitList(homeworks)
             })
 
-        dataViewModel.getDoneExams()
+        doneExams
             .observe(viewLifecycleOwner, Observer { exams ->
                 if (exams.isEmpty()) {
                     groupExam.visibility = View.GONE
@@ -96,7 +128,7 @@ class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
                 examListAdapter.submitList(exams)
             })
 
-        dataViewModel.getDoneTasks()
+        doneTasks
             .observe(viewLifecycleOwner, Observer { tasks ->
                 if (tasks.isEmpty()) {
                     groupTask.visibility = View.GONE
@@ -107,14 +139,40 @@ class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
             })
     }
 
-    override fun setDone(id: Int, done: Boolean, doneTime: Long?) {
+    fun getCompletedItemsByCategory(category: Int): ListenerRegistration {
+        return db.collection("${dataViewModel.USER_ID}/itemData/items")
+            .whereEqualTo("category", category)
+            .whereEqualTo("done", true)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    return@addSnapshotListener
+                }
+                val list = ArrayList<Item>()
+                for (document in value!!.documents) {
+                    list.add(document.toObject(Item::class.java)!!)
+                }
+                when (category) {
+                    School.HOMEWORK -> {
+                        doneHomeworks.value = list
+                    }
+                    School.EXAM -> {
+                        doneExams.value = list
+                    }
+                    School.TASK -> {
+                        doneTasks.value = list
+                    }
+                }
+            }
+    }
+
+    override fun setDone(id: String, done: Boolean, doneTime: Long?) {
         dataViewModel.setDone(id, done, doneTime)
     }
 
     override fun showSubtasks(
         subtasks: ArrayList<Subtask>,
         itemTitle: String,
-        id: Int,
+        id: String,
         category: Int
     ) {
         SubtasksBottomSheetDialogFragment(
@@ -140,19 +198,19 @@ class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
             item.done,
             item.doneTime,
             item.title,
-            Gson().fromJson(item.subtasks, object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type),
+            item.subtasks,
             item.notes,
             calendar,
             item.id
         )
     }
 
-    override fun itemLongClicked(title: String, id: Int) {
+    override fun itemLongClicked(title: String, id: String) {
         ConfirmDeleteDialogFragment(this, id, title)
             .show(childFragmentManager, "confirmDeleteDialog")
     }
 
-    override fun confirmDelete(itemId: Int) {
+    override fun confirmDelete(itemId: String) {
         dataViewModel.deleteItemWithId(itemId)
     }
 
@@ -164,7 +222,7 @@ class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
         subtasks: java.util.ArrayList<Subtask>,
         notes: String,
         date: Calendar?,
-        itemId: Int
+        itemId: String
     ) {
         val editFragment = EditFragment.newInstance(
             category = category,

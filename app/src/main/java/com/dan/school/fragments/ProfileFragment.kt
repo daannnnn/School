@@ -11,22 +11,22 @@ import android.view.inputmethod.InputMethodManager
 import androidx.core.content.edit
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.activityViewModels
+import com.dan.school.DataViewModel
 import com.dan.school.R
 import com.dan.school.School
+import com.dan.school.models.Profile
 import kotlinx.android.synthetic.main.fragment_profile.*
 
 class ProfileFragment : Fragment() {
 
     private var isEditMode = false
-    private lateinit var sharedPref: SharedPreferences
 
     private lateinit var inputMethodManager: InputMethodManager
+    private val dataViewModel: DataViewModel by activityViewModels()
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        sharedPref = context.getSharedPreferences(
-            getString(R.string.preference_file_key), Context.MODE_PRIVATE
-        )
         inputMethodManager =
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (parentFragment is SettingsFragment) {
@@ -52,8 +52,8 @@ class ProfileFragment : Fragment() {
 
         constraintLayoutProfile.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
-        textViewNicknameDisplay.text = sharedPref.getString(School.NICKNAME, "")
-        textViewFullNameDisplay.text = sharedPref.getString(School.FULL_NAME, "")
+        textViewNicknameDisplay.text = dataViewModel.profile.value!!.nickname
+        textViewFullNameDisplay.text = dataViewModel.profile.value!!.fullName
     }
 
     private fun setEditMode(editMode: Boolean) {
@@ -62,17 +62,13 @@ class ProfileFragment : Fragment() {
         textViewNicknameDisplay.isVisible = !editMode
         textViewFullNameDisplay.isVisible = !editMode
         if (editMode) {
-            textFieldNickname.editText?.setText(sharedPref.getString(School.NICKNAME, ""))
-            textFieldFullName.editText?.setText(sharedPref.getString(School.FULL_NAME, ""))
+            textFieldNickname.editText?.setText(dataViewModel.profile.value!!.nickname)
+            textFieldFullName.editText?.setText(dataViewModel.profile.value!!.fullName)
         } else {
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
             val nickname = textFieldNickname.editText?.text.toString()
             val fullName = textFieldFullName.editText?.text.toString()
-            sharedPref.edit {
-                putString(School.NICKNAME, nickname)
-                putString(School.FULL_NAME, fullName)
-                commit()
-            }
+            dataViewModel.updateProfile(Profile(fullName, nickname))
             textViewNicknameDisplay.text = nickname
             textViewFullNameDisplay.text = fullName
         }

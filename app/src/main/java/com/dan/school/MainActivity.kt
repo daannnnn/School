@@ -1,11 +1,9 @@
 package com.dan.school
 
-import android.content.Context
-import android.content.SharedPreferences
-import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.view.View
 import android.widget.TextView
+import androidx.activity.viewModels
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
@@ -14,8 +12,9 @@ import com.dan.school.fragments.OverviewFragment
 import com.dan.school.fragments.SettingsFragment
 import kotlinx.android.synthetic.main.activity_main.*
 
-
 class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
+
+    private val dataViewModel: DataViewModel by viewModels()
 
     /**
      * Holds id of the item selected on [navigationView]
@@ -30,8 +29,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
      */
     var settingsBackPressedListener: SettingsBackPressedListener? = null
 
-    private var onSharedPreferenceChangeListener: OnSharedPreferenceChangeListener? = null
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -45,23 +42,12 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
                 ).commit()
         }
 
-        val sharedPref = getSharedPreferences(
-            getString(R.string.preference_file_key), Context.MODE_PRIVATE
-        )
-
-        setNavigationViewHeaderNickname(sharedPref.getString(School.NICKNAME, ""))
-        setNavigationViewHeaderFullName(sharedPref.getString(School.FULL_NAME, ""))
+        dataViewModel.profile.observe(this, {
+            setNavigationViewHeaderName(it.fullName)
+        })
+        setNavigationViewHeaderEmail("EMAIL")
 
         // listeners
-        onSharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
-            if (key == School.FULL_NAME) {
-                setNavigationViewHeaderFullName(sharedPreferences.getString(School.FULL_NAME, ""))
-            }
-            if (key == School.NICKNAME) {
-                setNavigationViewHeaderNickname(sharedPreferences.getString(School.NICKNAME, ""))
-            }
-        }
-        sharedPref.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
         navigationView.setNavigationItemSelectedListener { item ->
             if (!item.isChecked) {
                 item.isChecked = true
@@ -118,14 +104,14 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
         }
     }
 
-    /** Sets [R.id.textViewNickname] text to [nickname] */
-    private fun setNavigationViewHeaderNickname(nickname: String?) {
-        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewNickname).text = nickname
+    /** Sets [R.id.textViewEmail] text to [email] */
+    private fun setNavigationViewHeaderEmail(email: String?) {
+        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewEmail).text = email
     }
 
-    /** Sets [R.id.textViewFullName] text to [fullName] */
-    private fun setNavigationViewHeaderFullName(fullName: String?) {
-        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewFullName).text = fullName
+    /** Sets [R.id.textViewName] text to [name] */
+    private fun setNavigationViewHeaderName(name: String?) {
+        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewName).text = name
     }
 
     /**
@@ -162,6 +148,10 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
         if (supportFragmentManager.findFragmentByTag(tag)!!.isHidden) {
             return
         }
+        if (tag == School.OVERVIEW) {
+            dataViewModel.stopListening(School.HOME_CALENDAR_ITEMS)
+            dataViewModel.stopListening(School.AGENDA_SELECTED)
+        }
         supportFragmentManager.beginTransaction()
             .hide(supportFragmentManager.findFragmentByTag(tag)!!).commit()
     }
@@ -170,6 +160,11 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
     private fun showFragment(tag: String) {
         if (supportFragmentManager.findFragmentByTag(tag)!!.isVisible) {
             return
+        }
+        if (tag == School.OVERVIEW) {
+            if (dataViewModel.lastListeningTo != -1) {
+                dataViewModel.startListening(dataViewModel.lastListeningTo)
+            }
         }
         supportFragmentManager.beginTransaction()
             .show(supportFragmentManager.findFragmentByTag(tag)!!).commit()

@@ -15,6 +15,10 @@ object School {
 
     const val PROFILE = 9
 
+    const val HOME_CALENDAR_ITEMS = 10
+    const val AGENDA_ITEMS = 11
+    const val DONE_ITEMS = 12
+
     const val dateFormat = "EEE, MMM d, yyyy"
     const val dateFormatOnDatabase = "yyyyMMdd"
     const val timeFormat = "hh:mm aaa"
@@ -38,6 +42,7 @@ object School {
 
     const val FULL_NAME = "fullName"
     const val NICKNAME = "nickname"
+    const val EMAIL = "email"
 
     val categoryColors =
         arrayOf(

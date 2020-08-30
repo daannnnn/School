@@ -8,6 +8,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
+import androidx.lifecycle.MutableLiveData
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
 import com.dan.school.School.categoryCheckedIcons
@@ -15,6 +16,9 @@ import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
+import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.ktx.firestore
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_agenda_tomorrow.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -34,15 +38,76 @@ class AgendaTomorrowFragment : DialogFragment(),
 
     private val dataViewModel: DataViewModel by activityViewModels()
 
+    private val allHomeworksTomorrow: MutableLiveData<List<Item>> = MutableLiveData()
+    private val allExamsTomorrow: MutableLiveData<List<Item>> = MutableLiveData()
+    private val allTasksTomorrow: MutableLiveData<List<Item>> = MutableLiveData()
+
+    private lateinit var allHomeworksTomorrowListener: ListenerRegistration
+    private lateinit var allExamsTomorrowListener: ListenerRegistration
+    private lateinit var allTasksTomorrowListener: ListenerRegistration
+
     private var homeworkEmpty = false
     private var examEmpty = false
     private var taskEmpty = false
+
+    private val db = Firebase.firestore
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (parentFragment is AgendaFragment) {
             itemClickListener = (parentFragment as AgendaFragment)
         }
+    }
+
+    override fun onStart() {
+        super.onStart()
+        allHomeworksTomorrowListener = getAllItemsTomorrowByCategory(School.HOMEWORK)
+        allExamsTomorrowListener = getAllItemsTomorrowByCategory(School.EXAM)
+        allTasksTomorrowListener = getAllItemsTomorrowByCategory(School.TASK)
+    }
+
+    override fun onStop() {
+        super.onStop()
+        if (this::allHomeworksTomorrowListener.isInitialized) {
+            allHomeworksTomorrowListener.remove()
+        }
+        if (this::allExamsTomorrowListener.isInitialized) {
+            allExamsTomorrowListener.remove()
+        }
+        if (this::allTasksTomorrowListener.isInitialized) {
+            allTasksTomorrowListener.remove()
+        }
+    }
+
+    private fun getAllItemsTomorrowByCategory(category: Int): ListenerRegistration {
+        return db.collection("${dataViewModel.USER_ID}/itemData/items")
+            .whereEqualTo(
+                "date", SimpleDateFormat(
+                    School.dateFormatOnDatabase,
+                    Locale.getDefault()
+                ).format(dateTomorrow.time).toInt()
+            )
+            .whereEqualTo("category", category)
+            .addSnapshotListener { value, error ->
+                if (error != null) {
+                    return@addSnapshotListener
+                }
+                val list = ArrayList<Item>()
+                for (document in value!!.documents) {
+                    list.add(document.toObject(Item::class.java)!!)
+                }
+                when (category) {
+                    School.HOMEWORK -> {
+                        allHomeworksTomorrow.value = list
+                    }
+                    School.EXAM -> {
+                        allExamsTomorrow.value = list
+                    }
+                    School.TASK -> {
+                        allTasksTomorrow.value = list
+                    }
+                }
+            }
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
@@ -112,58 +177,49 @@ class AgendaTomorrowFragment : DialogFragment(),
             adapter = taskListAdapter
         }
 
-        dataViewModel.getAllHomeworkByDate(
-            SimpleDateFormat(
-                School.dateFormatOnDatabase,
-                Locale.getDefault()
-            ).format(dateTomorrow.time).toInt()
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { homeworks ->
-            if (homeworks.isEmpty()) {
-                groupHomework.visibility = View.GONE
-                homeworkEmpty = true
-            } else {
-                groupHomework.visibility = View.VISIBLE
-                homeworkEmpty = false
-            }
-            dismissIfEmpty()
-            homeworkListAdapter.submitList(homeworks)
-        })
+        allHomeworksTomorrow.observe(
+            viewLifecycleOwner,
+            { homeworks ->
+                if (homeworks.isEmpty()) {
+                    groupHomework.visibility = View.GONE
+                    homeworkEmpty = true
+                } else {
+                    groupHomework.visibility = View.VISIBLE
+                    homeworkEmpty = false
+                }
+                dismissIfEmpty()
+                homeworkListAdapter.submitList(homeworks)
+            })
 
-        dataViewModel.getAllExamByDate(
-            SimpleDateFormat(
-                School.dateFormatOnDatabase,
-                Locale.getDefault()
-            ).format(dateTomorrow.time).toInt()
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { exams ->
-            if (exams.isEmpty()) {
-                groupExam.visibility = View.GONE
-                examEmpty = true
-            } else {
-                groupExam.visibility = View.VISIBLE
-                examEmpty = false
-            }
-            dismissIfEmpty()
-            examListAdapter.submitList(exams)
-        })
+        allExamsTomorrow.observe(
+            viewLifecycleOwner,
+            { exams ->
+                if (exams.isEmpty()) {
+                    groupExam.visibility = View.GONE
+                    examEmpty = true
+                } else {
+                    groupExam.visibility = View.VISIBLE
+                    examEmpty = false
+                }
+                dismissIfEmpty()
+                examListAdapter.submitList(exams)
+            })
 
         constraintLayoutAgendaTomorrowMain.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
-        dataViewModel.getAllTaskByDate(
-            SimpleDateFormat(
-                School.dateFormatOnDatabase,
-                Locale.getDefault()
-            ).format(dateTomorrow.time).toInt()
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { tasks ->
-            if (tasks.isEmpty()) {
-                groupTask.visibility = View.GONE
-                taskEmpty = true
-            } else {
-                groupTask.visibility = View.VISIBLE
-                taskEmpty = false
-            }
-            dismissIfEmpty()
-            taskListAdapter.submitList(tasks)
-        })
+        allTasksTomorrow.observe(
+            viewLifecycleOwner,
+            { tasks ->
+                if (tasks.isEmpty()) {
+                    groupTask.visibility = View.GONE
+                    taskEmpty = true
+                } else {
+                    groupTask.visibility = View.VISIBLE
+                    taskEmpty = false
+                }
+                dismissIfEmpty()
+                taskListAdapter.submitList(tasks)
+            })
 
         buttonBack.setOnClickListener {
             dismiss()
@@ -180,14 +236,14 @@ class AgendaTomorrowFragment : DialogFragment(),
         }
     }
 
-    override fun setDone(id: Int, done: Boolean, doneTime: Long?) {
+    override fun setDone(id: String, done: Boolean, doneTime: Long?) {
         dataViewModel.setDone(id, done, doneTime)
     }
 
     override fun showSubtasks(
         subtasks: ArrayList<Subtask>,
         itemTitle: String,
-        id: Int,
+        id: String,
         category: Int
     ) {
         SubtasksBottomSheetDialogFragment(
@@ -208,12 +264,12 @@ class AgendaTomorrowFragment : DialogFragment(),
         }
     }
 
-    override fun itemLongClicked(title: String, id: Int) {
+    override fun itemLongClicked(title: String, id: String) {
         ConfirmDeleteDialogFragment(this, id, title)
             .show(childFragmentManager, "confirmDeleteDialog")
     }
 
-    override fun confirmDelete(itemId: Int) {
+    override fun confirmDelete(itemId: String) {
         dataViewModel.deleteItemWithId(itemId)
     }
 }

@@ -7,14 +7,10 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import com.dan.school.ItemClickListener
-import com.dan.school.MainActivity
-import com.dan.school.R
-import com.dan.school.School
+import androidx.fragment.app.activityViewModels
+import com.dan.school.*
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.fragment_overview.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -40,6 +36,8 @@ class OverviewFragment : Fragment(),
 
     private var canSelectItem = true
 
+    private val dataViewModel: DataViewModel by activityViewModels()
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         sharedPref = context.getSharedPreferences(
@@ -48,6 +46,12 @@ class OverviewFragment : Fragment(),
         if (activity is MainActivity) {
             openDrawerListener = activity as MainActivity
         }
+    }
+
+    override fun onStop() {
+        super.onStop()
+        dataViewModel.stopListening(School.HOME_CALENDAR_ITEMS)
+        dataViewModel.stopListening(School.AGENDA_ITEMS)
     }
 
     override fun onCreateView(
@@ -77,6 +81,7 @@ class OverviewFragment : Fragment(),
                         ).commit()
                     bottomNavigation.selectedItemId =
                         R.id.homeFragment
+                    dataViewModel.startListening(School.HOME_CALENDAR_ITEMS)
                 }
                 School.CALENDAR_SELECTED -> {
                     childFragmentManager.beginTransaction()
@@ -87,6 +92,7 @@ class OverviewFragment : Fragment(),
                     buttonCalendarView.visibility = View.VISIBLE
                     bottomNavigation.selectedItemId =
                         R.id.calendarFragment
+                    dataViewModel.startListening(School.HOME_CALENDAR_ITEMS)
                 }
                 School.AGENDA_SELECTED -> {
                     childFragmentManager.beginTransaction()
@@ -96,6 +102,7 @@ class OverviewFragment : Fragment(),
                         ).commit()
                     bottomNavigation.selectedItemId =
                         R.id.agendaFragment
+                    dataViewModel.startListening(School.AGENDA_ITEMS)
                 }
             }
         }
@@ -121,13 +128,19 @@ class OverviewFragment : Fragment(),
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.homeFragment -> {
+                    dataViewModel.stopListening(School.AGENDA_ITEMS)
+                    dataViewModel.startListening(School.HOME_CALENDAR_ITEMS)
                     setFragment(School.HOME)
                     textViewAppBarTitle.text = getString(R.string.app_name)
                 }
                 R.id.calendarFragment -> {
+                    dataViewModel.stopListening(School.AGENDA_ITEMS)
+                    dataViewModel.startListening(School.HOME_CALENDAR_ITEMS)
                     setFragment(School.CALENDAR)
                 }
                 R.id.agendaFragment -> {
+                    dataViewModel.stopListening(School.HOME_CALENDAR_ITEMS)
+                    dataViewModel.startListening(School.AGENDA_ITEMS)
                     setFragment(School.AGENDA)
                     textViewAppBarTitle.text = getString(R.string.app_name)
                 }
@@ -282,7 +295,7 @@ class OverviewFragment : Fragment(),
         subtasks: ArrayList<Subtask>,
         notes: String,
         date: Calendar?,
-        itemId: Int
+        itemId: String
     ) {
         if (canSelectItem) {
             canSelectItem = false
@@ -362,7 +375,7 @@ class OverviewFragment : Fragment(),
             item.done,
             item.doneTime,
             item.title,
-            Gson().fromJson(item.subtasks, object : TypeToken<ArrayList<Subtask?>?>() {}.type),
+            item.subtasks,
             item.notes,
             calendar,
             item.id

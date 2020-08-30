@@ -88,19 +88,19 @@ class ItemsFragment : Fragment(),
 
         when (category) {
             School.HOMEWORK -> {
-                dataViewModel.allHomeworks.observe(viewLifecycleOwner, Observer { homeworks ->
+                dataViewModel.allUndoneHomeworks.observe(viewLifecycleOwner, Observer { homeworks ->
                     homeworks?.let { itemListAdapter.submitList(it) }
                     setVisibilities(homeworks.isEmpty())
                 })
             }
             School.EXAM -> {
-                dataViewModel.allExams.observe(viewLifecycleOwner, Observer { exams ->
+                dataViewModel.allUndoneExams.observe(viewLifecycleOwner, Observer { exams ->
                     exams?.let { itemListAdapter.submitList(it) }
                     setVisibilities(exams.isEmpty())
                 })
             }
             School.TASK -> {
-                dataViewModel.allTasks.observe(viewLifecycleOwner, Observer { tasks ->
+                dataViewModel.allUndoneTasks.observe(viewLifecycleOwner, Observer { tasks ->
                     tasks?.let { itemListAdapter.submitList(it) }
                     setVisibilities(tasks.isEmpty())
                 })
@@ -108,14 +108,14 @@ class ItemsFragment : Fragment(),
         }
     }
 
-    override fun setDone(id: Int, done: Boolean, doneTime: Long?) {
+    override fun setDone(id: String, done: Boolean, doneTime: Long?) {
         dataViewModel.setDone(id, done, doneTime)
     }
 
     override fun showSubtasks(
         subtasks: ArrayList<Subtask>,
         itemTitle: String,
-        id: Int,
+        id: String,
         category: Int
     ) {
         SubtasksBottomSheetDialogFragment(
@@ -136,12 +136,12 @@ class ItemsFragment : Fragment(),
         }
     }
 
-    override fun itemLongClicked(title: String, id: Int) {
+    override fun itemLongClicked(title: String, id: String) {
         ConfirmDeleteDialogFragment(this, id, title)
             .show(childFragmentManager, "confirmDeleteDialog")
     }
 
-    override fun confirmDelete(itemId: Int) {
+    override fun confirmDelete(itemId: String) {
         dataViewModel.deleteItemWithId(itemId)
     }
 

@@ -58,7 +58,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     private var chipGroupSelected: Int = School.TODAY
     private var selectedDate: Calendar? = null
     private var isEdit: Boolean = false
-    private var itemId: Int? = null
+    private var itemId: String? = null
 
     private val dateToday = Calendar.getInstance()
     private val dateTomorrow = Calendar.getInstance()
@@ -116,7 +116,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         }
 
         isEdit = requireArguments().getBoolean("isEdit", false)
-        itemId = requireArguments().getInt("itemId", 0)
+        itemId = requireArguments().getString("itemId", "")
     }
 
     override fun onCreateView(
@@ -214,7 +214,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                         School.dateFormatOnDatabase,
                         Locale.getDefault()
                     ).format(selectedDate!!.time).toInt(),
-                    subtasks = Gson().toJson(subtaskListAdapter.data),
+                    subtasks = subtaskListAdapter.data,
                     notes = editTextNotes.text.toString()
                 )
                 dataViewModel.update(item)
@@ -304,7 +304,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                         School.dateFormatOnDatabase,
                         Locale.getDefault()
                     ).format(selectedDate!!.time).toInt(),
-                    subtasks = Gson().toJson(subtaskListAdapter.data),
+                    subtasks = subtaskListAdapter.data,
                     notes = editTextNotes.text.toString()
                 )
                 dataViewModel.update(item)
@@ -317,7 +317,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                     School.dateFormatOnDatabase,
                     Locale.getDefault()
                 ).format(selectedDate!!.time).toInt(),
-                subtasks = Gson().toJson(subtaskListAdapter.data),
+                subtasks = subtaskListAdapter.data,
                 notes = editTextNotes.text.toString()
             )
             dataViewModel.insert(item)
@@ -481,7 +481,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             chipGroupSelected: Int = School.TODAY,
             selectedDate: Calendar? = null,
             isEdit: Boolean = false,
-            itemId: Int? = null
+            itemId: String? = null
         ) = EditFragment().apply {
             arguments = bundleOf(
                 "category" to category,
@@ -503,7 +503,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         }
     }
 
-    override fun confirmDelete(itemId: Int) {
+    override fun confirmDelete(itemId: String) {
         dataViewModel.deleteItemWithId(itemId)
         dismiss()
     }
