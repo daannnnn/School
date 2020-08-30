@@ -45,6 +45,8 @@ class AgendaFragment : Fragment(),
 
     private lateinit var sharedPref: SharedPreferences
 
+    private var onSharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         sharedPref = context.getSharedPreferences(
@@ -70,11 +72,13 @@ class AgendaFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        sharedPref.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
-            if (key == School.NICKNAME) {
-                updateGreeting(sharedPreferences.getString(School.NICKNAME, ""))
+        onSharedPreferenceChangeListener =
+            SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+                if (key == School.NICKNAME) {
+                    updateGreeting(sharedPreferences.getString(School.NICKNAME, ""))
+                }
             }
-        }
+        sharedPref.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
 
         updateGreeting(sharedPref.getString(School.NICKNAME, ""))
 

@@ -1,8 +1,9 @@
 package com.dan.school
 
 import android.content.Context
+import android.content.SharedPreferences
+import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
-import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -29,6 +30,8 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
      */
     var settingsBackPressedListener: SettingsBackPressedListener? = null
 
+    private var onSharedPreferenceChangeListener: OnSharedPreferenceChangeListener? = null
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
@@ -50,7 +53,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
         setNavigationViewHeaderEmail(sharedPref.getString(School.EMAIL, ""))
 
         // listeners
-        sharedPref.registerOnSharedPreferenceChangeListener { sharedPreferences, key ->
+        onSharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == School.FULL_NAME) {
                 setNavigationViewHeaderName(sharedPreferences.getString(School.FULL_NAME, ""))
             }
@@ -58,6 +61,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
                 setNavigationViewHeaderEmail(sharedPreferences.getString(School.EMAIL, ""))
             }
         }
+        sharedPref.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
         navigationView.setNavigationItemSelectedListener { item ->
             if (!item.isChecked) {
                 item.isChecked = true
