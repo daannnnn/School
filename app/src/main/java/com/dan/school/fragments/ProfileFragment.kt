@@ -52,36 +52,29 @@ class ProfileFragment : Fragment() {
 
         constraintLayoutProfile.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
-        textViewNickNameDisplay.text = sharedPref.getString(School.NICKNAME, "")
+        textViewNicknameDisplay.text = sharedPref.getString(School.NICKNAME, "")
         textViewFullNameDisplay.text = sharedPref.getString(School.FULL_NAME, "")
-        textViewEmailDisplay.text = sharedPref.getString(School.EMAIL, "")
     }
 
     private fun setEditMode(editMode: Boolean) {
         textFieldNickname.isVisible = editMode
         textFieldFullName.isVisible = editMode
-        textFieldEmail.isVisible = editMode
-        textViewNickNameDisplay.isVisible = !editMode
+        textViewNicknameDisplay.isVisible = !editMode
         textViewFullNameDisplay.isVisible = !editMode
-        textViewEmailDisplay.isVisible = !editMode
         if (editMode) {
             textFieldNickname.editText?.setText(sharedPref.getString(School.NICKNAME, ""))
             textFieldFullName.editText?.setText(sharedPref.getString(School.FULL_NAME, ""))
-            textFieldEmail.editText?.setText(sharedPref.getString(School.EMAIL, ""))
         } else {
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
             val nickname = textFieldNickname.editText?.text.toString()
             val fullName = textFieldFullName.editText?.text.toString()
-            val email = textFieldEmail.editText?.text.toString()
             sharedPref.edit {
                 putString(School.NICKNAME, nickname)
                 putString(School.FULL_NAME, fullName)
-                putString(School.EMAIL, email)
                 commit()
             }
-            textViewNickNameDisplay.text = nickname
+            textViewNicknameDisplay.text = nickname
             textViewFullNameDisplay.text = fullName
-            textViewEmailDisplay.text = email
         }
         isEditMode = editMode
     }

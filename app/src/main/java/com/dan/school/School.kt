@@ -38,7 +38,6 @@ object School {
 
     const val FULL_NAME = "fullName"
     const val NICKNAME = "nickname"
-    const val EMAIL = "email"
 
     val categoryColors =
         arrayOf(

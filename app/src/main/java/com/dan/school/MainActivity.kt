@@ -49,16 +49,16 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
             getString(R.string.preference_file_key), Context.MODE_PRIVATE
         )
 
-        setNavigationViewHeaderName(sharedPref.getString(School.FULL_NAME, ""))
-        setNavigationViewHeaderEmail(sharedPref.getString(School.EMAIL, ""))
+        setNavigationViewHeaderNickname(sharedPref.getString(School.NICKNAME, ""))
+        setNavigationViewHeaderFullName(sharedPref.getString(School.FULL_NAME, ""))
 
         // listeners
         onSharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
             if (key == School.FULL_NAME) {
-                setNavigationViewHeaderName(sharedPreferences.getString(School.FULL_NAME, ""))
+                setNavigationViewHeaderFullName(sharedPreferences.getString(School.FULL_NAME, ""))
             }
-            if (key == School.EMAIL) {
-                setNavigationViewHeaderEmail(sharedPreferences.getString(School.EMAIL, ""))
+            if (key == School.NICKNAME) {
+                setNavigationViewHeaderNickname(sharedPreferences.getString(School.NICKNAME, ""))
             }
         }
         sharedPref.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
@@ -118,14 +118,14 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
         }
     }
 
-    /** Sets [R.id.textViewEmail] text to [email] */
-    private fun setNavigationViewHeaderEmail(email: String?) {
-        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewEmail).text = email
+    /** Sets [R.id.textViewNickname] text to [nickname] */
+    private fun setNavigationViewHeaderNickname(nickname: String?) {
+        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewNickname).text = nickname
     }
 
-    /** Sets [R.id.textViewName] text to [name] */
-    private fun setNavigationViewHeaderName(name: String?) {
-        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewName).text = name
+    /** Sets [R.id.textViewFullName] text to [fullName] */
+    private fun setNavigationViewHeaderFullName(fullName: String?) {
+        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewFullName).text = fullName
     }
 
     /**
