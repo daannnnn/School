@@ -1,10 +1,12 @@
 package com.dan.school
 
 import android.app.Application
+import android.util.Log
 import androidx.lifecycle.*
 import com.dan.school.models.Item
 import com.dan.school.models.Profile
 import com.dan.school.models.Subtask
+import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -56,6 +58,18 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     var isListeningToDoneItems = false
 
     var lastListeningTo: Int = -1
+
+    var selectedCalendarDate = SimpleDateFormat(
+        School.dateFormatOnDatabase,
+        Locale.getDefault()
+    ).format(Calendar.getInstance().time).toInt()
+
+    var selectedCalendarDateHomeworks: MutableLiveData<ArrayList<Item>> =
+        MutableLiveData(ArrayList())
+    var selectedCalendarDateExams: MutableLiveData<ArrayList<Item>> = MutableLiveData(ArrayList())
+    var selectedCalendarDateTasks: MutableLiveData<ArrayList<Item>> = MutableLiveData(ArrayList())
+
+    private var firstTimeToBeInvoked = true
 
     private val sortBy = MutableLiveData(School.DONE_TIME)
     private val today =
@@ -119,6 +133,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         when (listeners) {
             School.HOME_CALENDAR_ITEMS -> {
                 if (!isListeningToHomeCalendarItems) {
+                    firstTimeToBeInvoked = true
                     homeworkItemsListener = getAllItemsWithCategory(School.HOMEWORK)
                     examItemsListener = getAllItemsWithCategory(School.EXAM)
                     taskItemsListener = getAllItemsWithCategory(School.TASK)
@@ -192,6 +207,34 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
                         )!!
                     )
                 }
+                if (!firstTimeToBeInvoked) {
+                    for (document in value.documentChanges) {
+                        if (document.document.getLong("date") == selectedCalendarDate.toLong()) {
+                            val data = when (document.document.getLong("category")!!.toInt()) {
+                                School.HOMEWORK -> ArrayList(selectedCalendarDateHomeworks.value!!)
+                                School.EXAM -> ArrayList(selectedCalendarDateExams.value!!)
+                                else -> ArrayList(selectedCalendarDateTasks.value!!)
+                            }
+                            Log.i(TAG, "getAllItemsWithCategory: ${document.type}")
+                            when (document.type) {
+                                DocumentChange.Type.ADDED -> {
+                                    data.add(document.document.toObject(Item::class.java))
+                                }
+                                DocumentChange.Type.MODIFIED -> {
+                                    for (item in 0 until data.size) {
+                                        if (data[item].id == document.document.id) {
+                                            data[item] = document.document.toObject(Item::class.java)
+                                        }
+                                    }
+                                }
+                                DocumentChange.Type.REMOVED -> {
+                                    data.remove(document.document.toObject(Item::class.java))
+                                }
+                            }
+                            selectedCalendarDateHomeworks.value = data
+                        }
+                    }
+                }
                 when (category) {
                     School.HOMEWORK -> {
                         allUndoneHomeworks.value = undoneList
@@ -206,6 +249,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
                         taskAllDates.value = dates
                     }
                 }
+                firstTimeToBeInvoked = false
             }
     }
 
