@@ -210,12 +210,11 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
                 if (!firstTimeToBeInvoked) {
                     for (document in value.documentChanges) {
                         if (document.document.getLong("date") == selectedCalendarDate.toLong()) {
-                            val data = when (document.document.getLong("category")!!.toInt()) {
+                            val data = when (category) {
                                 School.HOMEWORK -> ArrayList(selectedCalendarDateHomeworks.value!!)
                                 School.EXAM -> ArrayList(selectedCalendarDateExams.value!!)
                                 else -> ArrayList(selectedCalendarDateTasks.value!!)
                             }
-                            Log.i(TAG, "getAllItemsWithCategory: ${document.type}")
                             when (document.type) {
                                 DocumentChange.Type.ADDED -> {
                                     data.add(document.document.toObject(Item::class.java))
@@ -231,7 +230,11 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
                                     data.remove(document.document.toObject(Item::class.java))
                                 }
                             }
-                            selectedCalendarDateHomeworks.value = data
+                            when (category) {
+                                School.HOMEWORK -> selectedCalendarDateHomeworks.value = data
+                                School.EXAM -> selectedCalendarDateExams.value = data
+                                School.TASK -> selectedCalendarDateTasks.value = data
+                            }
                         }
                     }
                 }

@@ -422,7 +422,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             isEmpty[School.EXAM] = it.isEmpty()
             showNoItemsTextIfAllEmpty()
         })
-        dataViewModel.selectedCalendarDateExams.observe(viewLifecycleOwner, {
+        dataViewModel.selectedCalendarDateTasks.observe(viewLifecycleOwner, {
             if (selectedDateChanged[School.TASK]) {
                 recyclerViewCalendarTask.adapter = ItemListAdapter(
                     requireContext(),

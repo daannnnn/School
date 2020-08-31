@@ -1,7 +1,6 @@
 package com.dan.school.models
 
 import com.google.firebase.firestore.DocumentId
-import com.google.firebase.firestore.Exclude
 import com.google.gson.Gson
 
 data class Item(
@@ -12,6 +11,7 @@ data class Item(
     val title: String = "",
     val date: Int = -1,
     val subtasks: ArrayList<Subtask> = ArrayList(),
-    @Exclude var subtasksString: String = Gson().toJson(subtasks),
     val notes: String = ""
-)
+) {
+    fun getSubtasksString(): String = Gson().toJson(subtasks)
+}

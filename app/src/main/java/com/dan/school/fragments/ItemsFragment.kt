@@ -2,6 +2,7 @@ package com.dan.school.fragments
 
 import android.content.Context
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -91,6 +92,7 @@ class ItemsFragment : Fragment(),
                 dataViewModel.allUndoneHomeworks.observe(viewLifecycleOwner, Observer { homeworks ->
                     homeworks?.let { itemListAdapter.submitList(it) }
                     setVisibilities(homeworks.isEmpty())
+                    Log.i("Test", "UPDATED")
                 })
             }
             School.EXAM -> {

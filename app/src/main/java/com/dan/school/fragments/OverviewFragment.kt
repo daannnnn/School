@@ -43,8 +43,23 @@ class OverviewFragment : Fragment(),
         sharedPref = context.getSharedPreferences(
             getString(R.string.preference_file_key), Context.MODE_PRIVATE
         )
+        selectedFragment =
+            sharedPref.getInt(
+                School.SELECTED_BOTTOM_NAVIGATION_FRAGMENT,
+                School.HOME_SELECTED
+            )
         if (activity is MainActivity) {
             openDrawerListener = activity as MainActivity
+        }
+    }
+
+    override fun onStart() {
+        super.onStart()
+
+        if (selectedFragment == School.AGENDA_SELECTED) {
+            dataViewModel.startListening(School.AGENDA_ITEMS)
+        } else {
+            dataViewModel.startListening(School.HOME_CALENDAR_ITEMS)
         }
     }
 
@@ -64,12 +79,6 @@ class OverviewFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        selectedFragment =
-            sharedPref.getInt(
-                School.SELECTED_BOTTOM_NAVIGATION_FRAGMENT,
-                School.HOME_SELECTED
-            )
-
         if (savedInstanceState == null) {
             // Show last selected fragment saved on SharedPreferences
             when (selectedFragment) {
@@ -81,7 +90,6 @@ class OverviewFragment : Fragment(),
                         ).commit()
                     bottomNavigation.selectedItemId =
                         R.id.homeFragment
-                    dataViewModel.startListening(School.HOME_CALENDAR_ITEMS)
                 }
                 School.CALENDAR_SELECTED -> {
                     childFragmentManager.beginTransaction()
@@ -92,7 +100,6 @@ class OverviewFragment : Fragment(),
                     buttonCalendarView.visibility = View.VISIBLE
                     bottomNavigation.selectedItemId =
                         R.id.calendarFragment
-                    dataViewModel.startListening(School.HOME_CALENDAR_ITEMS)
                 }
                 School.AGENDA_SELECTED -> {
                     childFragmentManager.beginTransaction()
@@ -102,7 +109,6 @@ class OverviewFragment : Fragment(),
                         ).commit()
                     bottomNavigation.selectedItemId =
                         R.id.agendaFragment
-                    dataViewModel.startListening(School.AGENDA_ITEMS)
                 }
             }
         }

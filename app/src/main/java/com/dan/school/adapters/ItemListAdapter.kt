@@ -1,6 +1,7 @@
 package com.dan.school.adapters
 
 import android.content.Context
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -112,7 +113,7 @@ class ItemListAdapter(
                             oldItem.done == newItem.done &&
                             oldItem.title == newItem.title &&
                             oldItem.date == newItem.date &&
-                            oldItem.subtasksString == newItem.subtasksString &&
+                            oldItem.getSubtasksString() == newItem.getSubtasksString() &&
                             oldItem.notes == newItem.notes
                 }
             }
