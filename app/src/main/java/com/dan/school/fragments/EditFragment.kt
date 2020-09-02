@@ -52,6 +52,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     private var category: Int = School.HOMEWORK
     private var done: Boolean = false
     private var doneTime: Long? = null
+    private var timeCreated: Long? = null
     private var title: String = ""
     private var subtasks: ArrayList<Subtask> = ArrayList()
     private var notes: String = ""
@@ -98,6 +99,11 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                 -1
             ) == -1L
         ) null else requireArguments().getLong("doneTime")
+        timeCreated = if (requireArguments().getLong(
+                "timeCreated",
+                -1
+            ) == -1L
+        ) null else requireArguments().getLong("timeCreated")
         title = requireArguments().getString("title", "")
         subtasks =
             requireArguments().getParcelableArrayList<Subtask>("subtasks") as ArrayList<Subtask>
@@ -209,6 +215,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                     category = category,
                     done = !done,
                     doneTime = Calendar.getInstance().timeInMillis,
+                    timeCreated = timeCreated,
                     title = editTextTitle.text.toString(),
                     date = SimpleDateFormat(
                         School.dateFormatOnDatabase,
@@ -299,6 +306,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                     category = category,
                     done = done,
                     doneTime = doneTime,
+                    timeCreated = timeCreated,
                     title = editTextTitle.text.toString(),
                     date = SimpleDateFormat(
                         School.dateFormatOnDatabase,
@@ -312,6 +320,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         } else {
             val item = Item(
                 category = category,
+                timeCreated = Date().time,
                 title = editTextTitle.text.toString(),
                 date = SimpleDateFormat(
                     School.dateFormatOnDatabase,
@@ -475,6 +484,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             category: Int = School.HOMEWORK,
             done: Boolean = false,
             doneTime: Long? = null,
+            timeCreated: Long? = null,
             title: String = "",
             subtasks: ArrayList<Subtask> = ArrayList(),
             notes: String = "",
@@ -487,6 +497,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                 "category" to category,
                 "done" to done,
                 "doneTime" to doneTime,
+                "timeCreated" to timeCreated,
                 "title" to title,
                 "subtasks" to subtasks,
                 "notes" to notes,

@@ -131,6 +131,7 @@ class AddBottomSheetDialogFragment(
         buttonCheck.setOnClickListener {
             val item = Item(
                 category = category,
+                timeCreated = Date().time,
                 title = editTextTitle.text.toString(),
                 date = SimpleDateFormat(School.dateFormatOnDatabase, Locale.getDefault()).format(
                     selectedDate.time

@@ -31,6 +31,7 @@ import com.dan.school.models.CategoryCount
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.Source
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
@@ -588,6 +589,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
     private fun calendarSelectedDateUpdated() {
         db.collection("USER_ID/itemData/items")
             .whereEqualTo("date", calendarSelectedDate)
+            .orderBy("timeCreated", Query.Direction.DESCENDING)
             .get(Source.CACHE)
             .addOnSuccessListener {
                 val selectedCalendarDateHomeworks = ArrayList<Item>()

@@ -65,7 +65,7 @@ class ItemListAdapter(
                     doneListener.setDone(
                         getItem(holder.bindingAdapterPosition).id,
                         true,
-                        Calendar.getInstance().timeInMillis
+                        Date().time
                     )
                 }
             }

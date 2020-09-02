@@ -8,6 +8,7 @@ import com.dan.school.models.Profile
 import com.dan.school.models.Subtask
 import com.google.firebase.firestore.DocumentChange
 import com.google.firebase.firestore.ListenerRegistration
+import com.google.firebase.firestore.Query
 import com.google.firebase.firestore.ktx.firestore
 import com.google.firebase.ktx.Firebase
 import kotlinx.coroutines.Dispatchers
@@ -190,6 +191,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     private fun getAllItemsWithCategory(category: Int): ListenerRegistration {
         return db.collection("$USER_ID/itemData/items")
             .whereEqualTo("category", category)
+            .orderBy("timeCreated", Query.Direction.DESCENDING)
             .addSnapshotListener { value, error ->
                 if (error != null) {
                     return@addSnapshotListener
@@ -217,12 +219,28 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
                             }
                             when (document.type) {
                                 DocumentChange.Type.ADDED -> {
-                                    data.add(document.document.toObject(Item::class.java))
+                                    if (data.size == 0) {
+                                        data.add(document.document.toObject(Item::class.java))
+                                    } else {
+                                        for (item in 0 until data.size) {
+                                            if (document.document.getLong(
+                                                    "timeCreated"
+                                                )!! > data[item].timeCreated!!
+                                            ) {
+                                                data.add(
+                                                    item,
+                                                    document.document.toObject(Item::class.java)
+                                                )
+                                                break
+                                            }
+                                        }
+                                    }
                                 }
                                 DocumentChange.Type.MODIFIED -> {
                                     for (item in 0 until data.size) {
                                         if (data[item].id == document.document.id) {
-                                            data[item] = document.document.toObject(Item::class.java)
+                                            data[item] =
+                                                document.document.toObject(Item::class.java)
                                         }
                                     }
                                 }
@@ -263,6 +281,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     private fun getDoneItems(): ListenerRegistration {
         return db.collection("$USER_ID/itemData/items")
             .whereEqualTo("done", true)
+            .orderBy("timeCreated", Query.Direction.DESCENDING)
             .addSnapshotListener { value, error ->
                 if (error != null) {
                     return@addSnapshotListener
@@ -338,6 +357,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         return db.collection("$USER_ID/itemData/items")
             .whereEqualTo("date", today)
             .whereEqualTo("category", category)
+            .orderBy("timeCreated", Query.Direction.DESCENDING)
             .addSnapshotListener { value, error ->
                 if (error != null) {
                     return@addSnapshotListener
@@ -364,6 +384,8 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         return db.collection("$USER_ID/itemData/items")
             .whereLessThan("date", today)
             .whereEqualTo("done", false)
+            .orderBy("date")
+            .orderBy("timeCreated", Query.Direction.DESCENDING)
             .addSnapshotListener { value, error ->
                 if (error != null) {
                     return@addSnapshotListener
