@@ -2,7 +2,6 @@ package com.dan.school.fragments
 
 import android.content.Context
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -89,20 +88,19 @@ class ItemsFragment : Fragment(),
 
         when (category) {
             School.HOMEWORK -> {
-                dataViewModel.allUndoneHomeworks.observe(viewLifecycleOwner, Observer { homeworks ->
+                dataViewModel.allHomeworks.observe(viewLifecycleOwner, Observer { homeworks ->
                     homeworks?.let { itemListAdapter.submitList(it) }
                     setVisibilities(homeworks.isEmpty())
-                    Log.i("Test", "UPDATED")
                 })
             }
             School.EXAM -> {
-                dataViewModel.allUndoneExams.observe(viewLifecycleOwner, Observer { exams ->
+                dataViewModel.allExams.observe(viewLifecycleOwner, Observer { exams ->
                     exams?.let { itemListAdapter.submitList(it) }
                     setVisibilities(exams.isEmpty())
                 })
             }
             School.TASK -> {
-                dataViewModel.allUndoneTasks.observe(viewLifecycleOwner, Observer { tasks ->
+                dataViewModel.allTasks.observe(viewLifecycleOwner, Observer { tasks ->
                     tasks?.let { itemListAdapter.submitList(it) }
                     setVisibilities(tasks.isEmpty())
                 })
@@ -110,14 +108,14 @@ class ItemsFragment : Fragment(),
         }
     }
 
-    override fun setDone(id: String, done: Boolean, doneTime: Long?) {
+    override fun setDone(id: Int, done: Boolean, doneTime: Long?) {
         dataViewModel.setDone(id, done, doneTime)
     }
 
     override fun showSubtasks(
         subtasks: ArrayList<Subtask>,
         itemTitle: String,
-        id: String,
+        id: Int,
         category: Int
     ) {
         SubtasksBottomSheetDialogFragment(
@@ -138,12 +136,12 @@ class ItemsFragment : Fragment(),
         }
     }
 
-    override fun itemLongClicked(title: String, id: String) {
+    override fun itemLongClicked(title: String, id: Int) {
         ConfirmDeleteDialogFragment(this, id, title)
             .show(childFragmentManager, "confirmDeleteDialog")
     }
 
-    override fun confirmDelete(itemId: String) {
+    override fun confirmDelete(itemId: Int) {
         dataViewModel.deleteItemWithId(itemId)
     }
 

@@ -51,19 +51,19 @@ class CompletedNotGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
             adapter = completedNotGroupedListAdapter
         }
 
-        dataViewModel.doneItems.observe(viewLifecycleOwner, { doneItems ->
-            completedNotGroupedListAdapter.submitList(doneItems)
+        dataViewModel.getDoneItems().observe(viewLifecycleOwner, androidx.lifecycle.Observer { overdueItems ->
+            completedNotGroupedListAdapter.submitList(overdueItems)
         })
     }
 
-    override fun setDone(id: String, done: Boolean, doneTime: Long?) {
+    override fun setDone(id: Int, done: Boolean, doneTime: Long?) {
         dataViewModel.setDone(id, done, doneTime)
     }
 
     override fun showSubtasks(
         subtasks: ArrayList<Subtask>,
         itemTitle: String,
-        id: String,
+        id: Int,
         category: Int
     ) {
         SubtasksBottomSheetDialogFragment(
@@ -89,19 +89,19 @@ class CompletedNotGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
             item.done,
             item.doneTime,
             item.title,
-            item.subtasks,
+            Gson().fromJson(item.subtasks, object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type),
             item.notes,
             calendar,
             item.id
         )
     }
 
-    override fun itemLongClicked(title: String, id: String) {
+    override fun itemLongClicked(title: String, id: Int) {
         ConfirmDeleteDialogFragment(this, id, title)
             .show(childFragmentManager, "confirmDeleteDialog")
     }
 
-    override fun confirmDelete(itemId: String) {
+    override fun confirmDelete(itemId: Int) {
         dataViewModel.deleteItemWithId(itemId)
     }
 
@@ -113,7 +113,7 @@ class CompletedNotGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
         subtasks: java.util.ArrayList<Subtask>,
         notes: String,
         date: Calendar?,
-        itemId: String
+        itemId: Int
     ) {
         val editFragment = EditFragment.newInstance(
             category = category,

@@ -52,14 +52,13 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     private var category: Int = School.HOMEWORK
     private var done: Boolean = false
     private var doneTime: Long? = null
-    private var timeCreated: Long? = null
     private var title: String = ""
     private var subtasks: ArrayList<Subtask> = ArrayList()
     private var notes: String = ""
     private var chipGroupSelected: Int = School.TODAY
     private var selectedDate: Calendar? = null
     private var isEdit: Boolean = false
-    private var itemId: String? = null
+    private var itemId: Int? = null
 
     private val dateToday = Calendar.getInstance()
     private val dateTomorrow = Calendar.getInstance()
@@ -99,11 +98,6 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                 -1
             ) == -1L
         ) null else requireArguments().getLong("doneTime")
-        timeCreated = if (requireArguments().getLong(
-                "timeCreated",
-                -1
-            ) == -1L
-        ) null else requireArguments().getLong("timeCreated")
         title = requireArguments().getString("title", "")
         subtasks =
             requireArguments().getParcelableArrayList<Subtask>("subtasks") as ArrayList<Subtask>
@@ -122,7 +116,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         }
 
         isEdit = requireArguments().getBoolean("isEdit", false)
-        itemId = requireArguments().getString("itemId", "")
+        itemId = requireArguments().getInt("itemId", 0)
     }
 
     override fun onCreateView(
@@ -215,13 +209,12 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                     category = category,
                     done = !done,
                     doneTime = Calendar.getInstance().timeInMillis,
-                    timeCreated = timeCreated,
                     title = editTextTitle.text.toString(),
                     date = SimpleDateFormat(
                         School.dateFormatOnDatabase,
                         Locale.getDefault()
                     ).format(selectedDate!!.time).toInt(),
-                    subtasks = subtaskListAdapter.data,
+                    subtasks = Gson().toJson(subtaskListAdapter.data),
                     notes = editTextNotes.text.toString()
                 )
                 dataViewModel.update(item)
@@ -306,13 +299,12 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                     category = category,
                     done = done,
                     doneTime = doneTime,
-                    timeCreated = timeCreated,
                     title = editTextTitle.text.toString(),
                     date = SimpleDateFormat(
                         School.dateFormatOnDatabase,
                         Locale.getDefault()
                     ).format(selectedDate!!.time).toInt(),
-                    subtasks = subtaskListAdapter.data,
+                    subtasks = Gson().toJson(subtaskListAdapter.data),
                     notes = editTextNotes.text.toString()
                 )
                 dataViewModel.update(item)
@@ -320,13 +312,12 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         } else {
             val item = Item(
                 category = category,
-                timeCreated = Date().time,
                 title = editTextTitle.text.toString(),
                 date = SimpleDateFormat(
                     School.dateFormatOnDatabase,
                     Locale.getDefault()
                 ).format(selectedDate!!.time).toInt(),
-                subtasks = subtaskListAdapter.data,
+                subtasks = Gson().toJson(subtaskListAdapter.data),
                 notes = editTextNotes.text.toString()
             )
             dataViewModel.insert(item)
@@ -484,20 +475,18 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             category: Int = School.HOMEWORK,
             done: Boolean = false,
             doneTime: Long? = null,
-            timeCreated: Long? = null,
             title: String = "",
             subtasks: ArrayList<Subtask> = ArrayList(),
             notes: String = "",
             chipGroupSelected: Int = School.TODAY,
             selectedDate: Calendar? = null,
             isEdit: Boolean = false,
-            itemId: String? = null
+            itemId: Int? = null
         ) = EditFragment().apply {
             arguments = bundleOf(
                 "category" to category,
                 "done" to done,
                 "doneTime" to doneTime,
-                "timeCreated" to timeCreated,
                 "title" to title,
                 "subtasks" to subtasks,
                 "notes" to notes,
@@ -514,7 +503,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         }
     }
 
-    override fun confirmDelete(itemId: String) {
+    override fun confirmDelete(itemId: Int) {
         dataViewModel.deleteItemWithId(itemId)
         dismiss()
     }

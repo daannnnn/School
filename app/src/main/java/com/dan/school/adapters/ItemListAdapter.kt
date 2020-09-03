@@ -1,7 +1,6 @@
 package com.dan.school.adapters
 
 import android.content.Context
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +13,8 @@ import com.dan.school.School.categoryCheckedIcons
 import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import java.util.*
 import kotlin.collections.ArrayList
 
@@ -43,7 +44,11 @@ class ItemListAdapter(
             )
             return@setOnLongClickListener true
         }
-        if (getItem(position).subtasks.isEmpty()) {
+        if ((Gson().fromJson(
+                getItem(position).subtasks,
+                object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type
+            ) as ArrayList<Subtask?>).isEmpty()
+        ) {
             holder.buttonSubtask.visibility = View.GONE
         } else {
             holder.buttonSubtask.visibility = View.VISIBLE
@@ -65,14 +70,19 @@ class ItemListAdapter(
                     doneListener.setDone(
                         getItem(holder.bindingAdapterPosition).id,
                         true,
-                        Date().time
+                        Calendar.getInstance().timeInMillis
                     )
                 }
             }
         }
         holder.buttonSubtask.setOnClickListener {
             val item = getItem(holder.bindingAdapterPosition)
-            showSubtasksListener.showSubtasks(item.subtasks, item.title, item.id, item.category)
+            showSubtasksListener.showSubtasks(
+                Gson().fromJson(
+                    item.subtasks,
+                    object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type
+                ), item.title, item.id, item.category
+            )
         }
     }
 
@@ -86,15 +96,15 @@ class ItemListAdapter(
     }
 
     interface DoneListener {
-        fun setDone(id: String, done: Boolean, doneTime: Long?)
+        fun setDone(id: Int, done: Boolean, doneTime: Long?)
     }
 
     interface ShowSubtasksListener {
-        fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: String, category: Int)
+        fun showSubtasks(subtasks: ArrayList<Subtask>, itemTitle: String, id: Int, category: Int)
     }
 
     interface ItemLongClickListener {
-        fun itemLongClicked(title: String, id: String)
+        fun itemLongClicked(title: String, id: Int)
     }
 
     companion object {
@@ -113,7 +123,7 @@ class ItemListAdapter(
                             oldItem.done == newItem.done &&
                             oldItem.title == newItem.title &&
                             oldItem.date == newItem.date &&
-                            oldItem.getSubtasksString() == newItem.getSubtasksString() &&
+                            oldItem.subtasks == newItem.subtasks &&
                             oldItem.notes == newItem.notes
                 }
             }

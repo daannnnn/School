@@ -7,10 +7,14 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import androidx.fragment.app.activityViewModels
-import com.dan.school.*
+import com.dan.school.ItemClickListener
+import com.dan.school.MainActivity
+import com.dan.school.R
+import com.dan.school.School
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
+import com.google.gson.Gson
+import com.google.gson.reflect.TypeToken
 import kotlinx.android.synthetic.main.fragment_overview.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -36,37 +40,14 @@ class OverviewFragment : Fragment(),
 
     private var canSelectItem = true
 
-    private val dataViewModel: DataViewModel by activityViewModels()
-
     override fun onAttach(context: Context) {
         super.onAttach(context)
         sharedPref = context.getSharedPreferences(
             getString(R.string.preference_file_key), Context.MODE_PRIVATE
         )
-        selectedFragment =
-            sharedPref.getInt(
-                School.SELECTED_BOTTOM_NAVIGATION_FRAGMENT,
-                School.HOME_SELECTED
-            )
         if (activity is MainActivity) {
             openDrawerListener = activity as MainActivity
         }
-    }
-
-    override fun onStart() {
-        super.onStart()
-
-        if (selectedFragment == School.AGENDA_SELECTED) {
-            dataViewModel.startListening(School.AGENDA_ITEMS)
-        } else {
-            dataViewModel.startListening(School.HOME_CALENDAR_ITEMS)
-        }
-    }
-
-    override fun onStop() {
-        super.onStop()
-        dataViewModel.stopListening(School.HOME_CALENDAR_ITEMS)
-        dataViewModel.stopListening(School.AGENDA_ITEMS)
     }
 
     override fun onCreateView(
@@ -78,6 +59,12 @@ class OverviewFragment : Fragment(),
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        selectedFragment =
+            sharedPref.getInt(
+                School.SELECTED_BOTTOM_NAVIGATION_FRAGMENT,
+                School.HOME_SELECTED
+            )
 
         if (savedInstanceState == null) {
             // Show last selected fragment saved on SharedPreferences
@@ -134,19 +121,13 @@ class OverviewFragment : Fragment(),
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
                 R.id.homeFragment -> {
-                    dataViewModel.stopListening(School.AGENDA_ITEMS)
-                    dataViewModel.startListening(School.HOME_CALENDAR_ITEMS)
                     setFragment(School.HOME)
                     textViewAppBarTitle.text = getString(R.string.app_name)
                 }
                 R.id.calendarFragment -> {
-                    dataViewModel.stopListening(School.AGENDA_ITEMS)
-                    dataViewModel.startListening(School.HOME_CALENDAR_ITEMS)
                     setFragment(School.CALENDAR)
                 }
                 R.id.agendaFragment -> {
-                    dataViewModel.stopListening(School.HOME_CALENDAR_ITEMS)
-                    dataViewModel.startListening(School.AGENDA_ITEMS)
                     setFragment(School.AGENDA)
                     textViewAppBarTitle.text = getString(R.string.app_name)
                 }
@@ -301,7 +282,7 @@ class OverviewFragment : Fragment(),
         subtasks: ArrayList<Subtask>,
         notes: String,
         date: Calendar?,
-        itemId: String
+        itemId: Int
     ) {
         if (canSelectItem) {
             canSelectItem = false
@@ -381,7 +362,7 @@ class OverviewFragment : Fragment(),
             item.done,
             item.doneTime,
             item.title,
-            item.subtasks,
+            Gson().fromJson(item.subtasks, object : TypeToken<ArrayList<Subtask?>?>() {}.type),
             item.notes,
             calendar,
             item.id

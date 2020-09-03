@@ -49,16 +49,6 @@ class CompletedFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_completed, container, false)
     }
 
-    override fun onStart() {
-        super.onStart()
-        dataViewModel.startListening(School.DONE_ITEMS)
-    }
-
-    override fun onStop() {
-        super.onStop()
-        dataViewModel.stopListening(School.DONE_ITEMS)
-    }
-
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -70,8 +60,8 @@ class CompletedFragment : Fragment() {
                 ).commit()
         }
 
-        dataViewModel.doneItems.observe(viewLifecycleOwner, { doneItems ->
-            if (doneItems.isEmpty()) {
+        dataViewModel.getDoneItems().observe(viewLifecycleOwner, androidx.lifecycle.Observer { overdueItems ->
+            if (overdueItems.isEmpty()) {
                 linearLayoutCompletedItems.isVisible = false
                 linearLayoutNoCompletedItems.isVisible = true
             } else {

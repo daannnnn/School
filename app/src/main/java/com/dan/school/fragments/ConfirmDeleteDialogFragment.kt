@@ -11,7 +11,7 @@ import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class ConfirmDeleteDialogFragment(
     private val confirmDeleteListener: ConfirmDeleteListener,
-    private val itemId: String,
+    private val itemId: Int,
     private val title: String
 ) :
     DialogFragment() {
@@ -35,6 +35,6 @@ class ConfirmDeleteDialogFragment(
     }
 
     interface ConfirmDeleteListener {
-        fun confirmDelete(itemId: String)
+        fun confirmDelete(itemId: Int)
     }
 }

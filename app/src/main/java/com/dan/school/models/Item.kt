@@ -1,19 +1,16 @@
 package com.dan.school.models
 
-import com.google.firebase.firestore.DocumentId
-import com.google.gson.Gson
-import kotlin.collections.ArrayList
+import androidx.room.Entity
+import androidx.room.PrimaryKey
 
+@Entity(tableName = "items")
 data class Item(
-    @DocumentId val id: String = "",
-    val category: Int = -1,
+    @PrimaryKey(autoGenerate = true) val id: Int = 0,
+    val category: Int,
     val done: Boolean = false,
     val doneTime: Long? = null,
-    val timeCreated: Long? = null,
-    val title: String = "",
-    val date: Int = -1,
-    val subtasks: ArrayList<Subtask> = ArrayList(),
+    val title: String,
+    val date: Int,
+    val subtasks: String = "[]",
     val notes: String = ""
-) {
-    fun getSubtasksString(): String = Gson().toJson(subtasks)
-}
+)

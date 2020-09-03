@@ -2,6 +2,7 @@ package com.dan.school.fragments
 
 import android.animation.LayoutTransition
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -42,8 +43,15 @@ class AgendaFragment : Fragment(),
     private lateinit var examListAdapter: ItemListAdapter
     private lateinit var taskListAdapter: ItemListAdapter
 
+    private lateinit var sharedPref: SharedPreferences
+
+    private var onSharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener? = null
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
+        sharedPref = context.getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
         if (parentFragment is OverviewFragment) {
             itemClickListener = (parentFragment as OverviewFragment)
         }
@@ -64,9 +72,15 @@ class AgendaFragment : Fragment(),
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        dataViewModel.profile.observe(viewLifecycleOwner, {
-            updateGreeting(it.nickname)
-        })
+        onSharedPreferenceChangeListener =
+            SharedPreferences.OnSharedPreferenceChangeListener { sharedPreferences, key ->
+                if (key == School.NICKNAME) {
+                    updateGreeting(sharedPreferences.getString(School.NICKNAME, ""))
+                }
+            }
+        sharedPref.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
+
+        updateGreeting(sharedPref.getString(School.NICKNAME, ""))
 
         overdueListAdapter = ItemListAdapter(
             requireContext(),
@@ -114,7 +128,12 @@ class AgendaFragment : Fragment(),
             adapter = taskListAdapter
         }
 
-        dataViewModel.overdueItemsToday.observe(viewLifecycleOwner, { overdueItems ->
+        dataViewModel.getAllOverdueItemsByDate(
+            SimpleDateFormat(
+                School.dateFormatOnDatabase,
+                Locale.getDefault()
+            ).format(dateToday.time).toInt()
+        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { overdueItems ->
             if (overdueItems.isEmpty()) {
                 groupOverdue.visibility = View.GONE
             } else {
@@ -125,7 +144,12 @@ class AgendaFragment : Fragment(),
             }
         })
 
-        dataViewModel.allHomeworksToday.observe(viewLifecycleOwner, { homeworks ->
+        dataViewModel.getAllHomeworkByDate(
+            SimpleDateFormat(
+                School.dateFormatOnDatabase,
+                Locale.getDefault()
+            ).format(dateToday.time).toInt()
+        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { homeworks ->
             if (homeworks.isEmpty()) {
                 groupHomework.visibility = View.GONE
             } else {
@@ -136,7 +160,12 @@ class AgendaFragment : Fragment(),
             }
         })
 
-        dataViewModel.allExamsToday.observe(viewLifecycleOwner, { exams ->
+        dataViewModel.getAllExamByDate(
+            SimpleDateFormat(
+                School.dateFormatOnDatabase,
+                Locale.getDefault()
+            ).format(dateToday.time).toInt()
+        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { exams ->
             if (exams.isEmpty()) {
                 groupExam.visibility = View.GONE
             } else {
@@ -147,7 +176,12 @@ class AgendaFragment : Fragment(),
             }
         })
 
-        dataViewModel.allTasksToday.observe(viewLifecycleOwner, { tasks ->
+        dataViewModel.getAllTaskByDate(
+            SimpleDateFormat(
+                School.dateFormatOnDatabase,
+                Locale.getDefault()
+            ).format(dateToday.time).toInt()
+        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { tasks ->
             if (tasks.isEmpty()) {
                 groupTask.visibility = View.GONE
             } else {
@@ -209,19 +243,22 @@ class AgendaFragment : Fragment(),
         }
         cardViewMessage.isVisible = true
 
-        dataViewModel.hasItemsForTomorrow.observe(viewLifecycleOwner, {
-            buttonSeeTomorrow.isVisible = it
-        })
+        buttonSeeTomorrow.isVisible = dataViewModel.hasItemsForDate(
+            SimpleDateFormat(
+                School.dateFormatOnDatabase,
+                Locale.getDefault()
+            ).format(dateTomorrow.time).toInt()
+        )
     }
 
-    override fun setDone(id: String, done: Boolean, doneTime: Long?) {
+    override fun setDone(id: Int, done: Boolean, doneTime: Long?) {
         dataViewModel.setDone(id, done, doneTime)
     }
 
     override fun showSubtasks(
         subtasks: ArrayList<Subtask>,
         itemTitle: String,
-        id: String,
+        id: Int,
         category: Int
     ) {
         SubtasksBottomSheetDialogFragment(
@@ -242,12 +279,12 @@ class AgendaFragment : Fragment(),
         }
     }
 
-    override fun itemLongClicked(title: String, id: String) {
+    override fun itemLongClicked(title: String, id: Int) {
         ConfirmDeleteDialogFragment(this, id, title)
             .show(childFragmentManager, "confirmDeleteDialog")
     }
 
-    override fun confirmDelete(itemId: String) {
+    override fun confirmDelete(itemId: Int) {
         dataViewModel.deleteItemWithId(itemId)
     }
 }

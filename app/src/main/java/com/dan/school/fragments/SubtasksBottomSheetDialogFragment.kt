@@ -22,7 +22,7 @@ import kotlinx.android.synthetic.main.layout_subtasks_bottom_sheet.*
 class SubtasksBottomSheetDialogFragment(
     private val subtasks: ArrayList<Subtask>,
     private val itemTitle: String,
-    private val itemId: String,
+    private val itemId: Int,
     private val uncheckedIcon: Int,
     private val checkedIcon: Int
 ) : BottomSheetDialogFragment(), SubtasksShowListAdapter.SubtaskChangedListener {
@@ -75,6 +75,6 @@ class SubtasksBottomSheetDialogFragment(
     }
 
     override fun subtaskChanged() {
-        dataViewModel.setItemSubtasks(itemId, subtasks)
+        dataViewModel.setItemSubtasks(itemId, Gson().toJson(subtasks))
     }
 }
