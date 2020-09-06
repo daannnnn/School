@@ -97,6 +97,14 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        if (savedInstanceState != null) {
+            selectedDate = Date(savedInstanceState.getLong("selectedDate")).toInstant()
+                .atZone(ZoneId.systemDefault()).toLocalDate()
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -412,6 +420,14 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             isEmpty[School.TASK] = it.isEmpty()
             showNoItemsTextIfAllEmpty()
         })
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        outState.putLong(
+            "selectedDate",
+            Date.from(selectedDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant()).time
+        )
+        super.onSaveInstanceState(outState)
     }
 
     /**
