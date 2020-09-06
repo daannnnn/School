@@ -107,4 +107,8 @@
         <item name="fontFamily">@font/cabin_regular</item>
     </style>
 
+    <style name="NavigationViewItemTextAppearance" parent="TextAppearance.MaterialComponents.Body2">
+        <item name="fontFamily">@font/cabin_regular</item>
+    </style>
+
 </resources>
