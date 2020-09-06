@@ -89,7 +89,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
                     R.id.settings -> {
                         drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
                         supportFragmentManager.beginTransaction()
-                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_in_left)
+                            .setCustomAnimations(R.anim.slide_in_right, 0)
                             .add(R.id.frameLayoutMain, SettingsFragment(), School.SETTINGS)
                             .addToBackStack(School.SETTINGS)
                             .commit()
