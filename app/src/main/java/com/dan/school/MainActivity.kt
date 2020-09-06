@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
+import android.util.Log
 import android.view.View
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
@@ -16,13 +17,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 
 class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
-
-    /**
-     * Holds id of the item selected on [navigationView]
-     * for [navigationItemSelected] to access after [drawerLayout]
-     * is closed
-     */
-    private var navigationSelectedItemId: Int? = null
 
     /**
      * Is set to not null on [SettingsFragment.onAttach]
@@ -53,38 +47,59 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
         setNavigationViewHeaderFullName(sharedPref.getString(School.FULL_NAME, ""))
 
         // listeners
-        onSharedPreferenceChangeListener = OnSharedPreferenceChangeListener { sharedPreferences, key ->
-            if (key == School.FULL_NAME) {
-                setNavigationViewHeaderFullName(sharedPreferences.getString(School.FULL_NAME, ""))
+        onSharedPreferenceChangeListener =
+            OnSharedPreferenceChangeListener { sharedPreferences, key ->
+                if (key == School.FULL_NAME) {
+                    setNavigationViewHeaderFullName(
+                        sharedPreferences.getString(
+                            School.FULL_NAME,
+                            ""
+                        )
+                    )
+                }
+                if (key == School.NICKNAME) {
+                    setNavigationViewHeaderNickname(
+                        sharedPreferences.getString(
+                            School.NICKNAME,
+                            ""
+                        )
+                    )
+                }
             }
-            if (key == School.NICKNAME) {
-                setNavigationViewHeaderNickname(sharedPreferences.getString(School.NICKNAME, ""))
-            }
-        }
         sharedPref.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
         navigationView.setNavigationItemSelectedListener { item ->
             if (!item.isChecked) {
                 item.isChecked = true
                 drawerLayout.closeDrawers()
 
-                navigationSelectedItemId = item.itemId
+                when (item.itemId) {
+                    R.id.overview -> {
+                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                        if (supportFragmentManager.backStackEntryCount != 0) {
+                            supportFragmentManager.popBackStackImmediate()
+                        }
+                    }
+                    R.id.completed -> {
+                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                        supportFragmentManager.beginTransaction()
+                            .add(R.id.frameLayoutMain, CompletedFragment(), School.COMPLETED)
+                            .addToBackStack(School.COMPLETED)
+                            .commit()
+                    }
+                    R.id.settings -> {
+                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
+                        supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_in_left)
+                            .add(R.id.frameLayoutMain, SettingsFragment(), School.SETTINGS)
+                            .addToBackStack(School.SETTINGS)
+                            .commit()
+                    }
+                }
             } else {
                 drawerLayout.closeDrawer(GravityCompat.START)
             }
             return@setNavigationItemSelectedListener true
         }
-        drawerLayout.addDrawerListener(object : DrawerLayout.DrawerListener {
-            override fun onDrawerStateChanged(newState: Int) {}
-            override fun onDrawerSlide(drawerView: View, slideOffset: Float) {}
-            override fun onDrawerOpened(drawerView: View) {}
-
-            override fun onDrawerClosed(drawerView: View) {
-                navigationSelectedItemId?.let {
-                    navigationItemSelected(it)
-                    navigationSelectedItemId = null
-                }
-            }
-        })
         supportFragmentManager.addOnBackStackChangedListener {
             if (supportFragmentManager.backStackEntryCount == 0) {
                 if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
@@ -120,41 +135,14 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
 
     /** Sets [R.id.textViewNickname] text to [nickname] */
     private fun setNavigationViewHeaderNickname(nickname: String?) {
-        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewNickname).text = nickname
+        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewNickname).text =
+            nickname
     }
 
     /** Sets [R.id.textViewFullName] text to [fullName] */
     private fun setNavigationViewHeaderFullName(fullName: String?) {
-        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewFullName).text = fullName
-    }
-
-    /**
-     * Manages fragments when [navigationView] selected item is changed
-     * Called after [drawerLayout] is closed
-     */
-    private fun navigationItemSelected(itemId: Int) {
-        when (itemId) {
-            R.id.overview -> {
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                if (supportFragmentManager.backStackEntryCount != 0) {
-                    supportFragmentManager.popBackStackImmediate()
-                }
-            }
-            R.id.completed -> {
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.frameLayoutMain, CompletedFragment(), School.COMPLETED)
-                    .addToBackStack(School.COMPLETED)
-                    .commit()
-            }
-            R.id.settings -> {
-                drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                supportFragmentManager.beginTransaction()
-                    .add(R.id.frameLayoutMain, SettingsFragment(), School.SETTINGS)
-                    .addToBackStack(School.SETTINGS)
-                    .commit()
-            }
-        }
+        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewFullName).text =
+            fullName
     }
 
     /** Hides fragment with tag [tag] */
@@ -172,6 +160,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
             return
         }
         supportFragmentManager.beginTransaction()
+            .setCustomAnimations(android.R.anim.fade_in, 0)
             .show(supportFragmentManager.findFragmentByTag(tag)!!).commit()
     }
 
