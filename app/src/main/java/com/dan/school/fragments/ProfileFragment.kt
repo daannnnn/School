@@ -30,7 +30,7 @@ class ProfileFragment : Fragment() {
         inputMethodManager =
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         if (parentFragment is SettingsFragment) {
-            (parentFragment as SettingsFragment).setAppBarButtonRight(View.OnClickListener {
+            (parentFragment as SettingsFragment).setAppBarButtonRight({
                 (parentFragment as SettingsFragment).setAppBarButtonRight(
                     if (isEditMode) R.drawable.ic_edit
                     else R.drawable.ic_check
