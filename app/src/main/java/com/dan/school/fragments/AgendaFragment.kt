@@ -133,7 +133,7 @@ class AgendaFragment : Fragment(),
                 School.dateFormatOnDatabase,
                 Locale.getDefault()
             ).format(dateToday.time).toInt()
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { overdueItems ->
+        ).observe(viewLifecycleOwner, { overdueItems ->
             if (overdueItems.isEmpty()) {
                 groupOverdue.visibility = View.GONE
             } else {
@@ -149,7 +149,7 @@ class AgendaFragment : Fragment(),
                 School.dateFormatOnDatabase,
                 Locale.getDefault()
             ).format(dateToday.time).toInt()
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { homeworks ->
+        ).observe(viewLifecycleOwner, { homeworks ->
             if (homeworks.isEmpty()) {
                 groupHomework.visibility = View.GONE
             } else {
@@ -165,7 +165,7 @@ class AgendaFragment : Fragment(),
                 School.dateFormatOnDatabase,
                 Locale.getDefault()
             ).format(dateToday.time).toInt()
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { exams ->
+        ).observe(viewLifecycleOwner, { exams ->
             if (exams.isEmpty()) {
                 groupExam.visibility = View.GONE
             } else {
@@ -181,7 +181,7 @@ class AgendaFragment : Fragment(),
                 School.dateFormatOnDatabase,
                 Locale.getDefault()
             ).format(dateToday.time).toInt()
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { tasks ->
+        ).observe(viewLifecycleOwner, { tasks ->
             if (tasks.isEmpty()) {
                 groupTask.visibility = View.GONE
             } else {
