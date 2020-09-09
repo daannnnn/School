@@ -425,7 +425,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putLong(
             "selectedDate",
-            Date.from(selectedDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant()).time
+            Date.from((if (selectedDate != null) selectedDate else LocalDate.now())!!.atStartOfDay(ZoneId.systemDefault())?.toInstant()).time
         )
         super.onSaveInstanceState(outState)
     }
