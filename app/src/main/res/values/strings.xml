@@ -66,6 +66,12 @@
     <string name="email">Email</string>
     <string name="no_items_for_this_date">No items for this date.</string>
     <string name="no_completed_items_yet">No completed items yet</string>
+    <string name="get_started">Get Started</string>
+    <string name="done">Done</string>
+    <string name="add_homeworks_exams_and_tasks">Add homeworks, exams, and tasks</string>
+    <string name="check_your_calendar">Check your calendar</string>
+    <string name="see_your_schedule_for_the_day">See your schedule for the day</string>
+    <string name="skip">Skip</string>
     <string-array name="sort_by_array">
         <item>Time Completed</item>
         <item>Title</item>

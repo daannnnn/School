@@ -28,6 +28,7 @@ object School {
     const val IS_DARK_MODE = "is_dark_mode"
     const val SELECTED_BOTTOM_NAVIGATION_FRAGMENT = "selected_bottom_navigation_fragment"
     const val SELECTED_TAB_FRAGMENT = "selected_tab_fragment"
+    const val IS_SETUP_DONE = "is_setup_done"
 
     const val OVERVIEW = "overview"
     const val COMPLETED = "completed"
@@ -38,6 +39,8 @@ object School {
 
     const val FULL_NAME = "fullName"
     const val NICKNAME = "nickname"
+
+    const val POSITION = "position"
 
     val categoryColors =
         arrayOf(
