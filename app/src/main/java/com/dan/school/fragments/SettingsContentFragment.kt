@@ -14,14 +14,10 @@ import kotlinx.android.synthetic.main.fragment_settings_content.*
 
 class SettingsContentFragment : Fragment() {
 
-    private lateinit var sharedPref: SharedPreferences
     private lateinit var settingsItemOnClickListener: SettingsItemOnClickListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
-        sharedPref = context.getSharedPreferences(
-            getString(R.string.preference_file_key), Context.MODE_PRIVATE
-        )
         if (parentFragment is SettingsFragment) {
             settingsItemOnClickListener = parentFragment as SettingsFragment
         }
@@ -37,29 +33,16 @@ class SettingsContentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        switchDarkMode.isChecked = sharedPref.getBoolean(School.IS_DARK_MODE, false)
-
-        switchDarkMode.setOnCheckedChangeListener { _, isChecked ->
-            if (isChecked) {
-                setDarkMode(true)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-            } else {
-                setDarkMode(false)
-                AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-            }
-        }
-
         relativeLayoutProfile.setOnClickListener {
             if (this::settingsItemOnClickListener.isInitialized) {
                 settingsItemOnClickListener.itemClicked(School.PROFILE)
             }
         }
-    }
 
-    private fun setDarkMode(isDarkMode: Boolean) {
-        with(sharedPref.edit()) {
-            this?.putBoolean(School.IS_DARK_MODE, isDarkMode)
-            this?.commit()
+        relativeLayoutTheme.setOnClickListener {
+            if (this::settingsItemOnClickListener.isInitialized) {
+                settingsItemOnClickListener.itemClicked(School.THEME)
+            }
         }
     }
 

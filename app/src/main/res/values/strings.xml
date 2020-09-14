@@ -50,6 +50,7 @@
     <string name="no_exams">No Exams</string>
     <string name="no_tasks">No Tasks</string>
     <string name="dark_mode">Dark Mode</string>
+    <string name="theme">Theme</string>
     <string name="profile">Profile</string>
     <string name="preference_file_key">preferences</string>
     <string name="completed">Completed</string>

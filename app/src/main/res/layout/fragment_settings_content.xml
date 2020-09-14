@@ -43,6 +43,7 @@
         </RelativeLayout>
 
         <RelativeLayout
+            android:id="@+id/relativeLayoutTheme"
             android:layout_width="match_parent"
             android:layout_height="wrap_content"
             android:background="?attr/selectableItemBackground"
@@ -57,8 +58,9 @@
                 android:layout_height="24dp"
                 android:layout_centerVertical="true"
                 android:layout_marginTop="12dp"
+                app:tint="@color/colorPrimary"
                 android:layout_marginBottom="12dp"
-                android:src="@drawable/ic_dark_mode" />
+                android:src="@drawable/ic_theme" />
 
             <TextView
                 android:layout_width="wrap_content"
@@ -67,15 +69,9 @@
                 android:layout_marginStart="8dp"
                 android:layout_toEndOf="@id/imageViewDarkModeIcon"
                 android:fontFamily="@font/cabin_regular"
-                android:text="@string/dark_mode"
+                android:text="@string/theme"
                 android:textColor="?android:textColorPrimary"
                 android:textSize="18sp" />
-
-            <com.google.android.material.switchmaterial.SwitchMaterial
-                android:id="@+id/switchDarkMode"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_alignParentEnd="true" />
 
         </RelativeLayout>
 

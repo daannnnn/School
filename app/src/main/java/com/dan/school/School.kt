@@ -13,7 +13,12 @@ object School {
     const val CALENDAR_SELECTED = 7
     const val AGENDA_SELECTED = 8
 
-    const val PROFILE = 9
+    const val DARK_MODE = 9
+    const val LIGHT_MODE = 10
+    const val SYSTEM_DEFAULT = 11
+
+    const val PROFILE = 12
+    const val THEME = 13
 
     const val dateFormat = "EEE, MMM d, yyyy"
     const val dateFormatOnDatabase = "yyyyMMdd"
@@ -25,7 +30,7 @@ object School {
     const val CALENDAR = "calendar"
     const val AGENDA = "agenda"
 
-    const val IS_DARK_MODE = "is_dark_mode"
+    const val SELECTED_THEME = "selected_theme"
     const val SELECTED_BOTTOM_NAVIGATION_FRAGMENT = "selected_bottom_navigation_fragment"
     const val SELECTED_TAB_FRAGMENT = "selected_tab_fragment"
     const val IS_SETUP_DONE = "is_setup_done"
