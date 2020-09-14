@@ -10,10 +10,12 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".SetupActivity"></activity>
+        <activity
+            android:name=".SetupActivity"
+            android:theme="@style/SetupTheme" />
         <activity
             android:name=".MainActivity"
-            android:windowSoftInputMode="adjustResize"></activity>
+            android:windowSoftInputMode="adjustResize" />
         <activity
             android:name=".SplashScreenActivity"
             android:theme="@style/SplashScreenTheme">
