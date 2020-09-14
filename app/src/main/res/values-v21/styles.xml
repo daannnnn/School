@@ -11,6 +11,8 @@
 
         <item name="materialAlertDialogTheme">@style/DialogTheme</item>
         <item name="textAppearanceButton">@style/ButtonTextAppearance</item>
+
+        <item name="textAppearanceBody1">@style/TextAppearanceBody1</item>
     </style>
 
     <style name="SetupTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">

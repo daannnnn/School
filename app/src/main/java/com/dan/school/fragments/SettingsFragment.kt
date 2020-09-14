@@ -126,7 +126,7 @@ class SettingsFragment : Fragment(), SettingsContentFragment.SettingsItemOnClick
                 }
 
                 MaterialAlertDialogBuilder(requireContext())
-                    .setTitle(resources.getString(R.string.title))
+                    .setTitle(resources.getString(R.string.theme))
                     .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
                     .setPositiveButton(resources.getString(R.string.done)) { _, _ ->
                         when (checkedItem) {

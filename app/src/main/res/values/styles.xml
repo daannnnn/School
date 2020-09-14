@@ -8,6 +8,8 @@
 
         <item name="materialAlertDialogTheme">@style/DialogTheme</item>
         <item name="textAppearanceButton">@style/ButtonTextAppearance</item>
+
+        <item name="textAppearanceBody1">@style/TextAppearanceBody1</item>
     </style>
 
     <style name="SetupTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
@@ -20,6 +22,10 @@
 
     <style name="SplashScreenTheme" parent="Theme.MaterialComponents.DayNight.NoActionBar">
         <item name="android:windowBackground">@drawable/splash_screen_background</item>
+    </style>
+
+    <style name="TextAppearanceBody1" parent="TextAppearance.MaterialComponents.Body1">
+        <item name="fontFamily">@font/cabin_regular</item>
     </style>
 
     <style name="Widget.BottomNavigationView" parent="Widget.Design.BottomNavigationView">
