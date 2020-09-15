@@ -47,6 +47,8 @@ object School {
 
     const val POSITION = "position"
 
+    const val SETTINGS_CONTENT_FRAGMENT_TAG = "SettingsContentFragment"
+
     val categoryColors =
         arrayOf(
             R.color.homeworkColor,

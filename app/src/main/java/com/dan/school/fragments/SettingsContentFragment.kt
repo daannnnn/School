@@ -33,6 +33,10 @@ class SettingsContentFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        if (parentFragment is SettingsFragment) {
+            textViewSelectedTheme.text = (parentFragment as SettingsFragment).getSelectedTheme()
+        }
+
         relativeLayoutProfile.setOnClickListener {
             if (this::settingsItemOnClickListener.isInitialized) {
                 settingsItemOnClickListener.itemClicked(School.PROFILE)
@@ -44,6 +48,13 @@ class SettingsContentFragment : Fragment() {
                 settingsItemOnClickListener.itemClicked(School.THEME)
             }
         }
+    }
+
+    /**
+     * Updates [textViewSelectedTheme] text to [selectedTheme]
+     */
+    fun updateTextViewSelectedTheme(selectedTheme: String) {
+        textViewSelectedTheme.text = selectedTheme
     }
 
     interface SettingsItemOnClickListener {

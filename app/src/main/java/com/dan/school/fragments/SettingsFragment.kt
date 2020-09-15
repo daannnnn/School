@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import com.dan.school.*
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.fragment_settings.*
+import kotlinx.android.synthetic.main.fragment_settings_content.*
 
 class SettingsFragment : Fragment(), SettingsContentFragment.SettingsItemOnClickListener,
     MainActivity.SettingsBackPressedListener {
@@ -64,7 +65,8 @@ class SettingsFragment : Fragment(), SettingsContentFragment.SettingsItemOnClick
                 )
                 .add(
                     R.id.frameLayoutSettings,
-                    SettingsContentFragment()
+                    SettingsContentFragment(),
+                    School.SETTINGS_CONTENT_FRAGMENT_TAG
                 ).commit()
         }
 
@@ -84,6 +86,73 @@ class SettingsFragment : Fragment(), SettingsContentFragment.SettingsItemOnClick
         requireActivity().window.statusBarColor =
             ContextCompat.getColor(requireContext(), R.color.appBarLayoutColor)
         super.onDestroy()
+    }
+
+    override fun onDetach() {
+        if (requireActivity() is MainActivity) {
+            (requireActivity() as MainActivity).settingsBackPressedListener = null
+        }
+        super.onDetach()
+    }
+
+    /**
+     * Saves value of [theme] to [sharedPref] with key
+     * [School.SELECTED_THEME] then calls [selectedThemeUpdated]
+     */
+    private fun setTheme(theme: Int) {
+        with(sharedPref.edit()) {
+            this?.putInt(School.SELECTED_THEME, theme)
+            this?.commit()
+        }
+        selectedThemeUpdated(theme)
+    }
+
+    /**
+     * Tries to update [textViewSelectedTheme] on [SettingsContentFragment]
+     */
+    private fun selectedThemeUpdated(theme: Int) {
+        val settingsContentFragment = childFragmentManager.findFragmentByTag(School.SETTINGS_CONTENT_FRAGMENT_TAG)
+        if (settingsContentFragment != null && settingsContentFragment is SettingsContentFragment) {
+            settingsContentFragment.updateTextViewSelectedTheme(getThemeStringWithIntValue(theme))
+        }
+    }
+
+    /**
+     * Returns a string value that represent the given [theme]
+     */
+    private fun getThemeStringWithIntValue(theme: Int): String {
+        return when (theme) {
+            School.LIGHT_MODE -> {
+                "Light"
+            }
+            School.DARK_MODE -> {
+                "Dark"
+            }
+            School.SYSTEM_DEFAULT -> {
+                "System Default"
+            }
+            else -> {
+                "Not set"
+            }
+        }
+    }
+
+    fun setAppBarButtonRight(
+        clickListener: View.OnClickListener?,
+        isVisible: Boolean,
+        imageRes: Int
+    ) {
+        buttonSettingsAppBarRight.isVisible = isVisible
+        buttonSettingsAppBarRight.setImageResource(imageRes)
+        buttonSettingsAppBarRight.setOnClickListener(clickListener)
+    }
+
+    fun setAppBarButtonRight(imageRes: Int) {
+        buttonSettingsAppBarRight.setImageResource(imageRes)
+    }
+
+    fun getSelectedTheme(): String {
+        return getThemeStringWithIntValue(sharedPref.getInt(School.SELECTED_THEME, -1))
     }
 
     override fun itemClicked(item: Int) {
@@ -162,34 +231,6 @@ class SettingsFragment : Fragment(), SettingsContentFragment.SettingsItemOnClick
             if (childFragmentManager.backStackEntryCount == 0) {
                 textViewSettingsTitle.setText(R.string.settings)
             }
-        }
-    }
-
-    override fun onDetach() {
-        if (requireActivity() is MainActivity) {
-            (requireActivity() as MainActivity).settingsBackPressedListener = null
-        }
-        super.onDetach()
-    }
-
-    fun setAppBarButtonRight(
-        clickListener: View.OnClickListener?,
-        isVisible: Boolean,
-        imageRes: Int
-    ) {
-        buttonSettingsAppBarRight.isVisible = isVisible
-        buttonSettingsAppBarRight.setImageResource(imageRes)
-        buttonSettingsAppBarRight.setOnClickListener(clickListener)
-    }
-
-    fun setAppBarButtonRight(imageRes: Int) {
-        buttonSettingsAppBarRight.setImageResource(imageRes)
-    }
-
-    private fun setTheme(theme: Int) {
-        with(sharedPref.edit()) {
-            this?.putInt(School.SELECTED_THEME, theme)
-            this?.commit()
         }
     }
 }
