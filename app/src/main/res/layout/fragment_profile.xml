@@ -65,7 +65,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
+                    android:inputType="textPersonName|textCapWords"
                     android:textAppearance="@style/InputTextTextAppearance" />
 
             </com.google.android.material.textfield.TextInputLayout>
@@ -88,7 +88,7 @@
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:inputType="textPersonName"
+                    android:inputType="textPersonName|textCapWords"
                     android:textAppearance="@style/InputTextTextAppearance" />
 
             </com.google.android.material.textfield.TextInputLayout>
