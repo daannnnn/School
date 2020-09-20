@@ -2,6 +2,7 @@ apply plugin: 'com.android.application'
 apply plugin: 'kotlin-android'
 apply plugin: 'kotlin-android-extensions'
 apply plugin: 'kotlin-kapt'
+apply plugin: 'com.mikepenz.aboutlibraries.plugin'
 
 android {
     signingConfigs {
@@ -46,6 +47,10 @@ android {
     }
 }
 
+aboutLibraries {
+    configPath = "app/src/main/res/raw"
+}
+
 dependencies {
     implementation fileTree(dir: "libs", include: ["*.jar"])
     implementation "org.jetbrains.kotlin:kotlin-stdlib:$kotlin_version"
@@ -61,6 +66,7 @@ dependencies {
     implementation 'androidx.fragment:fragment-ktx:1.2.5'
     implementation 'com.github.kizitonwose:CalendarView:0.4.2'
     implementation 'androidx.room:room-ktx:2.2.5'
+    implementation "com.mikepenz:aboutlibraries:8.3.1"
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.0.10'
     kapt 'androidx.room:room-compiler:2.2.5'
     testImplementation 'junit:junit:4.12'

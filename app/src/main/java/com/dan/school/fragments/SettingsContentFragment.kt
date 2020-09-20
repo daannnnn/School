@@ -48,6 +48,12 @@ class SettingsContentFragment : Fragment() {
                 settingsItemOnClickListener.itemClicked(School.THEME)
             }
         }
+
+        relativeLayoutAbout.setOnClickListener {
+            if (this::settingsItemOnClickListener.isInitialized) {
+                settingsItemOnClickListener.itemClicked(School.ABOUT)
+            }
+        }
     }
 
     /**

@@ -73,6 +73,14 @@
     <string name="check_your_calendar">Check your calendar</string>
     <string name="see_your_schedule_for_the_day">See your schedule for the day</string>
     <string name="skip">Skip</string>
+    <string name="about">About</string>
+    <string name="licenses">Licenses</string>
+
+    <string name="com_github_antonyt__InfiniteViewPager_description">Augment Android\'s ViewPager with wrap-around functionality.</string>
+    <string name="com_github_antonyt__InfiniteViewPager_libraryWebsite">https://github.com/antonyt/InfiniteViewPager</string>
+    <string name="com_github_kizitonwose__CalendarView_description">A highly customizable calendar library for Android, powered by RecyclerView.</string>
+    <string name="com_github_kizitonwose__CalendarView_libraryWebsite">https://github.com/kizitonwose/CalendarView</string>
+
     <string-array name="sort_by_array">
         <item>Time Completed</item>
         <item>Title</item>

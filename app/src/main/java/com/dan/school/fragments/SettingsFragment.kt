@@ -218,6 +218,21 @@ class SettingsFragment : Fragment(), SettingsContentFragment.SettingsItemOnClick
                     }
                     .show()
             }
+            School.ABOUT -> {
+                childFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                        R.anim.slide_in_right,
+                        R.anim.slide_out_left,
+                        R.anim.slide_in_left,
+                        R.anim.slide_out_right
+                    )
+                    .replace(
+                        R.id.frameLayoutSettings,
+                        AboutFragment()
+                    ).addToBackStack(null)
+                    .commit()
+                textViewSettingsTitle.setText(R.string.about)
+            }
         }
     }
 

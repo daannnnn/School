@@ -1,0 +1,56 @@
+package com.dan.school
+
+import android.os.Bundle
+import androidx.fragment.app.Fragment
+import android.view.LayoutInflater
+import android.view.View
+import android.view.ViewGroup
+import com.mikepenz.aboutlibraries.Libs
+import com.mikepenz.aboutlibraries.LibsBuilder
+import kotlinx.android.synthetic.main.fragment_about.*
+
+class AboutFragment : Fragment() {
+
+    override fun onCreateView(
+        inflater: LayoutInflater, container: ViewGroup?,
+        savedInstanceState: Bundle?
+    ): View? {
+        return inflater.inflate(R.layout.fragment_about, container, false)
+    }
+
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        val version = "Version ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+        textViewVersion.text = version
+
+        relativeLayoutLicenses.setOnClickListener {
+            LibsBuilder()
+                .withFields(R.string::class.java.fields)
+                .withActivityTitle(getString(R.string.licenses))
+                .withLicenseShown(true)
+                .withAboutIconShown(false)
+                .withLibraryModification(
+                    "com_github_antonyt__InfiniteViewPager",
+                    Libs.LibraryFields.LIBRARY_DESCRIPTION,
+                    getString(R.string.com_github_antonyt__InfiniteViewPager_description)
+                )
+                .withLibraryModification(
+                    "com_github_antonyt__InfiniteViewPager",
+                    Libs.LibraryFields.LIBRARY_WEBSITE,
+                    getString(R.string.com_github_antonyt__InfiniteViewPager_libraryWebsite)
+                )
+                .withLibraryModification(
+                    "com_github_kizitonwose__CalendarView",
+                    Libs.LibraryFields.LIBRARY_DESCRIPTION,
+                    getString(R.string.com_github_kizitonwose__CalendarView_description)
+                )
+                .withLibraryModification(
+                    "com_github_kizitonwose__CalendarView",
+                    Libs.LibraryFields.LIBRARY_WEBSITE,
+                    getString(R.string.com_github_kizitonwose__CalendarView_libraryWebsite)
+                )
+                .start(requireContext())
+        }
+    }
+
+}
