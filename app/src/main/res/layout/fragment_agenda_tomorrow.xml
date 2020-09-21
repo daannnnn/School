@@ -10,13 +10,12 @@
         android:id="@+id/appBar"
         android:layout_width="match_parent"
         android:layout_height="?attr/actionBarSize"
-        android:background="@android:color/white"
+        android:background="?android:colorBackground"
         app:liftOnScroll="true">
 
         <RelativeLayout
             android:layout_width="match_parent"
-            android:layout_height="?attr/actionBarSize"
-            android:background="@android:color/white">
+            android:layout_height="?attr/actionBarSize">
 
             <ImageView
                 android:id="@+id/buttonBack"
@@ -25,7 +24,8 @@
                 android:layout_centerVertical="true"
                 android:layout_margin="16dp"
                 android:background="?selectableItemBackgroundBorderless"
-                android:src="@drawable/ic_chevron_left" />
+                android:src="@drawable/ic_chevron_left"
+                app:tint="?android:textColorPrimary" />
 
             <TextView
                 android:id="@+id/textViewTomorrow"
@@ -58,11 +58,11 @@
                 android:layout_width="wrap_content"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="24dp"
+                android:layout_marginTop="16dp"
                 android:layout_marginEnd="24dp"
                 android:fontFamily="@font/cabin_bold"
                 android:textColor="@color/colorPrimary"
                 android:textSize="24sp"
-                android:layout_marginTop="16dp"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toTopOf="parent"
@@ -74,11 +74,11 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="24dp"
                 android:src="@drawable/ic_homework"
-                app:tint="@color/homeworkColor"
                 app:layout_constraintBottom_toBottomOf="@id/textViewHomeworkLabel"
                 app:layout_constraintDimensionRatio="W,1,1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewHomeworkLabel" />
+                app:layout_constraintTop_toTopOf="@id/textViewHomeworkLabel"
+                app:tint="@color/homeworkColor" />
 
             <TextView
                 android:id="@+id/textViewHomeworkLabel"
@@ -125,11 +125,11 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="24dp"
                 android:src="@drawable/ic_exam"
-                app:tint="@color/examColor"
                 app:layout_constraintBottom_toBottomOf="@id/textViewExamLabel"
                 app:layout_constraintDimensionRatio="W,1,1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewExamLabel" />
+                app:layout_constraintTop_toTopOf="@id/textViewExamLabel"
+                app:tint="@color/examColor" />
 
             <TextView
                 android:id="@+id/textViewExamLabel"
@@ -176,11 +176,11 @@
                 android:layout_height="0dp"
                 android:layout_marginStart="24dp"
                 android:src="@drawable/ic_task"
-                app:tint="@color/taskColor"
                 app:layout_constraintBottom_toBottomOf="@id/textViewTaskLabel"
                 app:layout_constraintDimensionRatio="W,1,1"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewTaskLabel" />
+                app:layout_constraintTop_toTopOf="@id/textViewTaskLabel"
+                app:tint="@color/taskColor" />
 
             <TextView
                 android:id="@+id/textViewTaskLabel"
