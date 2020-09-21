@@ -15,9 +15,9 @@ class ItemRepository(private val itemDao: ItemDao) {
     val allHomeworks: LiveData<List<Item>> = itemDao.getAllUndoneDataByCategory(School.HOMEWORK)
     val allExams: LiveData<List<Item>> = itemDao.getAllUndoneDataByCategory(School.EXAM)
     val allTasks: LiveData<List<Item>> = itemDao.getAllUndoneDataByCategory(School.TASK)
-    val homeworkAllDates: LiveData<List<Date>> = itemDao.getAllItemOnDateByCategory(School.HOMEWORK)
-    val examAllDates: LiveData<List<Date>> = itemDao.getAllItemOnDateByCategory(School.EXAM)
-    val taskAllDates: LiveData<List<Date>> = itemDao.getAllItemOnDateByCategory(School.TASK)
+    val homeworkAllDates: LiveData<List<DateItem>> = itemDao.getAllItemOnDateByCategory(School.HOMEWORK)
+    val examAllDates: LiveData<List<DateItem>> = itemDao.getAllItemOnDateByCategory(School.EXAM)
+    val taskAllDates: LiveData<List<DateItem>> = itemDao.getAllItemOnDateByCategory(School.TASK)
 
     fun setDone(id: Int, done: Boolean, doneTime: Long?) {
         itemDao.setDone(id, done, doneTime)

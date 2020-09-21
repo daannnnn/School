@@ -3,6 +3,7 @@ package com.dan.school
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
+import com.dan.school.models.DateItem
 import com.dan.school.models.Item
 import java.util.*
 
@@ -21,8 +22,8 @@ interface ItemDao {
     @Query("UPDATE items SET subtasks = :subtasks WHERE id=:id")
     fun setItemSubtasks(id: Int, subtasks: String)
 
-    @Query("SELECT date from items WHERE category=:category")
-    fun getAllItemOnDateByCategory(category: Int): LiveData<List<Date>>
+    @Query("SELECT id, date from items WHERE category=:category")
+    fun getAllItemOnDateByCategory(category: Int): LiveData<List<DateItem>>
 
     @Query("SELECT * from items WHERE date=:date AND category=${School.HOMEWORK}")
     fun getAllHomeworkByDate(date: Int): LiveData<List<Item>>

@@ -3,6 +3,7 @@ package com.dan.school
 import android.app.Application
 import androidx.lifecycle.*
 import androidx.sqlite.db.SimpleSQLiteQuery
+import com.dan.school.models.DateItem
 import com.dan.school.models.Item
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -16,9 +17,9 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     val allHomeworks: LiveData<List<Item>>
     val allExams: LiveData<List<Item>>
     val allTasks: LiveData<List<Item>>
-    val homeworkAllDates: LiveData<List<Date>>
-    val examAllDates: LiveData<List<Date>>
-    val taskAllDates: LiveData<List<Date>>
+    val homeworkAllDates: LiveData<List<DateItem>>
+    val examAllDates: LiveData<List<DateItem>>
+    val taskAllDates: LiveData<List<DateItem>>
 
     private val calendarSelectedDate = MutableLiveData<Int>()
     private val sortBy = MutableLiveData<String>(School.DONE_TIME)

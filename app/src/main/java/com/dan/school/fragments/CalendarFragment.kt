@@ -28,6 +28,7 @@ import com.dan.school.School.categoryCheckedIcons
 import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.CategoryCount
+import com.dan.school.models.DateItem
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.kizitonwose.calendarview.model.CalendarDay
@@ -67,9 +68,9 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
     private lateinit var dayView: View
 
     // Used to compare old and new data after updating
-    private lateinit var allHomeworks: ArrayList<Date>
-    private lateinit var allExams: ArrayList<Date>
-    private lateinit var allTasks: ArrayList<Date>
+    private lateinit var allHomeworks: ArrayList<DateItem>
+    private lateinit var allExams: ArrayList<DateItem>
+    private lateinit var allTasks: ArrayList<DateItem>
 
     private var selectedDateChanged = arrayOf(true, true, true)
 
@@ -283,11 +284,11 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
 
         dataViewModel.homeworkAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
             if (this::allHomeworks.isInitialized) {
-                val addedData = ArrayList<Date>(dateItems)
-                val removedData = ArrayList<Date>(allHomeworks)
+                val addedData = ArrayList<DateItem>(dateItems)
+                val removedData = ArrayList<DateItem>(allHomeworks)
 
-                addedData.removeAll(ArrayList<Date>(allHomeworks))
-                removedData.removeAll(ArrayList<Date>(dateItems))
+                addedData.removeAll(ArrayList<DateItem>(allHomeworks))
+                removedData.removeAll(ArrayList<DateItem>(dateItems))
 
                 dataUpdated(
                     dateItems,
@@ -302,11 +303,11 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
 
         dataViewModel.examAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
             if (this::allExams.isInitialized) {
-                val addedData = ArrayList<Date>(dateItems)
-                val removedData = ArrayList<Date>(allExams)
+                val addedData = ArrayList<DateItem>(dateItems)
+                val removedData = ArrayList<DateItem>(allExams)
 
-                addedData.removeAll(ArrayList<Date>(allExams))
-                removedData.removeAll(ArrayList<Date>(dateItems))
+                addedData.removeAll(ArrayList<DateItem>(allExams))
+                removedData.removeAll(ArrayList<DateItem>(dateItems))
 
                 dataUpdated(
                     dateItems,
@@ -321,11 +322,11 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
 
         dataViewModel.taskAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
             if (this::allTasks.isInitialized) {
-                val addedData = ArrayList<Date>(dateItems)
-                val removedData = ArrayList<Date>(allTasks)
+                val addedData = ArrayList<DateItem>(dateItems)
+                val removedData = ArrayList<DateItem>(allTasks)
 
-                addedData.removeAll(ArrayList<Date>(allTasks))
-                removedData.removeAll(ArrayList<Date>(dateItems))
+                addedData.removeAll(ArrayList<DateItem>(allTasks))
+                removedData.removeAll(ArrayList<DateItem>(dateItems))
 
                 dataUpdated(
                     dateItems,
@@ -450,15 +451,15 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
      * [School.HOMEWORK], [School.EXAM] or [School.TASK]
      */
     private fun dataUpdated(
-        newItems: List<Date>,
-        addedData: List<Date>,
-        removedData: List<Date>,
+        newItems: List<DateItem>,
+        addedData: List<DateItem>,
+        removedData: List<DateItem>,
         category: Int
     ) {
         if (addedData.isNotEmpty()) {
             for (data in addedData) {
                 val date =
-                    data.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                    data.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
                 if (events[date] == null) {
                     events[date] = CategoryCount()
                 }
@@ -484,7 +485,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         if (removedData.isNotEmpty()) {
             for (data in removedData) {
                 val date =
-                    data.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+                    data.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
 
                 when (category) {
                     School.HOMEWORK -> {
@@ -513,14 +514,14 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
     }
 
     /** Initializes [calendarView] date indicators */
-    private fun initializeData(category: Int, newItems: List<Date>) {
+    private fun initializeData(category: Int, newItems: List<DateItem>) {
         when (category) {
             School.HOMEWORK -> allHomeworks = ArrayList(newItems)
             School.EXAM -> allExams = ArrayList(newItems)
             School.TASK -> allTasks = ArrayList(newItems)
         }
         for (item in newItems) {
-            val date = item.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
+            val date = item.date.toInstant().atZone(ZoneId.systemDefault()).toLocalDate()
             if (events[date] == null) {
                 events[date] = CategoryCount()
             }
