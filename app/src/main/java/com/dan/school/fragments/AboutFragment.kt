@@ -1,10 +1,12 @@
-package com.dan.school
+package com.dan.school.fragments
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import com.dan.school.BuildConfig
+import com.dan.school.R
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
 import kotlinx.android.synthetic.main.fragment_about.*

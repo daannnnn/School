@@ -117,7 +117,7 @@ class AgendaTomorrowFragment : DialogFragment(),
                 School.dateFormatOnDatabase,
                 Locale.getDefault()
             ).format(dateTomorrow.time).toInt()
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { homeworks ->
+        ).observe(viewLifecycleOwner, { homeworks ->
             if (homeworks.isEmpty()) {
                 groupHomework.visibility = View.GONE
                 homeworkEmpty = true
@@ -134,7 +134,7 @@ class AgendaTomorrowFragment : DialogFragment(),
                 School.dateFormatOnDatabase,
                 Locale.getDefault()
             ).format(dateTomorrow.time).toInt()
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { exams ->
+        ).observe(viewLifecycleOwner, { exams ->
             if (exams.isEmpty()) {
                 groupExam.visibility = View.GONE
                 examEmpty = true
@@ -153,7 +153,7 @@ class AgendaTomorrowFragment : DialogFragment(),
                 School.dateFormatOnDatabase,
                 Locale.getDefault()
             ).format(dateTomorrow.time).toInt()
-        ).observe(viewLifecycleOwner, androidx.lifecycle.Observer { tasks ->
+        ).observe(viewLifecycleOwner, { tasks ->
             if (tasks.isEmpty()) {
                 groupTask.visibility = View.GONE
                 taskEmpty = true

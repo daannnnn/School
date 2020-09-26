@@ -11,9 +11,11 @@ import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dan.school.*
+import com.dan.school.DataViewModel
+import com.dan.school.ItemClickListener
+import com.dan.school.R
+import com.dan.school.School
 import com.dan.school.School.categoryCheckedIcons
 import com.dan.school.School.categoryColors
 import com.dan.school.School.categoryUncheckedIcons
@@ -88,19 +90,19 @@ class ItemsFragment : Fragment(),
 
         when (category) {
             School.HOMEWORK -> {
-                dataViewModel.allHomeworks.observe(viewLifecycleOwner, Observer { homeworks ->
+                dataViewModel.allHomeworks.observe(viewLifecycleOwner, { homeworks ->
                     homeworks?.let { itemListAdapter.submitList(it) }
                     setVisibilities(homeworks.isEmpty())
                 })
             }
             School.EXAM -> {
-                dataViewModel.allExams.observe(viewLifecycleOwner, Observer { exams ->
+                dataViewModel.allExams.observe(viewLifecycleOwner, { exams ->
                     exams?.let { itemListAdapter.submitList(it) }
                     setVisibilities(exams.isEmpty())
                 })
             }
             School.TASK -> {
-                dataViewModel.allTasks.observe(viewLifecycleOwner, Observer { tasks ->
+                dataViewModel.allTasks.observe(viewLifecycleOwner, { tasks ->
                     tasks?.let { itemListAdapter.submitList(it) }
                     setVisibilities(tasks.isEmpty())
                 })

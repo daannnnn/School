@@ -1,7 +1,6 @@
 package com.dan.school.fragments
 
 import android.animation.ArgbEvaluator
-import android.animation.LayoutTransition
 import android.animation.ValueAnimator
 import android.app.DatePickerDialog
 import android.content.Context

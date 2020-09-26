@@ -113,7 +113,7 @@ class SubtaskListAdapter(
         }
 
         if (holder.bindingAdapterPosition == itemCount - 1) {
-            holder.editTextSubtaskTitle.post(Runnable {
+            holder.editTextSubtaskTitle.post {
                 if (getFocus) {
                     holder.editTextSubtaskTitle.requestFocus()
                 } else {
@@ -122,7 +122,7 @@ class SubtaskListAdapter(
                     }
                     getFocus = true
                 }
-            })
+            }
         }
     }
 
