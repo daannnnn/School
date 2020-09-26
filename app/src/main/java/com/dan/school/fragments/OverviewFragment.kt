@@ -141,11 +141,13 @@ class OverviewFragment : Fragment(),
         }
         buttonCalendarView.setOnClickListener {
             if (childFragmentManager.findFragmentByTag(School.CALENDAR) != null) {
-                (childFragmentManager.findFragmentByTag(School.CALENDAR) as CalendarFragment).setCalendarView(
-                    isMonthView
-                )
-                isMonthView = !isMonthView
-                setButtonCalendarViewBackground()
+                if ((childFragmentManager.findFragmentByTag(School.CALENDAR) as CalendarFragment).setCalendarView(
+                        isMonthView
+                    )
+                ) {
+                    isMonthView = !isMonthView
+                    setButtonCalendarViewBackground()
+                }
             }
         }
     }
@@ -346,7 +348,9 @@ class OverviewFragment : Fragment(),
 
     override fun dismissBottomSheet() {
         addBottomSheetDialogFragment?.dismiss()
-        Timer( false).schedule(resources.getInteger(android.R.integer.config_shortAnimTime).toLong()) {
+        Timer(false).schedule(
+            resources.getInteger(android.R.integer.config_shortAnimTime).toLong()
+        ) {
             canSelectItem = true
         }
     }

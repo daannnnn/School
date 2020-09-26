@@ -72,6 +72,8 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
     private lateinit var allExams: ArrayList<DateItem>
     private lateinit var allTasks: ArrayList<DateItem>
 
+    private var isViewChangeDone: Boolean = true
+
     private var selectedDateChanged = arrayOf(true, true, true)
 
     /**
@@ -593,47 +595,57 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
 
     /**
      * Sets [calendarView] to month view or
-     * week view depending on [isMonthView]
+     * week view depending on [isMonthView] if
+     * [isViewChangeDone] then returns the value
+     * of [isViewChangeDone]
      */
-    fun setCalendarView(isMonthView: Boolean) {
-        val oneWeekHeight = calendarView.daySize.height
-        val oneMonthHeight = oneWeekHeight * 6
+    fun setCalendarView(isMonthView: Boolean): Boolean {
+        val b = isViewChangeDone
+        if (isViewChangeDone) {
+            isViewChangeDone = false
 
-        val oldHeight = if (isMonthView) oneMonthHeight else oneWeekHeight
-        val newHeight = if (isMonthView) oneWeekHeight else oneMonthHeight
+            val oneWeekHeight = calendarView.daySize.height
+            val oneMonthHeight = oneWeekHeight * 6
 
-        val animator = ValueAnimator.ofInt(oldHeight, newHeight)
-        animator.addUpdateListener { mAnimator ->
-            calendarView.updateLayoutParams {
-                height = mAnimator.animatedValue as Int
-            }
-        }
+            val oldHeight = if (isMonthView) oneMonthHeight else oneWeekHeight
+            val newHeight = if (isMonthView) oneWeekHeight else oneMonthHeight
 
-        animator.doOnStart {
-            if (!isMonthView) {
-                calendarView.apply {
-                    maxRowCount = 6
-                    hasBoundaries = true
-                }
-            }
-        }
-        animator.doOnEnd {
-            if (isMonthView) {
-                calendarView.apply {
-                    maxRowCount = 1
-                    hasBoundaries = false
+            val animator = ValueAnimator.ofInt(oldHeight, newHeight)
+            animator.addUpdateListener { mAnimator ->
+                calendarView.updateLayoutParams {
+                    height = mAnimator.animatedValue as Int
                 }
             }
 
-            if (isMonthView) {
-                calendarView.scrollToDate(selectedDate!!)
-            } else {
-                calendarScrolled = false
-                calendarView.scrollToMonth(selectedDate!!.yearMonth)
+            animator.doOnStart {
+                if (!isMonthView) {
+                    calendarView.apply {
+                        maxRowCount = 6
+                        hasBoundaries = true
+                    }
+                }
             }
+            animator.doOnEnd {
+                if (isMonthView) {
+                    calendarView.apply {
+                        maxRowCount = 1
+                        hasBoundaries = false
+                    }
+                }
+
+                if (isMonthView) {
+                    calendarView.scrollToDate(selectedDate!!)
+                } else {
+                    calendarScrolled = false
+                    calendarView.scrollToMonth(selectedDate!!.yearMonth)
+                }
+
+                isViewChangeDone = true
+            }
+            animator.duration = 250
+            animator.start()
         }
-        animator.duration = 250
-        animator.start()
+        return b
     }
 
     /**
