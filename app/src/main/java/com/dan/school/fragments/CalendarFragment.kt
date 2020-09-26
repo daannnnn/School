@@ -1,11 +1,10 @@
 package com.dan.school.fragments
 
 import android.animation.ValueAnimator
-import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
 import android.content.res.TypedArray
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -22,7 +21,10 @@ import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dan.school.*
+import com.dan.school.DataViewModel
+import com.dan.school.ItemClickListener
+import com.dan.school.R
+import com.dan.school.School
 import com.dan.school.School.categoryCheckedIcons
 import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.ItemListAdapter
@@ -264,15 +266,14 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         }
 
         // set calendar dayHeight and dayWidth
-        val displayMetrics = DisplayMetrics()
-        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val widthPixels = Resources.getSystem().displayMetrics.widthPixels
         dayView = View.inflate(context, R.layout.layout_calendar_day, null)
-        val widthMeasureSpec = 
-            MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, MeasureSpec.AT_MOST)
+        val widthMeasureSpec =
+            MeasureSpec.makeMeasureSpec(widthPixels, MeasureSpec.AT_MOST)
         val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         dayView.measure(widthMeasureSpec, heightMeasureSpec)
         calendarView.daySize =
-            Size(((displayMetrics.widthPixels / 7f) + 0.5).toInt(), dayView.measuredHeight)
+            Size(((widthPixels / 7f) + 0.5).toInt(), dayView.measuredHeight)
 
         val currentMonth = YearMonth.now()
         val firstMonth = currentMonth.minusMonths(10)
