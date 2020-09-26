@@ -1,11 +1,10 @@
 package com.dan.school.fragments
 
 import android.animation.ValueAnimator
-import android.app.Activity
 import android.content.Context
+import android.content.res.Resources
 import android.content.res.TypedArray
 import android.os.Bundle
-import android.util.DisplayMetrics
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -21,9 +20,11 @@ import androidx.core.view.isVisible
 import androidx.core.view.updateLayoutParams
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
-import com.dan.school.*
+import com.dan.school.DataViewModel
+import com.dan.school.ItemClickListener
+import com.dan.school.R
+import com.dan.school.School
 import com.dan.school.School.categoryCheckedIcons
 import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.ItemListAdapter
@@ -38,7 +39,6 @@ import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.Size
 import com.kizitonwose.calendarview.utils.yearMonth
 import kotlinx.android.synthetic.main.fragment_calendar.*
-import kotlinx.android.synthetic.main.fragment_items.*
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.YearMonth
@@ -266,15 +266,14 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         }
 
         // set calendar dayHeight and dayWidth
-        val displayMetrics = DisplayMetrics()
-        (context as Activity).windowManager.defaultDisplay.getMetrics(displayMetrics)
+        val widthPixels = Resources.getSystem().displayMetrics.widthPixels
         dayView = View.inflate(context, R.layout.layout_calendar_day, null)
         val widthMeasureSpec =
-            MeasureSpec.makeMeasureSpec(displayMetrics.widthPixels, MeasureSpec.AT_MOST)
+            MeasureSpec.makeMeasureSpec(widthPixels, MeasureSpec.AT_MOST)
         val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         dayView.measure(widthMeasureSpec, heightMeasureSpec)
         calendarView.daySize =
-            Size(((displayMetrics.widthPixels / 7f) + 0.5).toInt(), dayView.measuredHeight)
+            Size(((widthPixels / 7f) + 0.5).toInt(), dayView.measuredHeight)
 
         val currentMonth = YearMonth.now()
         val firstMonth = currentMonth.minusMonths(10)
@@ -284,7 +283,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         calendarView.scrollToMonth(currentMonth)
         // [END] CalendarView setup
 
-        dataViewModel.homeworkAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
+        dataViewModel.homeworkAllDates.observe(viewLifecycleOwner, { dateItems ->
             if (this::allHomeworks.isInitialized) {
                 val addedData = ArrayList<DateItem>(dateItems)
                 val removedData = ArrayList<DateItem>(allHomeworks)
@@ -303,7 +302,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             }
         })
 
-        dataViewModel.examAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
+        dataViewModel.examAllDates.observe(viewLifecycleOwner, { dateItems ->
             if (this::allExams.isInitialized) {
                 val addedData = ArrayList<DateItem>(dateItems)
                 val removedData = ArrayList<DateItem>(allExams)
@@ -322,7 +321,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             }
         })
 
-        dataViewModel.taskAllDates.observe(viewLifecycleOwner, Observer { dateItems ->
+        dataViewModel.taskAllDates.observe(viewLifecycleOwner, { dateItems ->
             if (this::allTasks.isInitialized) {
                 val addedData = ArrayList<DateItem>(dateItems)
                 val removedData = ArrayList<DateItem>(allTasks)
@@ -375,7 +374,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
         }
 
         /** Observers for the items on [selectedDate] */
-        dataViewModel.getCalendarHomeworks().observe(viewLifecycleOwner, Observer {
+        dataViewModel.getCalendarHomeworks().observe(viewLifecycleOwner, {
             if (selectedDateChanged[School.HOMEWORK]) {
                 recyclerViewCalendarHomework.adapter = ItemListAdapter(
                     requireContext(),
@@ -391,7 +390,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             isEmpty[School.HOMEWORK] = it.isEmpty()
             showNoItemsTextIfAllEmpty()
         })
-        dataViewModel.getCalendarExams().observe(viewLifecycleOwner, Observer {
+        dataViewModel.getCalendarExams().observe(viewLifecycleOwner, {
             if (selectedDateChanged[School.EXAM]) {
                 recyclerViewCalendarExam.adapter = ItemListAdapter(
                     requireContext(),
@@ -407,7 +406,7 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
             isEmpty[School.EXAM] = it.isEmpty()
             showNoItemsTextIfAllEmpty()
         })
-        dataViewModel.getCalendarTasks().observe(viewLifecycleOwner, Observer {
+        dataViewModel.getCalendarTasks().observe(viewLifecycleOwner, {
             if (selectedDateChanged[School.TASK]) {
                 recyclerViewCalendarTask.adapter = ItemListAdapter(
                     requireContext(),
@@ -428,7 +427,11 @@ class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putLong(
             "selectedDate",
-            Date.from((if (selectedDate != null) selectedDate else LocalDate.now())!!.atStartOfDay(ZoneId.systemDefault())?.toInstant()).time
+            Date.from(
+                (if (selectedDate != null) selectedDate else LocalDate.now())!!.atStartOfDay(
+                    ZoneId.systemDefault()
+                )?.toInstant()
+            ).time
         )
         super.onSaveInstanceState(outState)
     }

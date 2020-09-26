@@ -4,11 +4,8 @@ import androidx.lifecycle.LiveData
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.dan.school.models.DateItem
 import com.dan.school.models.Item
-import com.dan.school.models.Subtask
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.withContext
-import java.util.*
-import kotlin.collections.ArrayList
 
 class ItemRepository(private val itemDao: ItemDao) {
 
@@ -33,9 +30,6 @@ class ItemRepository(private val itemDao: ItemDao) {
     }
     fun deleteItemWithId(id: Int) {
         itemDao.deleteItemWithId(id)
-    }
-    suspend fun getItemById(id: Int) = withContext(Dispatchers.IO) {
-        itemDao.getItemById(id)
     }
     suspend fun getAllHomeworkByDate(date: Int) = withContext(Dispatchers.IO) {
         itemDao.getAllHomeworkByDate(date)

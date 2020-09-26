@@ -6,16 +6,13 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Adapter
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.dan.school.*
 import com.dan.school.adapters.HomeworkExamTaskTabLayoutAdapter
-import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.Item
 import com.google.android.material.tabs.TabLayout
 import kotlinx.android.synthetic.main.fragment_home.*
-import kotlinx.android.synthetic.main.fragment_overview.*
 
 class HomeFragment : Fragment(),
     ItemClickListener {

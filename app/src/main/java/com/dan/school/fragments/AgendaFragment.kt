@@ -45,7 +45,8 @@ class AgendaFragment : Fragment(),
 
     private lateinit var sharedPref: SharedPreferences
 
-    private var onSharedPreferenceChangeListener: SharedPreferences.OnSharedPreferenceChangeListener? = null
+    private var onSharedPreferenceChangeListener:
+            SharedPreferences.OnSharedPreferenceChangeListener? = null
 
     override fun onAttach(context: Context) {
         super.onAttach(context)

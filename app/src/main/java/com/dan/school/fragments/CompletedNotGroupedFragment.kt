@@ -51,7 +51,7 @@ class CompletedNotGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
             adapter = completedNotGroupedListAdapter
         }
 
-        dataViewModel.getDoneItems().observe(viewLifecycleOwner, androidx.lifecycle.Observer { overdueItems ->
+        dataViewModel.getDoneItems().observe(viewLifecycleOwner, { overdueItems ->
             completedNotGroupedListAdapter.submitList(overdueItems)
         })
     }
@@ -89,7 +89,10 @@ class CompletedNotGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
             item.done,
             item.doneTime,
             item.title,
-            Gson().fromJson(item.subtasks, object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type),
+            Gson().fromJson(
+                item.subtasks,
+                object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type
+            ),
             item.notes,
             calendar,
             item.id

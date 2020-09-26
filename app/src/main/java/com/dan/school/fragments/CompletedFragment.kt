@@ -60,7 +60,7 @@ class CompletedFragment : Fragment() {
                 ).commit()
         }
 
-        dataViewModel.getDoneItems().observe(viewLifecycleOwner, androidx.lifecycle.Observer { overdueItems ->
+        dataViewModel.getDoneItems().observe(viewLifecycleOwner, { overdueItems ->
             if (overdueItems.isEmpty()) {
                 linearLayoutCompletedItems.isVisible = false
                 linearLayoutNoCompletedItems.isVisible = true

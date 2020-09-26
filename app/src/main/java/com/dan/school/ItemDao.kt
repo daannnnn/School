@@ -5,8 +5,6 @@ import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.dan.school.models.DateItem
 import com.dan.school.models.Item
-import java.util.*
-
 
 @Dao
 interface ItemDao {
@@ -36,18 +34,6 @@ interface ItemDao {
 
     @Query("SELECT * from items WHERE date<:date AND done=0")
     fun getAllOverdueItemsByDate(date: Int): LiveData<List<Item>>
-
-//    @Query("SELECT * from items WHERE done=1 ORDER BY :sortBy DESC")
-//    fun getAllDoneItems(sortBy: String): LiveData<List<Item>>
-//
-//    @Query("SELECT * from items WHERE done=1 AND category=${School.HOMEWORK} ORDER BY :sortBy DESC")
-//    fun getAllDoneHomeworks(sortBy: String): LiveData<List<Item>>
-//
-//    @Query("SELECT * from items WHERE done=1 AND category=${School.EXAM} ORDER BY :sortBy DESC")
-//    fun getAllDoneExams(sortBy: String): LiveData<List<Item>>
-//
-//    @Query("SELECT * from items WHERE done=1 AND category=${School.TASK} ORDER BY :sortBy DESC")
-//    fun getAllDoneTasks(sortBy: String): LiveData<List<Item>>
 
     @RawQuery(observedEntities = [Item::class])
     fun runtimeQuery(sortQuery: SupportSQLiteQuery): LiveData<List<Item>>

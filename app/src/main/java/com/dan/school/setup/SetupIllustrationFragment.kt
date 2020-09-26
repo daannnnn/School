@@ -14,7 +14,6 @@ import com.dan.school.R
 import com.dan.school.School.POSITION
 import kotlinx.android.synthetic.main.fragment_setup_illustration.*
 
-
 class SetupIllustrationFragment : Fragment() {
 
     private var position: Int = -1

@@ -8,7 +8,6 @@ import com.dan.school.models.Item
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
 import kotlinx.coroutines.runBlocking
-import java.util.*
 
 class DataViewModel(application: Application) : AndroidViewModel(application) {
 
@@ -22,7 +21,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     val taskAllDates: LiveData<List<DateItem>>
 
     private val calendarSelectedDate = MutableLiveData<Int>()
-    private val sortBy = MutableLiveData<String>(School.DONE_TIME)
+    private val sortBy = MutableLiveData(School.DONE_TIME)
 
     init {
         val itemsDao = ItemDatabase.getInstance(application).itemDao()
@@ -40,7 +39,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private val homeworks: LiveData<List<Item>> =
-        Transformations.switchMap<Int, List<Item>>(
+        Transformations.switchMap(
             calendarSelectedDate
         ) { date: Int ->
             return@switchMap getAllHomeworkByDate(date)
@@ -51,7 +50,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private val exams: LiveData<List<Item>> =
-        Transformations.switchMap<Int, List<Item>>(
+        Transformations.switchMap(
             calendarSelectedDate
         ) { date: Int ->
             return@switchMap getAllExamByDate(date)
@@ -62,7 +61,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private val tasks: LiveData<List<Item>> =
-        Transformations.switchMap<Int, List<Item>>(
+        Transformations.switchMap(
             calendarSelectedDate
         ) { date: Int ->
             return@switchMap getAllTaskByDate(date)
@@ -89,7 +88,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private val doneHomeworks: LiveData<List<Item>> =
-        Transformations.switchMap<String, List<Item>>(
+        Transformations.switchMap(
             sortBy
         ) { sortBy: String ->
             return@switchMap runtimeQuery(getQueryDoneItems(School.HOMEWORK, sortBy))
@@ -100,7 +99,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private val doneExams: LiveData<List<Item>> =
-        Transformations.switchMap<String, List<Item>>(
+        Transformations.switchMap(
             sortBy
         ) { sortBy: String ->
             return@switchMap runtimeQuery(getQueryDoneItems(School.EXAM, sortBy))
@@ -111,7 +110,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private val doneTasks: LiveData<List<Item>> =
-        Transformations.switchMap<String, List<Item>>(
+        Transformations.switchMap(
             sortBy
         ) { sortBy: String ->
             return@switchMap runtimeQuery(getQueryDoneItems(School.TASK, sortBy))
@@ -122,7 +121,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     }
 
     private val doneItems: LiveData<List<Item>> =
-        Transformations.switchMap<String, List<Item>>(
+        Transformations.switchMap(
             sortBy
         ) { sortBy: String ->
             return@switchMap runtimeQuery(getQueryDoneItems(sortBy))
@@ -148,16 +147,8 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         itemRepository.update(item)
     }
 
-    fun updateItemSubtasks(item: Item) = viewModelScope.launch(Dispatchers.IO) {
-        itemRepository.insert(item)
-    }
-
     fun deleteItemWithId(id: Int) = viewModelScope.launch(Dispatchers.IO) {
         itemRepository.deleteItemWithId(id)
-    }
-
-    fun getItemById(id: Int): Item = runBlocking {
-        itemRepository.getItemById(id)
     }
 
     fun getAllHomeworkByDate(date: Int): LiveData<List<Item>> = runBlocking {
@@ -180,7 +171,7 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
         itemRepository.hasItemsForDate(date)
     }
 
-    fun runtimeQuery(query: SimpleSQLiteQuery): LiveData<List<Item>> = runBlocking {
+    private fun runtimeQuery(query: SimpleSQLiteQuery): LiveData<List<Item>> = runBlocking {
         itemRepository.runtimeQuery(query)
     }
 }

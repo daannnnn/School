@@ -2,9 +2,6 @@ package com.dan.school.fragments
 
 import android.app.Dialog
 import android.os.Bundle
-import android.widget.Button
-import android.widget.TextView
-import androidx.core.content.res.ResourcesCompat
 import androidx.fragment.app.DialogFragment
 import com.dan.school.R
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
