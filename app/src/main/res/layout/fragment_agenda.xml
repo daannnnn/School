@@ -339,7 +339,6 @@
             android:id="@+id/textViewUpcomingLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_marginStart="24dp"
             android:layout_marginTop="12dp"
             android:layout_marginEnd="24dp"
             android:fontFamily="@font/cabin_bold"
@@ -347,7 +346,7 @@
             android:textAllCaps="true"
             android:textColor="@color/colorPrimary"
             android:textSize="14sp"
-            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintStart_toEndOf="@id/imageViewUpcomingIcon"
             app:layout_constraintTop_toBottomOf="@id/viewDivider"
             app:layout_goneMarginTop="24dp" />
 
