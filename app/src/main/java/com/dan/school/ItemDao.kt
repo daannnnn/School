@@ -47,6 +47,12 @@ interface ItemDao {
     @Query("DELETE FROM items WHERE id = :id")
     fun deleteItemWithId(id: Int)
 
+    @Query("SELECT DISTINCT date FROM items WHERE date > :date ORDER BY date ASC LIMIT 4")
+    fun getDistinctDatesGreaterThan(date: Int): LiveData<List<Int>>
+
+    @Query("SELECT * FROM items WHERE date > :date ORDER BY date ASC, id ASC LIMIT 11")
+    fun getUpcomingItems(date: Int): LiveData<List<Item>>
+
     @Insert
     fun insert(item: Item)
 

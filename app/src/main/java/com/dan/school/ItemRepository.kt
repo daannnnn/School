@@ -43,6 +43,9 @@ class ItemRepository(private val itemDao: ItemDao) {
     suspend fun getAllOverdueItemsByDate(date: Int) = withContext(Dispatchers.IO) {
         itemDao.getAllOverdueItemsByDate(date)
     }
+    suspend fun getUpcomingItems(date: Int) = withContext(Dispatchers.IO) {
+        itemDao.getUpcomingItems(date)
+    }
     suspend fun hasItemsForDate(date: Int) : Boolean = withContext(Dispatchers.IO) {
         itemDao.hasItemsForDate(date)
     }
