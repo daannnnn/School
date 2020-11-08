@@ -323,6 +323,18 @@
             app:layout_constraintStart_toStartOf="parent"
             app:layout_constraintTop_toBottomOf="@id/cardViewTask" />
 
+        <ImageView
+            android:id="@+id/imageViewUpcomingIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/ic_upcoming"
+            app:layout_constraintBottom_toBottomOf="@id/textViewUpcomingLabel"
+            app:layout_constraintDimensionRatio="W,1,1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textViewUpcomingLabel"
+            app:tint="@color/colorPrimary" />
+
         <TextView
             android:id="@+id/textViewUpcomingLabel"
             android:layout_width="wrap_content"
@@ -400,7 +412,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            app:constraint_referenced_ids="cardViewUpcoming, textViewUpcomingLabel"
+            app:constraint_referenced_ids="cardViewUpcoming, imageViewUpcomingIcon, textViewUpcomingLabel"
             tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
