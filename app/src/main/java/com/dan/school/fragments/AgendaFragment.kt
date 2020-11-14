@@ -15,6 +15,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
 import com.dan.school.School.categoryCheckedIcons
 import com.dan.school.School.categoryUncheckedIcons
+import com.dan.school.adapters.BaseItemListAdapter
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.adapters.UpcomingItemListAdapter
 import com.dan.school.models.*
@@ -24,10 +25,10 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class AgendaFragment : Fragment(),
-    ItemListAdapter.DoneListener,
-    ItemListAdapter.ShowSubtasksListener,
+    BaseItemListAdapter.DoneListener,
+    BaseItemListAdapter.ShowSubtasksListener,
     ItemClickListener,
-    ItemListAdapter.ItemLongClickListener,
+    BaseItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialogFragment.ConfirmDeleteListener {
 
     private lateinit var itemClickListener: ItemClickListener

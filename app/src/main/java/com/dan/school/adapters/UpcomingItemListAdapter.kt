@@ -12,21 +12,26 @@ import com.dan.school.ItemClickListener
 import com.dan.school.ItemViewHolder
 import com.dan.school.R
 import com.dan.school.School
-import com.dan.school.models.Subtask
-import com.dan.school.models.UpcomingDate
-import com.dan.school.models.UpcomingItem
-import com.dan.school.models.UpcomingListItem
+import com.dan.school.models.*
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.*
 
 class UpcomingItemListAdapter(
     private val context: Context,
-    private val doneListener: ItemListAdapter.DoneListener,
-    private val showSubtasksListener: ItemListAdapter.ShowSubtasksListener,
-    private val itemClickListener: ItemClickListener,
-    private val itemLongClickListener: ItemListAdapter.ItemLongClickListener
-) : ListAdapter<UpcomingListItem, RecyclerView.ViewHolder>(DIFF_CALLBACK) {
+    doneListener: DoneListener,
+    showSubtasksListener: ShowSubtasksListener,
+    itemClickListener: ItemClickListener,
+    itemLongClickListener: ItemLongClickListener
+) : BaseItemListAdapter<UpcomingListItem>(
+    doneListener,
+    showSubtasksListener,
+    itemClickListener,
+    itemLongClickListener,
+    UpcomingListItem::class.java,
+    DIFF_CALLBACK
+) {
+
     override fun onCreateViewHolder(parent: ViewGroup, viewType: Int): RecyclerView.ViewHolder {
         return when (viewType) {
             UpcomingListItem.TYPE_DATE -> {
@@ -59,74 +64,7 @@ class UpcomingItemListAdapter(
             val upcomingItem = (getItem(position) as UpcomingItem).item
             val upcomingItemViewHolder = holder as ItemViewHolder
 
-            upcomingItemViewHolder.textViewItem.text = upcomingItem.title
-            upcomingItemViewHolder.itemView.setOnClickListener {
-                itemClickListener.itemClicked((getItem(holder.bindingAdapterPosition) as UpcomingItem).item)
-            }
-            upcomingItemViewHolder.itemView.setOnLongClickListener {
-                itemLongClickListener.itemLongClicked(
-                    (getItem(holder.bindingAdapterPosition) as UpcomingItem).item.title,
-                    (getItem(holder.bindingAdapterPosition) as UpcomingItem).item.id
-                )
-                return@setOnLongClickListener true
-            }
-            val subtasks = (Gson().fromJson(
-                upcomingItem.subtasks,
-                object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type
-            ) as ArrayList<Subtask?>)
-            if (subtasks.isEmpty()) {
-                holder.buttonSubtask.visibility = View.GONE
-                holder.textViewSubtaskCount.visibility = View.GONE
-            } else {
-                holder.buttonSubtask.visibility = View.VISIBLE
-                var count = 0
-                for (subtask in subtasks) {
-                    if (subtask != null && !subtask.done) {
-                        count++
-                    }
-                }
-                if (count != 0) {
-                    holder.textViewSubtaskCount.visibility = View.VISIBLE
-                    holder.textViewSubtaskCount.text = count.toString()
-                } else {
-                    holder.textViewSubtaskCount.visibility = View.GONE
-                }
-            }
-            val mItemCategory = upcomingItem.category
-            if (upcomingItem.done) {
-                upcomingItemViewHolder.buttonCheckItem.setImageResource(School.categoryCheckedIcons[mItemCategory])
-            } else {
-                upcomingItemViewHolder.buttonCheckItem.setImageResource(School.categoryUncheckedIcons[mItemCategory])
-            }
-            upcomingItemViewHolder.buttonCheckItem.setOnClickListener {
-                if (holder.bindingAdapterPosition != -1) {
-                    if ((getItem(holder.bindingAdapterPosition) as UpcomingItem).item.done) {
-                        upcomingItemViewHolder.buttonCheckItem.setImageResource(School.categoryUncheckedIcons[mItemCategory])
-                        doneListener.setDone(
-                            (getItem(holder.bindingAdapterPosition) as UpcomingItem).item.id,
-                            false,
-                            null
-                        )
-                    } else {
-                        upcomingItemViewHolder.buttonCheckItem.setImageResource(School.categoryCheckedIcons[mItemCategory])
-                        doneListener.setDone(
-                            (getItem(holder.bindingAdapterPosition) as UpcomingItem).item.id,
-                            true,
-                            Calendar.getInstance().timeInMillis
-                        )
-                    }
-                }
-            }
-            upcomingItemViewHolder.buttonSubtask.setOnClickListener {
-                val item = (getItem(holder.bindingAdapterPosition) as UpcomingItem).item
-                showSubtasksListener.showSubtasks(
-                    Gson().fromJson(
-                        item.subtasks,
-                        object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type
-                    ), item.title, item.id, item.category
-                )
-            }
-
+            bind(upcomingItemViewHolder, upcomingItem)
         }
     }
 
