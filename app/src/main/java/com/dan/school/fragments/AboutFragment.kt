@@ -22,7 +22,7 @@ class AboutFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val version = "Version ${BuildConfig.VERSION_NAME} (${BuildConfig.VERSION_CODE})"
+        val version = "Version ${BuildConfig.VERSION_NAME}"
         textViewVersion.text = version
 
         relativeLayoutLicenses.setOnClickListener {

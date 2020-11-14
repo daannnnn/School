@@ -4,9 +4,9 @@
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:clipToPadding="false"
     android:paddingTop="24dp"
     android:paddingBottom="24dp"
-    android:clipToPadding="false"
     tools:context=".fragments.AgendaFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
@@ -113,11 +113,11 @@
             android:layout_height="0dp"
             android:layout_marginStart="24dp"
             android:src="@drawable/ic_overdue"
-            app:tint="@color/red"
             app:layout_constraintBottom_toBottomOf="@id/textViewOverdueLabel"
             app:layout_constraintDimensionRatio="W,1,1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textViewOverdueLabel" />
+            app:layout_constraintTop_toTopOf="@id/textViewOverdueLabel"
+            app:tint="@color/red" />
 
         <TextView
             android:id="@+id/textViewOverdueLabel"
@@ -164,11 +164,11 @@
             android:layout_height="0dp"
             android:layout_marginStart="24dp"
             android:src="@drawable/ic_homework"
-            app:tint="@color/homeworkColor"
             app:layout_constraintBottom_toBottomOf="@id/textViewHomeworkLabel"
             app:layout_constraintDimensionRatio="W,1,1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textViewHomeworkLabel" />
+            app:layout_constraintTop_toTopOf="@id/textViewHomeworkLabel"
+            app:tint="@color/homeworkColor" />
 
         <TextView
             android:id="@+id/textViewHomeworkLabel"
@@ -215,11 +215,11 @@
             android:layout_height="0dp"
             android:layout_marginStart="24dp"
             android:src="@drawable/ic_exam"
-            app:tint="@color/examColor"
             app:layout_constraintBottom_toBottomOf="@id/textViewExamLabel"
             app:layout_constraintDimensionRatio="W,1,1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textViewExamLabel" />
+            app:layout_constraintTop_toTopOf="@id/textViewExamLabel"
+            app:tint="@color/examColor" />
 
         <TextView
             android:id="@+id/textViewExamLabel"
@@ -266,11 +266,11 @@
             android:layout_height="0dp"
             android:layout_marginStart="24dp"
             android:src="@drawable/ic_task"
-            app:tint="@color/taskColor"
             app:layout_constraintBottom_toBottomOf="@id/textViewTaskLabel"
             app:layout_constraintDimensionRatio="W,1,1"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="@id/textViewTaskLabel" />
+            app:layout_constraintTop_toTopOf="@id/textViewTaskLabel"
+            app:tint="@color/taskColor" />
 
         <TextView
             android:id="@+id/textViewTaskLabel"
@@ -311,37 +311,108 @@
 
         </com.google.android.material.card.MaterialCardView>
 
+        <View
+            android:id="@+id/viewDivider"
+            android:layout_width="0dp"
+            android:layout_height="1dp"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="@color/dividerColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardViewTask" />
+
+        <ImageView
+            android:id="@+id/imageViewUpcomingIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/ic_upcoming"
+            app:layout_constraintBottom_toBottomOf="@id/textViewUpcomingLabel"
+            app:layout_constraintDimensionRatio="W,1,1"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textViewUpcomingLabel"
+            app:tint="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/textViewUpcomingLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="12dp"
+            android:layout_marginEnd="24dp"
+            android:fontFamily="@font/cabin_bold"
+            android:text="@string/upcoming"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/imageViewUpcomingIcon"
+            app:layout_constraintTop_toBottomOf="@id/viewDivider"
+            app:layout_goneMarginTop="24dp" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardViewUpcoming"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:elevation="0dp"
+            android:outlineProvider="none"
+            app:cardBackgroundColor="@color/cardViewUpcomingBackgroundColor"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewUpcomingLabel">
+
+            <androidx.recyclerview.widget.RecyclerView
+                android:id="@+id/recyclerViewUpcoming"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_marginTop="8dp"
+                android:layout_marginBottom="8dp"
+                android:nestedScrollingEnabled="false" />
+
+        </com.google.android.material.card.MaterialCardView>
+
         <androidx.constraintlayout.widget.Group
             android:id="@+id/groupOverdue"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible"
-            app:constraint_referenced_ids="cardViewOverdue, imageViewOverdueIcon, textViewOverdueLabel" />
+            app:constraint_referenced_ids="cardViewOverdue, imageViewOverdueIcon, textViewOverdueLabel"
+            tools:visibility="gone" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/groupHomework"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible"
-            app:constraint_referenced_ids="cardViewHomework, imageViewHomeworkIcon, textViewHomeworkLabel" />
+            app:constraint_referenced_ids="cardViewHomework, imageViewHomeworkIcon, textViewHomeworkLabel"
+            tools:visibility="gone" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/groupExam"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible"
-            app:constraint_referenced_ids="cardViewExam, imageViewExamIcon, textViewExamLabel" />
+            app:constraint_referenced_ids="cardViewExam, imageViewExamIcon, textViewExamLabel"
+            tools:visibility="gone" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/groupTask"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:visibility="gone"
-            tools:visibility="visible"
-            app:constraint_referenced_ids="cardViewTask, imageViewTaskIcon, textViewTaskLabel" />
+            app:constraint_referenced_ids="cardViewTask, imageViewTaskIcon, textViewTaskLabel"
+            tools:visibility="gone" />
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupUpcoming"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="cardViewUpcoming, imageViewUpcomingIcon, textViewUpcomingLabel"
+            tools:visibility="gone" />
 
     </androidx.constraintlayout.widget.ConstraintLayout>
 

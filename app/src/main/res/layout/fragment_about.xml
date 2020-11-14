@@ -27,7 +27,7 @@
         android:layout_height="wrap_content"
         android:id="@+id/textViewVersion"
         android:textSize="14sp"
-        tools:text="Version 1.0 (1)"
+        tools:text="Version 1.0"
         android:fontFamily="@font/cabin_regular"
         android:textColor="?android:textColorSecondary"/>
 

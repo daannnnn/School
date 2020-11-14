@@ -15,19 +15,20 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
 import com.dan.school.School.categoryCheckedIcons
 import com.dan.school.School.categoryUncheckedIcons
+import com.dan.school.adapters.BaseItemListAdapter
 import com.dan.school.adapters.ItemListAdapter
-import com.dan.school.models.Item
-import com.dan.school.models.Subtask
+import com.dan.school.adapters.UpcomingItemListAdapter
+import com.dan.school.models.*
 import kotlinx.android.synthetic.main.fragment_agenda.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
 class AgendaFragment : Fragment(),
-    ItemListAdapter.DoneListener,
-    ItemListAdapter.ShowSubtasksListener,
+    BaseItemListAdapter.DoneListener,
+    BaseItemListAdapter.ShowSubtasksListener,
     ItemClickListener,
-    ItemListAdapter.ItemLongClickListener,
+    BaseItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialogFragment.ConfirmDeleteListener {
 
     private lateinit var itemClickListener: ItemClickListener
@@ -42,6 +43,7 @@ class AgendaFragment : Fragment(),
     private lateinit var homeworkListAdapter: ItemListAdapter
     private lateinit var examListAdapter: ItemListAdapter
     private lateinit var taskListAdapter: ItemListAdapter
+    private lateinit var upcomingItemListAdapter: UpcomingItemListAdapter
 
     private lateinit var sharedPref: SharedPreferences
 
@@ -111,6 +113,13 @@ class AgendaFragment : Fragment(),
             this,
             this
         )
+        upcomingItemListAdapter = UpcomingItemListAdapter(
+            requireContext(),
+            this,
+            this,
+            this,
+            this
+        )
 
         recyclerViewOverdue.apply {
             layoutManager = LinearLayoutManager(requireContext())
@@ -128,70 +137,76 @@ class AgendaFragment : Fragment(),
             layoutManager = LinearLayoutManager(requireContext())
             adapter = taskListAdapter
         }
+        recyclerViewUpcoming.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = upcomingItemListAdapter
+        }
 
-        dataViewModel.getAllOverdueItemsByDate(
-            SimpleDateFormat(
-                School.dateFormatOnDatabase,
-                Locale.getDefault()
-            ).format(dateToday.time).toInt()
-        ).observe(viewLifecycleOwner, { overdueItems ->
-            if (overdueItems.isEmpty()) {
-                groupOverdue.visibility = View.GONE
-            } else {
-                groupOverdue.visibility = View.VISIBLE
-            }
-            overdueListAdapter.submitList(overdueItems) {
-                refreshShowEmptyMessageVisibility()
-            }
-        })
+        val todayDateInt = SimpleDateFormat(
+            School.dateFormatOnDatabase,
+            Locale.getDefault()
+        ).format(dateToday.time).toInt()
 
-        dataViewModel.getAllHomeworkByDate(
-            SimpleDateFormat(
-                School.dateFormatOnDatabase,
-                Locale.getDefault()
-            ).format(dateToday.time).toInt()
-        ).observe(viewLifecycleOwner, { homeworks ->
-            if (homeworks.isEmpty()) {
-                groupHomework.visibility = View.GONE
-            } else {
-                groupHomework.visibility = View.VISIBLE
-            }
-            homeworkListAdapter.submitList(homeworks) {
-                refreshShowEmptyMessageVisibility()
-            }
-        })
+        dataViewModel.getAllOverdueItemsByDate(todayDateInt)
+            .observe(viewLifecycleOwner, { overdueItems ->
+                if (overdueItems.isEmpty()) {
+                    groupOverdue.visibility = View.GONE
+                } else {
+                    groupOverdue.visibility = View.VISIBLE
+                }
+                overdueListAdapter.submitList(overdueItems) {
+                    refreshShowEmptyMessageVisibility()
+                }
+            })
 
-        dataViewModel.getAllExamByDate(
-            SimpleDateFormat(
-                School.dateFormatOnDatabase,
-                Locale.getDefault()
-            ).format(dateToday.time).toInt()
-        ).observe(viewLifecycleOwner, { exams ->
-            if (exams.isEmpty()) {
-                groupExam.visibility = View.GONE
-            } else {
-                groupExam.visibility = View.VISIBLE
-            }
-            examListAdapter.submitList(exams) {
-                refreshShowEmptyMessageVisibility()
-            }
-        })
+        dataViewModel.getAllHomeworkByDate(todayDateInt)
+            .observe(viewLifecycleOwner, { homeworks ->
+                if (homeworks.isEmpty()) {
+                    groupHomework.visibility = View.GONE
+                } else {
+                    groupHomework.visibility = View.VISIBLE
+                }
+                homeworkListAdapter.submitList(homeworks) {
+                    refreshShowEmptyMessageVisibility()
+                }
+            })
 
-        dataViewModel.getAllTaskByDate(
-            SimpleDateFormat(
-                School.dateFormatOnDatabase,
-                Locale.getDefault()
-            ).format(dateToday.time).toInt()
-        ).observe(viewLifecycleOwner, { tasks ->
-            if (tasks.isEmpty()) {
-                groupTask.visibility = View.GONE
-            } else {
-                groupTask.visibility = View.VISIBLE
-            }
-            taskListAdapter.submitList(tasks) {
-                refreshShowEmptyMessageVisibility()
-            }
-        })
+        dataViewModel.getAllExamByDate(todayDateInt)
+            .observe(viewLifecycleOwner, { exams ->
+                if (exams.isEmpty()) {
+                    groupExam.visibility = View.GONE
+                } else {
+                    groupExam.visibility = View.VISIBLE
+                }
+                examListAdapter.submitList(exams) {
+                    refreshShowEmptyMessageVisibility()
+                }
+            })
+
+        dataViewModel.getAllTaskByDate(todayDateInt)
+            .observe(viewLifecycleOwner, { tasks ->
+                if (tasks.isEmpty()) {
+                    groupTask.visibility = View.GONE
+                } else {
+                    groupTask.visibility = View.VISIBLE
+                }
+                taskListAdapter.submitList(tasks) {
+                    refreshShowEmptyMessageVisibility()
+                }
+            })
+
+        dataViewModel.getUpcomingItems(todayDateInt)
+            .observe(viewLifecycleOwner, { upcomingItems ->
+                if (upcomingItems.isEmpty()) {
+                    groupUpcoming.visibility = View.GONE
+                    viewDivider.visibility = View.GONE
+                    upcomingItemListAdapter.submitList(ArrayList())
+                } else {
+                    groupUpcoming.visibility = View.VISIBLE
+                    viewDivider.visibility = View.VISIBLE
+                    updateUpcoming(upcomingItems)
+                }
+            })
 
         buttonSeeTomorrow.setOnClickListener {
             AgendaTomorrowFragment().show(childFragmentManager, "agendaTomorrowFragment")
@@ -201,6 +216,28 @@ class AgendaFragment : Fragment(),
             SimpleDateFormat(School.displayDateFormat, Locale.getDefault()).format(dateToday.time)
 
         constraintLayoutAgendaMain.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+    }
+
+    private fun updateUpcoming(upcomingItems: List<Item>) {
+        val upcomingItemsList = ArrayList<UpcomingListItem>()
+        var count = 0
+        var lastDate = upcomingItems[0].date
+        upcomingItemsList.add(UpcomingDate(lastDate))
+        for (item in upcomingItems) {
+            if (count < 10) {
+                if (item.date == lastDate) {
+                    upcomingItemsList.add(UpcomingItem(item))
+                } else {
+                    lastDate = item.date
+                    upcomingItemsList.add(UpcomingDate(lastDate))
+                    upcomingItemsList.add(UpcomingItem(item))
+                }
+                count++
+            } else {
+                upcomingItemsList.add(UpcomingMore())
+            }
+        }
+        upcomingItemListAdapter.submitList(upcomingItemsList)
     }
 
     /**

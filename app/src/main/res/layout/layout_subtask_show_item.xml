@@ -16,6 +16,8 @@
         android:scaleType="fitCenter" />
 
     <TextView
+        android:ellipsize="end"
+        android:singleLine="true"
         android:textSize="16sp"
         android:id="@+id/textViewSubtaskTitle"
         android:layout_width="match_parent"
@@ -25,7 +27,6 @@
         android:layout_marginBottom="6dp"
         android:background="@null"
         android:fontFamily="@font/cabin_regular"
-        android:maxLines="1"
         android:textColor="?android:textColorPrimary" />
 
 </LinearLayout>

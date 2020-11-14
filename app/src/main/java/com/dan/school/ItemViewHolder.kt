@@ -8,5 +8,6 @@ import androidx.recyclerview.widget.RecyclerView
 class ItemViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     val textViewItem: TextView = view.findViewById(R.id.textViewItem)
     val buttonCheckItem: ImageButton = view.findViewById(R.id.buttonCheck)
+    val textViewSubtaskCount: TextView = view.findViewById(R.id.textViewSubtaskCount)
     val buttonSubtask: ImageButton = view.findViewById(R.id.buttonSubtask)
 }

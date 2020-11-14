@@ -27,6 +27,7 @@
     <color name="cardViewTaskBackgroundColor">#3D8534FF</color>
     <color name="cardViewColorPrimaryBackgroundColor">#3D0682bd</color>
     <color name="cardViewRedBackgroundColor">#3DF44336</color>
+    <color name="cardViewUpcomingBackgroundColor">#14000000</color>
     <color name="colorPrimaryAlpha70">#B30682bd</color>
     <color name="strokeColor">#1F000000</color>
 

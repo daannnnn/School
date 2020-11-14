@@ -27,6 +27,7 @@ import com.dan.school.R
 import com.dan.school.School
 import com.dan.school.School.categoryCheckedIcons
 import com.dan.school.School.categoryUncheckedIcons
+import com.dan.school.adapters.BaseItemListAdapter
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.CategoryCount
 import com.dan.school.models.DateItem
@@ -48,8 +49,8 @@ import java.time.temporal.WeekFields
 import java.util.*
 import kotlin.collections.ArrayList
 
-class CalendarFragment : Fragment(), ItemListAdapter.DoneListener,
-    ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
+class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
+    BaseItemListAdapter.ShowSubtasksListener, ItemClickListener, BaseItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialogFragment.ConfirmDeleteListener {
 
     private lateinit var titleChangeListener: TitleChangeListener

@@ -13,6 +13,7 @@ import com.dan.school.R
 import com.dan.school.School
 import com.dan.school.School.categoryCheckedIcons
 import com.dan.school.School.categoryUncheckedIcons
+import com.dan.school.adapters.BaseItemListAdapter
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
@@ -22,8 +23,8 @@ import kotlinx.android.synthetic.main.fragment_completed_grouped.*
 import java.text.SimpleDateFormat
 import java.util.*
 
-class CompletedGroupedFragment : Fragment(), ItemListAdapter.DoneListener,
-    ItemListAdapter.ShowSubtasksListener, ItemClickListener, ItemListAdapter.ItemLongClickListener,
+class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
+    BaseItemListAdapter.ShowSubtasksListener, ItemClickListener, BaseItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialogFragment.ConfirmDeleteListener {
 
     private val dataViewModel: DataViewModel by activityViewModels()

@@ -80,6 +80,7 @@
     <string name="com_github_antonyt__InfiniteViewPager_libraryWebsite">https://github.com/antonyt/InfiniteViewPager</string>
     <string name="com_github_kizitonwose__CalendarView_description">A highly customizable calendar library for Android, powered by RecyclerView.</string>
     <string name="com_github_kizitonwose__CalendarView_libraryWebsite">https://github.com/kizitonwose/CalendarView</string>
+    <string name="upcoming">Upcoming</string>
 
     <string-array name="sort_by_array">
         <item>Time Completed</item>
