@@ -44,14 +44,27 @@ class ItemListAdapter(
             )
             return@setOnLongClickListener true
         }
-        if ((Gson().fromJson(
-                getItem(position).subtasks,
-                object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type
-            ) as ArrayList<Subtask?>).isEmpty()
-        ) {
+        val subtasks = (Gson().fromJson(
+            getItem(position).subtasks,
+            object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type
+        ) as ArrayList<Subtask?>)
+        if (subtasks.isEmpty()) {
             holder.buttonSubtask.visibility = View.GONE
+            holder.textViewSubtaskCount.visibility = View.GONE
         } else {
             holder.buttonSubtask.visibility = View.VISIBLE
+            var count = 0
+            for (subtask in subtasks) {
+                if (subtask != null && !subtask.done) {
+                    count++
+                }
+            }
+            if (count != 0) {
+                holder.textViewSubtaskCount.visibility = View.VISIBLE
+                holder.textViewSubtaskCount.text = count.toString()
+            } else {
+                holder.textViewSubtaskCount.visibility = View.GONE
+            }
         }
         val mItem = getItem(position)
         val mItemCategory = mItem.category

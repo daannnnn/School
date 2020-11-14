@@ -1,11 +1,9 @@
 package com.dan.school.adapters
 
-import android.app.LauncherActivity.ListItem
 import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.ImageButton
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
@@ -21,8 +19,6 @@ import com.dan.school.models.UpcomingListItem
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
 import java.util.*
-import kotlin.collections.ArrayList
-
 
 class UpcomingItemListAdapter(
     private val context: Context,
@@ -35,12 +31,14 @@ class UpcomingItemListAdapter(
         return when (viewType) {
             UpcomingListItem.TYPE_DATE -> {
                 val itemView: View =
-                    LayoutInflater.from(context).inflate(R.layout.layout_upcoming_date, parent, false)
+                    LayoutInflater.from(context)
+                        .inflate(R.layout.layout_upcoming_date, parent, false)
                 UpcomingDateViewHolder(itemView)
             }
             UpcomingListItem.TYPE_MORE -> {
                 val itemView: View =
-                    LayoutInflater.from(context).inflate(R.layout.layout_upcoming_more, parent, false)
+                    LayoutInflater.from(context)
+                        .inflate(R.layout.layout_upcoming_more, parent, false)
                 UpcomingMoreViewHolder(itemView)
             }
             else -> {
@@ -72,14 +70,27 @@ class UpcomingItemListAdapter(
                 )
                 return@setOnLongClickListener true
             }
-            if ((Gson().fromJson(
-                    upcomingItem.subtasks,
-                    object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type
-                ) as ArrayList<Subtask?>).isEmpty()
-            ) {
-                upcomingItemViewHolder.buttonSubtask.visibility = View.GONE
+            val subtasks = (Gson().fromJson(
+                upcomingItem.subtasks,
+                object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type
+            ) as ArrayList<Subtask?>)
+            if (subtasks.isEmpty()) {
+                holder.buttonSubtask.visibility = View.GONE
+                holder.textViewSubtaskCount.visibility = View.GONE
             } else {
-                upcomingItemViewHolder.buttonSubtask.visibility = View.VISIBLE
+                holder.buttonSubtask.visibility = View.VISIBLE
+                var count = 0
+                for (subtask in subtasks) {
+                    if (subtask != null && !subtask.done) {
+                        count++
+                    }
+                }
+                if (count != 0) {
+                    holder.textViewSubtaskCount.visibility = View.VISIBLE
+                    holder.textViewSubtaskCount.text = count.toString()
+                } else {
+                    holder.textViewSubtaskCount.visibility = View.GONE
+                }
             }
             val mItemCategory = upcomingItem.category
             if (upcomingItem.done) {
