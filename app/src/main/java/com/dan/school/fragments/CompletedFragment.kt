@@ -20,6 +20,8 @@ import com.dan.school.DataViewModel
 import com.dan.school.MainActivity
 import com.dan.school.R
 import com.dan.school.School
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.fragment_completed.*
 
 class CompletedFragment : Fragment() {
@@ -51,6 +53,14 @@ class CompletedFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val adRequest = AdRequest.Builder().build()
+        adViewBannerCompletedFragment.adListener = object: AdListener() {
+            override fun onAdLoaded() {
+                adViewBannerCompletedFragment.visibility = View.VISIBLE
+            }
+        }
+        adViewBannerCompletedFragment.loadAd(adRequest)
 
         if (savedInstanceState == null) {
             childFragmentManager.beginTransaction()

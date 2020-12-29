@@ -10,6 +10,7 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.dan.school.fragments.CompletedFragment
 import com.dan.school.fragments.OverviewFragment
 import com.dan.school.fragments.SettingsFragment
+import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
@@ -25,6 +26,8 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        MobileAds.initialize(this) {}
 
         if (savedInstanceState == null) {  // to prevent multiple creation of instances
             navigationView.menu.getItem(0).isChecked = true
