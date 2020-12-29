@@ -10,10 +10,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.dan.school.fragments.CompletedFragment
 import com.dan.school.fragments.OverviewFragment
 import com.dan.school.fragments.SettingsFragment
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
+import com.google.android.gms.ads.InterstitialAd
 import com.google.android.gms.ads.MobileAds
 import kotlinx.android.synthetic.main.activity_main.*
 
-class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
+class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
+    OverviewFragment.ClickCounterListener {
 
     /**
      * Is set to not null on [SettingsFragment.onAttach]
@@ -21,13 +25,31 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
      */
     var settingsBackPressedListener: SettingsBackPressedListener? = null
 
+    /**
+     * Saves the last click time from FAB, BottomNavigationView, and
+     * from an item click.
+     */
+    private var lastClickTime = System.currentTimeMillis()
+
+    /**
+     * Saves the amount of clicks from FAB, BottomNavigationView, and
+     * from an item click.
+     */
+    private var clickCounter = 0
+
     private var onSharedPreferenceChangeListener: OnSharedPreferenceChangeListener? = null
+
+    private lateinit var interstitialAd: InterstitialAd
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
         MobileAds.initialize(this) {}
+
+        interstitialAd = InterstitialAd(this)
+        interstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
+        interstitialAd.loadAd(AdRequest.Builder().build())
 
         if (savedInstanceState == null) {  // to prevent multiple creation of instances
             navigationView.menu.getItem(0).isChecked = true
@@ -163,8 +185,51 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
             .show(supportFragmentManager.findFragmentByTag(tag)!!).commit()
     }
 
+    /**
+     * Updates [clickCounter] if the difference between
+     * [System.currentTimeMillis] and [lastClickTime] in seconds
+     * is greater than 0.5 seconds then shows [interstitialAd] if
+     * loaded and if [clickCounter] is greater than or equal to 8
+     *
+     * Returns true if show is called on [interstitialAd], false
+     * otherwise
+     */
+    private fun updateCounter(): Boolean {
+        var b = false
+        if ((System.currentTimeMillis() - lastClickTime) / 1000 > 0.5) {
+            clickCounter++
+            lastClickTime = System.currentTimeMillis()
+            if (clickCounter >= 8) {
+                if (interstitialAd.isLoaded) {
+                    interstitialAd.show()
+                    clickCounter = 0
+                    b = true
+                }
+            }
+        }
+        return b
+    }
+
     override fun openDrawer() {
         drawerLayout.openDrawer(GravityCompat.START)
+    }
+
+    /**
+     * Calls [callback] immediately if [updateCounter] returns
+     * false, otherwise wait for ad to close before calling
+     * [callback]
+     */
+    override fun incrementCounter(callback: () -> Unit) {
+        if (updateCounter()) {
+            interstitialAd.adListener = object : AdListener() {
+                override fun onAdClosed() {
+                    interstitialAd.loadAd(AdRequest.Builder().build())
+                    callback()
+                }
+            }
+        } else {
+            callback()
+        }
     }
 
     override fun onBackPressed() {

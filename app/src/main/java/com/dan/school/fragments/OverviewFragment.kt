@@ -3,6 +3,7 @@ package com.dan.school.fragments
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +36,7 @@ class OverviewFragment : Fragment(),
     private var selectedFragment = 0
 
     private lateinit var openDrawerListener: OpenDrawerListener
+    private lateinit var clickCounterListener: ClickCounterListener
 
     private lateinit var sharedPref: SharedPreferences
 
@@ -47,6 +49,7 @@ class OverviewFragment : Fragment(),
         )
         if (activity is MainActivity) {
             openDrawerListener = activity as MainActivity
+            clickCounterListener = activity as MainActivity
         }
     }
 
@@ -107,33 +110,39 @@ class OverviewFragment : Fragment(),
 
         // Listeners
         floatingActionButton.setOnClickListener {
-            addBottomSheetDialogFragment =
-                AddBottomSheetDialogFragment(
-                    this,
-                    this,
-                    lastSelectedAddCategory
+            clickCounterListener.incrementCounter {
+                addBottomSheetDialogFragment =
+                    AddBottomSheetDialogFragment(
+                        this,
+                        this,
+                        lastSelectedAddCategory
+                    )
+                addBottomSheetDialogFragment?.show(
+                    childFragmentManager,
+                    "BottomSheet"
                 )
-            addBottomSheetDialogFragment?.show(
-                childFragmentManager,
-                "BottomSheet"
-            )
+            }
         }
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
-            when (item.itemId) {
-                R.id.homeFragment -> {
-                    setFragment(School.HOME)
-                    textViewAppBarTitle.text = getString(R.string.app_name)
-                }
-                R.id.calendarFragment -> {
-                    setFragment(School.CALENDAR)
-                }
-                R.id.agendaFragment -> {
-                    setFragment(School.AGENDA)
-                    textViewAppBarTitle.text = getString(R.string.app_name)
+            Log.i("Test", "onViewCreated: ")
+            clickCounterListener.incrementCounter {
+                when (item.itemId) {
+                    R.id.homeFragment -> {
+                        setFragment(School.HOME)
+                        textViewAppBarTitle.text = getString(R.string.app_name)
+                    }
+                    R.id.calendarFragment -> {
+                        setFragment(School.CALENDAR)
+                    }
+                    R.id.agendaFragment -> {
+                        setFragment(School.AGENDA)
+                        textViewAppBarTitle.text = getString(R.string.app_name)
+                    }
                 }
             }
             return@setOnNavigationItemSelectedListener true
         }
+        bottomNavigation.setOnNavigationItemReselectedListener {}
         buttonMenu.setOnClickListener {
             if (this::openDrawerListener.isInitialized) {
                 openDrawerListener.openDrawer()
@@ -356,21 +365,23 @@ class OverviewFragment : Fragment(),
     }
 
     override fun itemClicked(item: Item) {
-        val calendar = Calendar.getInstance()
-        calendar.time = SimpleDateFormat(
-            School.dateFormatOnDatabase,
-            Locale.getDefault()
-        ).parse(item.date.toString())!!
-        showEditFragment(
-            item.category,
-            item.done,
-            item.doneTime,
-            item.title,
-            Gson().fromJson(item.subtasks, object : TypeToken<ArrayList<Subtask?>?>() {}.type),
-            item.notes,
-            calendar,
-            item.id
-        )
+        clickCounterListener.incrementCounter {
+            val calendar = Calendar.getInstance()
+            calendar.time = SimpleDateFormat(
+                School.dateFormatOnDatabase,
+                Locale.getDefault()
+            ).parse(item.date.toString())!!
+            showEditFragment(
+                item.category,
+                item.done,
+                item.doneTime,
+                item.title,
+                Gson().fromJson(item.subtasks, object : TypeToken<ArrayList<Subtask?>?>() {}.type),
+                item.notes,
+                calendar,
+                item.id
+            )
+        }
     }
 
     override fun changeTitle(title: String) {
@@ -383,6 +394,10 @@ class OverviewFragment : Fragment(),
 
     interface OpenDrawerListener {
         fun openDrawer()
+    }
+
+    interface ClickCounterListener {
+        fun incrementCounter(callback: () -> Unit)
     }
 
 }
