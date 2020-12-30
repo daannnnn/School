@@ -664,6 +664,9 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
             (isEmpty[School.HOMEWORK] && isEmpty[School.EXAM] && isEmpty[School.TASK])
     }
 
+    /**
+     * Returns a [Calendar] object from [selectedDate]
+     */
     fun getSelectedDate(): Calendar {
         return Calendar.getInstance().apply {
             time = Date.from(selectedDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant())

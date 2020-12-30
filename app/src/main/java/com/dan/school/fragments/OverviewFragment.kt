@@ -143,16 +143,31 @@ class OverviewFragment : Fragment(),
         }
     }
 
+    /**
+     * Creates and shows an [AddBottomSheetDialogFragment]
+     */
     private fun showAddBottomSheetDialog() {
+
+        /**
+         * [CalendarFragment.getSelectedDate] if [selectedFragment]
+         * is [School.CALENDAR_SELECTED] and if fragment with tag
+         * [School.CALENDAR] is not null, otherwise null.
+         */
+        val selectedCalendarDate =
+            if (selectedFragment == School.CALENDAR_SELECTED && childFragmentManager.findFragmentByTag(
+                    School.CALENDAR
+                ) != null
+            ) {
+                (childFragmentManager.findFragmentByTag(School.CALENDAR) as CalendarFragment).getSelectedDate()
+            } else {
+                null
+            }
+
         addBottomSheetDialogFragment = AddBottomSheetDialogFragment(
             this,
             this,
             lastSelectedAddCategory,
-            if (selectedFragment == School.CALENDAR_SELECTED && childFragmentManager.findFragmentByTag(
-                    School.CALENDAR
-                ) != null
-            ) (childFragmentManager.findFragmentByTag(School.CALENDAR) as CalendarFragment).getSelectedDate()
-            else null
+            selectedCalendarDate
         )
         addBottomSheetDialogFragment?.show(
             childFragmentManager,
