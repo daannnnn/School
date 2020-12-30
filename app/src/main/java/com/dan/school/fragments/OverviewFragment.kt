@@ -107,16 +107,7 @@ class OverviewFragment : Fragment(),
 
         // Listeners
         floatingActionButton.setOnClickListener {
-            addBottomSheetDialogFragment =
-                AddBottomSheetDialogFragment(
-                    this,
-                    this,
-                    lastSelectedAddCategory
-                )
-            addBottomSheetDialogFragment?.show(
-                childFragmentManager,
-                "BottomSheet"
-            )
+            showAddBottomSheetDialog()
         }
         bottomNavigation.setOnNavigationItemSelectedListener { item ->
             when (item.itemId) {
@@ -150,6 +141,23 @@ class OverviewFragment : Fragment(),
                 }
             }
         }
+    }
+
+    private fun showAddBottomSheetDialog() {
+        addBottomSheetDialogFragment = AddBottomSheetDialogFragment(
+            this,
+            this,
+            lastSelectedAddCategory,
+            if (selectedFragment == School.CALENDAR_SELECTED && childFragmentManager.findFragmentByTag(
+                    School.CALENDAR
+                ) != null
+            ) (childFragmentManager.findFragmentByTag(School.CALENDAR) as CalendarFragment).getSelectedDate()
+            else null
+        )
+        addBottomSheetDialogFragment?.show(
+            childFragmentManager,
+            "BottomSheet"
+        )
     }
 
     /**
@@ -256,7 +264,8 @@ class OverviewFragment : Fragment(),
     }
 
     /**
-     * Saves last selected fragment on [sharedPref]
+     * Saves last selected fragment on [sharedPref] and on
+     * variable [selectedFragment]
      *
      * [fragment] One of [School.HOME_SELECTED], [School.CALENDAR_SELECTED],
      * or [School.AGENDA_SELECTED]
@@ -268,6 +277,7 @@ class OverviewFragment : Fragment(),
                 commit()
             }
         }
+        selectedFragment = fragment
     }
 
     /**

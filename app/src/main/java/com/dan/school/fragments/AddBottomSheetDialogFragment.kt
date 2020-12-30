@@ -30,7 +30,8 @@ import java.util.*
 class AddBottomSheetDialogFragment(
     private val listener: GoToEditFragment,
     private val categoryChangeListener: SelectedCategoryChangeListener,
-    private var category: Int
+    private var category: Int,
+    selectedCalendarDate: Calendar?
 ) :
     BottomSheetDialogFragment(), DatePickerDialog.OnDateSetListener,
     DatePickerFragment.OnCancelListener {
@@ -38,6 +39,7 @@ class AddBottomSheetDialogFragment(
     private lateinit var inputMethodManager: InputMethodManager
 
     private var selectedDate = Calendar.getInstance()
+    private var isInitialDateFromCalendarFragment = false
     private val dateToday = Calendar.getInstance()
     private val dateTomorrow = Calendar.getInstance()
     private val dateFormat = SimpleDateFormat(School.dateFormat, Locale.getDefault())
@@ -45,6 +47,13 @@ class AddBottomSheetDialogFragment(
     private var chipGroupSelected: Int = School.TODAY
 
     private val dataViewModel: DataViewModel by activityViewModels()
+
+    init {
+        if (selectedCalendarDate != null) {
+            selectedDate = selectedCalendarDate
+            isInitialDateFromCalendarFragment = true
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -135,7 +144,12 @@ class AddBottomSheetDialogFragment(
         // initialize
         dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
         changeColors(category)
-        chipGroupDate.check(R.id.chipToday)
+        if (isInitialDateFromCalendarFragment) {
+            chipGroupDate.check(R.id.chipPickDate)
+            dateSet(selectedDate[Calendar.YEAR], selectedDate[Calendar.MONTH], selectedDate[Calendar.DAY_OF_MONTH])
+        } else {
+            chipGroupDate.check(R.id.chipToday)
+        }
     }
 
     /**
@@ -214,17 +228,21 @@ class AddBottomSheetDialogFragment(
         categoryChangeListener.selectedCategoryChanged(newCategory)
     }
 
+    private fun dateSet(year: Int, month: Int, dayOfMonth: Int) {
+        selectedDate.set(Calendar.YEAR, year)
+        selectedDate.set(Calendar.MONTH, month)
+        selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
+        textViewDatePicked.text = dateFormat.format(selectedDate.time)
+        chipGroupSelected = School.PICK_DATE
+    }
+
     override fun onDismiss(dialog: DialogInterface) {
         inputMethodManager.toggleSoftInput(InputMethodManager.HIDE_IMPLICIT_ONLY, 0)
         super.onDismiss(dialog)
     }
 
     override fun onDateSet(view: DatePicker?, year: Int, month: Int, dayOfMonth: Int) {
-        selectedDate.set(Calendar.YEAR, year)
-        selectedDate.set(Calendar.MONTH, month)
-        selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-        textViewDatePicked.text = dateFormat.format(selectedDate.time)
-        chipGroupSelected = School.PICK_DATE
+        dateSet(year, month, dayOfMonth)
     }
 
     override fun canceled() {

@@ -664,6 +664,12 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
             (isEmpty[School.HOMEWORK] && isEmpty[School.EXAM] && isEmpty[School.TASK])
     }
 
+    fun getSelectedDate(): Calendar {
+        return Calendar.getInstance().apply {
+            time = Date.from(selectedDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant())
+        }
+    }
+
     override fun setDone(id: Int, done: Boolean, doneTime: Long?) {
         dataViewModel.setDone(id, done, doneTime)
     }
