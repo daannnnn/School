@@ -149,6 +149,10 @@ class OverviewFragment : Fragment(),
     private fun showAddBottomSheetDialog() {
 
         /**
+         * Used to set the selected date from [CalendarFragment] on
+         * the [AddBottomSheetDialogFragment] if [CalendarFragment]
+         * is the current fragment, otherwise the current date.
+         *
          * [CalendarFragment.getSelectedDate] if [selectedFragment]
          * is [School.CALENDAR_SELECTED] and if fragment with tag
          * [School.CALENDAR] is not null, otherwise null.
