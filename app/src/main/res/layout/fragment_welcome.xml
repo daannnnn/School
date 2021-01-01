@@ -22,7 +22,6 @@
                 android:id="@+id/imageViewBannerImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:maxWidth="400dp"
                 android:src="@drawable/banner_image"/>
 
             <TextView
