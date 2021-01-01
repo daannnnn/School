@@ -80,6 +80,16 @@ class AuthenticationActivity : AppCompatActivity(),
         done(AUTHENTICATION_CANCELLED)
     }
 
+    fun goToFP() {
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+            .replace(
+                R.id.frameLayoutAuthentication,
+                ResetPasswordFragment.newInstance()
+            ).addToBackStack(null)
+            .commit()
+    }
+
     companion object {
         const val AUTHENTICATION_CANCELLED = 0
         const val AUTHENTICATION_SUCCESS = 1

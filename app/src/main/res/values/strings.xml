@@ -104,4 +104,6 @@
 
     <string name="hello_first_fragment">Hello first fragment</string>
     <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
+    <string name="reset_password">Reset password</string>
+    <string name="did_not_receive_email_resend">Did not receive email? Resend.</string>
 </resources>
