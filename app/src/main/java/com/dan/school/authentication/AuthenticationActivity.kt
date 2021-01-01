@@ -16,7 +16,7 @@ class AuthenticationActivity : AppCompatActivity(),
     AuthenticationFragment.ButtonSignInWithClickListener,
     AuthenticationFragment.ButtonSignUpClickListener,
     AuthenticationFragment.ButtonSignInLaterClickListener,
-    SignUpFragment.SignUpButtonClickListener {
+    SignUpFragment.SignUpButtonClickListener, WelcomeFragment.WelcomeDoneButtonClickListener {
 
     private lateinit var auth: FirebaseAuth
 
@@ -128,6 +128,10 @@ class AuthenticationActivity : AppCompatActivity(),
 
     override fun signUpButtonClicked(email: String, password: String) {
         createUser(email, password)
+    }
+
+    override fun welcomeDoneButtonClicked() {
+        done(AUTHENTICATION_SUCCESS)
     }
 
 }
