@@ -13,7 +13,7 @@
         <activity
             android:name=".authentication.AuthenticationActivity"
             android:label="@string/title_activity_authentication"
-            android:theme="@style/AppTheme.NoActionBar" >
+            android:theme="@style/SetupTheme" >
         </activity>
         <activity
             android:name=".SetupActivity"
