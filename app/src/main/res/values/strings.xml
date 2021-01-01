@@ -81,9 +81,27 @@
     <string name="com_github_kizitonwose__CalendarView_description">A highly customizable calendar library for Android, powered by RecyclerView.</string>
     <string name="com_github_kizitonwose__CalendarView_libraryWebsite">https://github.com/kizitonwose/CalendarView</string>
     <string name="upcoming">Upcoming</string>
+    <string name="password">Password</string>
+    <string name="forgot_password">Forgot password</string>
+    <string name="sign_in">Sign in</string>
+    <string name="use_other_method">Use other method</string>
+    <string name="new_user_sign_up_now">New user? Sign up now.</string>
+    <string name="sign_in_with_google">Sign in with Google</string>
+    <string name="sign_in_with_email">Sign in with Email</string>
+    <string name="or">or</string>
+    <string name="no_account_yet_sign_up">No account yet? Sign up</string>
 
     <string-array name="sort_by_array">
         <item>Time Completed</item>
         <item>Title</item>
     </string-array>
+    <string name="title_activity_authentication">AuthenticationActivity</string>
+    <!-- Strings used for fragments for navigation -->
+    <string name="first_fragment_label">First Fragment</string>
+    <string name="second_fragment_label">Second Fragment</string>
+    <string name="next">Next</string>
+    <string name="previous">Previous</string>
+
+    <string name="hello_first_fragment">Hello first fragment</string>
+    <string name="hello_second_fragment">Hello second fragment. Arg: %1$s</string>
 </resources>

@@ -17,9 +17,12 @@ object School {
     const val LIGHT_MODE = 10
     const val SYSTEM_DEFAULT = 11
 
-    const val PROFILE = 12
-    const val THEME = 13
-    const val ABOUT = 14
+    const val SIGN_IN_WITH_GOOGLE = 12
+    const val SIGN_IN_WITH_EMAIL = 13
+
+    const val PROFILE = 14
+    const val THEME = 15
+    const val ABOUT = 16
 
     const val dateFormat = "EEE, MMM d, yyyy"
     const val dateFormatOnDatabase = "yyyyMMdd"

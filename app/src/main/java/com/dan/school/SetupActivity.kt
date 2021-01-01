@@ -5,9 +5,12 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
+import com.dan.school.authentication.AuthenticationActivity
+import com.dan.school.authentication.AuthenticationFragment
 import com.dan.school.setup.ProfileSetupFragment
-import com.dan.school.setup.SetupFragment
 import com.dan.school.setup.SetupViewPagerFragment
+import com.dan.school.authentication.SignInFragment
+import com.dan.school.setup.SetupFragment
 
 class SetupActivity : AppCompatActivity() {
 
@@ -30,13 +33,33 @@ class SetupActivity : AppCompatActivity() {
         }
     }
 
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
+        if (requestCode == AUTHENTICATION_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
+            when (data?.getIntExtra(AuthenticationActivity.RESULT, -1)) {
+                AuthenticationActivity.AUTHENTICATION_CANCELLED -> {
+                    supportFragmentManager.beginTransaction()
+                        .replace(
+                            R.id.frameLayoutSetup,
+                            ProfileSetupFragment()
+                        ).commit()
+                }
+                AuthenticationActivity.AUTHENTICATION_SUCCESS -> {
+                    supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                        .replace(
+                            R.id.frameLayoutSetup,
+                            SetupViewPagerFragment()
+                        ).commit()
+                }
+            }
+        }
+    }
+
     fun buttonGetStartedClicked() {
-        supportFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-            .replace(
-                R.id.frameLayoutSetup,
-                ProfileSetupFragment()
-            ).commit()
+        startActivityForResult(Intent(this, AuthenticationActivity::class.java),
+            AUTHENTICATION_ACTIVITY_REQUEST_CODE
+        )
     }
 
     fun profileSetupDone(nickname: String, fullName: String) {
@@ -60,5 +83,9 @@ class SetupActivity : AppCompatActivity() {
         }
         startActivity(Intent(this, MainActivity::class.java))
         finish()
+    }
+
+    companion object {
+        const val AUTHENTICATION_ACTIVITY_REQUEST_CODE = 1
     }
 }

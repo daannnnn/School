@@ -33,4 +33,7 @@
 
     <color name="tabLayoutColor">#272727</color>
     <color name="appBarLayoutColor">#272727</color>
+    <color name="signInButtonTextColor">#fff</color>
+    <color name="signInWithGoogleBackgroundColor">#4285F4</color>
+    <color name="signInWithEmailBackgroundColor">#1FFFFFFF</color>
 </resources>
