@@ -16,7 +16,8 @@ class AuthenticationActivity : AppCompatActivity(),
     AuthenticationFragment.ButtonSignInWithClickListener,
     AuthenticationFragment.ButtonSignUpClickListener,
     AuthenticationFragment.ButtonSignInLaterClickListener,
-    SignUpFragment.SignUpButtonClickListener, WelcomeFragment.WelcomeDoneButtonClickListener {
+    SignUpFragment.SignUpButtonClickListener, WelcomeFragment.WelcomeDoneButtonClickListener,
+    SignInFragment.SignInButtonClickListener {
 
     private lateinit var auth: FirebaseAuth
 
@@ -86,6 +87,20 @@ class AuthenticationActivity : AppCompatActivity(),
             }
     }
 
+    private fun signInUser(email: String, password: String) {
+        auth.signInWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    done(AUTHENTICATION_SUCCESS)
+                } else {
+                    Toast.makeText(
+                        baseContext, "Sign in failed. Please try again.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+    }
+
     private fun done(result: Int) {
         val returnIntent = Intent()
         returnIntent.putExtra(RESULT, result)
@@ -132,6 +147,10 @@ class AuthenticationActivity : AppCompatActivity(),
 
     override fun welcomeDoneButtonClicked() {
         done(AUTHENTICATION_SUCCESS)
+    }
+
+    override fun signInButtonClicked(email: String, password: String) {
+        signInUser(email, password)
     }
 
 }
