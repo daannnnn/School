@@ -108,4 +108,5 @@
     <string name="did_not_receive_email_resend">Did not receive email? Resend.</string>
     <string name="sign_up">Sign up</string>
     <string name="sign_up_with_google">Sign up with Google</string>
+    <string name="this_field_is_required">This field is required.</string>
 </resources>

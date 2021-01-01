@@ -2,19 +2,29 @@ package com.dan.school.authentication
 
 import android.content.Intent
 import android.os.Bundle
+import android.util.Log
+import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import com.dan.school.R
 import com.dan.school.School
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 
 
 class AuthenticationActivity : AppCompatActivity(),
     AuthenticationFragment.ButtonSignInWithClickListener,
     AuthenticationFragment.ButtonSignUpClickListener,
-    AuthenticationFragment.ButtonSignInLaterClickListener {
+    AuthenticationFragment.ButtonSignInLaterClickListener,
+    SignUpFragment.SignUpButtonClickListener {
+
+    private lateinit var auth: FirebaseAuth
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
+
+        auth = Firebase.auth
 
         if (savedInstanceState == null) {
             supportFragmentManager.beginTransaction()
@@ -57,6 +67,18 @@ class AuthenticationActivity : AppCompatActivity(),
             .commit()
     }
 
+    private fun createUser(email: String, password: String) {
+        auth.createUserWithEmailAndPassword(email, password)
+            .addOnCompleteListener(this) { task ->
+                if (task.isSuccessful) {
+                    done(AUTHENTICATION_SUCCESS)
+                } else {
+                    Toast.makeText(baseContext, "Sign up failed. Please try again.",
+                        Toast.LENGTH_SHORT).show()
+                }
+            }
+    }
+
     private fun done(result: Int) {
         val returnIntent = Intent()
         returnIntent.putExtra(RESULT, result)
@@ -95,6 +117,10 @@ class AuthenticationActivity : AppCompatActivity(),
         const val AUTHENTICATION_SUCCESS = 1
 
         const val RESULT = "result"
+    }
+
+    override fun signUpButtonClicked(email: String, password: String) {
+        createUser(email, password)
     }
 
 }
