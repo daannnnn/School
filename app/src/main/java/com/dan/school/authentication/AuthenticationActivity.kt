@@ -71,10 +71,17 @@ class AuthenticationActivity : AppCompatActivity(),
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    done(AUTHENTICATION_SUCCESS)
+                    supportFragmentManager.beginTransaction()
+                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                        .replace(
+                            R.id.frameLayoutAuthentication,
+                            WelcomeFragment.newInstance()
+                        ).commit()
                 } else {
-                    Toast.makeText(baseContext, "Sign up failed. Please try again.",
-                        Toast.LENGTH_SHORT).show()
+                    Toast.makeText(
+                        baseContext, "Sign up failed. Please try again.",
+                        Toast.LENGTH_SHORT
+                    ).show()
                 }
             }
     }

@@ -16,4 +16,9 @@ class WelcomeFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_welcome, container, false)
     }
 
+    companion object {
+        @JvmStatic
+        fun newInstance() =
+            WelcomeFragment()
+    }
 }
