@@ -117,15 +117,16 @@
                 app:layout_constraintTop_toBottomOf="@id/editTextPassword" />
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/editTextFullName"
+                android:id="@+id/editTextNickname"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="36dp"
                 android:layout_marginTop="16dp"
                 android:layout_marginEnd="36dp"
-                android:hint="@string/full_name"
+                android:hint="@string/nickname"
                 app:errorEnabled="true"
+                app:helperText="@string/what_do_you_want_us_to_call_you"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/viewDivider">
@@ -139,18 +140,17 @@
             </com.google.android.material.textfield.TextInputLayout>
 
             <com.google.android.material.textfield.TextInputLayout
-                android:id="@+id/editTextNickname"
+                android:id="@+id/editTextFullName"
                 style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
                 android:layout_width="0dp"
                 android:layout_height="wrap_content"
                 android:layout_marginStart="36dp"
                 android:layout_marginEnd="36dp"
-                android:hint="@string/nickname"
+                android:hint="@string/full_name"
                 app:errorEnabled="true"
-                app:helperText="@string/what_do_you_want_us_to_call_you"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/editTextFullName">
+                app:layout_constraintTop_toBottomOf="@id/editTextNickname">
 
                 <com.google.android.material.textfield.TextInputEditText
                     android:layout_width="match_parent"
@@ -173,7 +173,7 @@
                 app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="@id/viewDivider"
                 app:layout_constraintStart_toStartOf="@id/viewDivider"
-                app:layout_constraintTop_toBottomOf="@id/editTextNickname" />
+                app:layout_constraintTop_toBottomOf="@id/editTextFullName" />
 
         </androidx.constraintlayout.widget.ConstraintLayout>
 
