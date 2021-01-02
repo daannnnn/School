@@ -16,13 +16,13 @@
             android:layout_height="wrap_content">
 
             <ImageView
-                app:layout_constraintTop_toTopOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintEnd_toEndOf="parent"
                 android:id="@+id/imageViewBannerImage"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:src="@drawable/banner_image"/>
+                android:src="@drawable/banner_image"
+                app:layout_constraintEnd_toEndOf="parent"
+                app:layout_constraintStart_toStartOf="parent"
+                app:layout_constraintTop_toTopOf="parent" />
 
             <TextView
                 android:id="@+id/textViewWelcome"
@@ -46,7 +46,7 @@
                 android:layout_marginStart="36dp"
                 android:layout_marginEnd="36dp"
                 android:fontFamily="@font/cabin_regular"
-                android:text="We hope we can help you make your school life more productive."
+                android:text="@string/we_hope_we_can_help_you_make_your_school_life_more_productive"
                 android:textColor="?android:textColorPrimary"
                 android:textSize="16sp"
                 app:layout_constraintEnd_toEndOf="parent"
@@ -60,8 +60,9 @@
                 android:layout_marginStart="36dp"
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="36dp"
-                app:layout_constraintBottom_toBottomOf="parent"
                 android:layout_marginBottom="36dp"
+                android:visibility="gone"
+                app:layout_constraintBottom_toBottomOf="parent"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textViewMessage">
@@ -83,6 +84,7 @@
                         android:textSize="20sp" />
 
                     <TextView
+                        android:id="@+id/textViewVerifyEmailMessage"
                         android:layout_width="wrap_content"
                         android:layout_height="wrap_content"
                         android:layout_marginStart="16dp"
@@ -90,7 +92,6 @@
                         android:layout_marginEnd="16dp"
                         android:layout_marginBottom="16dp"
                         android:fontFamily="@font/cabin_regular"
-                        android:text="A verification email has been sent to artillagadann@gmail.com. Please check your email to verify your account."
                         android:textSize="14sp" />
 
                 </LinearLayout>

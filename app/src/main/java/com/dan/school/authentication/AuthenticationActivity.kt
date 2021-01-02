@@ -113,12 +113,23 @@ class AuthenticationActivity : AppCompatActivity(),
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                        .replace(
-                            R.id.frameLayoutAuthentication,
-                            WelcomeFragment.newInstance()
-                        ).commit()
+                    auth.currentUser?.sendEmailVerification()
+                        ?.addOnCompleteListener {
+                            if (!it.isSuccessful) {
+                                Toast.makeText(
+                                    this,
+                                    "Failed to send verification email. Please try again later.",
+                                    Toast.LENGTH_SHORT
+                                ).show()
+                            }
+
+                            supportFragmentManager.beginTransaction()
+                                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                                .replace(
+                                    R.id.frameLayoutAuthentication,
+                                    WelcomeFragment.newInstance(it.isSuccessful, email)
+                                ).commit()
+                        }
                 } else {
                     Toast.makeText(
                         baseContext, "Sign up failed. Please try again.",

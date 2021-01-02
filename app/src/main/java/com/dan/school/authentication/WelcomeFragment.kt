@@ -9,9 +9,26 @@ import android.view.ViewGroup
 import com.dan.school.R
 import kotlinx.android.synthetic.main.fragment_welcome.*
 
+private const val EMAIL_VERIFICATION_SENT = "email_verification_sent"
+private const val EMAIL = "email"
+
 class WelcomeFragment : Fragment() {
 
     private lateinit var welcomeDoneButtonClickListener: WelcomeDoneButtonClickListener
+
+    private var emailVerificationSent: Boolean = false
+    private var email: String = "your email"
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            emailVerificationSent = it.getBoolean(EMAIL_VERIFICATION_SENT)
+            val s = it.getString(EMAIL)
+            if (s != null) {
+                email = s
+            }
+        }
+    }
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -29,6 +46,12 @@ class WelcomeFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+        if (emailVerificationSent) {
+            cardViewVerifyEmail.visibility = View.VISIBLE
+            val message =
+                "${getString(R.string.a_verification_email_has_been_sent_to)} $email. ${getString(R.string.please_check_your_email_to_verify_your_account)}"
+            textViewVerifyEmailMessage.text = message
+        }
         buttonDone.setOnClickListener {
             welcomeDoneButtonClickListener.welcomeDoneButtonClicked()
         }
@@ -40,7 +63,12 @@ class WelcomeFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-            WelcomeFragment()
+        fun newInstance(emailVerificationSent: Boolean, email: String) =
+            WelcomeFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(EMAIL_VERIFICATION_SENT, emailVerificationSent)
+                    putString(EMAIL, email)
+                }
+            }
     }
 }
