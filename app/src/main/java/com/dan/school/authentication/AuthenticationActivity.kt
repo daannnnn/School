@@ -11,6 +11,9 @@ import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
 import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
+import com.google.firebase.auth.FirebaseAuthUserCollisionException
+import com.google.firebase.auth.FirebaseAuthWeakPasswordException
 import com.google.firebase.auth.GoogleAuthProvider
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -131,10 +134,29 @@ class AuthenticationActivity : AppCompatActivity(),
                                 ).commit()
                         }
                 } else {
-                    Toast.makeText(
-                        baseContext, "Sign up failed. Please try again.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    try {
+                        throw task.exception!!
+                    } catch (e: FirebaseAuthUserCollisionException) {
+                        Toast.makeText(
+                            this, "User already exists.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } catch (e: FirebaseAuthInvalidCredentialsException) {
+                        Toast.makeText(
+                            this, "Invalid email.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } catch (e: FirebaseAuthWeakPasswordException) {
+                        Toast.makeText(
+                            this, "Password is too weak.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            this, "Sign up failed. Please try again.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
     }
@@ -145,10 +167,19 @@ class AuthenticationActivity : AppCompatActivity(),
                 if (task.isSuccessful) {
                     done(AUTHENTICATION_SUCCESS)
                 } else {
-                    Toast.makeText(
-                        baseContext, "Sign in failed. Please try again.",
-                        Toast.LENGTH_SHORT
-                    ).show()
+                    try {
+                        throw task.exception!!
+                    } catch (e: FirebaseAuthInvalidCredentialsException) {
+                        Toast.makeText(
+                            this, "Invalid email or password.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } catch (e: Exception) {
+                        Toast.makeText(
+                            this, "Sign in failed. Please try again.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
                 }
             }
     }
