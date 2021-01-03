@@ -113,14 +113,16 @@ class SignUpFragment : Fragment() {
             if (!cancel) {
                 signUpButtonClickListener.signUpButtonClicked(
                     editTextEmail.editText!!.text.toString(),
-                    editTextPassword.editText!!.text.toString()
+                    editTextPassword.editText!!.text.toString(),
+                    editTextNickname.editText!!.text.toString(),
+                    editTextFullName.editText!!.text.toString()
                 )
             }
         }
     }
 
     interface SignUpButtonClickListener {
-        fun signUpButtonClicked(email: String, password: String)
+        fun signUpButtonClicked(email: String, password: String, nickname: String, fullName: String)
     }
 
     companion object {

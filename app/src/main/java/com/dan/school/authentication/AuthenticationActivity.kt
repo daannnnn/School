@@ -1,21 +1,22 @@
 package com.dan.school.authentication
 
+import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.os.Bundle
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.content.edit
 import com.dan.school.R
 import com.dan.school.School
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
 import com.google.android.gms.common.api.ApiException
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.FirebaseAuthInvalidCredentialsException
-import com.google.firebase.auth.FirebaseAuthUserCollisionException
-import com.google.firebase.auth.FirebaseAuthWeakPasswordException
-import com.google.firebase.auth.GoogleAuthProvider
+import com.google.firebase.auth.*
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 
 
@@ -27,13 +28,20 @@ class AuthenticationActivity : AppCompatActivity(),
     SignInFragment.SignInButtonClickListener {
 
     private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
     private lateinit var googleSignInClient: GoogleSignInClient
+    private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
 
         auth = Firebase.auth
+        database = Firebase.database
+
+        sharedPref = getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
 
         val gso = GoogleSignInOptions.Builder(GoogleSignInOptions.DEFAULT_SIGN_IN)
             .requestIdToken(getString(R.string.default_web_client_id))
@@ -79,7 +87,7 @@ class AuthenticationActivity : AppCompatActivity(),
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    done(AUTHENTICATION_SUCCESS)
+                    done(AUTHENTICATION_WITH_GOOGLE_SUCCESS)
                 } else {
                     Toast.makeText(this, "Sign in failed. Please try again.", Toast.LENGTH_SHORT)
                         .show()
@@ -112,30 +120,19 @@ class AuthenticationActivity : AppCompatActivity(),
             .commit()
     }
 
-    private fun createUser(email: String, password: String) {
+    private fun createUser(email: String, password: String, nickname: String, fullName: String) {
+        // start progressbar
         auth.createUserWithEmailAndPassword(email, password)
-            .addOnCompleteListener(this) { task ->
-                if (task.isSuccessful) {
-                    auth.currentUser?.sendEmailVerification()
-                        ?.addOnCompleteListener {
-                            if (!it.isSuccessful) {
-                                Toast.makeText(
-                                    this,
-                                    "Failed to send verification email. Please try again later.",
-                                    Toast.LENGTH_SHORT
-                                ).show()
-                            }
+            .addOnCompleteListener(this) { createUserTask ->
+                if (createUserTask.isSuccessful) {
+                    if (auth.currentUser != null) {
+                        updateProfileOnSharedPreferences(nickname, fullName)
+                        updateProfileOnFirebaseDatabase(email, nickname, fullName)
+                    }
 
-                            supportFragmentManager.beginTransaction()
-                                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                                .replace(
-                                    R.id.frameLayoutAuthentication,
-                                    WelcomeFragment.newInstance(it.isSuccessful, email)
-                                ).commit()
-                        }
                 } else {
                     try {
-                        throw task.exception!!
+                        throw createUserTask.exception!!
                     } catch (e: FirebaseAuthUserCollisionException) {
                         Toast.makeText(
                             this, "User already exists.",
@@ -158,6 +155,46 @@ class AuthenticationActivity : AppCompatActivity(),
                         ).show()
                     }
                 }
+            }
+    }
+
+    private fun updateProfileOnFirebaseDatabase(email: String, nickname: String, fullName: String) {
+        val map: MutableMap<String, Any> = HashMap()
+        map[School.NICKNAME] = nickname
+        map[School.FULL_NAME] = fullName
+        database.reference.child("users").child(auth.currentUser!!.uid)
+            .updateChildren(map).addOnCompleteListener { setUserProfileTask ->
+                sendEmailVerification(email)
+            }
+    }
+
+    private fun updateProfileOnSharedPreferences(nickname: String, fullName: String) {
+        sharedPref.edit {
+            putString(School.NICKNAME, nickname)
+            putString(School.FULL_NAME, fullName)
+            commit()
+        }
+    }
+
+    private fun sendEmailVerification(email: String) {
+        auth.currentUser?.sendEmailVerification()
+            ?.addOnCompleteListener {
+                if (!it.isSuccessful) {
+                    Toast.makeText(
+                        this,
+                        "Failed to send verification email. Please try again later.",
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+
+                // stop progressbar
+
+                supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                    .replace(
+                        R.id.frameLayoutAuthentication,
+                        WelcomeFragment.newInstance(it.isSuccessful, email)
+                    ).commit()
             }
     }
 
@@ -220,13 +257,14 @@ class AuthenticationActivity : AppCompatActivity(),
     companion object {
         const val AUTHENTICATION_CANCELLED = 0
         const val AUTHENTICATION_SUCCESS = 1
-        const val SIGN_IN_WITH_GOOGLE_RC = 2
+        const val AUTHENTICATION_WITH_GOOGLE_SUCCESS = 2
+        const val SIGN_IN_WITH_GOOGLE_RC = 3
 
         const val RESULT = "result"
     }
 
-    override fun signUpButtonClicked(email: String, password: String) {
-        createUser(email, password)
+    override fun signUpButtonClicked(email: String, password: String, nickname: String, fullName: String) {
+        createUser(email, password, nickname, fullName)
     }
 
     override fun welcomeDoneButtonClicked() {

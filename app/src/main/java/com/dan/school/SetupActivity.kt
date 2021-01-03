@@ -37,7 +37,7 @@ class SetupActivity : AppCompatActivity() {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == AUTHENTICATION_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
             when (data?.getIntExtra(AuthenticationActivity.RESULT, -1)) {
-                AuthenticationActivity.AUTHENTICATION_CANCELLED -> {
+                AuthenticationActivity.AUTHENTICATION_CANCELLED, AuthenticationActivity.AUTHENTICATION_WITH_GOOGLE_SUCCESS -> {
                     supportFragmentManager.beginTransaction()
                         .replace(
                             R.id.frameLayoutSetup,
@@ -57,7 +57,8 @@ class SetupActivity : AppCompatActivity() {
     }
 
     fun buttonGetStartedClicked() {
-        startActivityForResult(Intent(this, AuthenticationActivity::class.java),
+        startActivityForResult(
+            Intent(this, AuthenticationActivity::class.java),
             AUTHENTICATION_ACTIVITY_REQUEST_CODE
         )
     }
