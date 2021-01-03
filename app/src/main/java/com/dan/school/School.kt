@@ -54,6 +54,8 @@ object School {
 
     const val SETTINGS_CONTENT_FRAGMENT_TAG = "SettingsContentFragment"
 
+    const val PASSWORD_RESET_EMAIL_TIME_LAST_SENT = "passwordResetEmailTimeLastSent"
+
     val categoryColors =
         arrayOf(
             R.color.homeworkColor,

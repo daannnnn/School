@@ -113,4 +113,5 @@
     <string name="we_hope_we_can_help_you_make_your_school_life_more_productive">We hope we can help you make your school life more productive.</string>
     <string name="a_verification_email_has_been_sent_to">A verification email has been sent to</string>
     <string name="please_check_your_email_to_verify_your_account">Please check your email to verify your account.</string>
+    <string name="a_password_reset_email_has_been_sent_to">A password reset email has been sent to</string>
 </resources>
