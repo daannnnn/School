@@ -4,6 +4,7 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
@@ -66,7 +67,11 @@ class AuthenticationActivity : AppCompatActivity(),
             val task = GoogleSignIn.getSignedInAccountFromIntent(data)
             try {
                 val account = task.getResult(ApiException::class.java)!!
-                firebaseAuthWithGoogle(account.idToken!!)
+                firebaseAuthWithGoogle(
+                    account.idToken!!,
+                    account.givenName ?: "",
+                    account.displayName ?: ""
+                )
             } catch (e: ApiException) {
                 Toast.makeText(this, "Sign in failed. Please try again.", Toast.LENGTH_SHORT)
                     .show()
@@ -82,12 +87,12 @@ class AuthenticationActivity : AppCompatActivity(),
         }
     }
 
-    private fun firebaseAuthWithGoogle(idToken: String) {
+    private fun firebaseAuthWithGoogle(idToken: String, nickname: String, fullName: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
-                    done(AUTHENTICATION_WITH_GOOGLE_SUCCESS)
+                    done(AUTHENTICATION_WITH_GOOGLE_SUCCESS, nickname, fullName)
                 } else {
                     Toast.makeText(this, "Sign in failed. Please try again.", Toast.LENGTH_SHORT)
                         .show()
@@ -221,9 +226,11 @@ class AuthenticationActivity : AppCompatActivity(),
             }
     }
 
-    private fun done(result: Int) {
+    private fun done(result: Int, nickname: String = "", fullName: String = "") {
         val returnIntent = Intent()
         returnIntent.putExtra(RESULT, result)
+        returnIntent.putExtra(School.NICKNAME, nickname)
+        returnIntent.putExtra(School.FULL_NAME, fullName)
         setResult(RESULT_OK, returnIntent)
         finish()
     }
@@ -263,7 +270,12 @@ class AuthenticationActivity : AppCompatActivity(),
         const val RESULT = "result"
     }
 
-    override fun signUpButtonClicked(email: String, password: String, nickname: String, fullName: String) {
+    override fun signUpButtonClicked(
+        email: String,
+        password: String,
+        nickname: String,
+        fullName: String
+    ) {
         createUser(email, password, nickname, fullName)
     }
 
