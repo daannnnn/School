@@ -95,7 +95,7 @@ class SetupActivity : AppCompatActivity() {
             val map: MutableMap<String, Any> = HashMap()
             map[School.NICKNAME] = nickname
             map[School.FULL_NAME] = fullName
-            database.reference.child("users").child(auth.currentUser!!.uid)
+            database.reference.child(School.USERS).child(auth.currentUser!!.uid)
                 .updateChildren(map).addOnCompleteListener {
                     supportFragmentManager.beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)

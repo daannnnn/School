@@ -4,7 +4,6 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
@@ -19,7 +18,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-
 
 class AuthenticationActivity : AppCompatActivity(),
     AuthenticationFragment.ButtonSignInWithClickListener,
@@ -83,7 +81,13 @@ class AuthenticationActivity : AppCompatActivity(),
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStackImmediate()
         } else {
-            super.onBackPressed()
+            val myFragment: WelcomeFragment? =
+                supportFragmentManager.findFragmentByTag("welcomeFragment") as WelcomeFragment?
+            if (myFragment != null && myFragment.isVisible) {
+                done(AUTHENTICATION_SUCCESS)
+            } else {
+                super.onBackPressed()
+            }
         }
     }
 
@@ -143,14 +147,14 @@ class AuthenticationActivity : AppCompatActivity(),
                             this, "User already exists.",
                             Toast.LENGTH_SHORT
                         ).show()
-                    } catch (e: FirebaseAuthInvalidCredentialsException) {
-                        Toast.makeText(
-                            this, "Invalid email.",
-                            Toast.LENGTH_SHORT
-                        ).show()
                     } catch (e: FirebaseAuthWeakPasswordException) {
                         Toast.makeText(
                             this, "Password is too weak.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } catch (e: FirebaseAuthInvalidCredentialsException) {
+                        Toast.makeText(
+                            this, "Invalid email.",
                             Toast.LENGTH_SHORT
                         ).show()
                     } catch (e: Exception) {
@@ -167,8 +171,8 @@ class AuthenticationActivity : AppCompatActivity(),
         val map: MutableMap<String, Any> = HashMap()
         map[School.NICKNAME] = nickname
         map[School.FULL_NAME] = fullName
-        database.reference.child("users").child(auth.currentUser!!.uid)
-            .updateChildren(map).addOnCompleteListener { setUserProfileTask ->
+        database.reference.child(School.USERS).child(auth.currentUser!!.uid)
+            .updateChildren(map).addOnCompleteListener {
                 sendEmailVerification(email)
             }
     }
@@ -194,11 +198,15 @@ class AuthenticationActivity : AppCompatActivity(),
 
                 // stop progressbar
 
+                for (i in 0 until supportFragmentManager.backStackEntryCount) {
+                    supportFragmentManager.popBackStack()
+                }
                 supportFragmentManager.beginTransaction()
                     .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                     .replace(
                         R.id.frameLayoutAuthentication,
-                        WelcomeFragment.newInstance(it.isSuccessful, email)
+                        WelcomeFragment.newInstance(it.isSuccessful, email),
+                        "welcomeFragment"
                     ).commit()
             }
     }
@@ -261,15 +269,6 @@ class AuthenticationActivity : AppCompatActivity(),
             .commit()
     }
 
-    companion object {
-        const val AUTHENTICATION_CANCELLED = 0
-        const val AUTHENTICATION_SUCCESS = 1
-        const val AUTHENTICATION_WITH_GOOGLE_SUCCESS = 2
-        const val SIGN_IN_WITH_GOOGLE_RC = 3
-
-        const val RESULT = "result"
-    }
-
     override fun signUpButtonClicked(
         email: String,
         password: String,
@@ -285,6 +284,17 @@ class AuthenticationActivity : AppCompatActivity(),
 
     override fun signInButtonClicked(email: String, password: String) {
         signInUser(email, password)
+    }
+
+    companion object {
+        const val AUTHENTICATION_CANCELLED = 0
+        const val AUTHENTICATION_SUCCESS = 1
+        const val AUTHENTICATION_WITH_GOOGLE_SUCCESS = 2
+        const val SIGN_IN_WITH_GOOGLE_RC = 3
+
+        const val RESULT = "result"
+
+        const val TAG = "AuthenticationActivity"
     }
 
 }
