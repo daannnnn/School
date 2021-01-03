@@ -5,9 +5,11 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import com.dan.school.R
 import com.dan.school.School
@@ -52,48 +54,60 @@ class ResetPasswordFragment : Fragment() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
         buttonResetPassword.setOnClickListener {
-            if (allowSendResetPasswordEmail) {
-                sendPasswordResetEmail()
-            }
+            sendPasswordResetEmail()
         }
-
         buttonResendResetPassword.setOnClickListener {
-            if (allowSendResetPasswordEmail &&
-                (System.currentTimeMillis() - sharedPref.getLong(
-                    School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT,
-                    0
-                )) / 1000 > 30
-            ) {
-                sendPasswordResetEmail()
-            }
+            sendPasswordResetEmail()
         }
     }
 
     private fun sendPasswordResetEmail() {
-        val email = editTextEmail.editText!!.text.toString()
-        if (email.trim().isNotEmpty()) {
-            editTextEmail.error = ""
-            Firebase.auth.sendPasswordResetEmail(email)
-                .addOnCompleteListener { task ->
-                    if (task.isSuccessful) {
-                        constraintLayoutResetPassword.visibility = View.GONE
-                        cardViewResetPasswordMessage.visibility = View.VISIBLE
+        val lastPasswordResetTime = sharedPref.getLong(
+            School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT,
+            0
+        )
+        val time = (System.currentTimeMillis() - lastPasswordResetTime) / 1000
 
-                        val message =
-                            "${getString(R.string.a_password_reset_email_has_been_sent_to)} $email."
-                        textViewResetPasswordMessage.text = message
+        if (time > 30) {
+            val email = editTextEmail.editText!!.text.toString()
+            if (email.trim().isNotEmpty() && allowSendResetPasswordEmail) {
+                editTextEmail.error = ""
+                Firebase.auth.sendPasswordResetEmail(email)
+                    .addOnCompleteListener { task ->
+                        if (task.isSuccessful) {
+                            constraintLayoutResetPassword.visibility = View.GONE
+                            cardViewResetPasswordMessage.visibility = View.VISIBLE
+
+                            val message =
+                                "${getString(R.string.a_password_reset_email_has_been_sent_to)} $email."
+                            textViewResetPasswordMessage.text = message
+
+                            with(sharedPref.edit()) {
+                                putLong(
+                                    School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT,
+                                    System.currentTimeMillis()
+                                )
+                                apply()
+                            }
+                        } else {
+                            Toast.makeText(
+                                requireContext(),
+                                "An error occurred. Please try again.",
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        }
+                        allowSendResetPasswordEmail = true
                     }
-                    allowSendResetPasswordEmail = true
-                    with(sharedPref.edit()) {
-                        putLong(
-                            School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT,
-                            System.currentTimeMillis()
-                        )
-                        apply()
-                    }
-                }
+            } else {
+                editTextEmail.error = getString(R.string.this_field_is_required)
+            }
         } else {
-            editTextEmail.error = getString(R.string.this_field_is_required)
+            val timeToWait = (30 - time).toInt()
+            Toast.makeText(
+                requireContext(),
+                "Please try again in $timeToWait ${if (timeToWait == 1) "second" else "seconds"}.",
+                Toast.LENGTH_SHORT
+            ).show()
         }
     }
 
