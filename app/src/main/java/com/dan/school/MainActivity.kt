@@ -1,6 +1,7 @@
 package com.dan.school
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.widget.TextView
@@ -10,6 +11,14 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.dan.school.fragments.CompletedFragment
 import com.dan.school.fragments.OverviewFragment
 import com.dan.school.fragments.SettingsFragment
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.DataSnapshot
+import com.google.firebase.database.DatabaseError
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ValueEventListener
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
@@ -22,9 +31,21 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
 
     private var onSharedPreferenceChangeListener: OnSharedPreferenceChangeListener? = null
 
+    private lateinit var sharedPref: SharedPreferences
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        auth = Firebase.auth
+        database = Firebase.database
+
+        sharedPref = getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
 
         if (savedInstanceState == null) {  // to prevent multiple creation of instances
             navigationView.menu.getItem(0).isChecked = true
@@ -39,6 +60,24 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
             getString(R.string.preference_file_key), Context.MODE_PRIVATE
         )
 
+        if (auth.currentUser != null) {
+            database.reference.child(School.USERS).child(auth.currentUser!!.uid)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val map = HashMap<String, String>()
+                        for (dataSnapshot in snapshot.children) {
+                            val key = dataSnapshot.key
+                            if (key == School.NICKNAME || key == School.FULL_NAME) {
+                                map[key] = dataSnapshot.value.toString()
+                            }
+                        }
+                        updateSharedPreferences(map)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+                })
+        }
         setNavigationViewHeaderNickname(sharedPref.getString(School.NICKNAME, ""))
         setNavigationViewHeaderFullName(sharedPref.getString(School.FULL_NAME, ""))
 
@@ -158,6 +197,14 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(android.R.anim.fade_in, 0)
             .show(supportFragmentManager.findFragmentByTag(tag)!!).commit()
+    }
+
+    private fun updateSharedPreferences(map: HashMap<String, String>) {
+        val editor = sharedPref.edit()
+        for (item in map) {
+            editor.putString(item.key, item.value)
+        }
+        editor.apply()
     }
 
     override fun openDrawer() {

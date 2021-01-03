@@ -50,6 +50,8 @@ object School {
 
     const val POSITION = "position"
 
+    const val USERS = "users"
+
     const val SETTINGS_CONTENT_FRAGMENT_TAG = "SettingsContentFragment"
 
     val categoryColors =
