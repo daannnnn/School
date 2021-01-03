@@ -135,7 +135,8 @@
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
                     android:fontFamily="@font/cabin_regular"
-                    android:inputType="textPersonName|textCapWords" />
+                    android:inputType="textPersonName|textCapWords"
+                    android:maxLength="@integer/nicknameMaxCharacters" />
 
             </com.google.android.material.textfield.TextInputLayout>
 
