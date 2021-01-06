@@ -5,18 +5,18 @@ import android.content.Intent
 import android.content.SharedPreferences
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
-import android.util.Log
+import android.view.View
+import android.view.WindowManager
 import com.dan.school.authentication.AuthenticationActivity
-import com.dan.school.authentication.AuthenticationFragment
 import com.dan.school.setup.ProfileSetupFragment
 import com.dan.school.setup.SetupViewPagerFragment
-import com.dan.school.authentication.SignInFragment
 import com.dan.school.setup.SetupFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_setup.*
 
 class SetupActivity : AppCompatActivity() {
 
@@ -24,6 +24,8 @@ class SetupActivity : AppCompatActivity() {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
+
+    private var isProgressBarVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -86,6 +88,7 @@ class SetupActivity : AppCompatActivity() {
     }
 
     fun profileSetupDone(nickname: String, fullName: String) {
+        showProgressBar()
         with(sharedPref.edit()) {
             putString(School.NICKNAME, nickname)
             putString(School.FULL_NAME, fullName)
@@ -97,6 +100,7 @@ class SetupActivity : AppCompatActivity() {
             map[School.FULL_NAME] = fullName
             database.reference.child(School.USERS).child(auth.currentUser!!.uid)
                 .updateChildren(map).addOnCompleteListener {
+                    hideProgressBar()
                     supportFragmentManager.beginTransaction()
                         .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
                         .replace(
@@ -114,6 +118,22 @@ class SetupActivity : AppCompatActivity() {
         }
         startActivity(Intent(this, MainActivity::class.java))
         finish()
+    }
+
+    private fun showProgressBar() {
+        Utils.hideKeyboard(this)
+        isProgressBarVisible = true
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
+        groupProgressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar() {
+        groupProgressBar.visibility = View.GONE
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        isProgressBarVisible = false
     }
 
     companion object {

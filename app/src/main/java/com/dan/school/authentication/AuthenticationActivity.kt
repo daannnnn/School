@@ -4,12 +4,15 @@ import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
+import android.view.View
+import android.view.WindowManager
+import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
 import com.dan.school.R
 import com.dan.school.School
+import com.dan.school.Utils
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -19,6 +22,7 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import kotlinx.android.synthetic.main.activity_authentication.*
 
 class AuthenticationActivity : AppCompatActivity(),
     AuthenticationFragment.ButtonSignInWithClickListener,
@@ -31,6 +35,8 @@ class AuthenticationActivity : AppCompatActivity(),
     private lateinit var database: FirebaseDatabase
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var sharedPref: SharedPreferences
+
+    private var isProgressBarVisible = false
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -72,6 +78,7 @@ class AuthenticationActivity : AppCompatActivity(),
                     account.displayName ?: ""
                 )
             } catch (e: ApiException) {
+                hideProgressBar()
                 Toast.makeText(this, "Sign in failed. Please try again.", Toast.LENGTH_SHORT)
                     .show()
             }
@@ -79,15 +86,17 @@ class AuthenticationActivity : AppCompatActivity(),
     }
 
     override fun onBackPressed() {
-        if (supportFragmentManager.backStackEntryCount > 0) {
-            supportFragmentManager.popBackStackImmediate()
-        } else {
-            val myFragment: WelcomeFragment? =
-                supportFragmentManager.findFragmentByTag("welcomeFragment") as WelcomeFragment?
-            if (myFragment != null && myFragment.isVisible) {
-                done(AUTHENTICATION_SUCCESS)
+        if (!isProgressBarVisible) {
+            if (supportFragmentManager.backStackEntryCount > 0) {
+                supportFragmentManager.popBackStackImmediate()
             } else {
-                super.onBackPressed()
+                val myFragment: WelcomeFragment? =
+                    supportFragmentManager.findFragmentByTag("welcomeFragment") as WelcomeFragment?
+                if (myFragment != null && myFragment.isVisible) {
+                    done(AUTHENTICATION_SUCCESS)
+                } else {
+                    super.onBackPressed()
+                }
             }
         }
     }
@@ -102,6 +111,7 @@ class AuthenticationActivity : AppCompatActivity(),
                     Toast.makeText(this, "Sign in failed. Please try again.", Toast.LENGTH_SHORT)
                         .show()
                 }
+                hideProgressBar()
             }
     }
 
@@ -121,6 +131,7 @@ class AuthenticationActivity : AppCompatActivity(),
     }
 
     private fun buttonSignInWithGoogleClicked() {
+        showProgressBar()
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, SIGN_IN_WITH_GOOGLE_RC)
     }
@@ -141,7 +152,7 @@ class AuthenticationActivity : AppCompatActivity(),
     }
 
     private fun createUser(email: String, password: String, nickname: String, fullName: String) {
-        // start progressbar
+        showProgressBar()
         auth.createUserWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { createUserTask ->
                 if (createUserTask.isSuccessful) {
@@ -151,6 +162,7 @@ class AuthenticationActivity : AppCompatActivity(),
                     }
 
                 } else {
+                    hideProgressBar()
                     try {
                         throw createUserTask.exception!!
                     } catch (e: FirebaseAuthUserCollisionException) {
@@ -199,6 +211,7 @@ class AuthenticationActivity : AppCompatActivity(),
     private fun sendEmailVerification(email: String) {
         auth.currentUser?.sendEmailVerification()
             ?.addOnCompleteListener {
+                hideProgressBar()
                 if (!it.isSuccessful) {
                     Toast.makeText(
                         this,
@@ -206,8 +219,6 @@ class AuthenticationActivity : AppCompatActivity(),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
-
-                // stop progressbar
 
                 for (i in 0 until supportFragmentManager.backStackEntryCount) {
                     supportFragmentManager.popBackStack()
@@ -228,6 +239,7 @@ class AuthenticationActivity : AppCompatActivity(),
     }
 
     private fun signInUser(email: String, password: String) {
+        showProgressBar()
         auth.signInWithEmailAndPassword(email, password)
             .addOnCompleteListener(this) { task ->
                 if (task.isSuccessful) {
@@ -247,6 +259,7 @@ class AuthenticationActivity : AppCompatActivity(),
                         ).show()
                     }
                 }
+                hideProgressBar()
             }
     }
 
@@ -257,6 +270,22 @@ class AuthenticationActivity : AppCompatActivity(),
         returnIntent.putExtra(School.FULL_NAME, fullName)
         setResult(RESULT_OK, returnIntent)
         finish()
+    }
+
+    private fun showProgressBar() {
+        Utils.hideKeyboard(this)
+        isProgressBarVisible = true
+        window.setFlags(
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
+            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
+        )
+        groupProgressBar.visibility = View.VISIBLE
+    }
+
+    private fun hideProgressBar() {
+        groupProgressBar.visibility = View.GONE
+        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        isProgressBarVisible = false
     }
 
     override fun buttonSignInWithClicked(signInWith: Int) {
