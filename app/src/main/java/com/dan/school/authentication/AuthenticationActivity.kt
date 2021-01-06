@@ -108,7 +108,12 @@ class AuthenticationActivity : AppCompatActivity(),
 
     private fun buttonSignInWithEmailClicked() {
         supportFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+            .setCustomAnimations(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left,
+                R.anim.slide_in_left,
+                R.anim.slide_out_right
+            )
             .replace(
                 R.id.frameLayoutAuthentication,
                 SignInFragment.newInstance()
@@ -123,7 +128,12 @@ class AuthenticationActivity : AppCompatActivity(),
 
     private fun goToSignUp() {
         supportFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+            .setCustomAnimations(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left,
+                R.anim.slide_in_left,
+                R.anim.slide_out_right
+            )
             .replace(
                 R.id.frameLayoutAuthentication,
                 SignUpFragment.newInstance()
@@ -204,7 +214,12 @@ class AuthenticationActivity : AppCompatActivity(),
                     supportFragmentManager.popBackStack()
                 }
                 supportFragmentManager.beginTransaction()
-                    .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                    .setCustomAnimations(
+                        R.anim.slide_in_right,
+                        R.anim.slide_out_left,
+                        R.anim.slide_in_left,
+                        R.anim.slide_out_right
+                    )
                     .replace(
                         R.id.frameLayoutAuthentication,
                         WelcomeFragment.newInstance(it.isSuccessful, email),
@@ -263,7 +278,12 @@ class AuthenticationActivity : AppCompatActivity(),
 
     fun goToFP() {
         supportFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+            .setCustomAnimations(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left,
+                R.anim.slide_in_left,
+                R.anim.slide_out_right
+            )
             .replace(
                 R.id.frameLayoutAuthentication,
                 ResetPasswordFragment.newInstance()
