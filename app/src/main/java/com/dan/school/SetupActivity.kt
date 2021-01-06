@@ -40,11 +40,19 @@ class SetupActivity : AppCompatActivity() {
         )
 
         if (savedInstanceState == null) {
-            supportFragmentManager.beginTransaction()
-                .add(
-                    R.id.frameLayoutSetup,
-                    SetupFragment()
-                ).commit()
+            if (auth.currentUser == null) {
+                supportFragmentManager.beginTransaction()
+                    .add(
+                        R.id.frameLayoutSetup,
+                        SetupFragment()
+                    ).commit()
+            } else {
+                supportFragmentManager.beginTransaction()
+                    .add(
+                        R.id.frameLayoutSetup,
+                        SetupViewPagerFragment()
+                    ).commit()
+            }
         }
     }
 
