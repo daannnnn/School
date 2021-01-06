@@ -79,7 +79,6 @@ class AuthenticationActivity : AppCompatActivity(),
     }
 
     override fun onBackPressed() {
-        Log.i(TAG, "onBackPressed: ")
         if (supportFragmentManager.backStackEntryCount > 0) {
             supportFragmentManager.popBackStackImmediate()
         } else {
