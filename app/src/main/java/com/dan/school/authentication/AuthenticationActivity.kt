@@ -23,6 +23,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_authentication.*
+import java.net.InetAddress
 
 class AuthenticationActivity : AppCompatActivity(),
     AuthenticationFragment.ButtonSignInWithClickListener,
@@ -158,7 +159,11 @@ class AuthenticationActivity : AppCompatActivity(),
                 if (createUserTask.isSuccessful) {
                     if (auth.currentUser != null) {
                         updateProfileOnSharedPreferences(nickname, fullName)
-                        updateProfileOnFirebaseDatabase(email, nickname, fullName)
+                        if (isInternetAvailable()) {
+                            updateProfileOnFirebaseDatabase(email, nickname, fullName)
+                        } else {
+                            sendEmailVerification(email)
+                        }
                     }
 
                 } else {
@@ -286,6 +291,15 @@ class AuthenticationActivity : AppCompatActivity(),
         groupProgressBar.visibility = View.GONE
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         isProgressBarVisible = false
+    }
+
+    private fun isInternetAvailable(): Boolean {
+        return try {
+            val ipAddr: InetAddress = InetAddress.getByName("google.com")
+            !ipAddr.equals("")
+        } catch (e: Exception) {
+            false
+        }
     }
 
     override fun buttonSignInWithClicked(signInWith: Int) {

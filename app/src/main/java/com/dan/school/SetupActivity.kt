@@ -3,20 +3,21 @@ package com.dan.school
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
-import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import android.view.View
 import android.view.WindowManager
+import androidx.appcompat.app.AppCompatActivity
 import com.dan.school.authentication.AuthenticationActivity
 import com.dan.school.setup.ProfileSetupFragment
-import com.dan.school.setup.SetupViewPagerFragment
 import com.dan.school.setup.SetupFragment
+import com.dan.school.setup.SetupViewPagerFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.activity_setup.*
+import java.net.InetAddress
 
 class SetupActivity : AppCompatActivity() {
 
@@ -94,20 +95,30 @@ class SetupActivity : AppCompatActivity() {
             putString(School.FULL_NAME, fullName)
             apply()
         }
-        if (auth.currentUser != null) {
-            val map: MutableMap<String, Any> = HashMap()
-            map[School.NICKNAME] = nickname
-            map[School.FULL_NAME] = fullName
-            database.reference.child(School.USERS).child(auth.currentUser!!.uid)
-                .updateChildren(map).addOnCompleteListener {
-                    hideProgressBar()
-                    supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                        .replace(
-                            R.id.frameLayoutSetup,
-                            SetupViewPagerFragment()
-                        ).commit()
-                }
+        if (isInternetAvailable()) {
+            if (auth.currentUser != null) {
+                val map: MutableMap<String, Any> = HashMap()
+                map[School.NICKNAME] = nickname
+                map[School.FULL_NAME] = fullName
+                database.reference.child(School.USERS).child(auth.currentUser!!.uid)
+                    .updateChildren(map).addOnCompleteListener {
+                        hideProgressBar()
+                        supportFragmentManager.beginTransaction()
+                            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                            .replace(
+                                R.id.frameLayoutSetup,
+                                SetupViewPagerFragment()
+                            ).commit()
+                    }
+            }
+        } else {
+            hideProgressBar()
+            supportFragmentManager.beginTransaction()
+                .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+                .replace(
+                    R.id.frameLayoutSetup,
+                    SetupViewPagerFragment()
+                ).commit()
         }
     }
 
@@ -134,6 +145,15 @@ class SetupActivity : AppCompatActivity() {
         groupProgressBar.visibility = View.GONE
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         isProgressBarVisible = false
+    }
+
+    private fun isInternetAvailable(): Boolean {
+        return try {
+            val ipAddr: InetAddress = InetAddress.getByName("google.com")
+            !ipAddr.equals("")
+        } catch (e: Exception) {
+            false
+        }
     }
 
     companion object {
