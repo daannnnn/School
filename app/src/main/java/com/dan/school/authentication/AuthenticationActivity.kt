@@ -159,11 +159,8 @@ class AuthenticationActivity : AppCompatActivity(),
                 if (createUserTask.isSuccessful) {
                     if (auth.currentUser != null) {
                         updateProfileOnSharedPreferences(nickname, fullName)
-                        if (isInternetAvailable()) {
-                            updateProfileOnFirebaseDatabase(email, nickname, fullName)
-                        } else {
-                            sendEmailVerification(email)
-                        }
+                        updateProfileOnFirebaseDatabase(nickname, fullName)
+                        sendEmailVerification(email)
                     }
 
                 } else {
@@ -195,14 +192,12 @@ class AuthenticationActivity : AppCompatActivity(),
             }
     }
 
-    private fun updateProfileOnFirebaseDatabase(email: String, nickname: String, fullName: String) {
+    private fun updateProfileOnFirebaseDatabase(nickname: String, fullName: String) {
         val map: MutableMap<String, Any> = HashMap()
         map[School.NICKNAME] = nickname
         map[School.FULL_NAME] = fullName
         database.reference.child(School.USERS).child(auth.currentUser!!.uid)
-            .updateChildren(map).addOnCompleteListener {
-                sendEmailVerification(email)
-            }
+            .updateChildren(map)
     }
 
     private fun updateProfileOnSharedPreferences(nickname: String, fullName: String) {
@@ -291,15 +286,6 @@ class AuthenticationActivity : AppCompatActivity(),
         groupProgressBar.visibility = View.GONE
         window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
         isProgressBarVisible = false
-    }
-
-    private fun isInternetAvailable(): Boolean {
-        return try {
-            val ipAddr: InetAddress = InetAddress.getByName("google.com")
-            !ipAddr.equals("")
-        } catch (e: Exception) {
-            false
-        }
     }
 
     override fun buttonSignInWithClicked(signInWith: Int) {
