@@ -10,7 +10,9 @@
         android:id="@+id/buttonCreateBackup"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:layout_margin="24dp"
+        android:layout_marginStart="24dp"
+        android:layout_marginEnd="24dp"
+        android:layout_marginTop="8dp"
         android:text="@string/create_new_backup"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -36,11 +38,13 @@
             android:layout_margin="16dp"
             android:fontFamily="@font/cabin_regular"
             android:text="@string/backup_message"
+            android:textSize="16sp"
             android:textColor="?android:textColorSecondary" />
 
     </com.google.android.material.card.MaterialCardView>
 
     <TextView
+        android:textAllCaps="true"
         android:id="@+id/textViewBackupsLabel"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
@@ -81,7 +85,7 @@
         android:id="@+id/groupBackupLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="visible"
+        android:visibility="gone"
         app:constraint_referenced_ids="buttonCreateBackup, cardViewMessage, textViewBackupsLabel, textViewNoBackupsYet" />
 
     <ImageView
@@ -172,7 +176,7 @@
         android:id="@+id/groupAccountRequired"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:visibility="gone"
+        android:visibility="visible"
         app:constraint_referenced_ids="imageViewLogin, textViewAccountRequired, buttonSignIn" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
