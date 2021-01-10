@@ -115,4 +115,11 @@
     <string name="please_check_your_email_to_verify_your_account">Please check your email to verify your account.</string>
     <string name="a_password_reset_email_has_been_sent_to">A password reset email has been sent to</string>
     <string name="backup">Backup</string>
+    <string name="create_new_backup">Create new backup</string>
+    <string name="backups">Backups</string>
+    <string name="no_backups_yet">No backups yet</string>
+    <string name="internet_connection_is_required">Internet connection is required!</string>
+    <string name="retry">Retry</string>
+    <string name="account_required">You need an account to create a backup.</string>
+    <string name="backup_message">Select an item from the list to restore.\nPress and hold to delete.</string>
 </resources>
