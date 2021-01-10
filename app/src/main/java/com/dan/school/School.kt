@@ -22,7 +22,8 @@ object School {
 
     const val PROFILE = 14
     const val THEME = 15
-    const val ABOUT = 16
+    const val BACKUP = 16
+    const val ABOUT = 17
 
     const val dateFormat = "EEE, MMM d, yyyy"
     const val dateFormatOnDatabase = "yyyyMMdd"

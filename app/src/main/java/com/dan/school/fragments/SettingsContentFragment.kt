@@ -47,6 +47,12 @@ class SettingsContentFragment : Fragment() {
             }
         }
 
+        relativeLayoutBackup.setOnClickListener {
+            if (this::settingsItemOnClickListener.isInitialized) {
+                settingsItemOnClickListener.itemClicked(School.BACKUP)
+            }
+        }
+
         relativeLayoutAbout.setOnClickListener {
             if (this::settingsItemOnClickListener.isInitialized) {
                 settingsItemOnClickListener.itemClicked(School.ABOUT)
