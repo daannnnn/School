@@ -1,209 +1,218 @@
 <?xml version="1.0" encoding="utf-8"?>
-<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+<androidx.core.widget.NestedScrollView xmlns:android="http://schemas.android.com/apk/res/android"
     xmlns:app="http://schemas.android.com/apk/res-auto"
     xmlns:tools="http://schemas.android.com/tools"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     tools:context=".fragments.BackupFragment">
 
-    <Button
-        android:id="@+id/buttonCreateBackup"
+    <androidx.constraintlayout.widget.ConstraintLayout
         android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginEnd="24dp"
-        android:layout_marginTop="8dp"
-        android:text="@string/create_new_backup"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        android:layout_height="match_parent">
 
-    <com.google.android.material.card.MaterialCardView
-        android:id="@+id/cardViewMessage"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="8dp"
-        android:layout_marginEnd="24dp"
-        app:cardElevation="0dp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/buttonCreateBackup"
-        app:strokeColor="@color/dividerColor"
-        app:strokeWidth="1dp">
+        <Button
+            android:id="@+id/buttonCreateBackup"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            android:text="@string/create_new_backup"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
+
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardViewMessage"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="24dp"
+            app:cardElevation="0dp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/buttonCreateBackup"
+            app:strokeColor="@color/dividerColor"
+            app:strokeWidth="1dp">
+
+            <TextView
+                android:layout_width="wrap_content"
+                android:layout_height="wrap_content"
+                android:layout_margin="16dp"
+                android:fontFamily="@font/cabin_regular"
+                android:text="@string/backup_message"
+                android:textColor="?android:textColorSecondary"
+                android:textSize="16sp" />
+
+        </com.google.android.material.card.MaterialCardView>
 
         <TextView
+            android:id="@+id/textViewBackupsLabel"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
-            android:layout_margin="16dp"
-            android:fontFamily="@font/cabin_regular"
-            android:text="@string/backup_message"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/cabin_medium"
+            android:text="@string/backups"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/cardViewMessage" />
+
+        <androidx.recyclerview.widget.RecyclerView
+            android:id="@+id/recyclerViewBackups"
+            android:layout_width="match_parent"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:clipToPadding="false"
+            android:paddingBottom="36dp"
+            android:visibility="gone"
+            android:overScrollMode="never"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewBackupsLabel"
+            tools:itemCount="4"
+            tools:listitem="@layout/layout_backup_item" />
+
+        <TextView
+            android:id="@+id/textViewNoBackupsYet"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="8dp"
+            android:fontFamily="@font/cabin_medium"
+            android:text="@string/no_backups_yet"
             android:textSize="16sp"
-            android:textColor="?android:textColorSecondary" />
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewBackupsLabel" />
 
-    </com.google.android.material.card.MaterialCardView>
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupBackupLayout"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="visible"
+            app:constraint_referenced_ids="buttonCreateBackup, cardViewMessage, textViewBackupsLabel, textViewNoBackupsYet" />
 
-    <TextView
-        android:textAllCaps="true"
-        android:id="@+id/textViewBackupsLabel"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="24dp"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/cabin_medium"
-        android:text="@string/backups"
-        android:textColor="@color/colorPrimary"
-        android:textSize="14sp"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/cardViewMessage" />
+        <ImageView
+            android:id="@+id/imageViewWarning"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/ic_warning"
+            app:layout_constraintBottom_toTopOf="@+id/textViewInternetRequired"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:tint="@color/red" />
 
-    <androidx.recyclerview.widget.RecyclerView
-        android:id="@+id/recyclerViewBackups"
-        android:layout_width="match_parent"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewBackupsLabel"
-        tools:itemCount="4"
-        tools:listitem="@layout/layout_backup_item" />
+        <TextView
+            android:id="@+id/textViewInternetRequired"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/cabin_regular"
+            android:gravity="center"
+            android:text="@string/internet_connection_is_required"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/buttonRetry"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewWarning" />
 
-    <TextView
-        android:id="@+id/textViewNoBackupsYet"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:fontFamily="@font/cabin_medium"
-        android:text="@string/no_backups_yet"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@id/textViewBackupsLabel" />
+        <Button
+            android:id="@+id/buttonRetry"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/retry"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewInternetRequired" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/groupBackupLayout"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="visible"
-        app:constraint_referenced_ids="buttonCreateBackup, cardViewMessage, textViewBackupsLabel, textViewNoBackupsYet" />
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupInternetRequired"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="imageViewWarning, textViewInternetRequired, buttonRetry" />
 
-    <ImageView
-        android:id="@+id/imageViewWarning"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:src="@drawable/ic_warning"
-        app:layout_constraintBottom_toTopOf="@+id/textViewInternetRequired"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:tint="@color/red" />
+        <ImageView
+            android:id="@+id/imageViewLogin"
+            android:layout_width="56dp"
+            android:layout_height="56dp"
+            android:src="@drawable/ic_login"
+            app:layout_constraintBottom_toTopOf="@+id/textViewAccountRequired"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            app:layout_constraintVertical_chainStyle="packed"
+            app:tint="@color/colorPrimary" />
 
-    <TextView
-        android:id="@+id/textViewInternetRequired"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/cabin_regular"
-        android:gravity="center"
-        android:text="@string/internet_connection_is_required"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonRetry"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewWarning" />
+        <TextView
+            android:id="@+id/textViewAccountRequired"
+            android:layout_width="200dp"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="16dp"
+            android:fontFamily="@font/cabin_regular"
+            android:gravity="center"
+            android:text="@string/account_required"
+            android:textSize="18sp"
+            app:layout_constraintBottom_toTopOf="@+id/buttonSignIn"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/imageViewLogin" />
 
-    <Button
-        android:id="@+id/buttonRetry"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/retry"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewInternetRequired" />
+        <Button
+            android:id="@+id/buttonSignIn"
+            style="@style/Widget.MaterialComponents.Button.TextButton"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:text="@string/sign_in"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintHorizontal_bias="0.5"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@+id/textViewAccountRequired" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/groupInternetRequired"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="imageViewWarning, textViewInternetRequired, buttonRetry" />
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupAccountRequired"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="imageViewLogin, textViewAccountRequired, buttonSignIn" />
 
-    <ImageView
-        android:id="@+id/imageViewLogin"
-        android:layout_width="56dp"
-        android:layout_height="56dp"
-        android:src="@drawable/ic_login"
-        app:layout_constraintBottom_toTopOf="@+id/textViewAccountRequired"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintVertical_chainStyle="packed"
-        app:tint="@color/colorPrimary" />
+        <ProgressBar
+            android:id="@+id/progressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:indeterminateTint="@color/colorPrimary"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <TextView
-        android:id="@+id/textViewAccountRequired"
-        android:layout_width="200dp"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:fontFamily="@font/cabin_regular"
-        android:gravity="center"
-        android:text="@string/account_required"
-        android:textSize="18sp"
-        app:layout_constraintBottom_toTopOf="@+id/buttonSignIn"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageViewLogin" />
+        <View
+            android:id="@+id/viewOverlay"
+            android:layout_width="match_parent"
+            android:layout_height="match_parent"
+            android:background="#59000000"
+            app:layout_constraintBottom_toBottomOf="parent"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent" />
 
-    <Button
-        android:id="@+id/buttonSignIn"
-        style="@style/Widget.MaterialComponents.Button.TextButton"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="@string/sign_in"
-        app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.5"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewAccountRequired" />
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupProgressBar"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:visibility="gone"
+            app:constraint_referenced_ids="progressBar, viewOverlay" />
 
-    <androidx.constraintlayout.widget.Group
-        android:id="@+id/groupAccountRequired"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:visibility="gone"
-        app:constraint_referenced_ids="imageViewLogin, textViewAccountRequired, buttonSignIn" />
+    </androidx.constraintlayout.widget.ConstraintLayout>
 
-    <ProgressBar
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:indeterminateTint="@color/colorPrimary"
-        android:id="@+id/progressBar"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <View
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:id="@+id/viewOverlay"
-        android:background="#59000000"
-        app:layout_constraintTop_toTopOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintBottom_toBottomOf="parent"/>
-
-    <androidx.constraintlayout.widget.Group
-        android:visibility="gone"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:id="@+id/groupProgressBar"
-        app:constraint_referenced_ids="progressBar, viewOverlay"/>
-
-</androidx.constraintlayout.widget.ConstraintLayout>
+</androidx.core.widget.NestedScrollView>

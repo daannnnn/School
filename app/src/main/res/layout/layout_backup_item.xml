@@ -31,10 +31,10 @@
         android:layout_marginBottom="8dp"
         android:textColor="?android:textColorSecondary"
         android:textSize="14sp"
-        app:layout_constraintTop_toBottomOf="@id/textViewBackupFileName"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toStartOf="@id/imageViewChevronRight"
         app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@id/textViewBackupFileName"
         tools:text="Date: January 6, 2020 09:41 PM" />
 
     <ImageView
@@ -45,6 +45,7 @@
         android:src="@drawable/ic_chevron_right"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintTop_toTopOf="parent"/>
+        app:layout_constraintTop_toTopOf="parent"
+        app:tint="?android:textColorPrimary" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
