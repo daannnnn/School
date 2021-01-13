@@ -136,4 +136,5 @@
     <string name="error_while_performing_backup">An error occurred while performing a backup. Please try again.</string>
     <string name="error_while_performing_restore">An error occurred while performing a restore. Please try again.</string>
     <string name="error_restore_cancelled">An error occurred while creating a backup of the current database. Restore cancelled.</string>
+    <string name="error_while_getting_list_of_backups">An error occurred while getting the list of backups. Please try again.</string>
 </resources>

@@ -6,9 +6,11 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -17,11 +19,13 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
 import com.dan.school.adapters.BackupListAdapter
 import com.dan.school.authentication.AuthenticationActivity
+import com.google.android.gms.tasks.Task
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
+import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.component1
 import com.google.firebase.storage.ktx.component2
@@ -84,17 +88,19 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             dataViewModel.checkpoint()
             backup { successful ->
                 if (successful) {
-                    showDialog(
-                        getString(R.string.backup_created_successfully),
-                        getString(R.string.backup_successful)
-                    )
+                    updateBackupList {
+                        showDialog(
+                            getString(R.string.backup_created_successfully),
+                            getString(R.string.backup_successful)
+                        )
+                    }
                 } else {
                     showDialog(
                         getString(R.string.error_while_performing_backup),
                         getString(R.string.backup_failed)
                     )
+                    hideProgressBar()
                 }
-                hideProgressBar()
             }
         }
 
@@ -118,26 +124,7 @@ class BackupFragment : Fragment(), BackupItemClickListener,
     private fun check() {
         if (isNetworkAvailable(requireContext())) {
             if (auth.currentUser != null) {
-                storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
-                    .listAll()
-                    .addOnSuccessListener { (items, _) ->
-                        val backupList = ArrayList<StorageReference>()
-                        items.forEach { item ->
-                            backupList.add(item)
-                        }
-
-                        groupBackupLayout.visibility = View.VISIBLE
-                        groupInternetRequired.visibility = View.GONE
-                        groupAccountRequired.visibility = View.GONE
-
-                        textViewNoBackupsYet.isGone = backupList.isNotEmpty()
-                        recyclerViewBackups.isVisible = backupList.isNotEmpty()
-                        backupListAdapter.submitList(backupList)
-                        hideProgressBar()
-                    }
-                    .addOnFailureListener {
-                        TODO()
-                    }
+                updateBackupList {}
             } else {
                 groupBackupLayout.visibility = View.GONE
                 groupInternetRequired.visibility = View.GONE
@@ -152,12 +139,45 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         }
     }
 
+    private fun updateBackupList(done: () -> Unit) {
+        showProgressBar()
+        storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
+            .listAll()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val backupList = ArrayList<StorageReference>()
+                    if (it.result != null) {
+                        it.result!!.items.forEach { item ->
+                            backupList.add(item)
+                        }
+                    }
+
+                    groupBackupLayout.visibility = View.VISIBLE
+                    groupInternetRequired.visibility = View.GONE
+                    groupAccountRequired.visibility = View.GONE
+
+                    textViewNoBackupsYet.isGone = backupList.isNotEmpty()
+                    recyclerViewBackups.isVisible = backupList.isNotEmpty()
+                    backupListAdapter.submitList(backupList)
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.error_while_getting_list_of_backups),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                done()
+                hideProgressBar()
+            }
+    }
+
     private fun showProgressBar() {
         progressBarDialog.show()
     }
 
     private fun hideProgressBar() {
         progressBarDialog.dismiss()
+        Log.i(TAG, "hideProgressBar: ")
     }
 
     private fun backup(
