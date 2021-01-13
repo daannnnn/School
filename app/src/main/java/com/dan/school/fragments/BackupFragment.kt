@@ -1,5 +1,9 @@
 package com.dan.school.fragments
 
+import android.content.Context
+import android.net.ConnectivityManager
+import android.net.NetworkCapabilities
+import android.os.Build
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -62,6 +66,30 @@ class BackupFragment : Fragment(), BackupItemClickListener,
 
         showProgressBar()
 
+        if (isNetworkAvailable(requireContext())) {
+            storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
+                .listAll()
+                .addOnSuccessListener { (items, _) ->
+                    val backupList = ArrayList<StorageReference>()
+                    items.forEach { item ->
+                        backupList.add(item)
+                    }
+                    groupBackupLayout.visibility = View.VISIBLE
+                    groupInternetRequired.visibility = View.GONE
+                    textViewNoBackupsYet.isGone = backupList.isNotEmpty()
+                    recyclerViewBackups.isVisible = backupList.isNotEmpty()
+                    backupListAdapter.submitList(backupList)
+                    hideProgressBar()
+                }
+                .addOnFailureListener {
+
+                }
+        } else {
+            groupInternetRequired.visibility = View.VISIBLE
+            groupBackupLayout.visibility = View.GONE
+            hideProgressBar()
+        }
+
         backupListAdapter = BackupListAdapter(
             requireContext(),
             this@BackupFragment,
@@ -92,21 +120,32 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             adapter = backupListAdapter
         }
 
-        storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
-            .listAll()
-            .addOnSuccessListener { (items, _) ->
-                val backupList = ArrayList<StorageReference>()
-                items.forEach { item ->
-                    backupList.add(item)
-                }
-                textViewNoBackupsYet.isGone = backupList.isNotEmpty()
-                recyclerViewBackups.isVisible = backupList.isNotEmpty()
-                backupListAdapter.submitList(backupList)
+        buttonRetry.setOnClickListener {
+            showProgressBar()
+            if (isNetworkAvailable(requireContext())) {
+                storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
+                    .listAll()
+                    .addOnSuccessListener { (items, _) ->
+                        val backupList = ArrayList<StorageReference>()
+                        items.forEach { item ->
+                            backupList.add(item)
+                        }
+                        groupBackupLayout.visibility = View.VISIBLE
+                        groupInternetRequired.visibility = View.GONE
+                        textViewNoBackupsYet.isGone = backupList.isNotEmpty()
+                        recyclerViewBackups.isVisible = backupList.isNotEmpty()
+                        backupListAdapter.submitList(backupList)
+                        hideProgressBar()
+                    }
+                    .addOnFailureListener {
+
+                    }
+            } else {
+                groupInternetRequired.visibility = View.VISIBLE
+                groupBackupLayout.visibility = View.GONE
                 hideProgressBar()
             }
-            .addOnFailureListener {
-
-            }
+        }
     }
 
     private fun showProgressBar() {
@@ -237,6 +276,34 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             ) { _, _ -> }
             .create()
             .show()
+    }
+
+    @Suppress("DEPRECATION")
+    fun isNetworkAvailable(context: Context?): Boolean {
+        if (context == null) return false
+        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            if (capabilities != null) {
+                when {
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {
+                        return true
+                    }
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_WIFI) -> {
+                        return true
+                    }
+                    capabilities.hasTransport(NetworkCapabilities.TRANSPORT_ETHERNET) -> {
+                        return true
+                    }
+                }
+            }
+        } else {
+            val activeNetworkInfo = connectivityManager.activeNetworkInfo
+            if (activeNetworkInfo != null && activeNetworkInfo.isConnected) {
+                return true
+            }
+        }
+        return false
     }
 
     override fun backupItemClicked(storageReference: StorageReference) {
