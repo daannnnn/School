@@ -58,6 +58,11 @@ class BackupFragment : Fragment(), BackupItemClickListener,
 
         auth = Firebase.auth
         storage = Firebase.storage
+
+        val timeout: Long = 10000
+        storage.maxOperationRetryTimeMillis = timeout
+        storage.maxDownloadRetryTimeMillis = timeout
+        storage.maxUploadRetryTimeMillis = timeout
     }
 
     override fun onCreateView(
@@ -84,23 +89,31 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         )
 
         buttonCreateBackup.setOnClickListener {
-            showProgressBar()
-            dataViewModel.checkpoint()
-            backup { successful ->
-                if (successful) {
-                    updateBackupList {
+            if (isNetworkAvailable(requireContext())) {
+                showProgressBar()
+                dataViewModel.checkpoint()
+                backup { successful ->
+                    if (successful) {
+                        updateBackupList {
+                            showDialog(
+                                getString(R.string.backup_created_successfully),
+                                getString(R.string.backup_successful)
+                            )
+                        }
+                    } else {
                         showDialog(
-                            getString(R.string.backup_created_successfully),
-                            getString(R.string.backup_successful)
+                            getString(R.string.error_while_performing_backup),
+                            getString(R.string.backup_failed)
                         )
+                        hideProgressBar()
                     }
-                } else {
-                    showDialog(
-                        getString(R.string.error_while_performing_backup),
-                        getString(R.string.backup_failed)
-                    )
-                    hideProgressBar()
                 }
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.no_internet),
+                    Toast.LENGTH_SHORT
+                ).show()
             }
         }
 
@@ -333,27 +346,31 @@ class BackupFragment : Fragment(), BackupItemClickListener,
     }
 
     override fun backupItemClicked(storageReference: StorageReference) {
-        if (!restoringDatabase) {
-            restoringDatabase = true
-            showProgressBar()
-            MaterialAlertDialogBuilder(requireContext()).setMessage(getString(R.string.do_you_want_to_backup_current_database))
-                .setTitle(getString(R.string.backup_current_database))
-                .setPositiveButton(
-                    R.string.yes
-                ) { _, _ ->
-                    restore(storageReference, true)
-                }
-                .setNegativeButton(
-                    getString(R.string.no)
-                ) { _, _ ->
-                    restore(storageReference, false)
-                }
-                .setOnCancelListener {
-                    hideProgressBar()
-                    restoringDatabase = false
-                }
-                .create()
-                .show()
+        if (isNetworkAvailable(requireContext())) {
+            if (!restoringDatabase) {
+                restoringDatabase = true
+                showProgressBar()
+                MaterialAlertDialogBuilder(requireContext()).setMessage(getString(R.string.do_you_want_to_backup_current_database))
+                    .setTitle(getString(R.string.backup_current_database))
+                    .setPositiveButton(
+                        R.string.yes
+                    ) { _, _ ->
+                        restore(storageReference, true)
+                    }
+                    .setNegativeButton(
+                        getString(R.string.no)
+                    ) { _, _ ->
+                        restore(storageReference, false)
+                    }
+                    .setOnCancelListener {
+                        hideProgressBar()
+                        restoringDatabase = false
+                    }
+                    .create()
+                    .show()
+            }
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.no_internet), Toast.LENGTH_SHORT).show()
         }
     }
 
