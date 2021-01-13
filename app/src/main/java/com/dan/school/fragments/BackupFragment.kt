@@ -1,6 +1,7 @@
 package com.dan.school.fragments
 
 import android.content.Context
+import android.content.Intent
 import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
@@ -15,6 +16,7 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
 import com.dan.school.adapters.BackupListAdapter
+import com.dan.school.authentication.AuthenticationActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -61,34 +63,15 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         return inflater.inflate(R.layout.fragment_backup, container, false)
     }
 
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
+    override fun onStart() {
+        super.onStart()
 
         showProgressBar()
+        check()
+    }
 
-        if (isNetworkAvailable(requireContext())) {
-            storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
-                .listAll()
-                .addOnSuccessListener { (items, _) ->
-                    val backupList = ArrayList<StorageReference>()
-                    items.forEach { item ->
-                        backupList.add(item)
-                    }
-                    groupBackupLayout.visibility = View.VISIBLE
-                    groupInternetRequired.visibility = View.GONE
-                    textViewNoBackupsYet.isGone = backupList.isNotEmpty()
-                    recyclerViewBackups.isVisible = backupList.isNotEmpty()
-                    backupListAdapter.submitList(backupList)
-                    hideProgressBar()
-                }
-                .addOnFailureListener {
-
-                }
-        } else {
-            groupInternetRequired.visibility = View.VISIBLE
-            groupBackupLayout.visibility = View.GONE
-            hideProgressBar()
-        }
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         backupListAdapter = BackupListAdapter(
             requireContext(),
@@ -122,7 +105,19 @@ class BackupFragment : Fragment(), BackupItemClickListener,
 
         buttonRetry.setOnClickListener {
             showProgressBar()
-            if (isNetworkAvailable(requireContext())) {
+            check()
+        }
+
+        buttonSignIn.setOnClickListener {
+            val intent = Intent(requireContext(), AuthenticationActivity::class.java)
+            intent.putExtra(School.FROM_SETUP, false)
+            startActivity(intent)
+        }
+    }
+
+    private fun check() {
+        if (isNetworkAvailable(requireContext())) {
+            if (auth.currentUser != null) {
                 storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
                     .listAll()
                     .addOnSuccessListener { (items, _) ->
@@ -130,21 +125,30 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                         items.forEach { item ->
                             backupList.add(item)
                         }
+
                         groupBackupLayout.visibility = View.VISIBLE
                         groupInternetRequired.visibility = View.GONE
+                        groupAccountRequired.visibility = View.GONE
+
                         textViewNoBackupsYet.isGone = backupList.isNotEmpty()
                         recyclerViewBackups.isVisible = backupList.isNotEmpty()
                         backupListAdapter.submitList(backupList)
                         hideProgressBar()
                     }
                     .addOnFailureListener {
-
+                        TODO()
                     }
             } else {
-                groupInternetRequired.visibility = View.VISIBLE
                 groupBackupLayout.visibility = View.GONE
+                groupInternetRequired.visibility = View.GONE
+                groupAccountRequired.visibility = View.VISIBLE
                 hideProgressBar()
             }
+        } else {
+            groupBackupLayout.visibility = View.GONE
+            groupInternetRequired.visibility = View.VISIBLE
+            groupAccountRequired.visibility = View.GONE
+            hideProgressBar()
         }
     }
 
@@ -281,9 +285,11 @@ class BackupFragment : Fragment(), BackupItemClickListener,
     @Suppress("DEPRECATION")
     fun isNetworkAvailable(context: Context?): Boolean {
         if (context == null) return false
-        val connectivityManager = context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        val connectivityManager =
+            context.getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            val capabilities = connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
+            val capabilities =
+                connectivityManager.getNetworkCapabilities(connectivityManager.activeNetwork)
             if (capabilities != null) {
                 when {
                     capabilities.hasTransport(NetworkCapabilities.TRANSPORT_CELLULAR) -> {

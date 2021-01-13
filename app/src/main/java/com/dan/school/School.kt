@@ -60,6 +60,8 @@ object School {
 
     const val DATABASE_NAME = "itemsDB"
 
+    const val FROM_SETUP = "from_setup"
+
     val categoryColors =
         arrayOf(
             R.color.homeworkColor,
