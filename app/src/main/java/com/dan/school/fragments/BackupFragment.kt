@@ -4,7 +4,6 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.view.WindowManager
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
@@ -61,6 +60,8 @@ class BackupFragment : Fragment(), BackupItemClickListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
+        showProgressBar()
+
         backupListAdapter = BackupListAdapter(
             requireContext(),
             this@BackupFragment,
@@ -101,6 +102,7 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                 textViewNoBackupsYet.isGone = backupList.isNotEmpty()
                 recyclerViewBackups.isVisible = backupList.isNotEmpty()
                 backupListAdapter.submitList(backupList)
+                hideProgressBar()
             }
             .addOnFailureListener {
 
@@ -112,7 +114,7 @@ class BackupFragment : Fragment(), BackupItemClickListener,
     }
 
     private fun hideProgressBar() {
-        progressBarDialog.hide()
+        progressBarDialog.dismiss()
     }
 
     private fun backup(
