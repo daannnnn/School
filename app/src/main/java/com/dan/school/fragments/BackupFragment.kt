@@ -40,8 +40,12 @@ class BackupFragment : Fragment(), BackupItemClickListener,
 
     private var restoringDatabase = false
 
+    private lateinit var progressBarDialog: ProgressBarDialog
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        progressBarDialog = ProgressBarDialog(requireContext())
 
         auth = Firebase.auth
         storage = Firebase.storage
@@ -104,17 +108,11 @@ class BackupFragment : Fragment(), BackupItemClickListener,
     }
 
     private fun showProgressBar() {
-        Utils.hideKeyboard(requireActivity())
-        requireActivity().window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-        )
-        groupProgressBar.visibility = View.VISIBLE
+        progressBarDialog.show()
     }
 
     private fun hideProgressBar() {
-        groupProgressBar.visibility = View.GONE
-        requireActivity().window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
+        progressBarDialog.hide()
     }
 
     private fun backup(
