@@ -29,6 +29,7 @@ object School {
     const val dateFormatOnDatabase = "yyyyMMdd"
     const val dateTimeFormat = "EEE, MMM d, yyyy hh:mm aaa"
     const val displayDateFormat = "EEEE, MMMM d, yyyy"
+    const val dateFormatOnBackupFile = "yyMMddHHmmss"
 
     const val HOME = "home"
     const val CALENDAR = "calendar"
@@ -56,6 +57,8 @@ object School {
     const val SETTINGS_CONTENT_FRAGMENT_TAG = "SettingsContentFragment"
 
     const val PASSWORD_RESET_EMAIL_TIME_LAST_SENT = "passwordResetEmailTimeLastSent"
+
+    const val DATABASE_NAME = "itemsDB"
 
     val categoryColors =
         arrayOf(

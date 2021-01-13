@@ -122,4 +122,18 @@
     <string name="retry">Retry</string>
     <string name="account_required">You need an account to create a backup.</string>
     <string name="backup_message">Select an item from the list to restore.\nPress and hold to delete.</string>
+    <string name="do_you_want_to_backup_current_database">Do you want to backup your current database before performing a restore?</string>
+    <string name="backup_current_database">Backup current database</string>
+    <string name="no">No</string>
+    <string name="okay">Okay</string>
+    <string name="restart">Restart</string>
+    <string name="backup_created_successfully">Backup created successfully</string>
+    <string name="restore_successful_restart_app">Restore successful. Restart app.</string>
+    <string name="backup_failed">Backup failed</string>
+    <string name="restore_failed">Restore Failed</string>
+    <string name="backup_successful">Backup successful</string>
+    <string name="restore_successful">Restore successful</string>
+    <string name="error_while_performing_backup">An error occurred while performing a backup. Please try again.</string>
+    <string name="error_while_performing_restore">An error occurred while performing a restore. Please try again.</string>
+    <string name="error_restore_cancelled">An error occurred while creating a backup of the current database. Restore cancelled.</string>
 </resources>
