@@ -10,6 +10,7 @@ import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.content.edit
+import com.dan.school.ProgressBarDialog
 import com.dan.school.R
 import com.dan.school.School
 import com.dan.school.Utils
@@ -37,11 +38,13 @@ class AuthenticationActivity : AppCompatActivity(),
     private lateinit var googleSignInClient: GoogleSignInClient
     private lateinit var sharedPref: SharedPreferences
 
-    private var isProgressBarVisible = false
+    private lateinit var progressBarDialog: ProgressBarDialog
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_authentication)
+
+        progressBarDialog = ProgressBarDialog(this)
 
         auth = Firebase.auth
         database = Firebase.database
@@ -87,17 +90,15 @@ class AuthenticationActivity : AppCompatActivity(),
     }
 
     override fun onBackPressed() {
-        if (!isProgressBarVisible) {
-            if (supportFragmentManager.backStackEntryCount > 0) {
-                supportFragmentManager.popBackStackImmediate()
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStackImmediate()
+        } else {
+            val myFragment: WelcomeFragment? =
+                supportFragmentManager.findFragmentByTag("welcomeFragment") as WelcomeFragment?
+            if (myFragment != null && myFragment.isVisible) {
+                done(AUTHENTICATION_SUCCESS)
             } else {
-                val myFragment: WelcomeFragment? =
-                    supportFragmentManager.findFragmentByTag("welcomeFragment") as WelcomeFragment?
-                if (myFragment != null && myFragment.isVisible) {
-                    done(AUTHENTICATION_SUCCESS)
-                } else {
-                    super.onBackPressed()
-                }
+                super.onBackPressed()
             }
         }
     }
@@ -274,18 +275,11 @@ class AuthenticationActivity : AppCompatActivity(),
 
     private fun showProgressBar() {
         Utils.hideKeyboard(this)
-        isProgressBarVisible = true
-        window.setFlags(
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE,
-            WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE
-        )
-        groupProgressBar.visibility = View.VISIBLE
+        progressBarDialog.show()
     }
 
     private fun hideProgressBar() {
-        groupProgressBar.visibility = View.GONE
-        window.clearFlags(WindowManager.LayoutParams.FLAG_NOT_TOUCHABLE)
-        isProgressBarVisible = false
+        progressBarDialog.hide()
     }
 
     override fun buttonSignInWithClicked(signInWith: Int) {
