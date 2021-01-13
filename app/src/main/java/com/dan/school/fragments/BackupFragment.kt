@@ -19,16 +19,12 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
 import com.dan.school.adapters.BackupListAdapter
 import com.dan.school.authentication.AuthenticationActivity
-import com.google.android.gms.tasks.Task
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
-import com.google.firebase.storage.ListResult
 import com.google.firebase.storage.StorageReference
-import com.google.firebase.storage.ktx.component1
-import com.google.firebase.storage.ktx.component2
 import com.google.firebase.storage.ktx.storage
 import kotlinx.android.synthetic.main.fragment_backup.*
 import java.io.*
@@ -76,7 +72,7 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         super.onStart()
 
         showProgressBar()
-        check()
+        check {}
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -87,6 +83,11 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             this@BackupFragment,
             this@BackupFragment
         )
+
+        recyclerViewBackups.apply {
+            layoutManager = LinearLayoutManager(requireContext())
+            adapter = backupListAdapter
+        }
 
         buttonCreateBackup.setOnClickListener {
             if (isNetworkAvailable(requireContext())) {
@@ -117,14 +118,9 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             }
         }
 
-        recyclerViewBackups.apply {
-            layoutManager = LinearLayoutManager(requireContext())
-            adapter = backupListAdapter
-        }
-
         buttonRetry.setOnClickListener {
-            showProgressBar()
-            check()
+            swipeRefreshLayout.isRefreshing = true
+            swipeRefreshUpdate()
         }
 
         buttonSignIn.setOnClickListener {
@@ -132,28 +128,41 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             intent.putExtra(School.FROM_SETUP, false)
             startActivity(intent)
         }
+
+        swipeRefreshLayout.setOnRefreshListener {
+            swipeRefreshUpdate()
+        }
     }
 
-    private fun check() {
+    private fun swipeRefreshUpdate() {
+        check {
+            swipeRefreshLayout.isRefreshing = false
+        }
+    }
+
+    private fun check(done: () -> Unit) {
         if (isNetworkAvailable(requireContext())) {
             if (auth.currentUser != null) {
-                updateBackupList {}
+                updateBackupList {
+                    done()
+                }
             } else {
                 groupBackupLayout.visibility = View.GONE
                 groupInternetRequired.visibility = View.GONE
                 groupAccountRequired.visibility = View.VISIBLE
                 hideProgressBar()
+                done()
             }
         } else {
             groupBackupLayout.visibility = View.GONE
             groupInternetRequired.visibility = View.VISIBLE
             groupAccountRequired.visibility = View.GONE
             hideProgressBar()
+            done()
         }
     }
 
     private fun updateBackupList(done: () -> Unit) {
-        showProgressBar()
         storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
             .listAll()
             .addOnCompleteListener {
