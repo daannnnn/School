@@ -7,6 +7,7 @@ import android.app.PendingIntent
 import android.content.Intent
 import android.net.Uri
 import androidx.core.app.NotificationCompat
+import androidx.core.content.ContextCompat
 import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlin.random.Random
@@ -47,7 +48,8 @@ class FirebaseMessaging : FirebaseMessagingService() {
         val channelId = getString(R.string.updates_notification_channel_id)
         val builder = NotificationCompat.Builder(this, channelId)
             .setStyle(NotificationCompat.BigTextStyle().bigText(data[TEXT]))
-            .setSmallIcon(R.mipmap.ic_launcher)
+            .setSmallIcon(R.drawable.ic_notification_logo)
+            .setColor(ContextCompat.getColor(this, R.color.colorPrimary))
             .setContentTitle(data[TITLE])
             .setAutoCancel(true)
             .setContentIntent(pendingIntent)
