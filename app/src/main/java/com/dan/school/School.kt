@@ -56,6 +56,10 @@ object School {
 
     const val PASSWORD_RESET_EMAIL_TIME_LAST_SENT = "passwordResetEmailTimeLastSent"
 
+    const val UPDATES = "updates"
+
+    const val CHANNEL_UPDATES_NAME = "Updates"
+
     val categoryColors =
         arrayOf(
             R.color.homeworkColor,

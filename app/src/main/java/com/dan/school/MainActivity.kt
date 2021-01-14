@@ -19,6 +19,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ValueEventListener
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
@@ -39,6 +40,9 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
+
+        Firebase.messaging.subscribeToTopic(School.UPDATES)
+        Firebase.messaging.subscribeToTopic("v${BuildConfig.VERSION_NAME}")
 
         auth = Firebase.auth
         database = Firebase.database
