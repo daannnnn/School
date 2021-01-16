@@ -12,8 +12,6 @@ import com.google.firebase.messaging.FirebaseMessagingService
 import com.google.firebase.messaging.RemoteMessage
 import kotlin.random.Random
 
-const val TAG = "FirebaseMessaging"
-
 const val ACTION_CLICK = "action_click"
 
 const val OPEN_LINK = "open_link"
