@@ -1,4 +1,4 @@
-package com.dan.school.fragments
+package com.dan.school.settings
 
 import android.content.Context
 import android.content.Intent

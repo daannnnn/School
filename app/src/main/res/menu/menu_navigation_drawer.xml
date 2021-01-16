@@ -13,8 +13,7 @@
             android:title="@string/completed" />
     </group>
     <group
-        android:id="@+id/menu_bottom"
-        android:checkableBehavior="single">
+        android:id="@+id/menu_bottom">
         <item
             android:id="@+id/settings"
             android:icon="@drawable/ic_settings"

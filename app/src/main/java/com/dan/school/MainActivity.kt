@@ -1,16 +1,19 @@
 package com.dan.school
 
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
+import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
 import com.dan.school.fragments.CompletedFragment
 import com.dan.school.fragments.OverviewFragment
-import com.dan.school.fragments.SettingsFragment
+import com.dan.school.settings.SettingsActivity
+import com.dan.school.settings.SettingsFragment
 import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import com.google.android.gms.ads.InterstitialAd
@@ -28,12 +31,6 @@ import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
     OverviewFragment.ClickCounterListener {
-
-    /**
-     * Is set to not null on [SettingsFragment.onAttach]
-     * Is set to null on [SettingsFragment.onDetach]
-     */
-    var settingsBackPressedListener: SettingsBackPressedListener? = null
 
     /**
      * Saves the last click time from FAB, BottomNavigationView, and
@@ -133,7 +130,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
         sharedPref.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
         navigationView.setNavigationItemSelectedListener { item ->
             if (!item.isChecked) {
-                item.isChecked = true
                 drawerLayout.closeDrawers()
 
                 when (item.itemId) {
@@ -151,16 +147,11 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
                             .commit()
                     }
                     R.id.settings -> {
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                        supportFragmentManager.beginTransaction()
-                            .setCustomAnimations(R.anim.slide_in_right, 0)
-                            .add(R.id.frameLayoutMain, SettingsFragment(), School.SETTINGS)
-                            .addToBackStack(School.SETTINGS)
-                            .commit()
+                        startActivity(Intent(this, SettingsActivity::class.java))
                     }
                 }
             } else {
-                drawerLayout.closeDrawer(GravityCompat.START)
+                drawerLayout.closeDrawers()
             }
             return@setNavigationItemSelectedListener true
         }
@@ -171,26 +162,17 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
                     navigationView.setCheckedItem(R.id.overview)
                 }
             } else {
-                when (supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name) {
-                    School.COMPLETED -> {
-                        if (supportFragmentManager.findFragmentByTag(School.COMPLETED) != null) {
-                            showFragment(School.COMPLETED)
-                            navigationView.setCheckedItem(R.id.completed)
-                        }
-                        if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
-                            hideFragment(School.OVERVIEW)
-                        }
-                        if (supportFragmentManager.findFragmentByTag(School.SETTINGS) != null) {
-                            hideFragment(School.SETTINGS)
-                        }
+                if (supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name
+                    == School.COMPLETED
+                ) {
+                    if (supportFragmentManager.findFragmentByTag(School.COMPLETED) != null) {
+                        showFragment(School.COMPLETED)
+                        navigationView.setCheckedItem(R.id.completed)
                     }
-                    School.SETTINGS -> {
-                        if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
-                            hideFragment(School.OVERVIEW)
-                        }
-                        if (supportFragmentManager.findFragmentByTag(School.COMPLETED) != null) {
-                            hideFragment(School.COMPLETED)
-                        }
+                    if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
+                        supportFragmentManager.beginTransaction()
+                            .hide(supportFragmentManager.findFragmentByTag(School.OVERVIEW)!!)
+                            .commit()
                     }
                 }
             }
@@ -207,15 +189,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
     private fun setNavigationViewHeaderFullName(fullName: String?) {
         navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewFullName).text =
             fullName
-    }
-
-    /** Hides fragment with tag [tag] */
-    private fun hideFragment(tag: String) {
-        if (supportFragmentManager.findFragmentByTag(tag)!!.isHidden) {
-            return
-        }
-        supportFragmentManager.beginTransaction()
-            .hide(supportFragmentManager.findFragmentByTag(tag)!!).commit()
     }
 
     /** Shows fragment with tag [tag] */
@@ -284,26 +257,8 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
     }
 
     override fun onBackPressed() {
-        if (settingsBackPressedListener == null) {
-            if (supportFragmentManager.backStackEntryCount > 0) {
-                if (supportFragmentManager.backStackEntryCount == 1) {
-                    supportFragmentManager.popBackStackImmediate()
-                    drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                } else if (supportFragmentManager
-                        .getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 2)
-                        .name == School.COMPLETED
-                ) {
-                    supportFragmentManager.popBackStackImmediate()
-                    drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                }
-            } else super.onBackPressed()
-        } else {
-            settingsBackPressedListener?.backPressed()
-        }
-    }
-
-    /** Used for back presses when in [SettingsFragment] */
-    interface SettingsBackPressedListener {
-        fun backPressed()
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStackImmediate()
+        } else super.onBackPressed()
     }
 }

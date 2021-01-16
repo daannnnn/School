@@ -1,4 +1,4 @@
-package com.dan.school.fragments
+package com.dan.school.settings
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
