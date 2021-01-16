@@ -199,7 +199,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
         if ((System.currentTimeMillis() - lastClickTime) / 1000 > 0.5) {
             clickCounter++
             lastClickTime = System.currentTimeMillis()
-            if (clickCounter >= 8) {
+            if (clickCounter >= 5) {
                 if (interstitialAd.isLoaded) {
                     interstitialAd.show()
                     clickCounter = 0
