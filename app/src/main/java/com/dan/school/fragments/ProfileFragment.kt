@@ -4,23 +4,34 @@ import android.animation.LayoutTransition
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
+import android.widget.Toast
 import androidx.core.content.edit
+import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.dan.school.R
 import com.dan.school.School
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.FirebaseUser
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_profile.*
+
+const val TAG = "ProfileFragment"
 
 class ProfileFragment : Fragment() {
 
+    private var isSendingVerificationEmail = false
     private var isEditMode = false
     private lateinit var sharedPref: SharedPreferences
 
     private lateinit var inputMethodManager: InputMethodManager
+    private lateinit var auth: FirebaseAuth
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -40,6 +51,11 @@ class ProfileFragment : Fragment() {
         }
     }
 
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        auth = Firebase.auth
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -54,6 +70,77 @@ class ProfileFragment : Fragment() {
 
         textViewNicknameDisplay.text = sharedPref.getString(School.NICKNAME, "")
         textViewFullNameDisplay.text = sharedPref.getString(School.FULL_NAME, "")
+
+        buttonSendVerificationEmail.setOnClickListener {
+            sendVerificationEmail()
+        }
+
+        update()
+    }
+
+    /**
+     * Updates the visibility of [groupEmail] and [cardViewVerifyEmail]
+     * depending if a user is signed-in and if the email is verified.
+     * Sets the text of [textViewEmailDisplay] to the current user's
+     * email.
+     */
+    private fun update() {
+        val user = auth.currentUser
+        if (user != null) {
+            textViewEmailDisplay.text = user.email
+            cardViewVerifyEmail.isGone = user.isEmailVerified
+        } else {
+            groupEmail.visibility = View.GONE
+            cardViewVerifyEmail.isGone = true
+        }
+    }
+
+    /**
+     * Sends email verification on currently signed-in user if
+     * the last time a verification email was sent is 30 seconds
+     * before [System.currentTimeMillis].
+     */
+    private fun sendVerificationEmail() {
+        val time = (System.currentTimeMillis() - sharedPref.getLong(
+            School.VERIFICATION_EMAIL_TIME_LAST_SENT,
+            0
+        )) / 1000
+        if (time > 30) {
+            if (!isSendingVerificationEmail) {
+                isSendingVerificationEmail = true
+                cardViewVerifyEmail.visibility = View.VISIBLE
+                auth.currentUser?.sendEmailVerification()?.addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        with(sharedPref.edit()) {
+                            putLong(
+                                School.VERIFICATION_EMAIL_TIME_LAST_SENT,
+                                System.currentTimeMillis()
+                            )
+                            apply()
+                        }
+                        Toast.makeText(
+                            requireContext(),
+                            "Verification email sent.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "Failed to send verification email. Please try again.",
+                            Toast.LENGTH_SHORT
+                        ).show()
+                    }
+                    isSendingVerificationEmail = false
+                }
+            }
+        } else {
+            val timeToWait = (30 - time).toInt()
+            Toast.makeText(
+                requireContext(),
+                "Please try again in $timeToWait ${if (timeToWait == 1) "second" else "seconds"}.",
+                Toast.LENGTH_SHORT
+            ).show()
+        }
     }
 
     private fun setEditMode(editMode: Boolean) {
@@ -88,7 +175,8 @@ class ProfileFragment : Fragment() {
             )
         }
         if (parentFragment is SettingsFragment) {
-            (parentFragment as SettingsFragment).setAppBarButtonRight(null, false,
+            (parentFragment as SettingsFragment).setAppBarButtonRight(
+                null, false,
                 R.drawable.ic_edit
             )
         }

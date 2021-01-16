@@ -12,6 +12,94 @@
         android:layout_height="wrap_content"
         android:animateLayoutChanges="true">
 
+        <com.google.android.material.card.MaterialCardView
+            android:id="@+id/cardViewVerifyEmail"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="24dp"
+            android:layout_marginTop="16dp"
+            android:layout_marginEnd="24dp"
+            app:cardBackgroundColor="@color/red"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="parent"
+            android:visibility="gone">
+
+            <LinearLayout
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:layout_margin="24dp"
+                android:gravity="center"
+                android:orientation="vertical">
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:fontFamily="@font/cabin_regular"
+                    android:text="@string/account_not_verified_message"
+                    android:textColor="?android:colorBackground"
+                    android:textSize="16sp" />
+
+                <com.google.android.material.button.MaterialButton
+                    android:id="@+id/buttonSendVerificationEmail"
+                    style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    android:text="@string/send_verification_email"
+                    android:textColor="?android:colorBackground"
+                    app:strokeColor="@color/outlineColor" />
+
+            </LinearLayout>
+
+        </com.google.android.material.card.MaterialCardView>
+
+        <ImageView
+            android:id="@+id/imageViewEmailIcon"
+            android:layout_width="wrap_content"
+            android:layout_height="0dp"
+            android:layout_marginStart="24dp"
+            android:src="@drawable/ic_email"
+            app:layout_constraintBottom_toBottomOf="@id/textViewEmailLabel"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textViewEmailLabel"
+            app:tint="@color/colorPrimary" />
+
+        <TextView
+            android:id="@+id/textViewEmailLabel"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_marginTop="24dp"
+            app:layout_goneMarginTop="16dp"
+            android:layout_marginEnd="24dp"
+            android:fontFamily="@font/cabin_bold"
+            android:text="@string/email"
+            android:textAllCaps="true"
+            android:textColor="@color/colorPrimary"
+            android:textSize="14sp"
+            app:layout_constraintStart_toEndOf="@id/imageViewNameIcon"
+            app:layout_constraintTop_toBottomOf="@id/cardViewVerifyEmail" />
+
+        <TextView
+            android:id="@+id/textViewEmailDisplay"
+            android:layout_width="0dp"
+            android:layout_height="wrap_content"
+            android:layout_marginStart="36dp"
+            android:layout_marginTop="8dp"
+            android:layout_marginEnd="36dp"
+            android:fontFamily="@font/cabin_bold"
+            android:textColor="?android:textColorPrimary"
+            android:textSize="18sp"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintStart_toStartOf="parent"
+            app:layout_constraintTop_toBottomOf="@id/textViewEmailLabel"/>
+
+        <androidx.constraintlayout.widget.Group
+            android:id="@+id/groupEmail"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            app:constraint_referenced_ids="imageViewEmailIcon, textViewEmailLabel, textViewEmailDisplay" />
+
         <ImageView
             android:id="@+id/imageViewNameIcon"
             android:layout_width="wrap_content"
@@ -28,6 +116,7 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
+            app:layout_goneMarginTop="16dp"
             android:layout_marginEnd="24dp"
             android:fontFamily="@font/cabin_bold"
             android:text="@string/name"
@@ -35,7 +124,7 @@
             android:textColor="@color/colorPrimary"
             android:textSize="14sp"
             app:layout_constraintStart_toEndOf="@id/imageViewNameIcon"
-            app:layout_constraintTop_toTopOf="parent" />
+            app:layout_constraintTop_toBottomOf="@id/textViewEmailDisplay" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayoutName"

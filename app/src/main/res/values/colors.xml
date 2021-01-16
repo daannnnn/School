@@ -16,6 +16,7 @@
     <color name="add_button_color_pressed">#0085DC</color>
 
     <color name="dividerColor">#1F000000</color>
+    <color name="outlineColor">#1FFFFFFF</color>
     <color name="chipStrokeColor">#1F000000</color>
     <color name="chipSelectedColor">#4D66d3ff</color>
     <color name="chipSelectedHomeworkColor">#4DE17055</color>

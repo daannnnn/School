@@ -139,4 +139,6 @@
     <string name="error_while_getting_list_of_backups">An error occurred while getting the list of backups. Please try again.</string>
     <string name="no_internet">There is no Internet connection.</string>
     <string name="updates_notification_channel_id">updates_notification_channel_id</string>
+    <string name="account_not_verified_message">Your account is not yet verified. Please check your email to verify your account.</string>
+    <string name="send_verification_email">Send verification email</string>
 </resources>

@@ -142,13 +142,17 @@ class SettingsFragment : Fragment(), SettingsContentFragment.SettingsItemOnClick
         isVisible: Boolean,
         imageRes: Int
     ) {
-        buttonSettingsAppBarRight.isVisible = isVisible
-        buttonSettingsAppBarRight.setImageResource(imageRes)
-        buttonSettingsAppBarRight.setOnClickListener(clickListener)
+        if (buttonSettingsAppBarRight != null) {
+            buttonSettingsAppBarRight.isVisible = isVisible
+            buttonSettingsAppBarRight.setImageResource(imageRes)
+            buttonSettingsAppBarRight.setOnClickListener(clickListener)
+        }
     }
 
     fun setAppBarButtonRight(imageRes: Int) {
-        buttonSettingsAppBarRight.setImageResource(imageRes)
+        if (buttonSettingsAppBarRight != null) {
+            buttonSettingsAppBarRight.setImageResource(imageRes)
+        }
     }
 
     fun getSelectedTheme(): String {

@@ -57,6 +57,7 @@ object School {
     const val SETTINGS_CONTENT_FRAGMENT_TAG = "SettingsContentFragment"
 
     const val PASSWORD_RESET_EMAIL_TIME_LAST_SENT = "passwordResetEmailTimeLastSent"
+    const val VERIFICATION_EMAIL_TIME_LAST_SENT = "verificationEmailTimeLastSent"
 
     const val DATABASE_NAME = "itemsDB"
 
