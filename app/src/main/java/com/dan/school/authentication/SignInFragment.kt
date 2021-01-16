@@ -83,6 +83,10 @@ class SignInFragment : Fragment() {
         buttonForgotPassword.setOnClickListener {
             (activity as AuthenticationActivity).goToFP()
         }
+
+        buttonBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
     }
 
     interface SignInButtonClickListener {

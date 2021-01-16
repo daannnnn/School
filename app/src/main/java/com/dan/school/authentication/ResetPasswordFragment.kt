@@ -59,6 +59,10 @@ class ResetPasswordFragment : Fragment() {
         buttonResendResetPassword.setOnClickListener {
             sendPasswordResetEmail()
         }
+
+        buttonBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
     }
 
     private fun sendPasswordResetEmail() {

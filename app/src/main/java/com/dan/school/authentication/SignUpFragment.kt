@@ -119,6 +119,10 @@ class SignUpFragment : Fragment() {
                 )
             }
         }
+
+        buttonBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
     }
 
     interface SignUpButtonClickListener {
