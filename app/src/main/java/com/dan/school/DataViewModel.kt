@@ -178,4 +178,8 @@ class DataViewModel(application: Application) : AndroidViewModel(application) {
     private fun runtimeQuery(query: SimpleSQLiteQuery): LiveData<List<Item>> = runBlocking {
         itemRepository.runtimeQuery(query)
     }
+
+    fun checkpoint(): Int = runBlocking {
+        itemRepository.checkpoint()
+    }
 }

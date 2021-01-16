@@ -19,7 +19,7 @@ abstract class ItemDatabase : RoomDatabase(){
                 instance = Room.databaseBuilder(
                     context,
                     ItemDatabase::class.java,
-                    "itemsDB")
+                    School.DATABASE_NAME)
                     .build()
             }
             return instance as ItemDatabase

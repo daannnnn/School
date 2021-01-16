@@ -6,6 +6,7 @@ import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isVisible
 import com.dan.school.R
 import com.dan.school.School
 import kotlinx.android.synthetic.main.fragment_authentication.*
@@ -16,12 +17,21 @@ class AuthenticationFragment : Fragment() {
     private lateinit var buttonSignUpClickListener: ButtonSignUpClickListener
     private lateinit var buttonSignInLaterClickListener: ButtonSignInLaterClickListener
 
+    private var showButtonSignInLater = true
+
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (activity is AuthenticationActivity) {
             buttonSignInWithClickListener = activity as AuthenticationActivity
             buttonSignUpClickListener = activity as AuthenticationActivity
             buttonSignInLaterClickListener = activity as AuthenticationActivity
+        }
+    }
+
+    override fun onCreate(savedInstanceState: Bundle?) {
+        super.onCreate(savedInstanceState)
+        arguments?.let {
+            showButtonSignInLater = it.getBoolean(School.FROM_SETUP)
         }
     }
 
@@ -34,6 +44,8 @@ class AuthenticationFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        buttonSignInLater.isVisible = showButtonSignInLater
 
         buttonSignInWithEmail.setOnClickListener {
             buttonSignInWithClickListener.buttonSignInWithClicked(School.SIGN_IN_WITH_EMAIL)
@@ -64,8 +76,12 @@ class AuthenticationFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance() =
-            AuthenticationFragment()
+        fun newInstance(fromSetup: Boolean) =
+            AuthenticationFragment().apply {
+                arguments = Bundle().apply {
+                    putBoolean(School.FROM_SETUP, fromSetup)
+                }
+            }
     }
 
 }
