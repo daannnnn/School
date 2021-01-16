@@ -138,4 +138,5 @@
     <string name="error_restore_cancelled">An error occurred while creating a backup of the current database. Restore cancelled.</string>
     <string name="error_while_getting_list_of_backups">An error occurred while getting the list of backups. Please try again.</string>
     <string name="no_internet">There is no Internet connection.</string>
+    <string name="updates_notification_channel_id">updates_notification_channel_id</string>
 </resources>

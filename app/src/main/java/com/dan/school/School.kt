@@ -58,9 +58,15 @@ object School {
 
     const val PASSWORD_RESET_EMAIL_TIME_LAST_SENT = "passwordResetEmailTimeLastSent"
 
+<<<<<<< HEAD
     const val DATABASE_NAME = "itemsDB"
 
     const val FROM_SETUP = "from_setup"
+=======
+    const val UPDATES = "updates"
+
+    const val CHANNEL_UPDATES_NAME = "Updates"
+>>>>>>> feature-fcm
 
     val categoryColors =
         arrayOf(
