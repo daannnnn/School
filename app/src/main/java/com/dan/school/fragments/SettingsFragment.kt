@@ -137,24 +137,6 @@ class SettingsFragment : Fragment(), SettingsContentFragment.SettingsItemOnClick
         }
     }
 
-    fun setAppBarButtonRight(
-        clickListener: View.OnClickListener?,
-        isVisible: Boolean,
-        imageRes: Int
-    ) {
-        if (buttonSettingsAppBarRight != null) {
-            buttonSettingsAppBarRight.isVisible = isVisible
-            buttonSettingsAppBarRight.setImageResource(imageRes)
-            buttonSettingsAppBarRight.setOnClickListener(clickListener)
-        }
-    }
-
-    fun setAppBarButtonRight(imageRes: Int) {
-        if (buttonSettingsAppBarRight != null) {
-            buttonSettingsAppBarRight.setImageResource(imageRes)
-        }
-    }
-
     fun getSelectedTheme(): String {
         return getThemeStringWithIntValue(sharedPref.getInt(School.SELECTED_THEME, -1))
     }
@@ -171,7 +153,8 @@ class SettingsFragment : Fragment(), SettingsContentFragment.SettingsItemOnClick
                     )
                     .replace(
                         R.id.frameLayoutSettings,
-                        ProfileFragment()
+                        ProfileFragment(),
+                        "profileFragment"
                     ).addToBackStack(null)
                     .commit()
                 textViewSettingsTitle.setText(R.string.profile)

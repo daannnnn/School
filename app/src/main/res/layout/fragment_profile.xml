@@ -19,11 +19,11 @@
             android:layout_marginStart="24dp"
             android:layout_marginTop="16dp"
             android:layout_marginEnd="24dp"
+            android:visibility="gone"
             app:cardBackgroundColor="@color/red"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toTopOf="parent"
-            android:visibility="gone">
+            app:layout_constraintTop_toTopOf="parent">
 
             <LinearLayout
                 android:layout_width="match_parent"
@@ -70,7 +70,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            app:layout_goneMarginTop="16dp"
             android:layout_marginEnd="24dp"
             android:fontFamily="@font/cabin_bold"
             android:text="@string/email"
@@ -78,7 +77,8 @@
             android:textColor="@color/colorPrimary"
             android:textSize="14sp"
             app:layout_constraintStart_toEndOf="@id/imageViewNameIcon"
-            app:layout_constraintTop_toBottomOf="@id/cardViewVerifyEmail" />
+            app:layout_constraintTop_toBottomOf="@id/cardViewVerifyEmail"
+            app:layout_goneMarginTop="16dp" />
 
         <TextView
             android:id="@+id/textViewEmailDisplay"
@@ -92,7 +92,7 @@
             android:textSize="18sp"
             app:layout_constraintEnd_toEndOf="parent"
             app:layout_constraintStart_toStartOf="parent"
-            app:layout_constraintTop_toBottomOf="@id/textViewEmailLabel"/>
+            app:layout_constraintTop_toBottomOf="@id/textViewEmailLabel" />
 
         <androidx.constraintlayout.widget.Group
             android:id="@+id/groupEmail"
@@ -116,7 +116,6 @@
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginTop="24dp"
-            app:layout_goneMarginTop="16dp"
             android:layout_marginEnd="24dp"
             android:fontFamily="@font/cabin_bold"
             android:text="@string/name"
@@ -124,7 +123,21 @@
             android:textColor="@color/colorPrimary"
             android:textSize="14sp"
             app:layout_constraintStart_toEndOf="@id/imageViewNameIcon"
-            app:layout_constraintTop_toBottomOf="@id/textViewEmailDisplay" />
+            app:layout_constraintTop_toBottomOf="@id/textViewEmailDisplay"
+            app:layout_goneMarginTop="16dp" />
+
+        <ImageButton
+            android:id="@+id/buttonEdit"
+            android:layout_width="24dp"
+            android:layout_height="24dp"
+            android:layout_marginEnd="24dp"
+            android:background="?selectableItemBackgroundBorderless"
+            android:scaleType="centerInside"
+            android:src="@drawable/ic_edit"
+            app:layout_constraintBottom_toBottomOf="@id/textViewNameLabel"
+            app:layout_constraintEnd_toEndOf="parent"
+            app:layout_constraintTop_toTopOf="@id/textViewNameLabel"
+            app:tint="?android:textColorPrimary" />
 
         <androidx.constraintlayout.widget.ConstraintLayout
             android:id="@+id/constraintLayoutName"

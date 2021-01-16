@@ -40,15 +40,6 @@ class ProfileFragment : Fragment() {
         )
         inputMethodManager =
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
-        if (parentFragment is SettingsFragment) {
-            (parentFragment as SettingsFragment).setAppBarButtonRight({
-                (parentFragment as SettingsFragment).setAppBarButtonRight(
-                    if (isEditMode) R.drawable.ic_edit
-                    else R.drawable.ic_check
-                )
-                setEditMode(!isEditMode)
-            }, true, R.drawable.ic_edit)
-        }
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -73,6 +64,16 @@ class ProfileFragment : Fragment() {
 
         buttonSendVerificationEmail.setOnClickListener {
             sendVerificationEmail()
+        }
+
+        buttonEdit.setOnClickListener {
+            if (isEditMode) {
+                buttonEdit.setImageResource(R.drawable.ic_edit)
+                setEditMode(false)
+            } else {
+                buttonEdit.setImageResource(R.drawable.ic_check)
+                setEditMode(true)
+            }
         }
 
         update()
@@ -172,12 +173,6 @@ class ProfileFragment : Fragment() {
             inputMethodManager.hideSoftInputFromWindow(
                 currentFocusedView.windowToken,
                 InputMethodManager.HIDE_NOT_ALWAYS
-            )
-        }
-        if (parentFragment is SettingsFragment) {
-            (parentFragment as SettingsFragment).setAppBarButtonRight(
-                null, false,
-                R.drawable.ic_edit
             )
         }
         super.onDetach()
