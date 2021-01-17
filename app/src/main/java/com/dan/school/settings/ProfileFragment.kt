@@ -9,16 +9,19 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.Toast
+import androidx.activity.OnBackPressedCallback
 import androidx.core.content.edit
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import com.dan.school.R
 import com.dan.school.School
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_profile.*
+
 
 const val TAG = "ProfileFragment"
 
@@ -42,6 +45,30 @@ class ProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        val callback: OnBackPressedCallback =
+            object : OnBackPressedCallback(true) {
+                override fun handleOnBackPressed() {
+                    if (isEditMode) {
+                        MaterialAlertDialogBuilder(requireContext()).setMessage(null)
+                            .setTitle("Do you want to save your changes?")
+                            .setPositiveButton(getString(R.string.save)) { _, _ ->
+                                setEditMode(false)
+                                // save to realtime database save updated time
+                                requireActivity().supportFragmentManager.popBackStack()
+                            }
+                            .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
+                            .create()
+                            .show()
+                    } else {
+                        if (requireActivity() is SettingsActivity) {
+                            requireActivity().supportFragmentManager.popBackStack()
+                        }
+                    }
+                }
+            }
+        requireActivity().onBackPressedDispatcher.addCallback(this, callback)
+
         auth = Firebase.auth
     }
 

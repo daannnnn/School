@@ -43,7 +43,7 @@ class SettingsFragment : Fragment() {
         textViewSelectedTheme.text = getSelectedTheme()
 
         buttonBack.setOnClickListener {
-//            backPressed()
+            requireActivity().onBackPressed()
         }
 
         relativeLayoutProfile.setOnClickListener {
