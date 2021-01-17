@@ -48,7 +48,6 @@ class SettingsActivity : AppCompatActivity(), SettingsFragment.SettingsItemOnCli
                         "profileFragment"
                     ).addToBackStack(null)
                     .commit()
-                textViewSettingsTitle.setText(R.string.profile)
             }
             School.THEME -> {
                 val items = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
@@ -109,7 +108,6 @@ class SettingsActivity : AppCompatActivity(), SettingsFragment.SettingsItemOnCli
                         BackupFragment()
                     ).addToBackStack(null)
                     .commit()
-                textViewSettingsTitle.setText(R.string.backup)
             }
             School.ABOUT -> {
                 supportFragmentManager.beginTransaction()
@@ -124,7 +122,6 @@ class SettingsActivity : AppCompatActivity(), SettingsFragment.SettingsItemOnCli
                         AboutFragment()
                     ).addToBackStack(null)
                     .commit()
-                textViewSettingsTitle.setText(R.string.about)
             }
         }
     }
