@@ -69,8 +69,8 @@ class ResetPasswordFragment : Fragment() {
         val lastPasswordResetTime = sharedPref.getLong(
             School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT,
             0
-        ).toFloat()
-        val time = (System.currentTimeMillis() - lastPasswordResetTime) / 1000
+        )
+        val time = (System.currentTimeMillis() - lastPasswordResetTime).toFloat() / 1000
 
         if (time >= 30) {
             val email = editTextEmail.editText!!.text.toString()

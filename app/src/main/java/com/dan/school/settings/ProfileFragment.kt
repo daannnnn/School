@@ -4,6 +4,7 @@ import android.animation.LayoutTransition
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -123,8 +124,18 @@ class ProfileFragment : Fragment() {
     private fun update() {
         val user = auth.currentUser
         if (user != null) {
+
             textViewEmailDisplay.text = user.email
             cardViewVerifyEmail.isGone = user.isEmailVerified
+
+            user.reload().addOnCompleteListener {
+                if (it.isSuccessful) {
+                    textViewEmailDisplay.text = user.email
+                    cardViewVerifyEmail.isGone = user.isEmailVerified
+                } else {
+                    Toast.makeText(requireContext(), "Failed to update.", Toast.LENGTH_SHORT).show()
+                }
+            }
         } else {
             groupEmail.visibility = View.GONE
             cardViewVerifyEmail.isGone = true
@@ -140,7 +151,7 @@ class ProfileFragment : Fragment() {
         val time = (System.currentTimeMillis() - sharedPref.getLong(
             School.VERIFICATION_EMAIL_TIME_LAST_SENT,
             0
-        ).toFloat()) / 1000
+        )).toFloat() / 1000
         if (time >= 30) {
             if (!isSendingVerificationEmail) {
                 isSendingVerificationEmail = true
