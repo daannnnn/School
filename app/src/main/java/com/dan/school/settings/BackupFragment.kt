@@ -6,7 +6,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -68,15 +67,11 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         return inflater.inflate(R.layout.fragment_backup, container, false)
     }
 
-    override fun onStart() {
-        super.onStart()
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
 
         swipeRefreshLayout.isRefreshing = true
         check()
-    }
-
-    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        super.onViewCreated(view, savedInstanceState)
 
         backupListAdapter = BackupListAdapter(
             requireContext(),
@@ -163,34 +158,57 @@ class BackupFragment : Fragment(), BackupItemClickListener,
     }
 
     private fun updateBackupList(done: () -> Unit) {
-        storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
-            .listAll()
-            .addOnCompleteListener {
-                if (it.isSuccessful) {
-                    val backupList = ArrayList<StorageReference>()
-                    if (it.result != null) {
-                        it.result!!.items.forEach { item ->
-                            backupList.add(item)
-                        }
+        val user = auth.currentUser
+        user?.getIdToken(true)?.addOnCompleteListener { taskGetIdToken ->
+            if (taskGetIdToken.isSuccessful) {
+                user.reload().addOnCompleteListener { taskReload ->
+                    if (taskReload.isSuccessful) {
+                        storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
+                            .listAll()
+                            .addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    val backupList = ArrayList<StorageReference>()
+                                    if (it.result != null) {
+                                        it.result!!.items.forEach { item ->
+                                            backupList.add(item)
+                                        }
+                                    }
+
+                                    groupBackupLayout.visibility = View.VISIBLE
+                                    groupInternetRequired.visibility = View.GONE
+                                    groupAccountRequired.visibility = View.GONE
+
+                                    textViewNoBackupsYet.isGone = backupList.isNotEmpty()
+                                    recyclerViewBackups.isVisible = backupList.isNotEmpty()
+                                    backupListAdapter.submitList(backupList)
+                                } else {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.error_while_getting_list_of_backups),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                }
+                                done()
+                                hideProgressBar()
+                            }
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.error_while_getting_list_of_backups),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        swipeRefreshLayout.isRefreshing = false
                     }
-
-                    groupBackupLayout.visibility = View.VISIBLE
-                    groupInternetRequired.visibility = View.GONE
-                    groupAccountRequired.visibility = View.GONE
-
-                    textViewNoBackupsYet.isGone = backupList.isNotEmpty()
-                    recyclerViewBackups.isVisible = backupList.isNotEmpty()
-                    backupListAdapter.submitList(backupList)
-                } else {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.error_while_getting_list_of_backups),
-                        Toast.LENGTH_LONG
-                    ).show()
                 }
-                done()
-                hideProgressBar()
+            } else {
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.error_while_getting_list_of_backups),
+                    Toast.LENGTH_LONG
+                ).show()
+                swipeRefreshLayout.isRefreshing = false
             }
+        }
     }
 
     private fun showProgressBar() {
