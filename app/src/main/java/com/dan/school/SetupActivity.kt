@@ -12,6 +12,7 @@ import com.dan.school.setup.SetupViewPagerFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
@@ -100,12 +101,19 @@ class SetupActivity : AppCompatActivity() {
             putString(School.FULL_NAME, fullName)
             apply()
         }
+
+        sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, false).apply()
+
         if (auth.currentUser != null) {
             val map: MutableMap<String, Any> = HashMap()
             map[School.NICKNAME] = nickname
             map[School.FULL_NAME] = fullName
+            map[School.PROFILE_LAST_UPDATE_TIME] = ServerValue.TIMESTAMP
             database.reference.child(School.USERS).child(auth.currentUser!!.uid)
                 .updateChildren(map)
+                .addOnSuccessListener {
+                    sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, true).apply()
+                }
         }
 
         supportFragmentManager.beginTransaction()

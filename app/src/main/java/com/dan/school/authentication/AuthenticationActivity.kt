@@ -159,11 +159,11 @@ class AuthenticationActivity : AppCompatActivity(),
             .addOnCompleteListener(this) { createUserTask ->
                 if (createUserTask.isSuccessful) {
                     if (auth.currentUser != null) {
+                        sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, false).apply()
                         updateProfileOnSharedPreferences(nickname, fullName)
                         updateProfileOnFirebaseDatabase(nickname, fullName)
                         sendEmailVerification(email)
                     }
-
                 } else {
                     hideProgressBar()
                     try {
@@ -199,6 +199,9 @@ class AuthenticationActivity : AppCompatActivity(),
         map[School.FULL_NAME] = fullName
         database.reference.child(School.USERS).child(auth.currentUser!!.uid)
             .updateChildren(map)
+            .addOnSuccessListener {
+                sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, true)
+            }
     }
 
     private fun updateProfileOnSharedPreferences(nickname: String, fullName: String) {

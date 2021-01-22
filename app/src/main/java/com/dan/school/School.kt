@@ -58,6 +58,8 @@ object School {
 
     const val PASSWORD_RESET_EMAIL_TIME_LAST_SENT = "passwordResetEmailTimeLastSent"
     const val VERIFICATION_EMAIL_TIME_LAST_SENT = "verificationEmailTimeLastSent"
+    const val PROFILE_LAST_UPDATE_TIME = "profileLastUpdateTime"
+    const val DATABASE_PROFILE_UPDATED = "databaseProfileUpdated"
 
     const val DATABASE_NAME = "itemsDB"
 

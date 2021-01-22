@@ -19,6 +19,9 @@ import com.dan.school.School
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.FirebaseDatabase
+import com.google.firebase.database.ServerValue
+import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_profile.*
 
@@ -33,6 +36,7 @@ class ProfileFragment : Fragment() {
 
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -70,6 +74,7 @@ class ProfileFragment : Fragment() {
         requireActivity().onBackPressedDispatcher.addCallback(this, callback)
 
         auth = Firebase.auth
+        database = Firebase.database
     }
 
     override fun onCreateView(
@@ -188,6 +193,20 @@ class ProfileFragment : Fragment() {
             }
             textViewNicknameDisplay.text = nickname
             textViewFullNameDisplay.text = fullName
+
+            sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, false).apply()
+
+            auth.currentUser?.let {
+                val map = mapOf(
+                    School.NICKNAME to nickname,
+                    School.FULL_NAME to fullName,
+                    School.PROFILE_LAST_UPDATE_TIME to ServerValue.TIMESTAMP
+                )
+                database.reference.child(School.USERS).child(it.uid).updateChildren(map)
+                    .addOnSuccessListener {
+                        sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, true)
+                    }
+            }
         }
         isEditMode = editMode
     }
