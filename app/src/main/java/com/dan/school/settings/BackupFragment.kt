@@ -380,7 +380,7 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                     } else {
                         Toast.makeText(
                             requireContext(),
-                            "The code you entered did not match the given code. Please try again.",
+                            "The code you entered did not match the given code. Restore cancelled.",
                             Toast.LENGTH_LONG
                         ).show()
                         done(CANCEL)
