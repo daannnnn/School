@@ -147,4 +147,5 @@
     <string name="failed_to_delete_backup">Failed to delete backup. Please try again.</string>
     <string name="password_reset_email_sent">Password reset email sent.</string>
     <string name="an_error_occurred">An error occurred. Please try again.</string>
+    <string name="enter_code_here">Enter code here</string>
 </resources>

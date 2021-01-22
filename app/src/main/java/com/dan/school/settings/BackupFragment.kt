@@ -9,6 +9,8 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.LinearLayout
+import android.widget.TextView
 import android.widget.Toast
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
@@ -19,6 +21,7 @@ import com.dan.school.*
 import com.dan.school.adapters.BackupListAdapter
 import com.dan.school.authentication.AuthenticationActivity
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
+import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
@@ -345,6 +348,56 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             .show()
     }
 
+    private fun askForConfirmation(confirm: () -> Unit) {
+        showConfirmationDialog { result ->
+            when (result) {
+                CONFIRM -> {
+                    confirm()
+                }
+                CANCEL -> {
+                    hideProgressBar()
+                    restoringDatabase = false
+                }
+            }
+        }
+    }
+
+    private fun showConfirmationDialog(done: (result: Int) -> Unit) {
+        val view = LayoutInflater.from(requireContext())
+            .inflate(R.layout.layout_confirm_dialog, LinearLayout(requireContext()), false)
+        val code = ((Math.random() * 9000) + 1000).toInt()
+        view.findViewById<TextView>(R.id.textViewCode).text = code.toString()
+        val editTextCode = view.findViewById<TextInputLayout>(R.id.editTextCode).editText
+        MaterialAlertDialogBuilder(requireContext()).setMessage("Please enter the code shown below to confirm restore.")
+            .setTitle("Confirm restore")
+            .setView(view)
+            .setPositiveButton(
+                getString(R.string.done)
+            ) { _, _ ->
+                if (editTextCode != null) {
+                    if (editTextCode.text.toString() == code.toString()) {
+                        done(CONFIRM)
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            "The code you entered did not match the given code. Please try again.",
+                            Toast.LENGTH_LONG
+                        ).show()
+                        done(CANCEL)
+                    }
+                } else {
+                    done(CANCEL)
+                }
+            }
+            .setNeutralButton(
+                getString(R.string.cancel)
+            ) { _, _ ->
+                done(CANCEL)
+            }
+            .create()
+            .show()
+    }
+
     @Suppress("DEPRECATION")
     fun isNetworkAvailable(context: Context?): Boolean {
         if (context == null) return false
@@ -391,12 +444,16 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                     .setPositiveButton(
                         R.string.yes
                     ) { _, _ ->
-                        restore(storageReference, true)
+                        askForConfirmation {
+                            restore(storageReference, true)
+                        }
                     }
                     .setNegativeButton(
                         getString(R.string.no)
                     ) { _, _ ->
-                        restore(storageReference, false)
+                        askForConfirmation {
+                            restore(storageReference, false)
+                        }
                     }
                     .setOnCancelListener {
                         hideProgressBar()
@@ -448,6 +505,9 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         @JvmStatic
         fun newInstance() =
             BackupFragment()
+
+        const val CONFIRM = 0
+        const val CANCEL = 1
 
         const val TAG = "BackupFragment"
     }
