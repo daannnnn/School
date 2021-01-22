@@ -71,8 +71,8 @@ class BackupFragment : Fragment(), BackupItemClickListener,
     override fun onStart() {
         super.onStart()
 
-        showProgressBar()
-        check {}
+        swipeRefreshLayout.isRefreshing = true
+        check()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -139,30 +139,26 @@ class BackupFragment : Fragment(), BackupItemClickListener,
     }
 
     private fun swipeRefreshUpdate() {
-        check {
-            swipeRefreshLayout.isRefreshing = false
-        }
+        check()
     }
 
-    private fun check(done: () -> Unit) {
+    private fun check() {
         if (isNetworkAvailable(requireContext())) {
             if (auth.currentUser != null) {
                 updateBackupList {
-                    done()
+                    swipeRefreshLayout.isRefreshing = false
                 }
             } else {
                 groupBackupLayout.visibility = View.GONE
                 groupInternetRequired.visibility = View.GONE
                 groupAccountRequired.visibility = View.VISIBLE
-                hideProgressBar()
-                done()
+                swipeRefreshLayout.isRefreshing = false
             }
         } else {
             groupBackupLayout.visibility = View.GONE
             groupInternetRequired.visibility = View.VISIBLE
             groupAccountRequired.visibility = View.GONE
-            hideProgressBar()
-            done()
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 
