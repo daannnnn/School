@@ -96,7 +96,7 @@ class ResetPasswordFragment : Fragment() {
                         } else {
                             Toast.makeText(
                                 requireContext(),
-                                "An error occurred. Please try again.",
+                                getString(R.string.an_error_occurred),
                                 Toast.LENGTH_SHORT
                             ).show()
                         }

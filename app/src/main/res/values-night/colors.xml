@@ -31,6 +31,7 @@
     <color name="strokeColor">#1F000000</color>
 
     <color name="red">#ef5350</color>
+    <color name="redRipple">#1FEF5350</color>
 
     <color name="tabLayoutColor">#272727</color>
     <color name="appBarLayoutColor">#272727</color>

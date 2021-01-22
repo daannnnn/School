@@ -145,4 +145,6 @@
     <string name="are_you_sure_you_want_to_delete_this_backup">Are you sure you want to delete this backup</string>
     <string name="delete_backup">Delete backup?</string>
     <string name="failed_to_delete_backup">Failed to delete backup. Please try again.</string>
+    <string name="password_reset_email_sent">Password reset email sent.</string>
+    <string name="an_error_occurred">An error occurred. Please try again.</string>
 </resources>

@@ -4,7 +4,6 @@ import android.animation.LayoutTransition
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -15,6 +14,7 @@ import androidx.core.content.edit
 import androidx.core.view.isGone
 import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
+import com.dan.school.ProgressBarDialog
 import com.dan.school.R
 import com.dan.school.School
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -27,9 +27,6 @@ import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlin.math.ceil
 
-
-const val TAG = "ProfileFragment"
-
 class ProfileFragment : Fragment() {
 
     private var isSendingVerificationEmail = false
@@ -39,6 +36,8 @@ class ProfileFragment : Fragment() {
     private lateinit var inputMethodManager: InputMethodManager
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
+
+    private lateinit var progressBarDialog: ProgressBarDialog
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
@@ -51,6 +50,8 @@ class ProfileFragment : Fragment() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+
+        progressBarDialog = ProgressBarDialog(requireContext())
 
         val callback: OnBackPressedCallback =
             object : OnBackPressedCallback(true) {
@@ -118,20 +119,90 @@ class ProfileFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
+        buttonResetPassword.setOnClickListener {
+
+            val lastPasswordResetTime = sharedPref.getLong(
+                School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT,
+                0
+            )
+            val time = (System.currentTimeMillis() - lastPasswordResetTime).toFloat() / 1000
+
+            if (time >= 30) {
+                MaterialAlertDialogBuilder(requireContext()).setMessage("Send a password reset email to ${auth.currentUser?.email}.")
+                    .setTitle("Reset password?")
+                    .setPositiveButton(
+                        getString(R.string.yes)
+                    ) { _, _ ->
+                        showProgressBar()
+                        auth.currentUser?.email?.let { email ->
+                            auth.sendPasswordResetEmail(email).addOnCompleteListener {
+                                if (it.isSuccessful) {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.password_reset_email_sent),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+
+                                    with(sharedPref.edit()) {
+                                        putLong(
+                                            School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT,
+                                            System.currentTimeMillis()
+                                        )
+                                        apply()
+                                    }
+                                } else {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.an_error_occurred),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
+                                hideProgressBar()
+                            }
+                        }
+                    }
+                    .setNegativeButton(
+                        getString(R.string.no)
+                    ) { _, _ -> }
+                    .create()
+                    .show()
+            } else {
+                val timeToWait = ceil(30 - time).toInt()
+                Toast.makeText(
+                    requireContext(),
+                    "Please try again in $timeToWait ${if (timeToWait == 1) "second" else "seconds"}.",
+                    Toast.LENGTH_SHORT
+                ).show()
+            }
+        }
+
         swipeRefreshLayout.setOnRefreshListener {
             update()
         }
     }
 
+    private fun showProgressBar() {
+        progressBarDialog.show()
+    }
+
+    private fun hideProgressBar() {
+        progressBarDialog.dismiss()
+    }
+
     /**
-     * Updates the visibility of [groupEmail] and [cardViewVerifyEmail]
-     * depending if a user is signed-in and if the email is verified.
+     * Updates the visibility of [groupEmail], [viewDivider],
+     * [buttonResetPassword] and [cardViewVerifyEmail] depending if a
+     * user is signed-in and if the email is verified.
      * Sets the text of [textViewEmailDisplay] to the current user's
      * email.
      */
     private fun update() {
         val user = auth.currentUser
         if (user != null) {
+
+            groupEmail.visibility = View.VISIBLE
+            viewDivider.visibility = View.VISIBLE
+            buttonResetPassword.visibility = View.VISIBLE
 
             textViewEmailDisplay.text = user.email
             cardViewVerifyEmail.isGone = user.isEmailVerified
@@ -147,6 +218,8 @@ class ProfileFragment : Fragment() {
             }
         } else {
             groupEmail.visibility = View.GONE
+            viewDivider.visibility = View.GONE
+            buttonResetPassword.visibility = View.GONE
             cardViewVerifyEmail.isGone = true
             swipeRefreshLayout.isRefreshing = false
         }
