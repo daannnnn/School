@@ -368,8 +368,8 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         val code = ((Math.random() * 9000) + 1000).toInt()
         view.findViewById<TextView>(R.id.textViewCode).text = code.toString()
         val editTextCode = view.findViewById<TextInputLayout>(R.id.editTextCode).editText
-        MaterialAlertDialogBuilder(requireContext()).setMessage("Please enter the code shown below to confirm restore.")
-            .setTitle("Confirm restore")
+        MaterialAlertDialogBuilder(requireContext()).setMessage(getString(R.string.enter_code_to_confirm_restore))
+            .setTitle(getString(R.string.confirm_restore))
             .setView(view)
             .setPositiveButton(
                 getString(R.string.done)
@@ -380,7 +380,7 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                     } else {
                         Toast.makeText(
                             requireContext(),
-                            "The code you entered did not match the given code. Restore cancelled.",
+                            getString(R.string.code_not_match_restore_cancelled),
                             Toast.LENGTH_LONG
                         ).show()
                         done(CANCEL)
@@ -508,7 +508,5 @@ class BackupFragment : Fragment(), BackupItemClickListener,
 
         const val CONFIRM = 0
         const val CANCEL = 1
-
-        const val TAG = "BackupFragment"
     }
 }

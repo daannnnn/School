@@ -127,7 +127,7 @@ class AddBottomSheetDialogFragment(
         chipPickDate.setOnClickListener {
             val datePicker: DialogFragment =
                 DatePickerFragment(this, this)
-            datePicker.show(childFragmentManager, "date picker")
+            datePicker.show(childFragmentManager, null)
         }
         buttonCheck.setOnClickListener {
             val item = Item(

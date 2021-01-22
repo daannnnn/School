@@ -76,6 +76,8 @@
     <string name="about">About</string>
     <string name="licenses">Licenses</string>
 
+    <string name="com_github_antonyt__InfiniteViewPager_library">com_github_antonyt__InfiniteViewPager</string>
+    <string name="com_github_kizitonwose__CalendarView_library">com_github_kizitonwose__CalendarView</string>
     <string name="com_github_antonyt__InfiniteViewPager_description">Augment Android\'s ViewPager with wrap-around functionality.</string>
     <string name="com_github_antonyt__InfiniteViewPager_libraryWebsite">https://github.com/antonyt/InfiniteViewPager</string>
     <string name="com_github_kizitonwose__CalendarView_description">A highly customizable calendar library for Android, powered by RecyclerView.</string>
@@ -148,4 +150,30 @@
     <string name="password_reset_email_sent">Password reset email sent.</string>
     <string name="an_error_occurred">An error occurred. Please try again.</string>
     <string name="enter_code_here">Enter code here</string>
+    <string name="version">Version</string>
+    <string name="good_morning">Good Morning</string>
+    <string name="good_afternoon">Good Afternoon</string>
+    <string name="good_evening">Good Evening</string>
+    <string name="sign_in_failed">Sign in failed. Please try again.</string>
+    <string name="user_already_exists">User already exists.</string>
+    <string name="password_is_too_weak">Password is too weak.</string>
+    <string name="invalid_email">Invalid email.</string>
+    <string name="sign_up_failed">Sign up failed. Please try again.</string>
+    <string name="failed_to_send_verification_email">Failed to send verification email. Please try again later.</string>
+    <string name="invalid_email_or_password">Invalid email or password.</string>
+    <string name="enter_code_to_confirm_restore">Please enter the code shown below to confirm restore.</string>
+    <string name="confirm_restore">Confirm restore</string>
+    <string name="code_not_match_restore_cancelled">The code you entered did not match the given code. Restore cancelled.</string>
+    <string name="do_you_want_to_save_your_changes">Do you want to save your changes?</string>
+    <string name="send_password_reset_email_to">Send a password reset email to</string>
+    <string name="please_try_again_in">Please try again in</string>
+    <string name="second">second</string>
+    <string name="seconds">seconds</string>
+    <string name="failed_to_update">Failed to update.</string>
+    <string name="verification_email_sent">Verification email sent.</string>
+    <string name="light">Light</string>
+    <string name="dark">Dark</string>
+    <string name="system_default">System Default</string>
+    <string name="not_set">Not set</string>
+    <string name="your_email">your email</string>
 </resources>

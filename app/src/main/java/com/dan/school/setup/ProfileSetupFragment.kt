@@ -40,12 +40,12 @@ class ProfileSetupFragment : Fragment() {
             val isNicknameEmpty = textFieldNickname.editText?.text.toString().trim().isEmpty()
             val isFullNameEmpty = textFieldFullName.editText?.text.toString().trim().isEmpty()
             if (isNicknameEmpty) {
-                textFieldNickname.error = "This field is required."
+                textFieldNickname.error = getString(R.string.this_field_is_required)
             } else {
                 textFieldNickname.error = null
             }
             if (isFullNameEmpty) {
-                textFieldFullName.error = "This field is required."
+                textFieldFullName.error = getString(R.string.this_field_is_required)
             } else {
                 textFieldFullName.error = null
             }

@@ -25,6 +25,12 @@ object School {
     const val BACKUP = 16
     const val ABOUT = 17
 
+    const val HOMEWORK_TITLE = "Homework"
+    const val EXAM_TITLE = "Exam"
+    const val TASK_TITLE = "Task"
+
+    const val TABLE_NAME = "items"
+
     const val dateFormat = "EEE, MMM d, yyyy"
     const val dateFormatOnDatabase = "yyyyMMdd"
     const val dateTimeFormat = "EEE, MMM d, yyyy hh:mm aaa"
@@ -68,6 +74,8 @@ object School {
     const val UPDATES = "updates"
 
     const val CHANNEL_UPDATES_NAME = "Updates"
+
+    const val SELECTED_DATE = "selectedDate"
 
     val categoryColors =
         arrayOf(

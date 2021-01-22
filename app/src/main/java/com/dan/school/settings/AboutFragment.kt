@@ -22,7 +22,7 @@ class AboutFragment : Fragment() {
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val version = "Version ${BuildConfig.VERSION_NAME}"
+        val version = "${getString(R.string.version)} ${BuildConfig.VERSION_NAME}"
         textViewVersion.text = version
 
         relativeLayoutLicenses.setOnClickListener {
@@ -32,22 +32,22 @@ class AboutFragment : Fragment() {
                 .withLicenseShown(true)
                 .withAboutIconShown(false)
                 .withLibraryModification(
-                    "com_github_antonyt__InfiniteViewPager",
+                    getString(R.string.com_github_antonyt__InfiniteViewPager_library),
                     Libs.LibraryFields.LIBRARY_DESCRIPTION,
                     getString(R.string.com_github_antonyt__InfiniteViewPager_description)
                 )
                 .withLibraryModification(
-                    "com_github_antonyt__InfiniteViewPager",
+                    getString(R.string.com_github_antonyt__InfiniteViewPager_library),
                     Libs.LibraryFields.LIBRARY_WEBSITE,
                     getString(R.string.com_github_antonyt__InfiniteViewPager_libraryWebsite)
                 )
                 .withLibraryModification(
-                    "com_github_kizitonwose__CalendarView",
+                    getString(R.string.com_github_kizitonwose__CalendarView_library),
                     Libs.LibraryFields.LIBRARY_DESCRIPTION,
                     getString(R.string.com_github_kizitonwose__CalendarView_description)
                 )
                 .withLibraryModification(
-                    "com_github_kizitonwose__CalendarView",
+                    getString(R.string.com_github_kizitonwose__CalendarView_library),
                     Libs.LibraryFields.LIBRARY_WEBSITE,
                     getString(R.string.com_github_kizitonwose__CalendarView_libraryWebsite)
                 )

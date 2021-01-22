@@ -2,8 +2,9 @@ package com.dan.school.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
+import com.dan.school.School
 
-@Entity(tableName = "items")
+@Entity(tableName = School.TABLE_NAME)
 data class Item(
     @PrimaryKey(autoGenerate = true) val id: Int = 0,
     val category: Int,

@@ -209,7 +209,7 @@ class AgendaFragment : Fragment(),
             })
 
         buttonSeeTomorrow.setOnClickListener {
-            AgendaTomorrowFragment().show(childFragmentManager, "agendaTomorrowFragment")
+            AgendaTomorrowFragment().show(childFragmentManager, null)
         }
 
         textViewDate.text =
@@ -247,13 +247,13 @@ class AgendaFragment : Fragment(),
     private fun updateGreeting(nickname: String?) {
         textViewGreeting.text = when (hourOfDay) {
             in 5..11 -> {
-                "Good Morning, $nickname!"
+                "${getString(R.string.good_morning)}, $nickname!"
             }
             in 12..16 -> {
-                "Good Afternoon, $nickname!"
+                "${getString(R.string.good_afternoon)}, $nickname!"
             }
             else -> {
-                "Good Evening, $nickname!"
+                "${getString(R.string.good_evening)}, $nickname!"
             }
         }
     }
@@ -307,7 +307,7 @@ class AgendaFragment : Fragment(),
             categoryCheckedIcons[category]
         ).show(
             childFragmentManager,
-            "subtasksBottomSheet"
+            null
         )
     }
 
@@ -319,7 +319,7 @@ class AgendaFragment : Fragment(),
 
     override fun itemLongClicked(title: String, id: Int) {
         ConfirmDeleteDialogFragment(this, id, title)
-            .show(childFragmentManager, "confirmDeleteDialog")
+            .show(childFragmentManager, null)
     }
 
     override fun confirmDelete(itemId: Int) {

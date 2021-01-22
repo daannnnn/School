@@ -41,6 +41,17 @@ import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
 
+private const val CATEGORY = "category"
+private const val DONE = "done"
+private const val DONE_TIME = "doneTime"
+private const val TITLE = "title"
+private const val SUBTASKS = "subtasks"
+private const val NOTES = "notes"
+private const val CHIP_GROUP_SELECTED = "chipGroupSelected"
+private const val SELECTED_DATE = "selectedDate"
+private const val IS_EDIT = "isEdit"
+private const val ITEM_ID = "itemId"
+
 class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     DatePickerDialog.OnDateSetListener,
     DatePickerFragment.OnCancelListener, ConfirmDeleteDialogFragment.ConfirmDeleteListener {
@@ -90,20 +101,20 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             R.style.FullScreenDialog
         )
 
-        category = requireArguments().getInt("category", School.HOMEWORK)
-        done = requireArguments().getBoolean("done", false)
+        category = requireArguments().getInt(CATEGORY, School.HOMEWORK)
+        done = requireArguments().getBoolean(DONE, false)
         doneTime = if (requireArguments().getLong(
-                "doneTime",
+                DONE_TIME,
                 -1
             ) == -1L
-        ) null else requireArguments().getLong("doneTime")
-        title = requireArguments().getString("title", "")
+        ) null else requireArguments().getLong(DONE_TIME)
+        title = requireArguments().getString(TITLE, "")
         subtasks =
-            requireArguments().getParcelableArrayList<Subtask>("subtasks") as ArrayList<Subtask>
-        notes = requireArguments().getString("notes", "")
-        chipGroupSelected = requireArguments().getInt("chipGroupSelected", School.TODAY)
+            requireArguments().getParcelableArrayList<Subtask>(SUBTASKS) as ArrayList<Subtask>
+        notes = requireArguments().getString(NOTES, "")
+        chipGroupSelected = requireArguments().getInt(CHIP_GROUP_SELECTED, School.TODAY)
 
-        val selectedDateString = requireArguments().getString("selectedDate", "")
+        val selectedDateString = requireArguments().getString(SELECTED_DATE, "")
         if (selectedDateString == "") {
             selectedDate = null
         } else {
@@ -114,8 +125,8 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                 )!!
         }
 
-        isEdit = requireArguments().getBoolean("isEdit", false)
-        itemId = requireArguments().getInt("itemId", 0)
+        isEdit = requireArguments().getBoolean(IS_EDIT, false)
+        itemId = requireArguments().getInt(ITEM_ID, 0)
     }
 
     override fun onCreateView(
@@ -182,7 +193,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         chipPickDate.setOnClickListener {
             val datePicker: DialogFragment =
                 DatePickerFragment(this, this)
-            datePicker.show(childFragmentManager, "date picker")
+            datePicker.show(childFragmentManager, null)
         }
         buttonCheck.setOnClickListener {
             saveData()
@@ -197,7 +208,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                         this,
                         it1,
                         title
-                    ).show(childFragmentManager, "confirmDeleteDialog")
+                    ).show(childFragmentManager, null)
                 }
             }
         }
@@ -483,21 +494,21 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             itemId: Int? = null
         ) = EditFragment().apply {
             arguments = bundleOf(
-                "category" to category,
-                "done" to done,
-                "doneTime" to doneTime,
-                "title" to title,
-                "subtasks" to subtasks,
-                "notes" to notes,
-                "chipGroupSelected" to chipGroupSelected,
-                "selectedDate" to if (selectedDate == null) "" else SimpleDateFormat(
+                CATEGORY to category,
+                DONE to done,
+                DONE_TIME to doneTime,
+                TITLE to title,
+                SUBTASKS to subtasks,
+                NOTES to notes,
+                CHIP_GROUP_SELECTED to chipGroupSelected,
+                SELECTED_DATE to if (selectedDate == null) "" else SimpleDateFormat(
                     School.dateFormatOnDatabase,
                     Locale.getDefault()
                 ).format(
                     selectedDate.time
                 ),
-                "isEdit" to isEdit,
-                "itemId" to itemId
+                IS_EDIT to isEdit,
+                ITEM_ID to itemId
             )
         }
     }

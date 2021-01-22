@@ -10,11 +10,12 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.viewpager.widget.PagerAdapter
 import com.dan.school.R
+import com.dan.school.School
 
 class CategoryViewPagerAdapter(val context: Context) :
     PagerAdapter() {
 
-    private val titles = arrayOf("Homework", "Exam", "Task")
+    private val titles = arrayOf(School.HOMEWORK_TITLE, School.EXAM_TITLE, School.TASK_TITLE)
     private val colors = arrayOf(
         R.color.homeworkColor,
         R.color.examColor,
@@ -34,7 +35,8 @@ class CategoryViewPagerAdapter(val context: Context) :
         v.text = titles[position]
         v.setTextSize(TypedValue.COMPLEX_UNIT_SP, 20F)
         v.setTextColor(ContextCompat.getColor(context, colors[position]))
-        v.typeface = ResourcesCompat.getFont(context,
+        v.typeface = ResourcesCompat.getFont(
+            context,
             R.font.cabin_bold
         )
         v.gravity = Gravity.CENTER

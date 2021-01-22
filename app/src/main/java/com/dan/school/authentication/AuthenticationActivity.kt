@@ -83,7 +83,7 @@ class AuthenticationActivity : AppCompatActivity(),
                 )
             } catch (e: ApiException) {
                 hideProgressBar()
-                Toast.makeText(this, "Sign in failed. Please try again.", Toast.LENGTH_SHORT)
+                Toast.makeText(this, getString(R.string.sign_in_failed), Toast.LENGTH_SHORT)
                     .show()
             }
         }
@@ -94,7 +94,7 @@ class AuthenticationActivity : AppCompatActivity(),
             supportFragmentManager.popBackStackImmediate()
         } else {
             val myFragment: WelcomeFragment? =
-                supportFragmentManager.findFragmentByTag("welcomeFragment") as WelcomeFragment?
+                supportFragmentManager.findFragmentByTag(WELCOME_FRAGMENT) as WelcomeFragment?
             if (myFragment != null && myFragment.isVisible) {
                 done(AUTHENTICATION_SUCCESS)
             } else {
@@ -110,7 +110,7 @@ class AuthenticationActivity : AppCompatActivity(),
                 if (task.isSuccessful) {
                     done(AUTHENTICATION_WITH_GOOGLE_SUCCESS, nickname, fullName)
                 } else {
-                    Toast.makeText(this, "Sign in failed. Please try again.", Toast.LENGTH_SHORT)
+                    Toast.makeText(this, getString(R.string.sign_in_failed), Toast.LENGTH_SHORT)
                         .show()
                 }
                 hideProgressBar()
@@ -170,22 +170,22 @@ class AuthenticationActivity : AppCompatActivity(),
                         throw createUserTask.exception!!
                     } catch (e: FirebaseAuthUserCollisionException) {
                         Toast.makeText(
-                            this, "User already exists.",
+                            this, getString(R.string.user_already_exists),
                             Toast.LENGTH_SHORT
                         ).show()
                     } catch (e: FirebaseAuthWeakPasswordException) {
                         Toast.makeText(
-                            this, "Password is too weak.",
+                            this, getString(R.string.password_is_too_weak),
                             Toast.LENGTH_SHORT
                         ).show()
                     } catch (e: FirebaseAuthInvalidCredentialsException) {
                         Toast.makeText(
-                            this, "Invalid email.",
+                            this, getString(R.string.invalid_email),
                             Toast.LENGTH_SHORT
                         ).show()
                     } catch (e: Exception) {
                         Toast.makeText(
-                            this, "Sign up failed. Please try again.",
+                            this, getString(R.string.sign_up_failed),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -219,7 +219,7 @@ class AuthenticationActivity : AppCompatActivity(),
                 if (!it.isSuccessful) {
                     Toast.makeText(
                         this,
-                        "Failed to send verification email. Please try again later.",
+                        getString(R.string.failed_to_send_verification_email),
                         Toast.LENGTH_SHORT
                     ).show()
                 }
@@ -237,7 +237,7 @@ class AuthenticationActivity : AppCompatActivity(),
                     .replace(
                         R.id.frameLayoutAuthentication,
                         WelcomeFragment.newInstance(it.isSuccessful, email),
-                        "welcomeFragment"
+                        WELCOME_FRAGMENT
                     ).commit()
             }
     }
@@ -253,12 +253,12 @@ class AuthenticationActivity : AppCompatActivity(),
                         throw task.exception!!
                     } catch (e: FirebaseAuthInvalidCredentialsException) {
                         Toast.makeText(
-                            this, "Invalid email or password.",
+                            this, getString(R.string.invalid_email_or_password),
                             Toast.LENGTH_SHORT
                         ).show()
                     } catch (e: Exception) {
                         Toast.makeText(
-                            this, "Sign in failed. Please try again.",
+                            this, getString(R.string.sign_in_failed),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -341,7 +341,7 @@ class AuthenticationActivity : AppCompatActivity(),
 
         const val RESULT = "result"
 
-        const val TAG = "AuthenticationActivity"
+        const val WELCOME_FRAGMENT = "welcomeFragment"
     }
 
 }

@@ -44,16 +44,15 @@ class SettingsActivity : AppCompatActivity(), SettingsFragment.SettingsItemOnCli
                     )
                     .replace(
                         R.id.frameLayoutSettings,
-                        ProfileFragment(),
-                        "profileFragment"
+                        ProfileFragment()
                     ).addToBackStack(null)
                     .commit()
             }
             School.THEME -> {
                 val items = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                    arrayOf("Light", "Dark", "System Default")
+                    arrayOf(getString(R.string.light), getString(R.string.dark), getString(R.string.system_default))
                 } else {
-                    arrayOf("Light", "Dark")
+                    arrayOf(getString(R.string.light), getString(R.string.dark))
                 }
 
                 var checkedItem = when (sharedPref.getInt(School.SELECTED_THEME, -1)) {

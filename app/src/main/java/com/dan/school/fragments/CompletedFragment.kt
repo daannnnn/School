@@ -24,6 +24,8 @@ import com.google.android.gms.ads.AdListener
 import com.google.android.gms.ads.AdRequest
 import kotlinx.android.synthetic.main.fragment_completed.*
 
+const val ROTATION = "rotation"
+
 class CompletedFragment : Fragment() {
 
     private var isOptionsExpanded = false
@@ -105,13 +107,13 @@ class CompletedFragment : Fragment() {
         }
         buttonOptions.setOnClickListener {
             isOptionsExpanded = if (isOptionsExpanded) {
-                ObjectAnimator.ofFloat(imageViewOptions, "rotation", 0f)
+                ObjectAnimator.ofFloat(imageViewOptions, ROTATION, 0f)
                     .setDuration(250)
                     .start()
                 linearLayoutOptions.visibility = View.GONE
                 false
             } else {
-                ObjectAnimator.ofFloat(imageViewOptions, "rotation", 180f)
+                ObjectAnimator.ofFloat(imageViewOptions, ROTATION, 180f)
                     .setDuration(250)
                     .start()
                 linearLayoutOptions.visibility = View.VISIBLE

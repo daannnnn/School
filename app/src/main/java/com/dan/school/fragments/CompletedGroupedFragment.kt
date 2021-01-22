@@ -127,7 +127,7 @@ class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
             categoryCheckedIcons[category]
         ).show(
             childFragmentManager,
-            "subtasksBottomSheet"
+            null
         )
     }
 
@@ -154,7 +154,7 @@ class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
 
     override fun itemLongClicked(title: String, id: Int) {
         ConfirmDeleteDialogFragment(this, id, title)
-            .show(childFragmentManager, "confirmDeleteDialog")
+            .show(childFragmentManager, null)
     }
 
     override fun confirmDelete(itemId: Int) {
@@ -183,7 +183,7 @@ class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
             isEdit = true,
             itemId = itemId
         )
-        editFragment.show(childFragmentManager, "editFragment")
+        editFragment.show(childFragmentManager, null)
     }
 
 }

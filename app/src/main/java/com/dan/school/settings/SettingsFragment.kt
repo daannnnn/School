@@ -102,16 +102,16 @@ class SettingsFragment : Fragment() {
     private fun getThemeStringWithIntValue(theme: Int): String {
         return when (theme) {
             School.LIGHT_MODE -> {
-                "Light"
+                getString(R.string.light)
             }
             School.DARK_MODE -> {
-                "Dark"
+                getString(R.string.dark)
             }
             School.SYSTEM_DEFAULT -> {
-                "System Default"
+                getString(R.string.system_default)
             }
             else -> {
-                "Not set"
+                getString(R.string.not_set)
             }
         }
     }

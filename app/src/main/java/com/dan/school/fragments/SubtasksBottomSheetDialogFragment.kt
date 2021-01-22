@@ -18,6 +18,8 @@ import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.gson.Gson
 import kotlinx.android.synthetic.main.layout_subtasks_bottom_sheet.*
 
+private const val ELEVATION = "elevation"
+
 class SubtasksBottomSheetDialogFragment(
     private val subtasks: ArrayList<Subtask>,
     private val itemTitle: String,
@@ -69,7 +71,7 @@ class SubtasksBottomSheetDialogFragment(
             })
         }
         val stateListAnimator = StateListAnimator()
-        stateListAnimator.addState(IntArray(0), ObjectAnimator.ofFloat(view, "elevation", 0f))
+        stateListAnimator.addState(IntArray(0), ObjectAnimator.ofFloat(view, ELEVATION, 0f))
         appBar.stateListAnimator = stateListAnimator
     }
 

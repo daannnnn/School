@@ -104,7 +104,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
-            selectedDate = Date(savedInstanceState.getLong("selectedDate")).toInstant()
+            selectedDate = Date(savedInstanceState.getLong(School.SELECTED_DATE)).toInstant()
                 .atZone(ZoneId.systemDefault()).toLocalDate()
         }
     }
@@ -427,7 +427,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
 
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putLong(
-            "selectedDate",
+            School.SELECTED_DATE,
             Date.from(
                 (if (selectedDate != null) selectedDate else LocalDate.now())!!.atStartOfDay(
                     ZoneId.systemDefault()
@@ -691,7 +691,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
             categoryCheckedIcons[category]
         ).show(
             childFragmentManager,
-            "subtasksBottomSheet"
+            null
         )
     }
 
@@ -703,7 +703,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
 
     override fun itemLongClicked(title: String, id: Int) {
         ConfirmDeleteDialogFragment(this, id, title)
-            .show(childFragmentManager, "confirmDeleteDialog")
+            .show(childFragmentManager, null)
     }
 
     override fun confirmDelete(itemId: Int) {

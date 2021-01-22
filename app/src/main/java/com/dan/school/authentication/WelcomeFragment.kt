@@ -17,10 +17,11 @@ class WelcomeFragment : Fragment() {
     private lateinit var welcomeDoneButtonClickListener: WelcomeDoneButtonClickListener
 
     private var emailVerificationSent: Boolean = false
-    private var email: String = "your email"
+    private lateinit var email: String
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
+        email = getString(R.string.your_email)
         arguments?.let {
             emailVerificationSent = it.getBoolean(EMAIL_VERIFICATION_SENT)
             val s = it.getString(EMAIL)

@@ -109,7 +109,11 @@ class ResetPasswordFragment : Fragment() {
             val timeToWait = ceil(30 - time).toInt()
             Toast.makeText(
                 requireContext(),
-                "Please try again in $timeToWait ${if (timeToWait == 1) "second" else "seconds"}.",
+                "${getString(R.string.please_try_again_in)} $timeToWait ${
+                    if (timeToWait == 1) getString(
+                        R.string.second
+                    ) else getString(R.string.seconds)
+                }.",
                 Toast.LENGTH_SHORT
             ).show()
         }

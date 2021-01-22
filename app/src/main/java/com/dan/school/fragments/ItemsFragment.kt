@@ -25,6 +25,8 @@ import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import kotlinx.android.synthetic.main.fragment_items.*
 
+private const val CATEGORY = "category"
+
 class ItemsFragment : Fragment(),
     BaseItemListAdapter.DoneListener,
     BaseItemListAdapter.ShowSubtasksListener, ItemClickListener, BaseItemListAdapter.ItemLongClickListener,
@@ -57,7 +59,7 @@ class ItemsFragment : Fragment(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        category = requireArguments().getInt("category", 0)
+        category = requireArguments().getInt(CATEGORY, 0)
     }
 
     override fun onCreateView(
@@ -129,7 +131,7 @@ class ItemsFragment : Fragment(),
             categoryCheckedIcons[category]
         ).show(
             childFragmentManager,
-            "subtasksBottomSheet"
+            null
         )
     }
 
@@ -141,7 +143,7 @@ class ItemsFragment : Fragment(),
 
     override fun itemLongClicked(title: String, id: Int) {
         ConfirmDeleteDialogFragment(this, id, title)
-            .show(childFragmentManager, "confirmDeleteDialog")
+            .show(childFragmentManager, null)
     }
 
     override fun confirmDelete(itemId: Int) {
@@ -164,7 +166,7 @@ class ItemsFragment : Fragment(),
 
     companion object {
         fun newInstance(category: Int) = ItemsFragment().apply {
-            arguments = bundleOf("category" to category)
+            arguments = bundleOf(CATEGORY to category)
         }
     }
 }

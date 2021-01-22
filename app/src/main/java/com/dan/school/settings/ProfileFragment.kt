@@ -58,7 +58,7 @@ class ProfileFragment : Fragment() {
                 override fun handleOnBackPressed() {
                     if (isEditMode) {
                         MaterialAlertDialogBuilder(requireContext()).setMessage(null)
-                            .setTitle("Do you want to save your changes?")
+                            .setTitle(getString(R.string.do_you_want_to_save_your_changes))
                             .setPositiveButton(getString(R.string.save)) { _, _ ->
                                 setEditMode(false)
                                 // save to realtime database save updated time
@@ -128,8 +128,8 @@ class ProfileFragment : Fragment() {
             val time = (System.currentTimeMillis() - lastPasswordResetTime).toFloat() / 1000
 
             if (time >= 30) {
-                MaterialAlertDialogBuilder(requireContext()).setMessage("Send a password reset email to ${auth.currentUser?.email}.")
-                    .setTitle("Reset password?")
+                MaterialAlertDialogBuilder(requireContext()).setMessage("${getString(R.string.send_password_reset_email_to)} ${auth.currentUser?.email}.")
+                    .setTitle("${getString(R.string.reset_password)}?")
                     .setPositiveButton(
                         getString(R.string.yes)
                     ) { _, _ ->
@@ -170,7 +170,11 @@ class ProfileFragment : Fragment() {
                 val timeToWait = ceil(30 - time).toInt()
                 Toast.makeText(
                     requireContext(),
-                    "Please try again in $timeToWait ${if (timeToWait == 1) "second" else "seconds"}.",
+                    "${getString(R.string.please_try_again_in)} $timeToWait ${
+                        if (timeToWait == 1) getString(
+                            R.string.second
+                        ) else getString(R.string.seconds)
+                    }.",
                     Toast.LENGTH_SHORT
                 ).show()
             }
@@ -212,7 +216,7 @@ class ProfileFragment : Fragment() {
                     textViewEmailDisplay.text = user.email
                     cardViewVerifyEmail.isGone = user.isEmailVerified
                 } else {
-                    Toast.makeText(requireContext(), "Failed to update.", Toast.LENGTH_SHORT).show()
+                    Toast.makeText(requireContext(), getString(R.string.failed_to_update), Toast.LENGTH_SHORT).show()
                 }
                 swipeRefreshLayout.isRefreshing = false
             }
@@ -250,13 +254,13 @@ class ProfileFragment : Fragment() {
                         }
                         Toast.makeText(
                             requireContext(),
-                            "Verification email sent.",
+                            getString(R.string.verification_email_sent),
                             Toast.LENGTH_SHORT
                         ).show()
                     } else {
                         Toast.makeText(
                             requireContext(),
-                            "Failed to send verification email. Please try again.",
+                            getString(R.string.failed_to_send_verification_email),
                             Toast.LENGTH_SHORT
                         ).show()
                     }
@@ -267,7 +271,11 @@ class ProfileFragment : Fragment() {
             val timeToWait = ceil(30 - time).toInt()
             Toast.makeText(
                 requireContext(),
-                "Please try again in $timeToWait ${if (timeToWait == 1) "second" else "seconds"}.",
+                "${getString(R.string.please_try_again_in)} $timeToWait ${
+                    if (timeToWait == 1) getString(
+                        R.string.second
+                    ) else getString(R.string.seconds)
+                }.",
                 Toast.LENGTH_SHORT
             ).show()
         }

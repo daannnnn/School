@@ -184,7 +184,7 @@ class OverviewFragment : Fragment(),
         )
         addBottomSheetDialogFragment?.show(
             childFragmentManager,
-            "BottomSheet"
+            null
         )
     }
 
@@ -338,7 +338,7 @@ class OverviewFragment : Fragment(),
                 isEdit = true,
                 itemId = itemId
             )
-            editFragment.show(childFragmentManager, "editFragment")
+            editFragment.show(childFragmentManager, null)
         }
     }
 
@@ -362,7 +362,7 @@ class OverviewFragment : Fragment(),
                 chipGroupSelected = chipGroupDateSelected,
                 selectedDate = date
             )
-            editFragment.show(childFragmentManager, "editFragment")
+            editFragment.show(childFragmentManager, null)
         }
     }
 
