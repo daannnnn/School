@@ -5,7 +5,6 @@ import android.content.SharedPreferences
 import android.os.Bundle
 import android.text.Editable
 import android.text.TextWatcher
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -16,6 +15,7 @@ import com.dan.school.School
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_reset_password.*
+import kotlin.math.ceil
 
 
 class ResetPasswordFragment : Fragment() {
@@ -69,10 +69,10 @@ class ResetPasswordFragment : Fragment() {
         val lastPasswordResetTime = sharedPref.getLong(
             School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT,
             0
-        )
+        ).toFloat()
         val time = (System.currentTimeMillis() - lastPasswordResetTime) / 1000
 
-        if (time > 30) {
+        if (time >= 30) {
             val email = editTextEmail.editText!!.text.toString()
             if (email.trim().isNotEmpty() && allowSendResetPasswordEmail) {
                 editTextEmail.error = ""
@@ -106,7 +106,7 @@ class ResetPasswordFragment : Fragment() {
                 editTextEmail.error = getString(R.string.this_field_is_required)
             }
         } else {
-            val timeToWait = (30 - time).toInt()
+            val timeToWait = ceil(30 - time).toInt()
             Toast.makeText(
                 requireContext(),
                 "Please try again in $timeToWait ${if (timeToWait == 1) "second" else "seconds"}.",

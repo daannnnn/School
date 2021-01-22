@@ -24,6 +24,7 @@ import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import kotlinx.android.synthetic.main.fragment_profile.*
+import kotlin.math.ceil
 
 
 const val TAG = "ProfileFragment"
@@ -139,8 +140,8 @@ class ProfileFragment : Fragment() {
         val time = (System.currentTimeMillis() - sharedPref.getLong(
             School.VERIFICATION_EMAIL_TIME_LAST_SENT,
             0
-        )) / 1000
-        if (time > 30) {
+        ).toFloat()) / 1000
+        if (time >= 30) {
             if (!isSendingVerificationEmail) {
                 isSendingVerificationEmail = true
                 cardViewVerifyEmail.visibility = View.VISIBLE
@@ -169,7 +170,7 @@ class ProfileFragment : Fragment() {
                 }
             }
         } else {
-            val timeToWait = (30 - time).toInt()
+            val timeToWait = ceil(30 - time).toInt()
             Toast.makeText(
                 requireContext(),
                 "Please try again in $timeToWait ${if (timeToWait == 1) "second" else "seconds"}.",
