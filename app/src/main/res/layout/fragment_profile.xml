@@ -53,230 +53,238 @@
 
     </com.google.android.material.appbar.AppBarLayout>
 
-    <androidx.core.widget.NestedScrollView
+    <androidx.swiperefreshlayout.widget.SwipeRefreshLayout
+        android:id="@+id/swipeRefreshLayout"
         android:layout_width="match_parent"
-        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior"
-        android:layout_height="match_parent">
+        android:layout_height="match_parent"
+        app:layout_behavior="com.google.android.material.appbar.AppBarLayout$ScrollingViewBehavior">
 
-        <androidx.constraintlayout.widget.ConstraintLayout
-            android:id="@+id/constraintLayoutProfile"
+        <androidx.core.widget.NestedScrollView
             android:layout_width="match_parent"
-            android:layout_height="wrap_content"
-            android:animateLayoutChanges="true">
-
-            <com.google.android.material.card.MaterialCardView
-                android:id="@+id/cardViewVerifyEmail"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="24dp"
-                android:layout_marginTop="16dp"
-                android:layout_marginEnd="24dp"
-                android:visibility="gone"
-                app:cardBackgroundColor="@color/red"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="parent">
-
-                <LinearLayout
-                    android:layout_width="match_parent"
-                    android:layout_height="wrap_content"
-                    android:layout_margin="24dp"
-                    android:gravity="center"
-                    android:orientation="vertical">
-
-                    <TextView
-                        android:layout_width="wrap_content"
-                        android:layout_height="wrap_content"
-                        android:fontFamily="@font/cabin_regular"
-                        android:text="@string/account_not_verified_message"
-                        android:textColor="?android:colorBackground"
-                        android:textSize="16sp" />
-
-                    <com.google.android.material.button.MaterialButton
-                        android:id="@+id/buttonSendVerificationEmail"
-                        style="@style/Widget.MaterialComponents.Button.OutlinedButton"
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:layout_marginTop="8dp"
-                        android:text="@string/send_verification_email"
-                        android:textColor="?android:colorBackground"
-                        app:strokeColor="@color/outlineColor" />
-
-                </LinearLayout>
-
-            </com.google.android.material.card.MaterialCardView>
-
-            <ImageView
-                android:id="@+id/imageViewEmailIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginStart="24dp"
-                android:src="@drawable/ic_email"
-                app:layout_constraintBottom_toBottomOf="@id/textViewEmailLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewEmailLabel"
-                app:tint="@color/colorPrimary" />
-
-            <TextView
-                android:id="@+id/textViewEmailLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="24dp"
-                android:fontFamily="@font/cabin_bold"
-                android:text="@string/email"
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
-                app:layout_constraintStart_toEndOf="@id/imageViewNameIcon"
-                app:layout_constraintTop_toBottomOf="@id/cardViewVerifyEmail"
-                app:layout_goneMarginTop="16dp" />
-
-            <TextView
-                android:id="@+id/textViewEmailDisplay"
-                android:layout_width="0dp"
-                android:layout_height="wrap_content"
-                android:layout_marginStart="36dp"
-                android:layout_marginTop="8dp"
-                android:layout_marginEnd="36dp"
-                android:fontFamily="@font/cabin_bold"
-                android:textColor="?android:textColorPrimary"
-                android:textSize="18sp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewEmailLabel" />
-
-            <androidx.constraintlayout.widget.Group
-                android:id="@+id/groupEmail"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                app:constraint_referenced_ids="imageViewEmailIcon, textViewEmailLabel, textViewEmailDisplay" />
-
-            <ImageView
-                android:id="@+id/imageViewNameIcon"
-                android:layout_width="wrap_content"
-                android:layout_height="0dp"
-                android:layout_marginStart="24dp"
-                android:src="@drawable/ic_name"
-                app:layout_constraintBottom_toBottomOf="@id/textViewNameLabel"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewNameLabel"
-                app:tint="@color/colorPrimary" />
-
-            <TextView
-                android:id="@+id/textViewNameLabel"
-                android:layout_width="wrap_content"
-                android:layout_height="wrap_content"
-                android:layout_marginTop="24dp"
-                android:layout_marginEnd="24dp"
-                android:fontFamily="@font/cabin_bold"
-                android:text="@string/name"
-                android:textAllCaps="true"
-                android:textColor="@color/colorPrimary"
-                android:textSize="14sp"
-                app:layout_constraintStart_toEndOf="@id/imageViewNameIcon"
-                app:layout_constraintTop_toBottomOf="@id/textViewEmailDisplay"
-                app:layout_goneMarginTop="16dp" />
-
-            <ImageButton
-                android:id="@+id/buttonEdit"
-                android:layout_width="24dp"
-                android:layout_height="24dp"
-                android:layout_marginEnd="24dp"
-                android:background="?selectableItemBackgroundBorderless"
-                android:scaleType="centerInside"
-                android:src="@drawable/ic_edit"
-                app:layout_constraintBottom_toBottomOf="@id/textViewNameLabel"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintTop_toTopOf="@id/textViewNameLabel"
-                app:tint="?android:textColorPrimary" />
+            android:layout_height="match_parent">
 
             <androidx.constraintlayout.widget.ConstraintLayout
-                android:id="@+id/constraintLayoutName"
+                android:id="@+id/constraintLayoutProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:layout_marginTop="8dp"
-                app:layout_constraintEnd_toEndOf="parent"
-                app:layout_constraintStart_toStartOf="parent"
-                app:layout_constraintTop_toBottomOf="@id/textViewNameLabel">
+                android:animateLayoutChanges="true">
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textFieldNickname"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
+                <com.google.android.material.card.MaterialCardView
+                    android:id="@+id/cardViewVerifyEmail"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
-                    android:layout_marginStart="36dp"
-                    android:layout_marginEnd="36dp"
-                    android:hint="@string/nickname"
+                    android:layout_marginStart="24dp"
+                    android:layout_marginTop="16dp"
+                    android:layout_marginEnd="24dp"
                     android:visibility="gone"
-                    app:helperText="@string/what_do_you_want_us_to_call_you"
-                    app:helperTextTextAppearance="@style/TextFieldHelperTextTextAppearance"
-                    app:hintTextAppearance="@style/TextFieldHintTextAppearance"
+                    app:cardBackgroundColor="@color/red"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
                     app:layout_constraintTop_toTopOf="parent">
 
-                    <com.google.android.material.textfield.TextInputEditText
+                    <LinearLayout
                         android:layout_width="match_parent"
                         android:layout_height="wrap_content"
-                        android:inputType="textPersonName|textCapWords"
-                        android:maxLength="@integer/nicknameMaxCharacters"
-                        android:textAppearance="@style/InputTextTextAppearance" />
+                        android:layout_margin="24dp"
+                        android:gravity="center"
+                        android:orientation="vertical">
 
-                </com.google.android.material.textfield.TextInputLayout>
+                        <TextView
+                            android:layout_width="wrap_content"
+                            android:layout_height="wrap_content"
+                            android:fontFamily="@font/cabin_regular"
+                            android:text="@string/account_not_verified_message"
+                            android:textColor="?android:colorBackground"
+                            android:textSize="16sp" />
 
-                <com.google.android.material.textfield.TextInputLayout
-                    android:id="@+id/textFieldFullName"
-                    style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
-                    android:layout_width="match_parent"
+                        <com.google.android.material.button.MaterialButton
+                            android:id="@+id/buttonSendVerificationEmail"
+                            style="@style/Widget.MaterialComponents.Button.OutlinedButton"
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:layout_marginTop="8dp"
+                            android:text="@string/send_verification_email"
+                            android:textColor="?android:colorBackground"
+                            app:strokeColor="@color/outlineColor" />
+
+                    </LinearLayout>
+
+                </com.google.android.material.card.MaterialCardView>
+
+                <ImageView
+                    android:id="@+id/imageViewEmailIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="24dp"
+                    android:src="@drawable/ic_email"
+                    app:layout_constraintBottom_toBottomOf="@id/textViewEmailLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/textViewEmailLabel"
+                    app:tint="@color/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/textViewEmailLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:fontFamily="@font/cabin_bold"
+                    android:text="@string/email"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@id/imageViewNameIcon"
+                    app:layout_constraintTop_toBottomOf="@id/cardViewVerifyEmail"
+                    app:layout_goneMarginTop="16dp" />
+
+                <TextView
+                    android:id="@+id/textViewEmailDisplay"
+                    android:layout_width="0dp"
                     android:layout_height="wrap_content"
                     android:layout_marginStart="36dp"
                     android:layout_marginTop="8dp"
                     android:layout_marginEnd="36dp"
-                    android:hint="@string/full_name"
-                    android:visibility="gone"
-                    app:hintTextAppearance="@style/TextFieldHintTextAppearance"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textFieldNickname">
-
-                    <com.google.android.material.textfield.TextInputEditText
-                        android:layout_width="match_parent"
-                        android:layout_height="wrap_content"
-                        android:inputType="textPersonName|textCapWords"
-                        android:textAppearance="@style/InputTextTextAppearance" />
-
-                </com.google.android.material.textfield.TextInputLayout>
-
-                <TextView
-                    android:id="@+id/textViewNicknameDisplay"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="36dp"
-                    android:layout_marginEnd="36dp"
                     android:fontFamily="@font/cabin_bold"
-                    android:textColor="?android:textColorPrimary"
-                    android:textSize="30sp"
-                    app:layout_constraintEnd_toEndOf="parent"
-                    app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toTopOf="parent" />
-
-                <TextView
-                    android:id="@+id/textViewFullNameDisplay"
-                    android:layout_width="0dp"
-                    android:layout_height="wrap_content"
-                    android:layout_marginStart="36dp"
-                    android:layout_marginEnd="36dp"
-                    android:fontFamily="@font/cabin_regular"
                     android:textColor="?android:textColorPrimary"
                     android:textSize="18sp"
                     app:layout_constraintEnd_toEndOf="parent"
                     app:layout_constraintStart_toStartOf="parent"
-                    app:layout_constraintTop_toBottomOf="@id/textViewNicknameDisplay" />
+                    app:layout_constraintTop_toBottomOf="@id/textViewEmailLabel" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/groupEmail"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    app:constraint_referenced_ids="imageViewEmailIcon, textViewEmailLabel, textViewEmailDisplay" />
+
+                <ImageView
+                    android:id="@+id/imageViewNameIcon"
+                    android:layout_width="wrap_content"
+                    android:layout_height="0dp"
+                    android:layout_marginStart="24dp"
+                    android:src="@drawable/ic_name"
+                    app:layout_constraintBottom_toBottomOf="@id/textViewNameLabel"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/textViewNameLabel"
+                    app:tint="@color/colorPrimary" />
+
+                <TextView
+                    android:id="@+id/textViewNameLabel"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:fontFamily="@font/cabin_bold"
+                    android:text="@string/name"
+                    android:textAllCaps="true"
+                    android:textColor="@color/colorPrimary"
+                    android:textSize="14sp"
+                    app:layout_constraintStart_toEndOf="@id/imageViewNameIcon"
+                    app:layout_constraintTop_toBottomOf="@id/textViewEmailDisplay"
+                    app:layout_goneMarginTop="16dp" />
+
+                <ImageButton
+                    android:id="@+id/buttonEdit"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_marginEnd="24dp"
+                    android:background="?selectableItemBackgroundBorderless"
+                    android:scaleType="centerInside"
+                    android:src="@drawable/ic_edit"
+                    app:layout_constraintBottom_toBottomOf="@id/textViewNameLabel"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintTop_toTopOf="@id/textViewNameLabel"
+                    app:tint="?android:textColorPrimary" />
+
+                <androidx.constraintlayout.widget.ConstraintLayout
+                    android:id="@+id/constraintLayoutName"
+                    android:layout_width="match_parent"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="8dp"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@id/textViewNameLabel">
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textFieldNickname"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="36dp"
+                        android:layout_marginEnd="36dp"
+                        android:hint="@string/nickname"
+                        android:visibility="gone"
+                        app:helperText="@string/what_do_you_want_us_to_call_you"
+                        app:helperTextTextAppearance="@style/TextFieldHelperTextTextAppearance"
+                        app:hintTextAppearance="@style/TextFieldHintTextAppearance"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPersonName|textCapWords"
+                            android:maxLength="@integer/nicknameMaxCharacters"
+                            android:textAppearance="@style/InputTextTextAppearance" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <com.google.android.material.textfield.TextInputLayout
+                        android:id="@+id/textFieldFullName"
+                        style="@style/Widget.MaterialComponents.TextInputLayout.OutlinedBox"
+                        android:layout_width="match_parent"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="36dp"
+                        android:layout_marginTop="8dp"
+                        android:layout_marginEnd="36dp"
+                        android:hint="@string/full_name"
+                        android:visibility="gone"
+                        app:hintTextAppearance="@style/TextFieldHintTextAppearance"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/textFieldNickname">
+
+                        <com.google.android.material.textfield.TextInputEditText
+                            android:layout_width="match_parent"
+                            android:layout_height="wrap_content"
+                            android:inputType="textPersonName|textCapWords"
+                            android:textAppearance="@style/InputTextTextAppearance" />
+
+                    </com.google.android.material.textfield.TextInputLayout>
+
+                    <TextView
+                        android:id="@+id/textViewNicknameDisplay"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="36dp"
+                        android:layout_marginEnd="36dp"
+                        android:fontFamily="@font/cabin_bold"
+                        android:textColor="?android:textColorPrimary"
+                        android:textSize="30sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toTopOf="parent" />
+
+                    <TextView
+                        android:id="@+id/textViewFullNameDisplay"
+                        android:layout_width="0dp"
+                        android:layout_height="wrap_content"
+                        android:layout_marginStart="36dp"
+                        android:layout_marginEnd="36dp"
+                        android:fontFamily="@font/cabin_regular"
+                        android:textColor="?android:textColorPrimary"
+                        android:textSize="18sp"
+                        app:layout_constraintEnd_toEndOf="parent"
+                        app:layout_constraintStart_toStartOf="parent"
+                        app:layout_constraintTop_toBottomOf="@id/textViewNicknameDisplay" />
+
+                </androidx.constraintlayout.widget.ConstraintLayout>
 
             </androidx.constraintlayout.widget.ConstraintLayout>
 
-        </androidx.constraintlayout.widget.ConstraintLayout>
-    </androidx.core.widget.NestedScrollView>
+        </androidx.core.widget.NestedScrollView>
+
+    </androidx.swiperefreshlayout.widget.SwipeRefreshLayout>
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>

@@ -86,6 +86,12 @@ class ProfileFragment : Fragment() {
         return inflater.inflate(R.layout.fragment_profile, container, false)
     }
 
+    override fun onResume() {
+        super.onResume()
+        swipeRefreshLayout.isRefreshing = true
+        update()
+    }
+
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
@@ -112,7 +118,9 @@ class ProfileFragment : Fragment() {
             requireActivity().onBackPressed()
         }
 
-        update()
+        swipeRefreshLayout.setOnRefreshListener {
+            update()
+        }
     }
 
     /**
@@ -135,10 +143,12 @@ class ProfileFragment : Fragment() {
                 } else {
                     Toast.makeText(requireContext(), "Failed to update.", Toast.LENGTH_SHORT).show()
                 }
+                swipeRefreshLayout.isRefreshing = false
             }
         } else {
             groupEmail.visibility = View.GONE
             cardViewVerifyEmail.isGone = true
+            swipeRefreshLayout.isRefreshing = false
         }
     }
 
