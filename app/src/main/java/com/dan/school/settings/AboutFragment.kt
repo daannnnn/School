@@ -53,6 +53,10 @@ class AboutFragment : Fragment() {
                 )
                 .start(requireContext())
         }
+
+        buttonBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
     }
 
 }

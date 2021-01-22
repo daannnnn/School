@@ -106,6 +106,10 @@ class ProfileFragment : Fragment() {
             }
         }
 
+        buttonBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
         update()
     }
 

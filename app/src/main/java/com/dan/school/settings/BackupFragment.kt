@@ -129,6 +129,10 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             startActivity(intent)
         }
 
+        buttonBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+
         swipeRefreshLayout.setOnRefreshListener {
             swipeRefreshUpdate()
         }
