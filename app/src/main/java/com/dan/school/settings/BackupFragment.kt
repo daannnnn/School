@@ -365,6 +365,12 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                 showProgressBar()
                 MaterialAlertDialogBuilder(requireContext()).setMessage(getString(R.string.do_you_want_to_backup_current_database))
                     .setTitle(getString(R.string.backup_current_database))
+                    .setNeutralButton(
+                        getString(R.string.cancel)
+                    ) { _, _ ->
+                        hideProgressBar()
+                        restoringDatabase = false
+                    }
                     .setPositiveButton(
                         R.string.yes
                     ) { _, _ ->
@@ -383,7 +389,8 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                     .show()
             }
         } else {
-            Toast.makeText(requireContext(), getString(R.string.no_internet), Toast.LENGTH_SHORT).show()
+            Toast.makeText(requireContext(), getString(R.string.no_internet), Toast.LENGTH_SHORT)
+                .show()
         }
     }
 
