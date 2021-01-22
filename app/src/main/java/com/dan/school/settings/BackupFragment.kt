@@ -60,6 +60,13 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         storage.maxUploadRetryTimeMillis = timeout
     }
 
+    override fun onResume() {
+        super.onResume()
+
+        swipeRefreshLayout.isRefreshing = true
+        check()
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -69,9 +76,6 @@ class BackupFragment : Fragment(), BackupItemClickListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-
-        swipeRefreshLayout.isRefreshing = true
-        check()
 
         backupListAdapter = BackupListAdapter(
             requireContext(),
