@@ -142,4 +142,7 @@
     <string name="account_not_verified_message">Your account is not yet verified. Please check your email to verify your account.</string>
     <string name="send_verification_email">Send verification email</string>
     <string name="save">Save</string>
+    <string name="are_you_sure_you_want_to_delete_this_backup">Are you sure you want to delete this backup</string>
+    <string name="delete_backup">Delete backup?</string>
+    <string name="failed_to_delete_backup">Failed to delete backup. Please try again.</string>
 </resources>

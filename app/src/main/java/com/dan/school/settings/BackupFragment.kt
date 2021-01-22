@@ -203,7 +203,6 @@ class BackupFragment : Fragment(), BackupItemClickListener,
 
     private fun hideProgressBar() {
         progressBarDialog.dismiss()
-        Log.i(TAG, "hideProgressBar: ")
     }
 
     private fun backup(
@@ -395,7 +394,36 @@ class BackupFragment : Fragment(), BackupItemClickListener,
     }
 
     override fun backupItemLongClicked(storageReference: StorageReference) {
-        TODO("Not yet implemented")
+        showProgressBar()
+        MaterialAlertDialogBuilder(requireContext())
+            .setMessage("${getString(R.string.are_you_sure_you_want_to_delete_this_backup)} (${storageReference.name})?")
+            .setTitle(getString(R.string.delete_backup))
+            .setPositiveButton(
+                R.string.yes
+            ) { _, _ ->
+                storageReference.delete().addOnCompleteListener {
+                    if (it.isSuccessful) {
+                        updateBackupList {}
+                    } else {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.failed_to_delete_backup),
+                            Toast.LENGTH_LONG
+                        ).show()
+                        hideProgressBar()
+                    }
+                }
+            }
+            .setNegativeButton(
+                getString(R.string.no)
+            ) { _, _ ->
+                hideProgressBar()
+            }
+            .setOnCancelListener {
+                hideProgressBar()
+            }
+            .create()
+            .show()
     }
 
     companion object {
