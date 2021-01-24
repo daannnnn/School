@@ -17,7 +17,7 @@ android {
         }
     }
     compileSdkVersion 30
-    buildToolsVersion "30.0.2"
+    buildToolsVersion "30.0.3"
 
     defaultConfig {
         applicationId "com.dan.school"
@@ -64,14 +64,14 @@ dependencies {
     implementation 'androidx.appcompat:appcompat:1.2.0'
     implementation 'androidx.constraintlayout:constraintlayout:2.0.4'
     implementation 'androidx.legacy:legacy-support-v4:1.0.0'
-    implementation 'com.google.android.material:material:1.3.0-alpha03'
+    implementation 'com.google.android.material:material:1.3.0-rc01'
     implementation 'com.github.antonyt:InfiniteViewPager:v1.0.0'
-    implementation 'androidx.room:room-runtime:2.2.5'
+    implementation 'androidx.room:room-runtime:2.2.6'
     implementation 'com.google.code.gson:gson:2.8.6'
     implementation 'androidx.activity:activity-ktx:1.1.0'
     implementation 'androidx.fragment:fragment-ktx:1.2.5'
     implementation 'com.github.kizitonwose:CalendarView:0.4.2'
-    implementation 'androidx.room:room-ktx:2.2.5'
+    implementation 'androidx.room:room-ktx:2.2.6'
     implementation "com.mikepenz:aboutlibraries:8.3.1"
 
     implementation platform('com.google.firebase:firebase-bom:26.2.0')
@@ -81,11 +81,11 @@ dependencies {
     implementation 'com.google.firebase:firebase-storage-ktx'
     implementation 'com.google.firebase:firebase-messaging-ktx'
     implementation 'com.google.android.gms:play-services-auth:19.0.0'
-    implementation 'com.google.android.gms:play-services-ads:19.6.0'
+    implementation 'com.google.android.gms:play-services-ads:19.7.0'
 
     coreLibraryDesugaring 'com.android.tools:desugar_jdk_libs:1.1.1'
-    kapt 'androidx.room:room-compiler:2.2.5'
-    testImplementation 'junit:junit:4.12'
+    kapt 'androidx.room:room-compiler:2.2.6'
+    testImplementation 'junit:junit:4.13.1'
     androidTestImplementation 'androidx.test.ext:junit:1.1.2'
     androidTestImplementation 'androidx.test.espresso:espresso-core:3.3.0'
 }
