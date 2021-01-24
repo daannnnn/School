@@ -6,6 +6,7 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -262,20 +263,72 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         try {
             val inputStream: InputStream = FileInputStream(dbFile)
 
-            storage.reference.child(School.USERS).child(auth.currentUser!!.uid).child(fileName)
-                .putStream(inputStream).addOnCompleteListener {
-                    backupComplete(it.isSuccessful)
+            // Check if file is less than 2MB
+            if (inputStream.available() < 2 * 1024 * 1024) {
+
+                // Check if the number of backups is less than 10
+                val ref = storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
+                ref.listAll().addOnCompleteListener { taskListAll ->
+                    if (taskListAll.isSuccessful) {
+                        if (taskListAll.result.items.size < 10) {
+                            storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
+                                .child(fileName)
+                                .putStream(inputStream).addOnCompleteListener {
+                                    backupComplete(it.isSuccessful)
+                                }
+                        } else {
+                            showDialog(
+                                "You are only allowed to have 10 backups, you currently have ${taskListAll.result.items.size}. Please delete some backups first to create a new one.",
+                                "Delete some backups"
+                            ) {
+                                if (isBeforeRestore) {
+                                    showRestoreCancelled()
+                                }
+                            }
+                            hideProgressBar()
+                        }
+                    } else {
+                        showDialog(
+                            getString(R.string.error_while_performing_backup),
+                            getString(R.string.backup_failed)
+                        ) {
+                            if (isBeforeRestore) {
+                                showRestoreCancelled()
+                            }
+                        }
+                        hideProgressBar()
+                    }
                 }
+            } else {
+                showDialog(
+                    getString(R.string.file_is_too_big_message),
+                    getString(R.string.file_is_too_big)
+                ) {
+                    if (isBeforeRestore) {
+                        showRestoreCancelled()
+                    }
+                }
+                hideProgressBar()
+            }
         } catch (e: Exception) {
             showDialog(
                 getString(R.string.error_while_performing_backup),
                 getString(R.string.backup_failed)
-            )
-            if (isBeforeRestore) {
-                restoringDatabase = false
+            ) {
+                if (isBeforeRestore) {
+                    showRestoreCancelled()
+                }
             }
             hideProgressBar()
         }
+    }
+
+    private fun showRestoreCancelled() {
+        showDialog(
+            null,
+            getString(R.string.restore_cancelled)
+        )
+        restoringDatabase = false
     }
 
     private fun restore(storageReference: StorageReference, backupCurrentDatabase: Boolean) {
@@ -362,12 +415,15 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         exitProcess(0)
     }
 
-    private fun showDialog(message: String?, title: String) {
+    private fun showDialog(message: String?, title: String, dismissed: () -> Unit = {}) {
         MaterialAlertDialogBuilder(requireContext()).setMessage(message)
             .setTitle(title)
             .setPositiveButton(
                 getString(R.string.okay)
             ) { _, _ -> }
+            .setOnDismissListener {
+                dismissed()
+            }
             .create()
             .show()
     }

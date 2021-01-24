@@ -178,4 +178,7 @@
     <string name="your_email">your email</string>
     <string name="go_to_profile">Go to profile</string>
     <string name="verify_your_account_to_create_a_backup">Verify your account to create a backup.</string>
+    <string name="file_is_too_big_message">Delete some homeworks, exams, or tasks then try again.</string>
+    <string name="file_is_too_big">File is too big</string>
+    <string name="restore_cancelled">Restore cancelled</string>
 </resources>
