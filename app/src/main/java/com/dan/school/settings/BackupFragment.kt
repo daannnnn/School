@@ -49,6 +49,15 @@ class BackupFragment : Fragment(), BackupItemClickListener,
 
     private lateinit var progressBarDialog: ProgressBarDialog
 
+    private lateinit var settingsGoToFragmentListener: SettingsGoToFragmentListener
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (activity is SettingsActivity) {
+            settingsGoToFragmentListener = activity as SettingsActivity
+        }
+    }
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
 
@@ -131,6 +140,10 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             startActivity(intent)
         }
 
+        buttonProfile.setOnClickListener {
+            settingsGoToFragmentListener.goToFragment(School.PROFILE)
+        }
+
         buttonBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
@@ -147,57 +160,31 @@ class BackupFragment : Fragment(), BackupItemClickListener,
     private fun check() {
         if (isNetworkAvailable(requireContext())) {
             if (auth.currentUser != null) {
-                updateBackupList {
-                    swipeRefreshLayout.isRefreshing = false
-                }
-            } else {
-                groupBackupLayout.visibility = View.GONE
-                groupInternetRequired.visibility = View.GONE
-                groupAccountRequired.visibility = View.VISIBLE
-                swipeRefreshLayout.isRefreshing = false
-            }
-        } else {
-            groupBackupLayout.visibility = View.GONE
-            groupInternetRequired.visibility = View.VISIBLE
-            groupAccountRequired.visibility = View.GONE
-            swipeRefreshLayout.isRefreshing = false
-        }
-    }
-
-    private fun updateBackupList(done: () -> Unit) {
-        val user = auth.currentUser
-        user?.getIdToken(true)?.addOnCompleteListener { taskGetIdToken ->
-            if (taskGetIdToken.isSuccessful) {
-                user.reload().addOnCompleteListener { taskReload ->
-                    if (taskReload.isSuccessful) {
-                        storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
-                            .listAll()
-                            .addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    val backupList = ArrayList<StorageReference>()
-                                    if (it.result != null) {
-                                        it.result!!.items.forEach { item ->
-                                            backupList.add(item)
-                                        }
+                auth.currentUser?.getIdToken(true)?.addOnCompleteListener { taskGetIdToken ->
+                    if (taskGetIdToken.isSuccessful) {
+                        auth.currentUser?.reload()?.addOnCompleteListener { taskReload ->
+                            if (taskReload.isSuccessful) {
+                                val user = auth.currentUser
+                                if (user != null && user.isEmailVerified) {
+                                    updateBackupList {
+                                        swipeRefreshLayout.isRefreshing = false
                                     }
-
-                                    groupBackupLayout.visibility = View.VISIBLE
+                                } else {
+                                    groupBackupLayout.visibility = View.GONE
                                     groupInternetRequired.visibility = View.GONE
                                     groupAccountRequired.visibility = View.GONE
-
-                                    textViewNoBackupsYet.isGone = backupList.isNotEmpty()
-                                    recyclerViewBackups.isVisible = backupList.isNotEmpty()
-                                    backupListAdapter.submitList(backupList)
-                                } else {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        getString(R.string.error_while_getting_list_of_backups),
-                                        Toast.LENGTH_LONG
-                                    ).show()
+                                    groupVerificationRequired.visibility = View.VISIBLE
+                                    swipeRefreshLayout.isRefreshing = false
                                 }
-                                done()
-                                hideProgressBar()
+                            } else {
+                                Toast.makeText(
+                                    requireContext(),
+                                    getString(R.string.error_while_getting_list_of_backups),
+                                    Toast.LENGTH_LONG
+                                ).show()
+                                swipeRefreshLayout.isRefreshing = false
                             }
+                        }
                     } else {
                         Toast.makeText(
                             requireContext(),
@@ -208,14 +195,51 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                     }
                 }
             } else {
-                Toast.makeText(
-                    requireContext(),
-                    getString(R.string.error_while_getting_list_of_backups),
-                    Toast.LENGTH_LONG
-                ).show()
+                groupBackupLayout.visibility = View.GONE
+                groupInternetRequired.visibility = View.GONE
+                groupAccountRequired.visibility = View.VISIBLE
+                groupVerificationRequired.visibility = View.GONE
                 swipeRefreshLayout.isRefreshing = false
             }
+        } else {
+            groupBackupLayout.visibility = View.GONE
+            groupInternetRequired.visibility = View.VISIBLE
+            groupAccountRequired.visibility = View.GONE
+            groupVerificationRequired.visibility = View.GONE
+            swipeRefreshLayout.isRefreshing = false
         }
+    }
+
+    private fun updateBackupList(done: () -> Unit) {
+        storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
+            .listAll()
+            .addOnCompleteListener {
+                if (it.isSuccessful) {
+                    val backupList = ArrayList<StorageReference>()
+                    if (it.result != null) {
+                        it.result!!.items.forEach { item ->
+                            backupList.add(item)
+                        }
+                    }
+
+                    groupBackupLayout.visibility = View.VISIBLE
+                    groupInternetRequired.visibility = View.GONE
+                    groupAccountRequired.visibility = View.GONE
+                    groupVerificationRequired.visibility = View.GONE
+
+                    textViewNoBackupsYet.isGone = backupList.isNotEmpty()
+                    recyclerViewBackups.isVisible = backupList.isNotEmpty()
+                    backupListAdapter.submitList(backupList)
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.error_while_getting_list_of_backups),
+                        Toast.LENGTH_LONG
+                    ).show()
+                }
+                done()
+                hideProgressBar()
+            }
     }
 
     private fun showProgressBar() {
@@ -499,6 +523,10 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             }
             .create()
             .show()
+    }
+
+    interface SettingsGoToFragmentListener {
+        fun goToFragment(fragment: Int)
     }
 
     companion object {

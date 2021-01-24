@@ -11,7 +11,8 @@ import com.dan.school.School
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import kotlinx.android.synthetic.main.fragment_settings.*
 
-class SettingsActivity : AppCompatActivity(), SettingsFragment.SettingsItemOnClickListener {
+class SettingsActivity : AppCompatActivity(), SettingsFragment.SettingsItemOnClickListener,
+    BackupFragment.SettingsGoToFragmentListener {
 
     private lateinit var sharedPref: SharedPreferences
 
@@ -119,6 +120,25 @@ class SettingsActivity : AppCompatActivity(), SettingsFragment.SettingsItemOnCli
                     .replace(
                         R.id.frameLayoutSettings,
                         AboutFragment()
+                    ).addToBackStack(null)
+                    .commit()
+            }
+        }
+    }
+
+    override fun goToFragment(fragment: Int) {
+        when (fragment) {
+            School.PROFILE -> {
+                supportFragmentManager.beginTransaction()
+                    .setCustomAnimations(
+                        R.anim.slide_in_right,
+                        R.anim.slide_out_left,
+                        R.anim.slide_in_left,
+                        R.anim.slide_out_right
+                    )
+                    .replace(
+                        R.id.frameLayoutSettings,
+                        ProfileFragment()
                     ).addToBackStack(null)
                     .commit()
             }

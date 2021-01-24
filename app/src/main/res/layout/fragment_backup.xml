@@ -244,6 +244,53 @@
                     android:visibility="gone"
                     app:constraint_referenced_ids="imageViewLogin, textViewAccountRequired, buttonSignIn" />
 
+                <ImageView
+                    android:id="@+id/imageViewVerify"
+                    android:layout_width="56dp"
+                    android:layout_height="56dp"
+                    android:src="@drawable/ic_verify_email"
+                    app:layout_constraintBottom_toTopOf="@+id/textViewVerificationRequired"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toTopOf="parent"
+                    app:layout_constraintVertical_chainStyle="packed"
+                    app:tint="@color/red" />
+
+                <TextView
+                    android:id="@+id/textViewVerificationRequired"
+                    android:layout_width="200dp"
+                    android:layout_height="wrap_content"
+                    android:layout_marginTop="16dp"
+                    android:fontFamily="@font/cabin_regular"
+                    android:gravity="center"
+                    android:text="@string/verify_your_account_to_create_a_backup"
+                    android:textSize="18sp"
+                    app:layout_constraintBottom_toTopOf="@+id/buttonProfile"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/imageViewVerify" />
+
+                <Button
+                    android:id="@+id/buttonProfile"
+                    style="@style/Widget.MaterialComponents.Button.TextButton"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:text="@string/go_to_profile"
+                    app:layout_constraintBottom_toBottomOf="parent"
+                    app:layout_constraintEnd_toEndOf="parent"
+                    app:layout_constraintHorizontal_bias="0.5"
+                    app:layout_constraintStart_toStartOf="parent"
+                    app:layout_constraintTop_toBottomOf="@+id/textViewVerificationRequired" />
+
+                <androidx.constraintlayout.widget.Group
+                    android:id="@+id/groupVerificationRequired"
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:visibility="gone"
+                    app:constraint_referenced_ids="imageViewVerify, textViewVerificationRequired, buttonProfile" />
+
             </androidx.constraintlayout.widget.ConstraintLayout>
 
         </androidx.core.widget.NestedScrollView>

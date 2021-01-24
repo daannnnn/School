@@ -176,4 +176,6 @@
     <string name="system_default">System Default</string>
     <string name="not_set">Not set</string>
     <string name="your_email">your email</string>
+    <string name="go_to_profile">Go to profile</string>
+    <string name="verify_your_account_to_create_a_backup">Verify your account to create a backup.</string>
 </resources>
