@@ -5,7 +5,6 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
-import android.util.Log
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
@@ -13,11 +12,9 @@ import androidx.drawerlayout.widget.DrawerLayout
 import com.dan.school.fragments.CompletedFragment
 import com.dan.school.fragments.OverviewFragment
 import com.dan.school.settings.SettingsActivity
-import com.dan.school.settings.SettingsFragment
-import com.google.android.gms.ads.AdListener
-import com.google.android.gms.ads.AdRequest
-import com.google.android.gms.ads.InterstitialAd
-import com.google.android.gms.ads.MobileAds
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.*
@@ -43,7 +40,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
 
     private var onSharedPreferenceChangeListener: OnSharedPreferenceChangeListener? = null
 
-    private lateinit var interstitialAd: InterstitialAd
+    private var interstitialAd: InterstitialAd? = null
 
     private lateinit var sharedPref: SharedPreferences
 
@@ -59,9 +56,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
 
         MobileAds.initialize(this) {}
 
-        interstitialAd = InterstitialAd(this)
-        interstitialAd.adUnitId = "ca-app-pub-3940256099942544/1033173712"
-        interstitialAd.loadAd(AdRequest.Builder().build())
+        loadAd()
 
         auth = Firebase.auth
         database = Firebase.database
@@ -178,6 +173,19 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
         }
     }
 
+    private fun loadAd() {
+        InterstitialAd.load(
+            this,
+            "ca-app-pub-3940256099942544/1033173712",
+            AdRequest.Builder().build(),
+            object : InterstitialAdLoadCallback() {
+                override fun onAdLoaded(ad: InterstitialAd) {
+                    interstitialAd = ad
+                }
+            }
+        )
+    }
+
     /**
      * Calls [updateDatabase] and [listenForUpdates] if a user
      * is signed-in.
@@ -287,7 +295,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
      * Updates [clickCounter] if the difference between
      * [System.currentTimeMillis] and [lastClickTime] in seconds
      * is greater than 0.5 seconds then shows [interstitialAd] if
-     * loaded and if [clickCounter] is greater than or equal to 8
+     * loaded and if [clickCounter] is greater than or equal to 5
      *
      * Returns true if show is called on [interstitialAd], false
      * otherwise
@@ -298,8 +306,8 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
             clickCounter++
             lastClickTime = System.currentTimeMillis()
             if (clickCounter >= 5) {
-                if (interstitialAd.isLoaded) {
-                    interstitialAd.show()
+                if (interstitialAd != null) {
+                    interstitialAd?.show(this)
                     clickCounter = 0
                     b = true
                 }
@@ -327,10 +335,18 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
      */
     override fun incrementCounter(callback: () -> Unit) {
         if (updateCounter()) {
-            interstitialAd.adListener = object : AdListener() {
-                override fun onAdClosed() {
-                    interstitialAd.loadAd(AdRequest.Builder().build())
+
+            interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+                override fun onAdDismissedFullScreenContent() {
+                    loadAd()
                     callback()
+                }
+
+                override fun onAdFailedToShowFullScreenContent(p0: AdError?) {
+                    callback()
+                }
+                override fun onAdShowedFullScreenContent() {
+                    interstitialAd = null
                 }
             }
         } else {
