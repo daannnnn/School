@@ -20,7 +20,7 @@
             android:label="@string/title_activity_authentication"
             android:theme="@style/SetupTheme"></activity>
         <activity
-            android:name=".SetupActivity"
+            android:name=".setup.SetupActivity"
             android:theme="@style/SetupTheme" />
         <activity
             android:name=".MainActivity"

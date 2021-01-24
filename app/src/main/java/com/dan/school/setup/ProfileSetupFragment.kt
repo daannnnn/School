@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import com.dan.school.R
 import com.dan.school.School
-import com.dan.school.SetupActivity
 import kotlinx.android.synthetic.main.fragment_profile_setup.*
 
 class ProfileSetupFragment : Fragment() {

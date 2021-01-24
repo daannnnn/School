@@ -1,14 +1,15 @@
-package com.dan.school
+package com.dan.school.setup
 
 import android.content.Context
 import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import com.dan.school.BuildConfig
+import com.dan.school.MainActivity
+import com.dan.school.R
+import com.dan.school.School
 import com.dan.school.authentication.AuthenticationActivity
-import com.dan.school.setup.ProfileSetupFragment
-import com.dan.school.setup.SetupFragment
-import com.dan.school.setup.SetupViewPagerFragment
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase

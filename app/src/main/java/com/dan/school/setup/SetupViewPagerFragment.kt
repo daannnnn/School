@@ -7,7 +7,6 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.viewpager.widget.ViewPager
 import com.dan.school.R
-import com.dan.school.SetupActivity
 import com.dan.school.adapters.SetupViewPagerAdapter
 import kotlinx.android.synthetic.main.fragment_setup_view_pager.*
 
