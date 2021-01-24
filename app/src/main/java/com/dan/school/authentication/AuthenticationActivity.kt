@@ -103,6 +103,9 @@ class AuthenticationActivity : AppCompatActivity(),
         }
     }
 
+    /**
+     * Signs in user on [Firebase.auth] using sign in with google.
+     */
     private fun firebaseAuthWithGoogle(idToken: String, nickname: String, fullName: String) {
         val credential = GoogleAuthProvider.getCredential(idToken, null)
         auth.signInWithCredential(credential)
@@ -117,6 +120,9 @@ class AuthenticationActivity : AppCompatActivity(),
             }
     }
 
+    /**
+     * Changes fragment to [SignInFragment].
+     */
     private fun buttonSignInWithEmailClicked() {
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(
@@ -132,12 +138,18 @@ class AuthenticationActivity : AppCompatActivity(),
             .commit()
     }
 
+    /**
+     * Starts an intent for sign in with google.
+     */
     private fun buttonSignInWithGoogleClicked() {
         showProgressBar()
         val signInIntent = googleSignInClient.signInIntent
         startActivityForResult(signInIntent, SIGN_IN_WITH_GOOGLE_RC)
     }
 
+    /**
+     * Changes fragment to [SignUpFragment].
+     */
     private fun goToSignUp() {
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(
@@ -153,6 +165,24 @@ class AuthenticationActivity : AppCompatActivity(),
             .commit()
     }
 
+    fun goToFP() {
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left,
+                R.anim.slide_in_left,
+                R.anim.slide_out_right
+            )
+            .replace(
+                R.id.frameLayoutAuthentication,
+                ResetPasswordFragment.newInstance()
+            ).addToBackStack(null)
+            .commit()
+    }
+
+    /**
+     * Creates a new user using [Firebase.auth].
+     */
     private fun createUser(email: String, password: String, nickname: String, fullName: String) {
         showProgressBar()
         auth.createUserWithEmailAndPassword(email, password)
@@ -193,6 +223,9 @@ class AuthenticationActivity : AppCompatActivity(),
             }
     }
 
+    /**
+     * Updates user's [nickname] and [fullName] on [Firebase.database].
+     */
     private fun updateProfileOnFirebaseDatabase(nickname: String, fullName: String) {
         val map: MutableMap<String, Any> = HashMap()
         map[School.NICKNAME] = nickname
@@ -200,10 +233,13 @@ class AuthenticationActivity : AppCompatActivity(),
         database.reference.child(School.USERS).child(auth.currentUser!!.uid)
             .updateChildren(map)
             .addOnSuccessListener {
-                sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, true)
+                sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, true).apply()
             }
     }
 
+    /**
+     * Updates user's [nickname] and [fullName] on [sharedPref].
+     */
     private fun updateProfileOnSharedPreferences(nickname: String, fullName: String) {
         sharedPref.edit {
             putString(School.NICKNAME, nickname)
@@ -212,6 +248,9 @@ class AuthenticationActivity : AppCompatActivity(),
         }
     }
 
+    /**
+     * Sends an email verification to [email].
+     */
     private fun sendEmailVerification(email: String) {
         auth.currentUser?.sendEmailVerification()
             ?.addOnCompleteListener {
@@ -242,6 +281,9 @@ class AuthenticationActivity : AppCompatActivity(),
             }
     }
 
+    /**
+     * Signs in a user with [email] and [password]
+     */
     private fun signInUser(email: String, password: String) {
         showProgressBar()
         auth.signInWithEmailAndPassword(email, password)
@@ -267,6 +309,12 @@ class AuthenticationActivity : AppCompatActivity(),
             }
     }
 
+    /**
+     * Finishes activity and sends result data.
+     *
+     * [result] One of [AUTHENTICATION_CANCELLED], [AUTHENTICATION_SUCCESS],
+     * or [AUTHENTICATION_WITH_GOOGLE_SUCCESS].
+     */
     private fun done(result: Int, nickname: String = "", fullName: String = "") {
         val returnIntent = Intent()
         returnIntent.putExtra(RESULT, result)
@@ -285,6 +333,13 @@ class AuthenticationActivity : AppCompatActivity(),
         progressBarDialog.hide()
     }
 
+    /**
+     * Calls [buttonSignInWithEmailClicked] or [buttonSignInWithGoogleClicked]
+     * depending on [signInWith].
+     *
+     * [signInWith] One of [School.SIGN_IN_WITH_EMAIL] or
+     * [School.SIGN_IN_WITH_GOOGLE].
+     */
     override fun buttonSignInWithClicked(signInWith: Int) {
         if (signInWith == School.SIGN_IN_WITH_EMAIL) {
             buttonSignInWithEmailClicked()
@@ -299,21 +354,6 @@ class AuthenticationActivity : AppCompatActivity(),
 
     override fun buttonSignInLaterClicked() {
         done(AUTHENTICATION_CANCELLED)
-    }
-
-    fun goToFP() {
-        supportFragmentManager.beginTransaction()
-            .setCustomAnimations(
-                R.anim.slide_in_right,
-                R.anim.slide_out_left,
-                R.anim.slide_in_left,
-                R.anim.slide_out_right
-            )
-            .replace(
-                R.id.frameLayoutAuthentication,
-                ResetPasswordFragment.newInstance()
-            ).addToBackStack(null)
-            .commit()
     }
 
     override fun signUpButtonClicked(

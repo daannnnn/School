@@ -65,6 +65,12 @@ class ResetPasswordFragment : Fragment() {
         }
     }
 
+    /**
+     * Sends a password reset email to email from [editTextEmail] if the
+     * difference between [School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT]
+     * saved in [sharedPref] and the [System.currentTimeMillis] in seconds
+     * is greater than or equal to 30.
+     */
     private fun sendPasswordResetEmail() {
         val lastPasswordResetTime = sharedPref.getLong(
             School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT,
