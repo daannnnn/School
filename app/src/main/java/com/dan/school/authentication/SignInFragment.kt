@@ -14,11 +14,13 @@ import kotlinx.android.synthetic.main.fragment_sign_in.*
 class SignInFragment : Fragment() {
 
     private lateinit var signInButtonClickListener: SignInButtonClickListener
+    private lateinit var forgotPasswordButtonClickListener: ForgotPasswordButtonClickListener
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (activity is AuthenticationActivity) {
             signInButtonClickListener = activity as AuthenticationActivity
+            forgotPasswordButtonClickListener = activity as AuthenticationActivity
         }
     }
 
@@ -81,7 +83,7 @@ class SignInFragment : Fragment() {
             }
         }
         buttonForgotPassword.setOnClickListener {
-            (activity as AuthenticationActivity).goToFP()
+            forgotPasswordButtonClickListener.forgotPasswordButtonClicked()
         }
 
         buttonBack.setOnClickListener {
@@ -91,6 +93,10 @@ class SignInFragment : Fragment() {
 
     interface SignInButtonClickListener {
         fun signInButtonClicked(email: String, password: String)
+    }
+
+    interface ForgotPasswordButtonClickListener {
+        fun forgotPasswordButtonClicked()
     }
 
     companion object {

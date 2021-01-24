@@ -31,7 +31,7 @@ class AuthenticationActivity : AppCompatActivity(),
     AuthenticationFragment.ButtonSignUpClickListener,
     AuthenticationFragment.ButtonSignInLaterClickListener,
     SignUpFragment.SignUpButtonClickListener, WelcomeFragment.WelcomeDoneButtonClickListener,
-    SignInFragment.SignInButtonClickListener {
+    SignInFragment.SignInButtonClickListener, SignInFragment.ForgotPasswordButtonClickListener {
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
@@ -165,7 +165,10 @@ class AuthenticationActivity : AppCompatActivity(),
             .commit()
     }
 
-    fun goToFP() {
+    /**
+     * Changes fragment to [ResetPasswordFragment]
+     */
+    private fun goToResetPassword() {
         supportFragmentManager.beginTransaction()
             .setCustomAnimations(
                 R.anim.slide_in_right,
@@ -371,6 +374,10 @@ class AuthenticationActivity : AppCompatActivity(),
 
     override fun signInButtonClicked(email: String, password: String) {
         signInUser(email, password)
+    }
+
+    override fun forgotPasswordButtonClicked() {
+        goToResetPassword()
     }
 
     companion object {
