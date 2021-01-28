@@ -169,38 +169,60 @@ class BackupFragment : Fragment(), BackupItemClickListener,
 
     private fun check() {
         if (isNetworkAvailable(requireContext())) {
-            if (auth.currentUser != null) {
-                auth.currentUser?.getIdToken(true)?.addOnCompleteListener { taskGetIdToken ->
+            val user = auth.currentUser
+            if (user != null) {
+
+                if (user.isEmailVerified) {
+                    updateBackupList {
+                        binding.swipeRefreshLayout.isRefreshing = false
+                    }
+                    return
+                }
+
+                user.getIdToken(true).addOnCompleteListener { taskGetIdToken ->
                     if (taskGetIdToken.isSuccessful) {
-                        auth.currentUser?.reload()?.addOnCompleteListener { taskReload ->
+                        user.reload().addOnCompleteListener reload@{ taskReload ->
+                            if (_binding == null) {
+                                return@reload
+                            }
                             if (taskReload.isSuccessful) {
-                                val user = auth.currentUser
-                                if (user != null && user.isEmailVerified) {
-                                    updateBackupList {
+                                auth.currentUser?.let {
+                                    if (it.isEmailVerified) {
+                                        updateBackupList {
+                                            binding.swipeRefreshLayout.isRefreshing = false
+                                        }
+                                    } else {
+                                        binding.groupBackupLayout.visibility = View.GONE
+                                        binding.groupInternetRequired.visibility = View.GONE
+                                        binding.groupAccountRequired.visibility = View.GONE
+                                        binding.groupVerificationRequired.visibility = View.VISIBLE
                                         binding.swipeRefreshLayout.isRefreshing = false
                                     }
-                                } else {
-                                    binding.groupBackupLayout.visibility = View.GONE
-                                    binding.groupInternetRequired.visibility = View.GONE
-                                    binding.groupAccountRequired.visibility = View.GONE
-                                    binding.groupVerificationRequired.visibility = View.VISIBLE
-                                    binding.swipeRefreshLayout.isRefreshing = false
                                 }
                             } else {
-                                Toast.makeText(
-                                    requireContext(),
-                                    getString(R.string.error_while_getting_list_of_backups),
-                                    Toast.LENGTH_LONG
-                                ).show()
+                                try {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.error_while_getting_list_of_backups),
+                                        Toast.LENGTH_LONG
+                                    ).show()
+                                } catch (e: Exception) {
+                                }
                                 binding.swipeRefreshLayout.isRefreshing = false
                             }
                         }
                     } else {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.error_while_getting_list_of_backups),
-                            Toast.LENGTH_LONG
-                        ).show()
+                        if (_binding == null) {
+                            return@addOnCompleteListener
+                        }
+                        try {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.error_while_getting_list_of_backups),
+                                Toast.LENGTH_LONG
+                            ).show()
+                        } catch (e: Exception) {
+                        }
                         binding.swipeRefreshLayout.isRefreshing = false
                     }
                 }
@@ -224,6 +246,9 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
             .listAll()
             .addOnCompleteListener {
+                if (_binding == null) {
+                    return@addOnCompleteListener
+                }
                 if (it.isSuccessful) {
                     val backupList = ArrayList<StorageReference>()
                     if (it.result != null) {
@@ -241,11 +266,14 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                     binding.recyclerViewBackups.isVisible = backupList.isNotEmpty()
                     backupListAdapter.submitList(backupList)
                 } else {
-                    Toast.makeText(
-                        requireContext(),
-                        getString(R.string.error_while_getting_list_of_backups),
-                        Toast.LENGTH_LONG
-                    ).show()
+                    try {
+                        Toast.makeText(
+                            requireContext(),
+                            getString(R.string.error_while_getting_list_of_backups),
+                            Toast.LENGTH_LONG
+                        ).show()
+                    } catch (e: Exception) {
+                    }
                 }
                 done()
                 hideProgressBar()
@@ -425,16 +453,19 @@ class BackupFragment : Fragment(), BackupItemClickListener,
     }
 
     private fun showDialog(message: String?, title: String, dismissed: () -> Unit = {}) {
-        MaterialAlertDialogBuilder(requireContext()).setMessage(message)
-            .setTitle(title)
-            .setPositiveButton(
-                getString(R.string.okay)
-            ) { _, _ -> }
-            .setOnDismissListener {
-                dismissed()
-            }
-            .create()
-            .show()
+        try {
+            MaterialAlertDialogBuilder(requireContext()).setMessage(message)
+                .setTitle(title)
+                .setPositiveButton(
+                    getString(R.string.okay)
+                ) { _, _ -> }
+                .setOnDismissListener {
+                    dismissed()
+                }
+                .create()
+                .show()
+        } catch (e: Exception) {
+        }
     }
 
     private fun askForConfirmation(confirm: () -> Unit) {

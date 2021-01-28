@@ -25,6 +25,7 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
+import java.lang.Exception
 import kotlin.math.ceil
 
 class ProfileFragment : Fragment() {
@@ -142,11 +143,14 @@ class ProfileFragment : Fragment() {
                         auth.currentUser?.email?.let { email ->
                             auth.sendPasswordResetEmail(email).addOnCompleteListener {
                                 if (it.isSuccessful) {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        getString(R.string.password_reset_email_sent),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    try {
+                                        Toast.makeText(
+                                            requireContext(),
+                                            getString(R.string.password_reset_email_sent),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } catch (e: Exception) {
+                                    }
 
                                     with(sharedPref.edit()) {
                                         putLong(
@@ -156,11 +160,14 @@ class ProfileFragment : Fragment() {
                                         apply()
                                     }
                                 } else {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        getString(R.string.an_error_occurred),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
+                                    try {
+                                        Toast.makeText(
+                                            requireContext(),
+                                            getString(R.string.an_error_occurred),
+                                            Toast.LENGTH_SHORT
+                                        ).show()
+                                    } catch (e: Exception) {
+                                    }
                                 }
                                 hideProgressBar()
                             }
@@ -223,13 +230,27 @@ class ProfileFragment : Fragment() {
             binding.textViewEmailDisplay.text = user.email
             binding.cardViewVerifyEmail.isGone = user.isEmailVerified
 
-            user.reload().addOnCompleteListener {
-                if (it.isSuccessful) {
-                    binding.textViewEmailDisplay.text = user.email
-                    binding.cardViewVerifyEmail.isGone = user.isEmailVerified
-                } else {
-                    Toast.makeText(requireContext(), getString(R.string.failed_to_update), Toast.LENGTH_SHORT).show()
+            if (!user.isEmailVerified) {
+                user.reload().addOnCompleteListener {
+                    if (_binding == null) {
+                        return@addOnCompleteListener
+                    }
+                    if (it.isSuccessful) {
+                        binding.textViewEmailDisplay.text = user.email
+                        binding.cardViewVerifyEmail.isGone = user.isEmailVerified
+                    } else {
+                        try {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.failed_to_update),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } catch (e: Exception) {
+                        }
+                    }
+                    binding.swipeRefreshLayout.isRefreshing = false
                 }
+            } else {
                 binding.swipeRefreshLayout.isRefreshing = false
             }
         } else {
@@ -270,11 +291,14 @@ class ProfileFragment : Fragment() {
                             Toast.LENGTH_SHORT
                         ).show()
                     } else {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.failed_to_send_verification_email),
-                            Toast.LENGTH_SHORT
-                        ).show()
+                        try {
+                            Toast.makeText(
+                                requireContext(),
+                                getString(R.string.failed_to_send_verification_email),
+                                Toast.LENGTH_SHORT
+                            ).show()
+                        } catch (e: Exception) {
+                        }
                     }
                     isSendingVerificationEmail = false
                 }
