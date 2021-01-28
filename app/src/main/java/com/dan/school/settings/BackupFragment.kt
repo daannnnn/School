@@ -257,6 +257,10 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                         }
                     }
 
+                    backupList.sortWith { o1, o2 ->
+                        o2.name.compareTo(o1.name)
+                    }
+
                     binding.groupBackupLayout.visibility = View.VISIBLE
                     binding.groupInternetRequired.visibility = View.GONE
                     binding.groupAccountRequired.visibility = View.GONE
