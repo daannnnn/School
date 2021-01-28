@@ -3,15 +3,18 @@ package com.dan.school.settings
 import android.content.Context
 import android.content.SharedPreferences
 import android.content.res.TypedArray
+import android.os.Build
 import android.os.Bundle
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.appcompat.app.AppCompatDelegate
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.dan.school.*
 import com.dan.school.databinding.FragmentSettingsBinding
+import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
 class SettingsFragment : Fragment() {
 
@@ -55,7 +58,50 @@ class SettingsFragment : Fragment() {
         }
 
         binding.relativeLayoutTheme.setOnClickListener {
-            settingsItemOnClickListener.itemClicked(School.THEME)
+            val items = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+                arrayOf(getString(R.string.light), getString(R.string.dark), getString(R.string.system_default))
+            } else {
+                arrayOf(getString(R.string.light), getString(R.string.dark))
+            }
+
+            var checkedItem = when (sharedPref.getInt(School.SELECTED_THEME, -1)) {
+                School.LIGHT_MODE -> {
+                    0
+                }
+                School.DARK_MODE -> {
+                    1
+                }
+                School.SYSTEM_DEFAULT -> {
+                    2
+                }
+                else -> {
+                    0
+                }
+            }
+
+            MaterialAlertDialogBuilder(requireContext())
+                .setTitle(resources.getString(R.string.theme))
+                .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
+                .setPositiveButton(resources.getString(R.string.done)) { _, _ ->
+                    when (checkedItem) {
+                        0 -> {
+                            setTheme(School.LIGHT_MODE)
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                        }
+                        1 -> {
+                            setTheme(School.DARK_MODE)
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                        }
+                        2 -> {
+                            setTheme(School.SYSTEM_DEFAULT)
+                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                        }
+                    }
+                }
+                .setSingleChoiceItems(items, checkedItem) { _, i ->
+                    checkedItem = i
+                }
+                .show()
         }
 
         binding.relativeLayoutBackup.setOnClickListener {
