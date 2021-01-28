@@ -9,10 +9,13 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.dan.school.R
-import com.google.android.material.textfield.TextInputLayout
-import kotlinx.android.synthetic.main.fragment_sign_up.*
+import com.dan.school.databinding.FragmentSignUpBinding
 
 class SignUpFragment : Fragment() {
+
+    private var _binding: FragmentSignUpBinding? = null
+
+    private val binding get() = _binding!!
 
     private lateinit var signUpButtonClickListener: SignUpButtonClickListener
 
@@ -26,55 +29,56 @@ class SignUpFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_sign_up, container, false)
+    ): View {
+        _binding = FragmentSignUpBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        editTextEmail.editText!!.addTextChangedListener(object : TextWatcher {
+        binding.editTextEmail.editText!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                if (editTextEmail.editText!!.text.trim().isNotEmpty()) {
-                    editTextEmail.error = ""
+                if (binding.editTextEmail.editText!!.text.trim().isNotEmpty()) {
+                    binding.editTextEmail.error = ""
                 } else {
-                    editTextEmail.error = getString(R.string.this_field_is_required)
+                    binding.editTextEmail.error = getString(R.string.this_field_is_required)
                 }
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
-        editTextPassword.editText!!.addTextChangedListener(object : TextWatcher {
+        binding.editTextPassword.editText!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                if (editTextPassword.editText!!.text.trim().isNotEmpty()) {
-                    editTextPassword.error = ""
+                if (binding.editTextPassword.editText!!.text.trim().isNotEmpty()) {
+                    binding.editTextPassword.error = ""
                 } else {
-                    editTextPassword.error = getString(R.string.this_field_is_required)
+                    binding.editTextPassword.error = getString(R.string.this_field_is_required)
                 }
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
-        editTextFullName.editText!!.addTextChangedListener(object : TextWatcher {
+        binding.editTextFullName.editText!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                if (editTextFullName.editText!!.text.trim().isNotEmpty()) {
-                    editTextFullName.error = ""
+                if (binding.editTextFullName.editText!!.text.trim().isNotEmpty()) {
+                    binding.editTextFullName.error = ""
                 } else {
-                    editTextFullName.error = getString(R.string.this_field_is_required)
+                    binding.editTextFullName.error = getString(R.string.this_field_is_required)
                 }
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
-        editTextNickname.editText!!.addTextChangedListener(object : TextWatcher {
+        binding.editTextNickname.editText!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                if (editTextNickname.editText!!.text.trim().isNotEmpty()) {
-                    editTextNickname.error = ""
+                if (binding.editTextNickname.editText!!.text.trim().isNotEmpty()) {
+                    binding.editTextNickname.error = ""
                 } else {
-                    editTextNickname.error = getString(R.string.this_field_is_required)
+                    binding.editTextNickname.error = getString(R.string.this_field_is_required)
                 }
             }
 
@@ -82,47 +86,52 @@ class SignUpFragment : Fragment() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
 
-        buttonSignUp.setOnClickListener {
+        binding.buttonSignUp.setOnClickListener {
             var cancel = false
 
-            if (editTextEmail.editText!!.text.trim().isNotEmpty()) {
-                editTextEmail.error = ""
+            if (binding.editTextEmail.editText!!.text.trim().isNotEmpty()) {
+                binding.editTextEmail.error = ""
             } else {
-                editTextEmail.error = getString(R.string.this_field_is_required)
+                binding.editTextEmail.error = getString(R.string.this_field_is_required)
                 cancel = true
             }
-            if (editTextPassword.editText!!.text.trim().isNotEmpty()) {
-                editTextPassword.error = ""
+            if (binding.editTextPassword.editText!!.text.trim().isNotEmpty()) {
+                binding.editTextPassword.error = ""
             } else {
-                editTextPassword.error = getString(R.string.this_field_is_required)
+                binding.editTextPassword.error = getString(R.string.this_field_is_required)
                 cancel = true
             }
-            if (editTextFullName.editText!!.text.trim().isNotEmpty()) {
-                editTextFullName.error = ""
+            if (binding.editTextFullName.editText!!.text.trim().isNotEmpty()) {
+                binding.editTextFullName.error = ""
             } else {
-                editTextFullName.error = getString(R.string.this_field_is_required)
+                binding.editTextFullName.error = getString(R.string.this_field_is_required)
                 cancel = true
             }
-            if (editTextNickname.editText!!.text.trim().isNotEmpty()) {
-                editTextNickname.error = ""
+            if (binding.editTextNickname.editText!!.text.trim().isNotEmpty()) {
+                binding.editTextNickname.error = ""
             } else {
-                editTextNickname.error = getString(R.string.this_field_is_required)
+                binding.editTextNickname.error = getString(R.string.this_field_is_required)
                 cancel = true
             }
 
             if (!cancel) {
                 signUpButtonClickListener.signUpButtonClicked(
-                    editTextEmail.editText!!.text.toString(),
-                    editTextPassword.editText!!.text.toString(),
-                    editTextNickname.editText!!.text.toString(),
-                    editTextFullName.editText!!.text.toString()
+                    binding.editTextEmail.editText!!.text.toString(),
+                    binding.editTextPassword.editText!!.text.toString(),
+                    binding.editTextNickname.editText!!.text.toString(),
+                    binding.editTextFullName.editText!!.text.toString()
                 )
             }
         }
 
-        buttonBack.setOnClickListener {
+        binding.buttonBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     interface SignUpButtonClickListener {

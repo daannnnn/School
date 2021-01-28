@@ -7,25 +7,30 @@ import android.view.View
 import android.view.ViewGroup
 import com.dan.school.BuildConfig
 import com.dan.school.R
+import com.dan.school.databinding.FragmentAboutBinding
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
-import kotlinx.android.synthetic.main.fragment_about.*
 
 class AboutFragment : Fragment() {
+
+    private var _binding: FragmentAboutBinding? = null
+
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_about, container, false)
+    ): View {
+        _binding = FragmentAboutBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         val version = "${getString(R.string.version)} ${BuildConfig.VERSION_NAME}"
-        textViewVersion.text = version
+        binding.textViewVersion.text = version
 
-        relativeLayoutLicenses.setOnClickListener {
+        binding.relativeLayoutLicenses.setOnClickListener {
             LibsBuilder()
                 .withFields(R.string::class.java.fields)
                 .withActivityTitle(getString(R.string.licenses))
@@ -54,9 +59,14 @@ class AboutFragment : Fragment() {
                 .start(requireContext())
         }
 
-        buttonBack.setOnClickListener {
+        binding.buttonBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

@@ -9,9 +9,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.dan.school.R
-import kotlinx.android.synthetic.main.fragment_sign_in.*
+import com.dan.school.databinding.FragmentSignInBinding
 
 class SignInFragment : Fragment() {
+
+    private var _binding: FragmentSignInBinding? = null
+
+    private val binding get() = _binding!!
 
     private lateinit var signInButtonClickListener: SignInButtonClickListener
     private lateinit var forgotPasswordButtonClickListener: ForgotPasswordButtonClickListener
@@ -27,31 +31,32 @@ class SignInFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_sign_in, container, false)
+    ): View {
+        _binding = FragmentSignInBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        editTextEmail.editText!!.addTextChangedListener(object : TextWatcher {
+        binding.editTextEmail.editText!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                if (editTextEmail.editText!!.text.trim().isNotEmpty()) {
-                    editTextEmail.error = ""
+                if (binding.editTextEmail.editText!!.text.trim().isNotEmpty()) {
+                    binding.editTextEmail.error = ""
                 } else {
-                    editTextEmail.error = getString(R.string.this_field_is_required)
+                    binding.editTextEmail.error = getString(R.string.this_field_is_required)
                 }
             }
 
             override fun beforeTextChanged(s: CharSequence, start: Int, count: Int, after: Int) {}
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
-        editTextPassword.editText!!.addTextChangedListener(object : TextWatcher {
+        binding.editTextPassword.editText!!.addTextChangedListener(object : TextWatcher {
             override fun afterTextChanged(s: Editable) {
-                if (editTextPassword.editText!!.text.trim().isNotEmpty()) {
-                    editTextPassword.error = ""
+                if (binding.editTextPassword.editText!!.text.trim().isNotEmpty()) {
+                    binding.editTextPassword.error = ""
                 } else {
-                    editTextPassword.error = getString(R.string.this_field_is_required)
+                    binding.editTextPassword.error = getString(R.string.this_field_is_required)
                 }
             }
 
@@ -59,36 +64,41 @@ class SignInFragment : Fragment() {
             override fun onTextChanged(s: CharSequence, start: Int, before: Int, count: Int) {}
         })
 
-        buttonSignIn.setOnClickListener {
+        binding.buttonSignIn.setOnClickListener {
             var cancel = false
 
-            if (editTextEmail.editText!!.text.trim().isNotEmpty()) {
-                editTextEmail.error = ""
+            if (binding.editTextEmail.editText!!.text.trim().isNotEmpty()) {
+                binding.editTextEmail.error = ""
             } else {
-                editTextEmail.error = getString(R.string.this_field_is_required)
+                binding.editTextEmail.error = getString(R.string.this_field_is_required)
                 cancel = true
             }
-            if (editTextPassword.editText!!.text.trim().isNotEmpty()) {
-                editTextPassword.error = ""
+            if (binding.editTextPassword.editText!!.text.trim().isNotEmpty()) {
+                binding.editTextPassword.error = ""
             } else {
-                editTextPassword.error = getString(R.string.this_field_is_required)
+                binding.editTextPassword.error = getString(R.string.this_field_is_required)
                 cancel = true
             }
 
             if (!cancel) {
                 signInButtonClickListener.signInButtonClicked(
-                    editTextEmail.editText!!.text.toString(),
-                    editTextPassword.editText!!.text.toString()
+                    binding.editTextEmail.editText!!.text.toString(),
+                    binding.editTextPassword.editText!!.text.toString()
                 )
             }
         }
-        buttonForgotPassword.setOnClickListener {
+        binding.buttonForgotPassword.setOnClickListener {
             forgotPasswordButtonClickListener.forgotPasswordButtonClicked()
         }
 
-        buttonBack.setOnClickListener {
+        binding.buttonBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     interface SignInButtonClickListener {

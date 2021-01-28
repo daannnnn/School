@@ -7,12 +7,16 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.dan.school.R
-import kotlinx.android.synthetic.main.fragment_welcome.*
+import com.dan.school.databinding.FragmentWelcomeBinding
 
 private const val EMAIL_VERIFICATION_SENT = "email_verification_sent"
 private const val EMAIL = "email"
 
 class WelcomeFragment : Fragment() {
+
+    private var _binding: FragmentWelcomeBinding? = null
+
+    private val binding get() = _binding!!
 
     private lateinit var welcomeDoneButtonClickListener: WelcomeDoneButtonClickListener
 
@@ -41,21 +45,27 @@ class WelcomeFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_welcome, container, false)
+    ): View {
+        _binding = FragmentWelcomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
         if (emailVerificationSent) {
-            cardViewVerifyEmail.visibility = View.VISIBLE
+            binding.cardViewVerifyEmail.visibility = View.VISIBLE
             val message =
                 "${getString(R.string.a_verification_email_has_been_sent_to)} $email. ${getString(R.string.please_check_your_email_to_verify_your_account)}"
-            textViewVerifyEmailMessage.text = message
+            binding.textViewVerifyEmailMessage.text = message
         }
-        buttonDone.setOnClickListener {
+        binding.buttonDone.setOnClickListener {
             welcomeDoneButtonClickListener.welcomeDoneButtonClicked()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     interface WelcomeDoneButtonClickListener {

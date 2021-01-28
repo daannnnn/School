@@ -17,6 +17,7 @@ import androidx.fragment.app.Fragment
 import com.dan.school.ProgressBarDialog
 import com.dan.school.R
 import com.dan.school.School
+import com.dan.school.databinding.FragmentProfileBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
@@ -24,10 +25,13 @@ import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ServerValue
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.fragment_profile.*
 import kotlin.math.ceil
 
 class ProfileFragment : Fragment() {
+
+    private var _binding: FragmentProfileBinding? = null
+
+    private val binding get() = _binding!!
 
     private var isSendingVerificationEmail = false
     private var isEditMode = false
@@ -83,43 +87,44 @@ class ProfileFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_profile, container, false)
+    ): View {
+        _binding = FragmentProfileBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onResume() {
         super.onResume()
-        swipeRefreshLayout.isRefreshing = true
+        binding.swipeRefreshLayout.isRefreshing = true
         update()
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        constraintLayoutProfile.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        binding.constraintLayoutProfile.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
-        textViewNicknameDisplay.text = sharedPref.getString(School.NICKNAME, "")
-        textViewFullNameDisplay.text = sharedPref.getString(School.FULL_NAME, "")
+        binding.textViewNicknameDisplay.text = sharedPref.getString(School.NICKNAME, "")
+        binding.textViewFullNameDisplay.text = sharedPref.getString(School.FULL_NAME, "")
 
-        buttonSendVerificationEmail.setOnClickListener {
+        binding.buttonSendVerificationEmail.setOnClickListener {
             sendVerificationEmail()
         }
 
-        buttonEdit.setOnClickListener {
+        binding.buttonEdit.setOnClickListener {
             if (isEditMode) {
-                buttonEdit.setImageResource(R.drawable.ic_edit)
+                binding.buttonEdit.setImageResource(R.drawable.ic_edit)
                 setEditMode(false)
             } else {
-                buttonEdit.setImageResource(R.drawable.ic_check)
+                binding.buttonEdit.setImageResource(R.drawable.ic_check)
                 setEditMode(true)
             }
         }
 
-        buttonBack.setOnClickListener {
+        binding.buttonBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
 
-        buttonResetPassword.setOnClickListener {
+        binding.buttonResetPassword.setOnClickListener {
 
             val lastPasswordResetTime = sharedPref.getLong(
                 School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT,
@@ -180,9 +185,14 @@ class ProfileFragment : Fragment() {
             }
         }
 
-        swipeRefreshLayout.setOnRefreshListener {
+        binding.swipeRefreshLayout.setOnRefreshListener {
             update()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun showProgressBar() {
@@ -194,38 +204,40 @@ class ProfileFragment : Fragment() {
     }
 
     /**
-     * Updates the visibility of [groupEmail], [viewDivider],
-     * [buttonResetPassword] and [cardViewVerifyEmail] depending if a
+     * Updates the visibility of [FragmentProfileBinding.groupEmail],
+     * [FragmentProfileBinding.viewDivider],
+     * [FragmentProfileBinding.buttonResetPassword] and
+     * [FragmentProfileBinding.cardViewVerifyEmail] depending if a
      * user is signed-in and if the email is verified.
-     * Sets the text of [textViewEmailDisplay] to the current user's
-     * email.
+     * Sets the text of [FragmentProfileBinding.textViewEmailDisplay]
+     * to the current user's email.
      */
     private fun update() {
         val user = auth.currentUser
         if (user != null) {
 
-            groupEmail.visibility = View.VISIBLE
-            viewDivider.visibility = View.VISIBLE
-            buttonResetPassword.visibility = View.VISIBLE
+            binding.groupEmail.visibility = View.VISIBLE
+            binding.viewDivider.visibility = View.VISIBLE
+            binding.buttonResetPassword.visibility = View.VISIBLE
 
-            textViewEmailDisplay.text = user.email
-            cardViewVerifyEmail.isGone = user.isEmailVerified
+            binding.textViewEmailDisplay.text = user.email
+            binding.cardViewVerifyEmail.isGone = user.isEmailVerified
 
             user.reload().addOnCompleteListener {
                 if (it.isSuccessful) {
-                    textViewEmailDisplay.text = user.email
-                    cardViewVerifyEmail.isGone = user.isEmailVerified
+                    binding.textViewEmailDisplay.text = user.email
+                    binding.cardViewVerifyEmail.isGone = user.isEmailVerified
                 } else {
                     Toast.makeText(requireContext(), getString(R.string.failed_to_update), Toast.LENGTH_SHORT).show()
                 }
-                swipeRefreshLayout.isRefreshing = false
+                binding.swipeRefreshLayout.isRefreshing = false
             }
         } else {
-            groupEmail.visibility = View.GONE
-            viewDivider.visibility = View.GONE
-            buttonResetPassword.visibility = View.GONE
-            cardViewVerifyEmail.isGone = true
-            swipeRefreshLayout.isRefreshing = false
+            binding.groupEmail.visibility = View.GONE
+            binding.viewDivider.visibility = View.GONE
+            binding.buttonResetPassword.visibility = View.GONE
+            binding.cardViewVerifyEmail.isGone = true
+            binding.swipeRefreshLayout.isRefreshing = false
         }
     }
 
@@ -242,7 +254,7 @@ class ProfileFragment : Fragment() {
         if (time >= 30) {
             if (!isSendingVerificationEmail) {
                 isSendingVerificationEmail = true
-                cardViewVerifyEmail.visibility = View.VISIBLE
+                binding.cardViewVerifyEmail.visibility = View.VISIBLE
                 auth.currentUser?.sendEmailVerification()?.addOnCompleteListener {
                     if (it.isSuccessful) {
                         with(sharedPref.edit()) {
@@ -282,24 +294,24 @@ class ProfileFragment : Fragment() {
     }
 
     private fun setEditMode(editMode: Boolean) {
-        textFieldNickname.isVisible = editMode
-        textFieldFullName.isVisible = editMode
-        textViewNicknameDisplay.isVisible = !editMode
-        textViewFullNameDisplay.isVisible = !editMode
+        binding.textFieldNickname.isVisible = editMode
+        binding.textFieldFullName.isVisible = editMode
+        binding.textViewNicknameDisplay.isVisible = !editMode
+        binding.textViewFullNameDisplay.isVisible = !editMode
         if (editMode) {
-            textFieldNickname.editText?.setText(sharedPref.getString(School.NICKNAME, ""))
-            textFieldFullName.editText?.setText(sharedPref.getString(School.FULL_NAME, ""))
+            binding.textFieldNickname.editText?.setText(sharedPref.getString(School.NICKNAME, ""))
+            binding.textFieldFullName.editText?.setText(sharedPref.getString(School.FULL_NAME, ""))
         } else {
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
-            val nickname = textFieldNickname.editText?.text.toString()
-            val fullName = textFieldFullName.editText?.text.toString()
+            val nickname = binding.textFieldNickname.editText?.text.toString()
+            val fullName = binding.textFieldFullName.editText?.text.toString()
             sharedPref.edit {
                 putString(School.NICKNAME, nickname)
                 putString(School.FULL_NAME, fullName)
                 commit()
             }
-            textViewNicknameDisplay.text = nickname
-            textViewFullNameDisplay.text = fullName
+            binding.textViewNicknameDisplay.text = nickname
+            binding.textViewFullNameDisplay.text = fullName
 
             sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, false).apply()
 

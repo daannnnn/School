@@ -9,6 +9,7 @@ import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.dan.school.databinding.ActivityMainBinding
 import com.dan.school.fragments.CompletedFragment
 import com.dan.school.fragments.OverviewFragment
 import com.dan.school.settings.SettingsActivity
@@ -21,10 +22,11 @@ import com.google.firebase.database.*
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
-import kotlinx.android.synthetic.main.activity_main.*
 
 class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
     OverviewFragment.ClickCounterListener {
+
+    private lateinit var binding: ActivityMainBinding
 
     /**
      * Saves the last click time from FAB, BottomNavigationView, and
@@ -49,7 +51,8 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         Firebase.messaging.subscribeToTopic(School.UPDATES)
         Firebase.messaging.subscribeToTopic("v${BuildConfig.VERSION_NAME}")
@@ -68,7 +71,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
         manageProfileUpdates()
 
         if (savedInstanceState == null) {  // to prevent multiple creation of instances
-            navigationView.menu.getItem(0).isChecked = true
+            binding.navigationView.menu.getItem(0).isChecked = true
             supportFragmentManager.beginTransaction()
                 .add(
                     R.id.frameLayoutMain,
@@ -122,19 +125,19 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
                 }
             }
         sharedPref.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
-        navigationView.setNavigationItemSelectedListener { item ->
+        binding.navigationView.setNavigationItemSelectedListener { item ->
             if (!item.isChecked) {
-                drawerLayout.closeDrawers()
+                binding.drawerLayout.closeDrawers()
 
                 when (item.itemId) {
                     R.id.overview -> {
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                         if (supportFragmentManager.backStackEntryCount != 0) {
                             supportFragmentManager.popBackStackImmediate()
                         }
                     }
                     R.id.completed -> {
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                         supportFragmentManager.beginTransaction()
                             .add(R.id.frameLayoutMain, CompletedFragment(), School.COMPLETED)
                             .addToBackStack(School.COMPLETED)
@@ -145,7 +148,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
                     }
                 }
             } else {
-                drawerLayout.closeDrawers()
+                binding.drawerLayout.closeDrawers()
             }
             return@setNavigationItemSelectedListener true
         }
@@ -153,7 +156,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
             if (supportFragmentManager.backStackEntryCount == 0) {
                 if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
                     showFragment(School.OVERVIEW)
-                    navigationView.setCheckedItem(R.id.overview)
+                    binding.navigationView.setCheckedItem(R.id.overview)
                 }
             } else {
                 if (supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name
@@ -161,7 +164,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
                 ) {
                     if (supportFragmentManager.findFragmentByTag(School.COMPLETED) != null) {
                         showFragment(School.COMPLETED)
-                        navigationView.setCheckedItem(R.id.completed)
+                        binding.navigationView.setCheckedItem(R.id.completed)
                     }
                     if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
                         supportFragmentManager.beginTransaction()
@@ -271,13 +274,13 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
 
     /** Sets [R.id.textViewNickname] text to [nickname] */
     private fun setNavigationViewHeaderNickname(nickname: String?) {
-        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewNickname).text =
+        binding.navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewNickname).text =
             nickname
     }
 
     /** Sets [R.id.textViewFullName] text to [fullName] */
     private fun setNavigationViewHeaderFullName(fullName: String?) {
-        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewFullName).text =
+        binding.navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewFullName).text =
             fullName
     }
 
@@ -325,7 +328,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
     }
 
     override fun openDrawer() {
-        drawerLayout.openDrawer(GravityCompat.START)
+        binding.drawerLayout.openDrawer(GravityCompat.START)
     }
 
     /**

@@ -8,17 +8,20 @@ import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
 import com.dan.school.R
 import com.dan.school.School
+import com.dan.school.databinding.ActivitySettingsBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
-import kotlinx.android.synthetic.main.fragment_settings.*
 
 class SettingsActivity : AppCompatActivity(), SettingsFragment.SettingsItemOnClickListener,
     BackupFragment.SettingsGoToFragmentListener {
+
+    private lateinit var binding: ActivitySettingsBinding
 
     private lateinit var sharedPref: SharedPreferences
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_settings)
+        binding = ActivitySettingsBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         sharedPref = getSharedPreferences(
             getString(R.string.preference_file_key), Context.MODE_PRIVATE

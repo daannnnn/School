@@ -10,12 +10,16 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.dan.school.*
 import com.dan.school.adapters.HomeworkExamTaskTabLayoutAdapter
+import com.dan.school.databinding.FragmentHomeBinding
 import com.dan.school.models.Item
 import com.google.android.material.tabs.TabLayout
-import kotlinx.android.synthetic.main.fragment_home.*
 
 class HomeFragment : Fragment(),
     ItemClickListener {
+
+    private var _binding: FragmentHomeBinding? = null
+
+    private val binding get() = _binding!!
 
     val categoryColors = ArrayList<Int>()
 
@@ -38,8 +42,9 @@ class HomeFragment : Fragment(),
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_home, container, false)
+    ): View {
+        _binding = FragmentHomeBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -86,10 +91,10 @@ class HomeFragment : Fragment(),
             childFragmentManager
         )
 
-        viewPager.adapter = adapter
-        tabLayout.setupWithViewPager(viewPager)
+        binding.viewPager.adapter = adapter
+        binding.tabLayout.setupWithViewPager(binding.viewPager)
 
-        tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
+        binding.tabLayout.addOnTabSelectedListener(object : TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {}
 
             override fun onTabUnselected(tab: TabLayout.Tab?) {}
@@ -100,9 +105,9 @@ class HomeFragment : Fragment(),
                 if (this@HomeFragment::selectedTabChangeListener.isInitialized) {
                     selectedTabChangeListener.selectedTabChanged(position)
                 }
-                tabLayout.setSelectedTabIndicatorColor(categoryColors[position])
-                tabLayout.setTabTextColors(
-                    tabLayout.tabTextColors!!.defaultColor,
+                binding.tabLayout.setSelectedTabIndicatorColor(categoryColors[position])
+                binding.tabLayout.setTabTextColors(
+                    binding.tabLayout.tabTextColors!!.defaultColor,
                     categoryColors[position]
                 )
                 setLastSelectedTab(position)
@@ -110,14 +115,19 @@ class HomeFragment : Fragment(),
         })
         // [END configure TabLayout and ViewPager]
 
-        tabLayout.selectTab(
-            tabLayout.getTabAt(
+        binding.tabLayout.selectTab(
+            binding.tabLayout.getTabAt(
                 sharedPref.getInt(
                     School.SELECTED_TAB_FRAGMENT,
                     School.HOMEWORK
                 )
             )
         )
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     /**
@@ -136,7 +146,7 @@ class HomeFragment : Fragment(),
     }
 
     fun getSelectedTabPosition(): Int {
-        return tabLayout.selectedTabPosition
+        return binding.tabLayout.selectedTabPosition
     }
 
     override fun itemClicked(item: Item) {
@@ -146,7 +156,7 @@ class HomeFragment : Fragment(),
     }
 
     /**
-     * Callback to be invoked every time [tabLayout]
+     * Callback to be invoked every time [FragmentHomeBinding.tabLayout]
      * selected tab is changed
      */
     interface SelectedTabChangeListener {

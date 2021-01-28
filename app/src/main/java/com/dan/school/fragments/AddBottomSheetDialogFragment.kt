@@ -18,12 +18,12 @@ import com.dan.school.School
 import com.dan.school.School.categoryChipBackgroundColorStateList
 import com.dan.school.School.categoryChipStrokeColorStateList
 import com.dan.school.School.categoryColors
+import com.dan.school.databinding.LayoutAddBottomSheetBinding
 import com.dan.school.models.Item
 import com.google.android.material.bottomsheet.BottomSheetBehavior
 import com.google.android.material.bottomsheet.BottomSheetDialog
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.android.material.button.MaterialButton
-import kotlinx.android.synthetic.main.layout_add_bottom_sheet.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -35,6 +35,10 @@ class AddBottomSheetDialogFragment(
 ) :
     BottomSheetDialogFragment(), DatePickerDialog.OnDateSetListener,
     DatePickerFragment.OnCancelListener {
+
+    private var _binding: LayoutAddBottomSheetBinding? = null
+
+    private val binding get() = _binding!!
 
     private lateinit var inputMethodManager: InputMethodManager
 
@@ -59,14 +63,15 @@ class AddBottomSheetDialogFragment(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
+    ): View {
         inputMethodManager =
             requireContext().getSystemService(Context.INPUT_METHOD_SERVICE) as InputMethodManager
         inputMethodManager.toggleSoftInput(
             InputMethodManager.SHOW_FORCED,
             0
         )
-        return inflater.inflate(R.layout.layout_add_bottom_sheet, container, false)
+        _binding = LayoutAddBottomSheetBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -81,12 +86,12 @@ class AddBottomSheetDialogFragment(
                 sheet.parent.parent.requestLayout()
             }
         }
-        buttonShowAllDetails.setOnClickListener {
+        binding.buttonShowAllDetails.setOnClickListener {
             when (chipGroupSelected) {
                 School.PICK_DATE -> {
                     listener.goToEditFragment(
                         category,
-                        editTextTitle.text.toString(),
+                        binding.editTextTitle.text.toString(),
                         School.PICK_DATE,
                         selectedDate
                     )
@@ -94,45 +99,45 @@ class AddBottomSheetDialogFragment(
                 else -> {
                     listener.goToEditFragment(
                         category,
-                        editTextTitle.text.toString(),
+                        binding.editTextTitle.text.toString(),
                         chipGroupSelected,
                         null
                     )
                 }
             }
         }
-        chipHomework.setOnClickListener {
+        binding.chipHomework.setOnClickListener {
             changeColors(School.HOMEWORK)
         }
-        chipExam.setOnClickListener {
+        binding.chipExam.setOnClickListener {
             changeColors(School.EXAM)
         }
-        chipTask.setOnClickListener {
+        binding.chipTask.setOnClickListener {
             changeColors(School.TASK)
         }
-        chipGroupDate.setOnCheckedChangeListener { _, checkedId ->
+        binding.chipGroupDate.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.chipToday -> {
-                    textViewDatePicked.text = dateFormat.format(dateToday.time)
+                    binding.textViewDatePicked.text = dateFormat.format(dateToday.time)
                     selectedDate = dateToday
                     chipGroupSelected = School.TODAY
                 }
                 R.id.chipTomorrow -> {
-                    textViewDatePicked.text = dateFormat.format(dateTomorrow.time)
+                    binding.textViewDatePicked.text = dateFormat.format(dateTomorrow.time)
                     selectedDate = dateTomorrow
                     chipGroupSelected = School.TOMORROW
                 }
             }
         }
-        chipPickDate.setOnClickListener {
+        binding.chipPickDate.setOnClickListener {
             val datePicker: DialogFragment =
                 DatePickerFragment(this, this)
             datePicker.show(childFragmentManager, null)
         }
-        buttonCheck.setOnClickListener {
+        binding.buttonCheck.setOnClickListener {
             val item = Item(
                 category = category,
-                title = editTextTitle.text.toString(),
+                title = binding.editTextTitle.text.toString(),
                 date = SimpleDateFormat(School.dateFormatOnDatabase, Locale.getDefault()).format(
                     selectedDate.time
                 ).toInt()
@@ -145,11 +150,16 @@ class AddBottomSheetDialogFragment(
         dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
         changeColors(category)
         if (isInitialDateFromCalendarFragment) {
-            chipGroupDate.check(R.id.chipPickDate)
+            binding.chipGroupDate.check(R.id.chipPickDate)
             dateSet(selectedDate[Calendar.YEAR], selectedDate[Calendar.MONTH], selectedDate[Calendar.DAY_OF_MONTH])
         } else {
-            chipGroupDate.check(R.id.chipToday)
+            binding.chipGroupDate.check(R.id.chipToday)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     /**
@@ -161,66 +171,66 @@ class AddBottomSheetDialogFragment(
     private fun changeColors(newCategory: Int) {
         val colorTo = ContextCompat.getColorStateList(requireContext(), categoryColors[newCategory])
         when {
-            chipHomework.isSelected -> {
-                chipHomework.isSelected = false
+            binding.chipHomework.isSelected -> {
+                binding.chipHomework.isSelected = false
             }
-            chipExam.isSelected -> {
-                chipExam.isSelected = false
+            binding.chipExam.isSelected -> {
+                binding.chipExam.isSelected = false
             }
-            chipTask.isSelected -> {
-                chipTask.isSelected = false
+            binding.chipTask.isSelected -> {
+                binding.chipTask.isSelected = false
             }
         }
         when (newCategory) {
             School.HOMEWORK -> {
-                chipHomework.chipBackgroundColor = ContextCompat.getColorStateList(
+                binding.chipHomework.chipBackgroundColor = ContextCompat.getColorStateList(
                     requireContext(),
                     categoryChipBackgroundColorStateList[newCategory]
                 )
-                chipHomework.isSelected = true
+                binding.chipHomework.isSelected = true
 
             }
             School.EXAM -> {
-                chipExam.chipBackgroundColor = ContextCompat.getColorStateList(
+                binding.chipExam.chipBackgroundColor = ContextCompat.getColorStateList(
                     requireContext(),
                     categoryChipBackgroundColorStateList[newCategory]
                 )
-                chipExam.isSelected = true
+                binding.chipExam.isSelected = true
             }
             School.TASK -> {
-                chipTask.chipBackgroundColor = ContextCompat.getColorStateList(
+                binding.chipTask.chipBackgroundColor = ContextCompat.getColorStateList(
                     requireContext(),
                     categoryChipBackgroundColorStateList[newCategory]
                 )
-                chipTask.isSelected = true
+                binding.chipTask.isSelected = true
             }
         }
-        editTextTitle.background.mutate().setTintList(colorTo)
-        textViewDatePicked.setTextColor(colorTo)
-        buttonCheck.imageTintList = colorTo
-        buttonShowAllDetails.setTextColor(colorTo)
-        (buttonShowAllDetails as MaterialButton).iconTint = colorTo
-        chipPickDate.chipBackgroundColor = ContextCompat.getColorStateList(
+        binding.editTextTitle.background.mutate().setTintList(colorTo)
+        binding.textViewDatePicked.setTextColor(colorTo)
+        binding.buttonCheck.imageTintList = colorTo
+        binding.buttonShowAllDetails.setTextColor(colorTo)
+        (binding.buttonShowAllDetails as MaterialButton).iconTint = colorTo
+        binding.chipPickDate.chipBackgroundColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipBackgroundColorStateList[newCategory]
         )
-        chipToday.chipBackgroundColor = ContextCompat.getColorStateList(
+        binding.chipToday.chipBackgroundColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipBackgroundColorStateList[newCategory]
         )
-        chipTomorrow.chipBackgroundColor = ContextCompat.getColorStateList(
+        binding.chipTomorrow.chipBackgroundColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipBackgroundColorStateList[newCategory]
         )
-        chipPickDate.chipStrokeColor = ContextCompat.getColorStateList(
+        binding.chipPickDate.chipStrokeColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipStrokeColorStateList[newCategory]
         )
-        chipToday.chipStrokeColor = ContextCompat.getColorStateList(
+        binding.chipToday.chipStrokeColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipStrokeColorStateList[newCategory]
         )
-        chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
+        binding.chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipStrokeColorStateList[newCategory]
         )
@@ -232,7 +242,7 @@ class AddBottomSheetDialogFragment(
         selectedDate.set(Calendar.YEAR, year)
         selectedDate.set(Calendar.MONTH, month)
         selectedDate.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-        textViewDatePicked.text = dateFormat.format(selectedDate.time)
+        binding.textViewDatePicked.text = dateFormat.format(selectedDate.time)
         chipGroupSelected = School.PICK_DATE
     }
 
@@ -247,9 +257,9 @@ class AddBottomSheetDialogFragment(
 
     override fun canceled() {
         when (chipGroupSelected) {
-            School.TODAY -> chipGroupDate.check(R.id.chipToday)
-            School.TOMORROW -> chipGroupDate.check(R.id.chipTomorrow)
-            School.PICK_DATE -> chipGroupDate.check(R.id.chipPickDate)
+            School.TODAY -> binding.chipGroupDate.check(R.id.chipToday)
+            School.TOMORROW -> binding.chipGroupDate.check(R.id.chipTomorrow)
+            School.PICK_DATE -> binding.chipGroupDate.check(R.id.chipPickDate)
         }
     }
 

@@ -6,7 +6,6 @@ import android.net.ConnectivityManager
 import android.net.NetworkCapabilities
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -21,6 +20,7 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.*
 import com.dan.school.adapters.BackupListAdapter
 import com.dan.school.authentication.AuthenticationActivity
+import com.dan.school.databinding.FragmentBackupBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.android.material.textfield.TextInputLayout
 import com.google.firebase.auth.FirebaseAuth
@@ -29,7 +29,6 @@ import com.google.firebase.ktx.Firebase
 import com.google.firebase.storage.FirebaseStorage
 import com.google.firebase.storage.StorageReference
 import com.google.firebase.storage.ktx.storage
-import kotlinx.android.synthetic.main.fragment_backup.*
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
@@ -38,6 +37,10 @@ import kotlin.system.exitProcess
 
 class BackupFragment : Fragment(), BackupItemClickListener,
     BackupListAdapter.BackupItemLongClickListener {
+
+    private var _binding: FragmentBackupBinding? = null
+
+    private val binding get() = _binding!!
 
     private val dataViewModel: DataViewModel by activityViewModels()
 
@@ -76,15 +79,16 @@ class BackupFragment : Fragment(), BackupItemClickListener,
     override fun onResume() {
         super.onResume()
 
-        swipeRefreshLayout.isRefreshing = true
+        binding.swipeRefreshLayout.isRefreshing = true
         check()
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_backup, container, false)
+    ): View {
+        _binding = FragmentBackupBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -96,12 +100,12 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             this@BackupFragment
         )
 
-        recyclerViewBackups.apply {
+        binding.recyclerViewBackups.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = backupListAdapter
         }
 
-        buttonCreateBackup.setOnClickListener {
+        binding.buttonCreateBackup.setOnClickListener {
             if (isNetworkAvailable(requireContext())) {
                 showProgressBar()
                 dataViewModel.checkpoint()
@@ -130,28 +134,33 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             }
         }
 
-        buttonRetry.setOnClickListener {
-            swipeRefreshLayout.isRefreshing = true
+        binding.buttonRetry.setOnClickListener {
+            binding.swipeRefreshLayout.isRefreshing = true
             swipeRefreshUpdate()
         }
 
-        buttonSignIn.setOnClickListener {
+        binding.buttonSignIn.setOnClickListener {
             val intent = Intent(requireContext(), AuthenticationActivity::class.java)
             intent.putExtra(School.FROM_SETUP, false)
             startActivity(intent)
         }
 
-        buttonProfile.setOnClickListener {
+        binding.buttonProfile.setOnClickListener {
             settingsGoToFragmentListener.goToFragment(School.PROFILE)
         }
 
-        buttonBack.setOnClickListener {
+        binding.buttonBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
 
-        swipeRefreshLayout.setOnRefreshListener {
+        binding.swipeRefreshLayout.setOnRefreshListener {
             swipeRefreshUpdate()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun swipeRefreshUpdate() {
@@ -168,14 +177,14 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                                 val user = auth.currentUser
                                 if (user != null && user.isEmailVerified) {
                                     updateBackupList {
-                                        swipeRefreshLayout.isRefreshing = false
+                                        binding.swipeRefreshLayout.isRefreshing = false
                                     }
                                 } else {
-                                    groupBackupLayout.visibility = View.GONE
-                                    groupInternetRequired.visibility = View.GONE
-                                    groupAccountRequired.visibility = View.GONE
-                                    groupVerificationRequired.visibility = View.VISIBLE
-                                    swipeRefreshLayout.isRefreshing = false
+                                    binding.groupBackupLayout.visibility = View.GONE
+                                    binding.groupInternetRequired.visibility = View.GONE
+                                    binding.groupAccountRequired.visibility = View.GONE
+                                    binding.groupVerificationRequired.visibility = View.VISIBLE
+                                    binding.swipeRefreshLayout.isRefreshing = false
                                 }
                             } else {
                                 Toast.makeText(
@@ -183,7 +192,7 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                                     getString(R.string.error_while_getting_list_of_backups),
                                     Toast.LENGTH_LONG
                                 ).show()
-                                swipeRefreshLayout.isRefreshing = false
+                                binding.swipeRefreshLayout.isRefreshing = false
                             }
                         }
                     } else {
@@ -192,22 +201,22 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                             getString(R.string.error_while_getting_list_of_backups),
                             Toast.LENGTH_LONG
                         ).show()
-                        swipeRefreshLayout.isRefreshing = false
+                        binding.swipeRefreshLayout.isRefreshing = false
                     }
                 }
             } else {
-                groupBackupLayout.visibility = View.GONE
-                groupInternetRequired.visibility = View.GONE
-                groupAccountRequired.visibility = View.VISIBLE
-                groupVerificationRequired.visibility = View.GONE
-                swipeRefreshLayout.isRefreshing = false
+                binding.groupBackupLayout.visibility = View.GONE
+                binding.groupInternetRequired.visibility = View.GONE
+                binding.groupAccountRequired.visibility = View.VISIBLE
+                binding.groupVerificationRequired.visibility = View.GONE
+                binding.swipeRefreshLayout.isRefreshing = false
             }
         } else {
-            groupBackupLayout.visibility = View.GONE
-            groupInternetRequired.visibility = View.VISIBLE
-            groupAccountRequired.visibility = View.GONE
-            groupVerificationRequired.visibility = View.GONE
-            swipeRefreshLayout.isRefreshing = false
+            binding.groupBackupLayout.visibility = View.GONE
+            binding.groupInternetRequired.visibility = View.VISIBLE
+            binding.groupAccountRequired.visibility = View.GONE
+            binding.groupVerificationRequired.visibility = View.GONE
+            binding.swipeRefreshLayout.isRefreshing = false
         }
     }
 
@@ -223,13 +232,13 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                         }
                     }
 
-                    groupBackupLayout.visibility = View.VISIBLE
-                    groupInternetRequired.visibility = View.GONE
-                    groupAccountRequired.visibility = View.GONE
-                    groupVerificationRequired.visibility = View.GONE
+                    binding.groupBackupLayout.visibility = View.VISIBLE
+                    binding.groupInternetRequired.visibility = View.GONE
+                    binding.groupAccountRequired.visibility = View.GONE
+                    binding.groupVerificationRequired.visibility = View.GONE
 
-                    textViewNoBackupsYet.isGone = backupList.isNotEmpty()
-                    recyclerViewBackups.isVisible = backupList.isNotEmpty()
+                    binding.textViewNoBackupsYet.isGone = backupList.isNotEmpty()
+                    binding.recyclerViewBackups.isVisible = backupList.isNotEmpty()
                     backupListAdapter.submitList(backupList)
                 } else {
                     Toast.makeText(

@@ -18,8 +18,8 @@ import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.BaseItemListAdapter
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.adapters.UpcomingItemListAdapter
+import com.dan.school.databinding.FragmentAgendaBinding
 import com.dan.school.models.*
-import kotlinx.android.synthetic.main.fragment_agenda.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -30,6 +30,10 @@ class AgendaFragment : Fragment(),
     ItemClickListener,
     BaseItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialogFragment.ConfirmDeleteListener {
+
+    private var _binding: FragmentAgendaBinding? = null
+
+    private val binding get() = _binding!!
 
     private lateinit var itemClickListener: ItemClickListener
 
@@ -68,8 +72,9 @@ class AgendaFragment : Fragment(),
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_agenda, container, false)
+    ): View {
+        _binding = FragmentAgendaBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -121,23 +126,23 @@ class AgendaFragment : Fragment(),
             this
         )
 
-        recyclerViewOverdue.apply {
+        binding.recyclerViewOverdue.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = overdueListAdapter
         }
-        recyclerViewHomeworks.apply {
+        binding.recyclerViewHomeworks.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = homeworkListAdapter
         }
-        recyclerViewExams.apply {
+        binding.recyclerViewExams.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = examListAdapter
         }
-        recyclerViewTasks.apply {
+        binding.recyclerViewTasks.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = taskListAdapter
         }
-        recyclerViewUpcoming.apply {
+        binding.recyclerViewUpcoming.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = upcomingItemListAdapter
         }
@@ -150,9 +155,9 @@ class AgendaFragment : Fragment(),
         dataViewModel.getAllOverdueItemsByDate(todayDateInt)
             .observe(viewLifecycleOwner, { overdueItems ->
                 if (overdueItems.isEmpty()) {
-                    groupOverdue.visibility = View.GONE
+                    binding.groupOverdue.visibility = View.GONE
                 } else {
-                    groupOverdue.visibility = View.VISIBLE
+                    binding.groupOverdue.visibility = View.VISIBLE
                 }
                 overdueListAdapter.submitList(overdueItems) {
                     refreshShowEmptyMessageVisibility()
@@ -162,9 +167,9 @@ class AgendaFragment : Fragment(),
         dataViewModel.getAllHomeworkByDate(todayDateInt)
             .observe(viewLifecycleOwner, { homeworks ->
                 if (homeworks.isEmpty()) {
-                    groupHomework.visibility = View.GONE
+                    binding.groupHomework.visibility = View.GONE
                 } else {
-                    groupHomework.visibility = View.VISIBLE
+                    binding.groupHomework.visibility = View.VISIBLE
                 }
                 homeworkListAdapter.submitList(homeworks) {
                     refreshShowEmptyMessageVisibility()
@@ -174,9 +179,9 @@ class AgendaFragment : Fragment(),
         dataViewModel.getAllExamByDate(todayDateInt)
             .observe(viewLifecycleOwner, { exams ->
                 if (exams.isEmpty()) {
-                    groupExam.visibility = View.GONE
+                    binding.groupExam.visibility = View.GONE
                 } else {
-                    groupExam.visibility = View.VISIBLE
+                    binding.groupExam.visibility = View.VISIBLE
                 }
                 examListAdapter.submitList(exams) {
                     refreshShowEmptyMessageVisibility()
@@ -186,9 +191,9 @@ class AgendaFragment : Fragment(),
         dataViewModel.getAllTaskByDate(todayDateInt)
             .observe(viewLifecycleOwner, { tasks ->
                 if (tasks.isEmpty()) {
-                    groupTask.visibility = View.GONE
+                    binding.groupTask.visibility = View.GONE
                 } else {
-                    groupTask.visibility = View.VISIBLE
+                    binding.groupTask.visibility = View.VISIBLE
                 }
                 taskListAdapter.submitList(tasks) {
                     refreshShowEmptyMessageVisibility()
@@ -198,24 +203,29 @@ class AgendaFragment : Fragment(),
         dataViewModel.getUpcomingItems(todayDateInt)
             .observe(viewLifecycleOwner, { upcomingItems ->
                 if (upcomingItems.isEmpty()) {
-                    groupUpcoming.visibility = View.GONE
-                    viewDivider.visibility = View.GONE
+                    binding.groupUpcoming.visibility = View.GONE
+                    binding.viewDivider.visibility = View.GONE
                     upcomingItemListAdapter.submitList(ArrayList())
                 } else {
-                    groupUpcoming.visibility = View.VISIBLE
-                    viewDivider.visibility = View.VISIBLE
+                    binding.groupUpcoming.visibility = View.VISIBLE
+                    binding.viewDivider.visibility = View.VISIBLE
                     updateUpcoming(upcomingItems)
                 }
             })
 
-        buttonSeeTomorrow.setOnClickListener {
+        binding.buttonSeeTomorrow.setOnClickListener {
             AgendaTomorrowFragment().show(childFragmentManager, null)
         }
 
-        textViewDate.text =
+        binding.textViewDate.text =
             SimpleDateFormat(School.displayDateFormat, Locale.getDefault()).format(dateToday.time)
 
-        constraintLayoutAgendaMain.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        binding.constraintLayoutAgendaMain.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     private fun updateUpcoming(upcomingItems: List<Item>) {
@@ -241,11 +251,11 @@ class AgendaFragment : Fragment(),
     }
 
     /**
-     * Updates [textViewGreeting] text with
+     * Updates [FragmentAgendaBinding.textViewGreeting] text with
      * appropriate greeting to given [nickname]
      */
     private fun updateGreeting(nickname: String?) {
-        textViewGreeting.text = when (hourOfDay) {
+        binding.textViewGreeting.text = when (hourOfDay) {
             in 5..11 -> {
                 "${getString(R.string.good_morning)}, $nickname!"
             }
@@ -259,7 +269,7 @@ class AgendaFragment : Fragment(),
     }
 
     /**
-     * Hides, shows and sets [textViewMessage] visibility
+     * Hides, shows and sets [FragmentAgendaBinding.textViewMessage] visibility
      * and text depending on list contents
      */
     private fun refreshShowEmptyMessageVisibility() {
@@ -268,20 +278,20 @@ class AgendaFragment : Fragment(),
             examListAdapter.currentList.isEmpty() &&
             taskListAdapter.currentList.isEmpty()
         ) {
-            textViewMessage.setText(R.string.you_don_t_have_anything_scheduled_for_today)
+            binding.textViewMessage.setText(R.string.you_don_t_have_anything_scheduled_for_today)
         } else if (overdueListAdapter.currentList.isEmpty() &&
             homeworkListAdapter.allItemsDone() &&
             examListAdapter.allItemsDone() &&
             taskListAdapter.allItemsDone()
         ) {
-            textViewMessage.setText(R.string.all_done)
+            binding.textViewMessage.setText(R.string.all_done)
         } else {
-            cardViewMessage.isGone = true
+            binding.cardViewMessage.isGone = true
             return
         }
-        cardViewMessage.isVisible = true
+        binding.cardViewMessage.isVisible = true
 
-        buttonSeeTomorrow.isVisible = dataViewModel.hasItemsForDate(
+        binding.buttonSeeTomorrow.isVisible = dataViewModel.hasItemsForDate(
             SimpleDateFormat(
                 School.dateFormatOnDatabase,
                 Locale.getDefault()

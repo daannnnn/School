@@ -10,6 +10,7 @@ import com.dan.school.MainActivity
 import com.dan.school.R
 import com.dan.school.School
 import com.dan.school.authentication.AuthenticationActivity
+import com.dan.school.databinding.ActivitySetupBinding
 import com.google.firebase.auth.FirebaseAuth
 import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
@@ -20,6 +21,8 @@ import com.google.firebase.messaging.ktx.messaging
 
 class SetupActivity : AppCompatActivity() {
 
+    private lateinit var binding: ActivitySetupBinding
+
     private lateinit var sharedPref: SharedPreferences
 
     private lateinit var auth: FirebaseAuth
@@ -27,7 +30,8 @@ class SetupActivity : AppCompatActivity() {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_setup)
+        binding = ActivitySetupBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         Firebase.messaging.subscribeToTopic(School.UPDATES)
         Firebase.messaging.subscribeToTopic("v${BuildConfig.VERSION_NAME}")

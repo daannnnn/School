@@ -12,11 +12,11 @@ import com.dan.school.School.categoryCheckedIcons
 import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.BaseItemListAdapter
 import com.dan.school.adapters.ItemListAdapter
+import com.dan.school.databinding.FragmentCompletedNotGroupedBinding
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.fragment_completed_not_grouped.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -25,6 +25,10 @@ class CompletedNotGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener
     BaseItemListAdapter.ShowSubtasksListener, ItemClickListener, BaseItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialogFragment.ConfirmDeleteListener {
 
+    private var _binding: FragmentCompletedNotGroupedBinding? = null
+
+    private val binding get() = _binding!!
+
     private lateinit var completedNotGroupedListAdapter: ItemListAdapter
 
     private val dataViewModel: DataViewModel by activityViewModels()
@@ -32,8 +36,9 @@ class CompletedNotGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_completed_not_grouped, container, false)
+    ): View {
+        _binding = FragmentCompletedNotGroupedBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -47,7 +52,7 @@ class CompletedNotGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener
             this
         )
 
-        recyclerViewCompletedNotGrouped.apply {
+        binding.recyclerViewCompletedNotGrouped.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = completedNotGroupedListAdapter
         }
@@ -55,6 +60,11 @@ class CompletedNotGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener
         dataViewModel.getDoneItems().observe(viewLifecycleOwner, { overdueItems ->
             completedNotGroupedListAdapter.submitList(overdueItems)
         })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun setDone(id: Int, done: Boolean, doneTime: Long?) {

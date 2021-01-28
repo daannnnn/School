@@ -31,12 +31,11 @@ import com.dan.school.School.categoryColors
 import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.CategoryViewPagerAdapter
 import com.dan.school.adapters.SubtaskListAdapter
+import com.dan.school.databinding.FragmentEditBinding
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.google.android.material.button.MaterialButton
-import com.google.android.material.card.MaterialCardView
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.fragment_edit.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.collections.ArrayList
@@ -55,6 +54,10 @@ private const val ITEM_ID = "itemId"
 class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     DatePickerDialog.OnDateSetListener,
     DatePickerFragment.OnCancelListener, ConfirmDeleteDialogFragment.ConfirmDeleteListener {
+
+    private var _binding: FragmentEditBinding? = null
+
+    private val binding get() = _binding!!
 
     private lateinit var categoryChangeListener: CategoryChangeListener
     private lateinit var dismissBottomSheetListener: DismissBottomSheetListener
@@ -132,8 +135,9 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_edit, container, false)
+    ): View {
+        _binding = FragmentEditBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -151,8 +155,8 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             )
         )
 
-        viewPagerCategory.adapter = viewPagerAdapter
-        viewPagerCategory.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
+        binding.viewPagerCategory.adapter = viewPagerAdapter
+        binding.viewPagerCategory.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrollStateChanged(state: Int) {}
             override fun onPageScrolled(
                 position: Int,
@@ -162,13 +166,13 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             }
 
             override fun onPageSelected(position: Int) {
-                val realPosition = viewPagerCategory.currentItem
+                val realPosition = binding.viewPagerCategory.currentItem
                 changeColors(realPosition)
             }
         })
 
         // listeners
-        buttonAddSubtask.setOnClickListener {
+        binding.buttonAddSubtask.setOnClickListener {
             subtaskListAdapter.data.add(Subtask())
             subtaskListAdapter.notifyItemInserted(subtaskListAdapter.itemCount - 1)
             inputMethodManager.toggleSoftInput(
@@ -176,32 +180,32 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                 0
             )
         }
-        chipGroupDate.setOnCheckedChangeListener { _, checkedId ->
+        binding.chipGroupDate.setOnCheckedChangeListener { _, checkedId ->
             when (checkedId) {
                 R.id.chipToday -> {
-                    textViewDatePicked.text = dateFormat.format(dateToday.time)
+                    binding.textViewDatePicked.text = dateFormat.format(dateToday.time)
                     selectedDate = dateToday
                     chipGroupSelected = School.TODAY
                 }
                 R.id.chipTomorrow -> {
-                    textViewDatePicked.text = dateFormat.format(dateTomorrow.time)
+                    binding.textViewDatePicked.text = dateFormat.format(dateTomorrow.time)
                     selectedDate = dateTomorrow
                     chipGroupSelected = School.TOMORROW
                 }
             }
         }
-        chipPickDate.setOnClickListener {
+        binding.chipPickDate.setOnClickListener {
             val datePicker: DialogFragment =
                 DatePickerFragment(this, this)
             datePicker.show(childFragmentManager, null)
         }
-        buttonCheck.setOnClickListener {
+        binding.buttonCheck.setOnClickListener {
             saveData()
         }
-        buttonBack.setOnClickListener {
+        binding.buttonBack.setOnClickListener {
             dismiss()
         }
-        buttonDelete.setOnClickListener {
+        binding.buttonDelete.setOnClickListener {
             if (isEdit) {
                 itemId?.let { it1 ->
                     ConfirmDeleteDialogFragment(
@@ -212,20 +216,20 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                 }
             }
         }
-        buttonFinish.setOnClickListener {
+        binding.buttonFinish.setOnClickListener {
             if (isEdit) {
                 val item = Item(
                     id = itemId!!,
                     category = category,
                     done = !done,
                     doneTime = Calendar.getInstance().timeInMillis,
-                    title = editTextTitle.text.toString(),
+                    title = binding.editTextTitle.text.toString(),
                     date = SimpleDateFormat(
                         School.dateFormatOnDatabase,
                         Locale.getDefault()
                     ).format(selectedDate!!.time).toInt(),
                     subtasks = Gson().toJson(subtaskListAdapter.data),
-                    notes = editTextNotes.text.toString()
+                    notes = binding.editTextNotes.text.toString()
                 )
                 dataViewModel.update(item)
                 dismiss()
@@ -234,38 +238,38 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
 
         // [START] initialize
         dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
-        textViewDatePicked.setTextColor(
+        binding.textViewDatePicked.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
                 categoryColors[category]
             )
         )
-        editTextTitle.setText(title)
+        binding.editTextTitle.setText(title)
         when (chipGroupSelected) {
             School.TODAY -> {
-                chipGroupDate.check(R.id.chipToday)
-                textViewDatePicked.text = dateFormat.format(dateToday.time)
+                binding.chipGroupDate.check(R.id.chipToday)
+                binding.textViewDatePicked.text = dateFormat.format(dateToday.time)
                 selectedDate = dateToday
             }
             School.TOMORROW -> {
-                chipGroupDate.check(R.id.chipTomorrow)
-                textViewDatePicked.text = dateFormat.format(dateTomorrow.time)
+                binding.chipGroupDate.check(R.id.chipTomorrow)
+                binding.textViewDatePicked.text = dateFormat.format(dateTomorrow.time)
                 selectedDate = dateTomorrow
             }
             School.PICK_DATE -> {
-                chipGroupDate.check(R.id.chipPickDate)
-                textViewDatePicked.text = dateFormat.format(selectedDate!!.time)
+                binding.chipGroupDate.check(R.id.chipPickDate)
+                binding.textViewDatePicked.text = dateFormat.format(selectedDate!!.time)
             }
         }
 
         if (category == School.HOMEWORK) {
             changeColors(category)
         } else {
-            viewPagerCategory.currentItem += category
+            binding.viewPagerCategory.currentItem += category
         }
 
         // [START] configure subtasks list
-        editTextNotes.setText(notes)
+        binding.editTextNotes.setText(notes)
         subtaskListAdapter = SubtaskListAdapter(
             requireContext(),
             this,
@@ -274,17 +278,17 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             subtasks,
             !isEdit
         )
-        recyclerViewSubtasks.layoutManager = LinearLayoutManager(context)
-        recyclerViewSubtasks.adapter = subtaskListAdapter
+        binding.recyclerViewSubtasks.layoutManager = LinearLayoutManager(context)
+        binding.recyclerViewSubtasks.adapter = subtaskListAdapter
         // [END] configure subtasks list
 
         if (!isEdit) {
-            editTextTitle.requestFocus()
+            binding.editTextTitle.requestFocus()
         }
-        linearLayoutBottomButtons.isVisible = isEdit
-        cardViewCompleted.isVisible = done.apply {
+        binding.linearLayoutBottomButtons.isVisible = isEdit
+        binding.cardViewCompleted.isVisible = done.apply {
             if (this && doneTime != null) {
-                textViewDateCompleted.text =
+                binding.textViewDateCompleted.text =
                     SimpleDateFormat(School.dateTimeFormat, Locale.getDefault()).format(
                         Calendar.getInstance().apply {
                             timeInMillis = doneTime!!
@@ -292,9 +296,14 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                     )
             }
         }
-        buttonFinish.text =
+        binding.buttonFinish.text =
             if (done) resources.getString(R.string.uncheck) else resources.getString(R.string.check)
         // [END] initialize
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     /**
@@ -309,26 +318,26 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
                     category = category,
                     done = done,
                     doneTime = doneTime,
-                    title = editTextTitle.text.toString(),
+                    title = binding.editTextTitle.text.toString(),
                     date = SimpleDateFormat(
                         School.dateFormatOnDatabase,
                         Locale.getDefault()
                     ).format(selectedDate!!.time).toInt(),
                     subtasks = Gson().toJson(subtaskListAdapter.data),
-                    notes = editTextNotes.text.toString()
+                    notes = binding.editTextNotes.text.toString()
                 )
                 dataViewModel.update(item)
             }
         } else {
             val item = Item(
                 category = category,
-                title = editTextTitle.text.toString(),
+                title = binding.editTextTitle.text.toString(),
                 date = SimpleDateFormat(
                     School.dateFormatOnDatabase,
                     Locale.getDefault()
                 ).format(selectedDate!!.time).toInt(),
                 subtasks = Gson().toJson(subtaskListAdapter.data),
-                notes = editTextNotes.text.toString()
+                notes = binding.editTextNotes.text.toString()
             )
             dataViewModel.insert(item)
         }
@@ -348,57 +357,57 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         val colorAnimation = ValueAnimator.ofObject(ArgbEvaluator(), colorFrom, colorTo)
         colorAnimation.addUpdateListener { animator ->
             val animatedValue = animator.animatedValue as Int
-            textViewDatePicked.setTextColor(animatedValue)
-            textViewDatePicked.setTextColor(animatedValue)
+            binding.textViewDatePicked.setTextColor(animatedValue)
+            binding.textViewDatePicked.setTextColor(animatedValue)
         }
         colorAnimation.start()
-        chipPickDate.chipBackgroundColor = ContextCompat.getColorStateList(
+        binding.chipPickDate.chipBackgroundColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipBackgroundColorStateList[newCategory]
         )
-        chipToday.chipBackgroundColor = ContextCompat.getColorStateList(
+        binding.chipToday.chipBackgroundColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipBackgroundColorStateList[newCategory]
         )
-        chipTomorrow.chipBackgroundColor = ContextCompat.getColorStateList(
+        binding.chipTomorrow.chipBackgroundColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipBackgroundColorStateList[newCategory]
         )
-        chipPickDate.chipStrokeColor = ContextCompat.getColorStateList(
+        binding.chipPickDate.chipStrokeColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipStrokeColorStateList[newCategory]
         )
-        chipToday.chipStrokeColor = ContextCompat.getColorStateList(
+        binding.chipToday.chipStrokeColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipStrokeColorStateList[newCategory]
         )
-        chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
+        binding.chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipStrokeColorStateList[newCategory]
         )
-        chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
+        binding.chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipStrokeColorStateList[newCategory]
         )
-        chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
+        binding.chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipStrokeColorStateList[newCategory]
         )
-        (buttonAddSubtask as MaterialButton).iconTint = ContextCompat.getColorStateList(
+        (binding.buttonAddSubtask as MaterialButton).iconTint = ContextCompat.getColorStateList(
             requireContext(),
             categoryButtonAddColorStateList[newCategory]
         )
-        buttonAddSubtask.setTextColor(
+        binding.buttonAddSubtask.setTextColor(
             ContextCompat.getColorStateList(
                 requireContext(),
                 categoryButtonAddColorStateList[newCategory]
             )
         )
-        (buttonAddSubtask as MaterialButton).rippleColor = ContextCompat.getColorStateList(
+        (binding.buttonAddSubtask as MaterialButton).rippleColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryButtonAddRippleColorStateList[newCategory]
         )
-        (cardViewCompleted as MaterialCardView).setCardBackgroundColor(
+        binding.cardViewCompleted.setCardBackgroundColor(
             ContextCompat.getColor(
                 requireContext(),
                 categoryCardViewBackgroundColors[newCategory]
@@ -418,7 +427,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
     private fun changeSubtaskListColor(newCategory: Int) {
         if (this::subtaskListAdapter.isInitialized) {
             for (i in 0 until subtaskListAdapter.itemCount) {
-                val v = recyclerViewSubtasks.getChildAt(i)
+                val v = binding.recyclerViewSubtasks.getChildAt(i)
                 val buttonCheck = v.findViewById<ImageButton>(R.id.buttonCheck)
                 if (subtaskListAdapter.data[i].done) {
                     buttonCheck.setImageResource(categoryCheckedIcons[newCategory])
@@ -440,10 +449,10 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
 
     override fun setFocus(position: Int) {
         if (position == -1) {
-            editTextTitle.requestFocus()
+            binding.editTextTitle.requestFocus()
         } else {
-            (recyclerViewSubtasks.getChildViewHolder(
-                recyclerViewSubtasks.getChildAt(position)
+            (binding.recyclerViewSubtasks.getChildViewHolder(
+                binding.recyclerViewSubtasks.getChildAt(position)
             ) as SubtaskListAdapter.SubtaskViewHolder).editTextSubtaskTitle.requestFocus()
         }
     }
@@ -455,15 +464,15 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         selectedDate!!.set(Calendar.YEAR, year)
         selectedDate!!.set(Calendar.MONTH, month)
         selectedDate!!.set(Calendar.DAY_OF_MONTH, dayOfMonth)
-        textViewDatePicked.text = dateFormat.format(selectedDate!!.time)
+        binding.textViewDatePicked.text = dateFormat.format(selectedDate!!.time)
         chipGroupSelected = School.PICK_DATE
     }
 
     override fun canceled() {
         when (chipGroupSelected) {
-            School.TODAY -> chipGroupDate.check(R.id.chipToday)
-            School.TOMORROW -> chipGroupDate.check(R.id.chipTomorrow)
-            School.PICK_DATE -> chipGroupDate.check(R.id.chipPickDate)
+            School.TODAY -> binding.chipGroupDate.check(R.id.chipToday)
+            School.TOMORROW -> binding.chipGroupDate.check(R.id.chipTomorrow)
+            School.PICK_DATE -> binding.chipGroupDate.check(R.id.chipPickDate)
         }
     }
 

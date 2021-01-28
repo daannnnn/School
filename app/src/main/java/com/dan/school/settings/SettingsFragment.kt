@@ -11,9 +11,13 @@ import android.view.ViewGroup
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.dan.school.*
-import kotlinx.android.synthetic.main.fragment_settings.*
+import com.dan.school.databinding.FragmentSettingsBinding
 
 class SettingsFragment : Fragment() {
+
+    private var _binding: FragmentSettingsBinding? = null
+
+    private val binding get() = _binding!!
 
     private lateinit var sharedPref: SharedPreferences
     private lateinit var settingsItemOnClickListener: SettingsItemOnClickListener
@@ -40,34 +44,40 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        textViewSelectedTheme.text = getSelectedTheme()
+        binding.textViewSelectedTheme.text = getSelectedTheme()
 
-        buttonBack.setOnClickListener {
+        binding.buttonBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
 
-        relativeLayoutProfile.setOnClickListener {
+        binding.relativeLayoutProfile.setOnClickListener {
             settingsItemOnClickListener.itemClicked(School.PROFILE)
         }
 
-        relativeLayoutTheme.setOnClickListener {
+        binding.relativeLayoutTheme.setOnClickListener {
             settingsItemOnClickListener.itemClicked(School.THEME)
         }
 
-        relativeLayoutBackup.setOnClickListener {
+        binding.relativeLayoutBackup.setOnClickListener {
             settingsItemOnClickListener.itemClicked(School.BACKUP)
         }
 
-        relativeLayoutAbout.setOnClickListener {
+        binding.relativeLayoutAbout.setOnClickListener {
             settingsItemOnClickListener.itemClicked(School.ABOUT)
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_settings, container, false)
+    ): View {
+        _binding = FragmentSettingsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onDestroy() {
@@ -89,11 +99,12 @@ class SettingsFragment : Fragment() {
     }
 
     /**
-     * Tries to update text of [textViewSelectedTheme] to the value
-     * returned by [getThemeStringWithIntValue] with [theme] as parameter.
+     * Tries to update text of [FragmentSettingsBinding.textViewSelectedTheme]
+     * to the value returned by [getThemeStringWithIntValue] with [theme] as
+     * parameter.
      */
     private fun selectedThemeUpdated(theme: Int) {
-        textViewSelectedTheme.text = getThemeStringWithIntValue(theme)
+        binding.textViewSelectedTheme.text = getThemeStringWithIntValue(theme)
     }
 
     /**

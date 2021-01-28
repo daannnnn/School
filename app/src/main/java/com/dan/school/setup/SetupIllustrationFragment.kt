@@ -12,9 +12,13 @@ import androidx.core.content.ContextCompat
 import androidx.fragment.app.Fragment
 import com.dan.school.R
 import com.dan.school.School.POSITION
-import kotlinx.android.synthetic.main.fragment_setup_illustration.*
+import com.dan.school.databinding.FragmentSetupIllustrationBinding
 
 class SetupIllustrationFragment : Fragment() {
+
+    private var _binding: FragmentSetupIllustrationBinding? = null
+
+    private val binding get() = _binding!!
 
     private var position: Int = -1
 
@@ -40,15 +44,16 @@ class SetupIllustrationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_setup_illustration, container, false)
+    ): View {
+        _binding = FragmentSetupIllustrationBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
         if (position != -1) {
-            imageViewIllustration.setImageResource(illustrationArray[position])
+            binding.imageViewIllustration.setImageResource(illustrationArray[position])
             if (position == 0) {
                 val spannable = SpannableString(getString(stringArray[position]))
 
@@ -78,11 +83,16 @@ class SetupIllustrationFragment : Fragment() {
                     ), 26, 31, Spannable.SPAN_INCLUSIVE_INCLUSIVE
                 )
 
-                textViewMessage.setText(spannable, TextView.BufferType.SPANNABLE)
+                binding.textViewMessage.setText(spannable, TextView.BufferType.SPANNABLE)
             } else {
-                textViewMessage.text = getString(stringArray[position])
+                binding.textViewMessage.text = getString(stringArray[position])
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

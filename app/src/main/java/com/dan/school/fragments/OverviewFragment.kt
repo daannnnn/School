@@ -12,11 +12,11 @@ import com.dan.school.ItemClickListener
 import com.dan.school.MainActivity
 import com.dan.school.R
 import com.dan.school.School
+import com.dan.school.databinding.FragmentOverviewBinding
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.fragment_overview.*
 import java.text.SimpleDateFormat
 import java.util.*
 import kotlin.concurrent.schedule
@@ -28,6 +28,10 @@ class OverviewFragment : Fragment(),
     EditFragment.DismissBottomSheetListener,
     ItemClickListener, CalendarFragment.TitleChangeListener,
     HomeFragment.SelectedTabChangeListener {
+
+    private var _binding: FragmentOverviewBinding? = null
+
+    private val binding get() = _binding!!
 
     private var addBottomSheetDialogFragment: AddBottomSheetDialogFragment? = null
     private var lastSelectedAddCategory = School.HOMEWORK
@@ -56,8 +60,9 @@ class OverviewFragment : Fragment(),
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_overview, container, false)
+    ): View {
+        _binding = FragmentOverviewBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -78,7 +83,7 @@ class OverviewFragment : Fragment(),
                             R.id.frameLayoutBottomNavigation,
                             HomeFragment(), School.HOME
                         ).commit()
-                    bottomNavigation.selectedItemId =
+                    binding.bottomNavigation.selectedItemId =
                         R.id.homeFragment
                 }
                 School.CALENDAR_SELECTED -> {
@@ -87,8 +92,8 @@ class OverviewFragment : Fragment(),
                             R.id.frameLayoutBottomNavigation,
                             CalendarFragment(), School.CALENDAR
                         ).commit()
-                    buttonCalendarView.visibility = View.VISIBLE
-                    bottomNavigation.selectedItemId =
+                    binding.buttonCalendarView.visibility = View.VISIBLE
+                    binding.bottomNavigation.selectedItemId =
                         R.id.calendarFragment
                 }
                 School.AGENDA_SELECTED -> {
@@ -97,7 +102,7 @@ class OverviewFragment : Fragment(),
                             R.id.frameLayoutBottomNavigation,
                             AgendaFragment(), School.AGENDA
                         ).commit()
-                    bottomNavigation.selectedItemId =
+                    binding.bottomNavigation.selectedItemId =
                         R.id.agendaFragment
                 }
             }
@@ -105,41 +110,41 @@ class OverviewFragment : Fragment(),
 
         setButtonCalendarViewBackground()
         if (selectedFragment == School.CALENDAR_SELECTED) {
-            buttonCalendarView.visibility = View.VISIBLE
+            binding.buttonCalendarView.visibility = View.VISIBLE
         }
 
         // Listeners
-        floatingActionButton.setOnClickListener {
+        binding.floatingActionButton.setOnClickListener {
             clickCounterListener.incrementCounter {
                 showAddBottomSheetDialog()
             }
         }
-        bottomNavigation.setOnNavigationItemSelectedListener { item ->
+        binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
             Log.i("Test", "onViewCreated: ")
             clickCounterListener.incrementCounter {
                 when (item.itemId) {
                     R.id.homeFragment -> {
                         setFragment(School.HOME)
-                        textViewAppBarTitle.text = getString(R.string.app_name)
+                        binding.textViewAppBarTitle.text = getString(R.string.app_name)
                     }
                     R.id.calendarFragment -> {
                         setFragment(School.CALENDAR)
                     }
                     R.id.agendaFragment -> {
                         setFragment(School.AGENDA)
-                        textViewAppBarTitle.text = getString(R.string.app_name)
+                        binding.textViewAppBarTitle.text = getString(R.string.app_name)
                     }
                 }
             }
             return@setOnNavigationItemSelectedListener true
         }
-        bottomNavigation.setOnNavigationItemReselectedListener {}
-        buttonMenu.setOnClickListener {
+        binding.bottomNavigation.setOnNavigationItemReselectedListener {}
+        binding.buttonMenu.setOnClickListener {
             if (this::openDrawerListener.isInitialized) {
                 openDrawerListener.openDrawer()
             }
         }
-        buttonCalendarView.setOnClickListener {
+        binding.buttonCalendarView.setOnClickListener {
             if (childFragmentManager.findFragmentByTag(School.CALENDAR) != null) {
                 if ((childFragmentManager.findFragmentByTag(School.CALENDAR) as CalendarFragment).setCalendarView(
                         isMonthView
@@ -150,6 +155,11 @@ class OverviewFragment : Fragment(),
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     /**
@@ -189,14 +199,14 @@ class OverviewFragment : Fragment(),
     }
 
     /**
-     * Sets [buttonCalendarView] image resource depending
+     * Sets [FragmentOverviewBinding.buttonCalendarView] image resource depending
      * on [isMonthView]
      */
     private fun setButtonCalendarViewBackground() {
         if (isMonthView) {
-            buttonCalendarView.setImageResource(R.drawable.ic_week_view)
+            binding.buttonCalendarView.setImageResource(R.drawable.ic_week_view)
         } else {
-            buttonCalendarView.setImageResource(R.drawable.ic_month_view)
+            binding.buttonCalendarView.setImageResource(R.drawable.ic_month_view)
         }
     }
 
@@ -230,14 +240,14 @@ class OverviewFragment : Fragment(),
                         School.HOMEWORK
                     }
 
-                buttonCalendarView.visibility = View.GONE
+                binding.buttonCalendarView.visibility = View.GONE
 
                 setLastSelectedFragment(School.HOME_SELECTED)
             }
             School.CALENDAR -> {
                 if (childFragmentManager.findFragmentByTag(School.CALENDAR) != null) {
                     showFragment(School.CALENDAR)
-                    textViewAppBarTitle.text =
+                    binding.textViewAppBarTitle.text =
                         (childFragmentManager.findFragmentByTag(School.CALENDAR) as CalendarFragment).getSelectedMonth()
                 } else {
                     childFragmentManager.beginTransaction()
@@ -252,7 +262,7 @@ class OverviewFragment : Fragment(),
                 if (childFragmentManager.findFragmentByTag(School.AGENDA) != null) {
                     hideFragment(School.AGENDA)
                 }
-                buttonCalendarView.visibility = View.VISIBLE
+                binding.buttonCalendarView.visibility = View.VISIBLE
 
                 setLastSelectedFragment(School.CALENDAR_SELECTED)
             }
@@ -272,7 +282,7 @@ class OverviewFragment : Fragment(),
                 if (childFragmentManager.findFragmentByTag(School.CALENDAR) != null) {
                     hideFragment(School.CALENDAR)
                 }
-                buttonCalendarView.visibility = View.GONE
+                binding.buttonCalendarView.visibility = View.GONE
 
                 setLastSelectedFragment(School.AGENDA_SELECTED)
             }
@@ -414,7 +424,7 @@ class OverviewFragment : Fragment(),
     }
 
     override fun changeTitle(title: String) {
-        textViewAppBarTitle.text = title
+        binding.textViewAppBarTitle.text = title
     }
 
     override fun selectedTabChanged(category: Int) {

@@ -14,9 +14,9 @@ import com.dan.school.School.categoryCheckedIcons
 import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.BaseItemListAdapter
 import com.dan.school.adapters.ItemListAdapter
+import com.dan.school.databinding.FragmentAgendaTomorrowBinding
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
-import kotlinx.android.synthetic.main.fragment_agenda_tomorrow.*
 import java.text.SimpleDateFormat
 import java.util.*
 
@@ -24,6 +24,10 @@ class AgendaTomorrowFragment : DialogFragment(),
     BaseItemListAdapter.DoneListener,
     BaseItemListAdapter.ShowSubtasksListener, ItemClickListener, BaseItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialogFragment.ConfirmDeleteListener {
+
+    private var _binding: FragmentAgendaTomorrowBinding? = null
+
+    private val binding get() = _binding!!
 
     private lateinit var itemClickListener: ItemClickListener
 
@@ -65,14 +69,15 @@ class AgendaTomorrowFragment : DialogFragment(),
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_agenda_tomorrow, container, false)
+    ): View {
+        _binding = FragmentAgendaTomorrowBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        textViewDate.text =
+        binding.textViewDate.text =
             SimpleDateFormat(
                 School.displayDateFormat,
                 Locale.getDefault()
@@ -100,15 +105,15 @@ class AgendaTomorrowFragment : DialogFragment(),
             this
         )
 
-        recyclerViewHomeworks.apply {
+        binding.recyclerViewHomeworks.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = homeworkListAdapter
         }
-        recyclerViewExams.apply {
+        binding.recyclerViewExams.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = examListAdapter
         }
-        recyclerViewTasks.apply {
+        binding.recyclerViewTasks.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = taskListAdapter
         }
@@ -120,10 +125,10 @@ class AgendaTomorrowFragment : DialogFragment(),
             ).format(dateTomorrow.time).toInt()
         ).observe(viewLifecycleOwner, { homeworks ->
             if (homeworks.isEmpty()) {
-                groupHomework.visibility = View.GONE
+                binding.groupHomework.visibility = View.GONE
                 homeworkEmpty = true
             } else {
-                groupHomework.visibility = View.VISIBLE
+                binding.groupHomework.visibility = View.VISIBLE
                 homeworkEmpty = false
             }
             dismissIfEmpty()
@@ -137,17 +142,17 @@ class AgendaTomorrowFragment : DialogFragment(),
             ).format(dateTomorrow.time).toInt()
         ).observe(viewLifecycleOwner, { exams ->
             if (exams.isEmpty()) {
-                groupExam.visibility = View.GONE
+                binding.groupExam.visibility = View.GONE
                 examEmpty = true
             } else {
-                groupExam.visibility = View.VISIBLE
+                binding.groupExam.visibility = View.VISIBLE
                 examEmpty = false
             }
             dismissIfEmpty()
             examListAdapter.submitList(exams)
         })
 
-        constraintLayoutAgendaTomorrowMain.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+        binding.constraintLayoutAgendaTomorrowMain.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
 
         dataViewModel.getAllTaskByDate(
             SimpleDateFormat(
@@ -156,19 +161,24 @@ class AgendaTomorrowFragment : DialogFragment(),
             ).format(dateTomorrow.time).toInt()
         ).observe(viewLifecycleOwner, { tasks ->
             if (tasks.isEmpty()) {
-                groupTask.visibility = View.GONE
+                binding.groupTask.visibility = View.GONE
                 taskEmpty = true
             } else {
-                groupTask.visibility = View.VISIBLE
+                binding.groupTask.visibility = View.VISIBLE
                 taskEmpty = false
             }
             dismissIfEmpty()
             taskListAdapter.submitList(tasks)
         })
 
-        buttonBack.setOnClickListener {
+        binding.buttonBack.setOnClickListener {
             dismiss()
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     /**

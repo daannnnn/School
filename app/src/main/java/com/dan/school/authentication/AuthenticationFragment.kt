@@ -7,11 +7,14 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.core.view.isVisible
-import com.dan.school.R
 import com.dan.school.School
-import kotlinx.android.synthetic.main.fragment_authentication.*
+import com.dan.school.databinding.FragmentAuthenticationBinding
 
 class AuthenticationFragment : Fragment() {
+
+    private var _binding: FragmentAuthenticationBinding? = null
+
+    private val binding get() = _binding!!
 
     private lateinit var buttonSignInWithClickListener: ButtonSignInWithClickListener
     private lateinit var buttonSignUpClickListener: ButtonSignUpClickListener
@@ -38,28 +41,34 @@ class AuthenticationFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_authentication, container, false)
+    ): View {
+        _binding = FragmentAuthenticationBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        buttonSignInLater.isVisible = showButtonSignInLater
+        binding.buttonSignInLater.isVisible = showButtonSignInLater
 
-        buttonSignInWithEmail.setOnClickListener {
+        binding.buttonSignInWithEmail.setOnClickListener {
             buttonSignInWithClickListener.buttonSignInWithClicked(School.SIGN_IN_WITH_EMAIL)
         }
-        buttonSignInWithGoogle.setOnClickListener {
+        binding.buttonSignInWithGoogle.setOnClickListener {
             buttonSignInWithClickListener.buttonSignInWithClicked(School.SIGN_IN_WITH_GOOGLE)
         }
-        buttonSignInLater.setOnClickListener {
+        binding.buttonSignInLater.setOnClickListener {
             buttonSignInLaterClickListener.buttonSignInLaterClicked()
         }
-        buttonSignUp.setOnClickListener {
+        binding.buttonSignUp.setOnClickListener {
             buttonSignUpClickListener.buttonSignUpClicked()
         }
 
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     interface ButtonSignInWithClickListener {

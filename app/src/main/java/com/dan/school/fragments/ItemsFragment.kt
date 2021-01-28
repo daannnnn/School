@@ -21,9 +21,9 @@ import com.dan.school.School.categoryColors
 import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.BaseItemListAdapter
 import com.dan.school.adapters.ItemListAdapter
+import com.dan.school.databinding.FragmentItemsBinding
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
-import kotlinx.android.synthetic.main.fragment_items.*
 
 private const val CATEGORY = "category"
 
@@ -31,6 +31,10 @@ class ItemsFragment : Fragment(),
     BaseItemListAdapter.DoneListener,
     BaseItemListAdapter.ShowSubtasksListener, ItemClickListener, BaseItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialogFragment.ConfirmDeleteListener {
+
+    private var _binding: FragmentItemsBinding? = null
+
+    private val binding get() = _binding!!
 
     private val dataViewModel: DataViewModel by activityViewModels()
     private lateinit var itemListAdapter: ItemListAdapter
@@ -65,21 +69,22 @@ class ItemsFragment : Fragment(),
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_items, container, false)
+    ): View {
+        _binding = FragmentItemsBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        textViewNoItem.setText(categoryNoItemStrings[category])
-        textViewNoItem.setTextColor(
+        binding.textViewNoItem.setText(categoryNoItemStrings[category])
+        binding.textViewNoItem.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
                 categoryColors[category]
             )
         )
-        imageViewNoItem.setImageResource(categoryNoItemDrawables[category])
+        binding.imageViewNoItem.setImageResource(categoryNoItemDrawables[category])
 
         itemListAdapter = ItemListAdapter(
             requireContext(),
@@ -88,8 +93,8 @@ class ItemsFragment : Fragment(),
             this,
             this
         )
-        recyclerViewItems.layoutManager = LinearLayoutManager(context)
-        recyclerViewItems.adapter = itemListAdapter
+        binding.recyclerViewItems.layoutManager = LinearLayoutManager(context)
+        binding.recyclerViewItems.adapter = itemListAdapter
 
         when (category) {
             School.HOMEWORK -> {
@@ -111,6 +116,11 @@ class ItemsFragment : Fragment(),
                 })
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun setDone(id: Int, done: Boolean, doneTime: Long?) {
@@ -150,16 +160,16 @@ class ItemsFragment : Fragment(),
         dataViewModel.deleteItemWithId(itemId)
     }
 
-    fun setVisibilities(isEmpty: Boolean) {
+    private fun setVisibilities(isEmpty: Boolean) {
         if (isEmpty) {
-            if (linearLayoutNoItem.isGone) {
-                recyclerViewItems.isVisible = false
-                linearLayoutNoItem.isVisible = true
+            if (binding.linearLayoutNoItem.isGone) {
+                binding.recyclerViewItems.isVisible = false
+                binding.linearLayoutNoItem.isVisible = true
             }
         } else {
-            if (linearLayoutNoItem.isVisible) {
-                recyclerViewItems.isVisible = true
-                linearLayoutNoItem.isVisible = false
+            if (binding.linearLayoutNoItem.isVisible) {
+                binding.recyclerViewItems.isVisible = true
+                binding.linearLayoutNoItem.isVisible = false
             }
         }
     }

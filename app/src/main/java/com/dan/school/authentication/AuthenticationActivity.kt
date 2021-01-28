@@ -14,6 +14,7 @@ import com.dan.school.ProgressBarDialog
 import com.dan.school.R
 import com.dan.school.School
 import com.dan.school.Utils
+import com.dan.school.databinding.ActivityAuthenticationBinding
 import com.google.android.gms.auth.api.signin.GoogleSignIn
 import com.google.android.gms.auth.api.signin.GoogleSignInClient
 import com.google.android.gms.auth.api.signin.GoogleSignInOptions
@@ -23,8 +24,6 @@ import com.google.firebase.auth.ktx.auth
 import com.google.firebase.database.FirebaseDatabase
 import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
-import kotlinx.android.synthetic.main.activity_authentication.*
-import java.net.InetAddress
 
 class AuthenticationActivity : AppCompatActivity(),
     AuthenticationFragment.ButtonSignInWithClickListener,
@@ -32,6 +31,8 @@ class AuthenticationActivity : AppCompatActivity(),
     AuthenticationFragment.ButtonSignInLaterClickListener,
     SignUpFragment.SignUpButtonClickListener, WelcomeFragment.WelcomeDoneButtonClickListener,
     SignInFragment.SignInButtonClickListener, SignInFragment.ForgotPasswordButtonClickListener {
+
+    private lateinit var binding: ActivityAuthenticationBinding
 
     private lateinit var auth: FirebaseAuth
     private lateinit var database: FirebaseDatabase
@@ -42,7 +43,8 @@ class AuthenticationActivity : AppCompatActivity(),
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_authentication)
+        binding = ActivityAuthenticationBinding.inflate(layoutInflater)
+        setContentView(binding.root)
 
         progressBarDialog = ProgressBarDialog(this)
 

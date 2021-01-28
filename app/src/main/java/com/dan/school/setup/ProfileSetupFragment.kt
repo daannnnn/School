@@ -7,9 +7,13 @@ import android.view.View
 import android.view.ViewGroup
 import com.dan.school.R
 import com.dan.school.School
-import kotlinx.android.synthetic.main.fragment_profile_setup.*
+import com.dan.school.databinding.FragmentProfileSetupBinding
 
 class ProfileSetupFragment : Fragment() {
+
+    private var _binding: FragmentProfileSetupBinding? = null
+
+    private val binding get() = _binding!!
 
     private var nickname = ""
     private var fullName = ""
@@ -25,38 +29,44 @@ class ProfileSetupFragment : Fragment() {
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_profile_setup, container, false)
+    ): View {
+        _binding = FragmentProfileSetupBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        textFieldNickname.editText?.setText(nickname)
-        textFieldFullName.editText?.setText(fullName)
+        binding.textFieldNickname.editText?.setText(nickname)
+        binding.textFieldFullName.editText?.setText(fullName)
 
-        buttonDone.setOnClickListener {
-            val isNicknameEmpty = textFieldNickname.editText?.text.toString().trim().isEmpty()
-            val isFullNameEmpty = textFieldFullName.editText?.text.toString().trim().isEmpty()
+        binding.buttonDone.setOnClickListener {
+            val isNicknameEmpty = binding.textFieldNickname.editText?.text.toString().trim().isEmpty()
+            val isFullNameEmpty = binding.textFieldFullName.editText?.text.toString().trim().isEmpty()
             if (isNicknameEmpty) {
-                textFieldNickname.error = getString(R.string.this_field_is_required)
+                binding.textFieldNickname.error = getString(R.string.this_field_is_required)
             } else {
-                textFieldNickname.error = null
+                binding.textFieldNickname.error = null
             }
             if (isFullNameEmpty) {
-                textFieldFullName.error = getString(R.string.this_field_is_required)
+                binding.textFieldFullName.error = getString(R.string.this_field_is_required)
             } else {
-                textFieldFullName.error = null
+                binding.textFieldFullName.error = null
             }
             if (!(isNicknameEmpty || isFullNameEmpty)) {
                 if (activity is SetupActivity) {
                     (activity as SetupActivity).profileSetupDone(
-                        textFieldNickname.editText?.text.toString().trim(),
-                        textFieldFullName.editText?.text.toString().trim()
+                        binding.textFieldNickname.editText?.text.toString().trim(),
+                        binding.textFieldFullName.editText?.text.toString().trim()
                     )
                 }
             }
         }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     companion object {

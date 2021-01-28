@@ -11,12 +11,11 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.dan.school.DataViewModel
-import com.dan.school.R
 import com.dan.school.adapters.SubtasksShowListAdapter
+import com.dan.school.databinding.LayoutSubtasksBottomSheetBinding
 import com.dan.school.models.Subtask
 import com.google.android.material.bottomsheet.BottomSheetDialogFragment
 import com.google.gson.Gson
-import kotlinx.android.synthetic.main.layout_subtasks_bottom_sheet.*
 
 private const val ELEVATION = "elevation"
 
@@ -28,6 +27,10 @@ class SubtasksBottomSheetDialogFragment(
     private val checkedIcon: Int
 ) : BottomSheetDialogFragment(), SubtasksShowListAdapter.SubtaskChangedListener {
 
+    private var _binding: LayoutSubtasksBottomSheetBinding? = null
+
+    private val binding get() = _binding!!
+
     var float4dp = 0f
     private val dataViewModel: DataViewModel by activityViewModels()
 
@@ -35,8 +38,9 @@ class SubtasksBottomSheetDialogFragment(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.layout_subtasks_bottom_sheet, container, false)
+    ): View {
+        _binding = LayoutSubtasksBottomSheetBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -50,29 +54,34 @@ class SubtasksBottomSheetDialogFragment(
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        recyclerViewSubtasks.layoutManager = LinearLayoutManager(context)
-        recyclerViewSubtasks.adapter = SubtasksShowListAdapter(
+        binding.recyclerViewSubtasks.layoutManager = LinearLayoutManager(context)
+        binding.recyclerViewSubtasks.adapter = SubtasksShowListAdapter(
             requireContext(), subtasks,
             this,
             uncheckedIcon, checkedIcon
         )
-        textViewItemTitle.text = itemTitle
+        binding.textViewItemTitle.text = itemTitle
 
         dialog?.setOnShowListener {
-            recyclerViewSubtasks.addOnScrollListener(object : RecyclerView.OnScrollListener() {
+            binding.recyclerViewSubtasks.addOnScrollListener(object : RecyclerView.OnScrollListener() {
                 override fun onScrolled(recyclerView: RecyclerView, dx: Int, dy: Int) {
                     super.onScrolled(recyclerView, dx, dy)
-                    if (recyclerViewSubtasks.canScrollVertically(-1)) {
-                        appBar.elevation = float4dp
+                    if (binding.recyclerViewSubtasks.canScrollVertically(-1)) {
+                        binding.appBar.elevation = float4dp
                     } else {
-                        appBar.elevation = 0f
+                        binding.appBar.elevation = 0f
                     }
                 }
             })
         }
         val stateListAnimator = StateListAnimator()
         stateListAnimator.addState(IntArray(0), ObjectAnimator.ofFloat(view, ELEVATION, 0f))
-        appBar.stateListAnimator = stateListAnimator
+        binding.appBar.stateListAnimator = stateListAnimator
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun subtaskChanged() {
