@@ -179,7 +179,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
     private fun loadAd() {
         InterstitialAd.load(
             this,
-            "ca-app-pub-3940256099942544/1033173712",
+            "ca-app-pub-7635997075130466/5941211339",
             AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {

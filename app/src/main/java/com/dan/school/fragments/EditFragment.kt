@@ -34,6 +34,8 @@ import com.dan.school.adapters.SubtaskListAdapter
 import com.dan.school.databinding.FragmentEditBinding
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
+import com.google.android.gms.ads.AdListener
+import com.google.android.gms.ads.AdRequest
 import com.google.android.material.button.MaterialButton
 import com.google.gson.Gson
 import java.text.SimpleDateFormat
@@ -142,6 +144,14 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
+
+        val adRequest = AdRequest.Builder().build()
+        binding.adViewBannerEditFragment.adListener = object: AdListener() {
+            override fun onAdLoaded() {
+                binding.adViewBannerEditFragment.visibility = View.VISIBLE
+            }
+        }
+        binding.adViewBannerEditFragment.loadAd(adRequest)
 
         dialog?.setOnShowListener {
             if (this::dismissBottomSheetListener.isInitialized) {

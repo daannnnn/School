@@ -256,11 +256,11 @@
         android:id="@+id/adViewBannerCompletedFragment"
         android:layout_width="wrap_content"
         android:layout_height="50dp"
+        android:visibility="gone"
+        ads:adSize="BANNER"
+        ads:adUnitId="ca-app-pub-7635997075130466/8605780965"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        ads:adSize="BANNER"
-        android:visibility="gone"
-        ads:adUnitId="ca-app-pub-3940256099942544/6300978111" />
+        app:layout_constraintStart_toStartOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
