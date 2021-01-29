@@ -66,7 +66,7 @@ class AuthenticationActivity : AppCompatActivity(),
             supportFragmentManager.beginTransaction()
                 .add(
                     R.id.frameLayoutAuthentication,
-                    AuthenticationFragment.newInstance(intent.getBooleanExtra(School.FROM_SETUP, true))
+                    AuthenticationFragment.newInstance(intent.getBooleanExtra(School.SHOW_BUTTON_SIGN_IN_LATER, true))
                 ).commit()
         }
     }

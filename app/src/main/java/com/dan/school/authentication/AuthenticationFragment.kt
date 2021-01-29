@@ -34,7 +34,7 @@ class AuthenticationFragment : Fragment() {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            showButtonSignInLater = it.getBoolean(School.FROM_SETUP)
+            showButtonSignInLater = it.getBoolean(School.SHOW_BUTTON_SIGN_IN_LATER)
         }
     }
 
@@ -85,10 +85,10 @@ class AuthenticationFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(fromSetup: Boolean) =
+        fun newInstance(showButtonSignInLater: Boolean) =
             AuthenticationFragment().apply {
                 arguments = Bundle().apply {
-                    putBoolean(School.FROM_SETUP, fromSetup)
+                    putBoolean(School.SHOW_BUTTON_SIGN_IN_LATER, showButtonSignInLater)
                 }
             }
     }

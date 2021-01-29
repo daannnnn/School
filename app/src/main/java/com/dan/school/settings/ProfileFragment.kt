@@ -2,6 +2,7 @@ package com.dan.school.settings
 
 import android.animation.LayoutTransition
 import android.content.Context
+import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import android.view.LayoutInflater
@@ -17,6 +18,7 @@ import androidx.fragment.app.Fragment
 import com.dan.school.ProgressBarDialog
 import com.dan.school.R
 import com.dan.school.School
+import com.dan.school.authentication.AuthenticationActivity
 import com.dan.school.databinding.FragmentProfileBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 import com.google.firebase.auth.FirebaseAuth
@@ -192,6 +194,12 @@ class ProfileFragment : Fragment() {
             }
         }
 
+        binding.buttonSignIn.setOnClickListener {
+            val intent = Intent(requireContext(), AuthenticationActivity::class.java)
+            intent.putExtra(School.SHOW_BUTTON_SIGN_IN_LATER, false)
+            startActivity(intent)
+        }
+
         binding.swipeRefreshLayout.setOnRefreshListener {
             update()
         }
@@ -213,8 +221,9 @@ class ProfileFragment : Fragment() {
     /**
      * Updates the visibility of [FragmentProfileBinding.groupEmail],
      * [FragmentProfileBinding.viewDivider],
-     * [FragmentProfileBinding.buttonResetPassword] and
-     * [FragmentProfileBinding.cardViewVerifyEmail] depending if a
+     * [FragmentProfileBinding.buttonResetPassword],
+     * [FragmentProfileBinding.cardViewVerifyEmail] and
+     * [FragmentProfileBinding.buttonSignIn] depending if a
      * user is signed-in and if the email is verified.
      * Sets the text of [FragmentProfileBinding.textViewEmailDisplay]
      * to the current user's email.
@@ -222,6 +231,8 @@ class ProfileFragment : Fragment() {
     private fun update() {
         val user = auth.currentUser
         if (user != null) {
+
+            binding.buttonSignIn.visibility = View.GONE
 
             binding.groupEmail.visibility = View.VISIBLE
             binding.viewDivider.visibility = View.VISIBLE
@@ -257,6 +268,7 @@ class ProfileFragment : Fragment() {
             binding.groupEmail.visibility = View.GONE
             binding.viewDivider.visibility = View.GONE
             binding.buttonResetPassword.visibility = View.GONE
+            binding.buttonSignIn.visibility = View.VISIBLE
             binding.cardViewVerifyEmail.isGone = true
             binding.swipeRefreshLayout.isRefreshing = false
         }
