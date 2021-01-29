@@ -1,33 +1,77 @@
 package com.dan.school
 
 import android.content.Context
+import android.content.Intent
+import android.content.SharedPreferences
 import android.content.SharedPreferences.OnSharedPreferenceChangeListener
 import android.os.Bundle
 import android.widget.TextView
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.view.GravityCompat
 import androidx.drawerlayout.widget.DrawerLayout
+import com.dan.school.databinding.ActivityMainBinding
 import com.dan.school.fragments.CompletedFragment
 import com.dan.school.fragments.OverviewFragment
-import com.dan.school.fragments.SettingsFragment
-import kotlinx.android.synthetic.main.activity_main.*
+import com.dan.school.settings.SettingsActivity
+import com.google.android.gms.ads.*
+import com.google.android.gms.ads.interstitial.InterstitialAd
+import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
+import com.google.firebase.auth.FirebaseAuth
+import com.google.firebase.auth.ktx.auth
+import com.google.firebase.database.*
+import com.google.firebase.database.ktx.database
+import com.google.firebase.ktx.Firebase
+import com.google.firebase.messaging.ktx.messaging
 
-class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
+class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
+    OverviewFragment.ClickCounterListener {
+
+    private lateinit var binding: ActivityMainBinding
 
     /**
-     * Is set to not null on [SettingsFragment.onAttach]
-     * Is set to null on [SettingsFragment.onDetach]
+     * Saves the last click time from FAB, BottomNavigationView, and
+     * from an item click.
      */
-    var settingsBackPressedListener: SettingsBackPressedListener? = null
+    private var lastClickTime = System.currentTimeMillis()
+
+    /**
+     * Saves the amount of clicks from FAB, BottomNavigationView, and
+     * from an item click.
+     */
+    private var clickCounter = 0
 
     private var onSharedPreferenceChangeListener: OnSharedPreferenceChangeListener? = null
 
+    private var interstitialAd: InterstitialAd? = null
+
+    private lateinit var sharedPref: SharedPreferences
+
+    private lateinit var auth: FirebaseAuth
+    private lateinit var database: FirebaseDatabase
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        binding = ActivityMainBinding.inflate(layoutInflater)
+        setContentView(binding.root)
+
+        Firebase.messaging.subscribeToTopic(School.UPDATES)
+        Firebase.messaging.subscribeToTopic("v${BuildConfig.VERSION_NAME}")
+
+        MobileAds.initialize(this) {}
+
+        loadAd()
+
+        auth = Firebase.auth
+        database = Firebase.database
+
+        sharedPref = getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
+
+        manageProfileUpdates()
 
         if (savedInstanceState == null) {  // to prevent multiple creation of instances
-            navigationView.menu.getItem(0).isChecked = true
+            binding.navigationView.menu.getItem(0).isChecked = true
             supportFragmentManager.beginTransaction()
                 .add(
                     R.id.frameLayoutMain,
@@ -39,6 +83,24 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
             getString(R.string.preference_file_key), Context.MODE_PRIVATE
         )
 
+        if (auth.currentUser != null) {
+            database.reference.child(School.USERS).child(auth.currentUser!!.uid)
+                .addValueEventListener(object : ValueEventListener {
+                    override fun onDataChange(snapshot: DataSnapshot) {
+                        val map = HashMap<String, String>()
+                        for (dataSnapshot in snapshot.children) {
+                            val key = dataSnapshot.key
+                            if (key == School.NICKNAME || key == School.FULL_NAME) {
+                                map[key] = dataSnapshot.value.toString()
+                            }
+                        }
+                        updateSharedPreferences(map)
+                    }
+
+                    override fun onCancelled(error: DatabaseError) {
+                    }
+                })
+        }
         setNavigationViewHeaderNickname(sharedPref.getString(School.NICKNAME, ""))
         setNavigationViewHeaderFullName(sharedPref.getString(School.FULL_NAME, ""))
 
@@ -63,36 +125,30 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
                 }
             }
         sharedPref.registerOnSharedPreferenceChangeListener(onSharedPreferenceChangeListener)
-        navigationView.setNavigationItemSelectedListener { item ->
+        binding.navigationView.setNavigationItemSelectedListener { item ->
             if (!item.isChecked) {
-                item.isChecked = true
-                drawerLayout.closeDrawers()
+                binding.drawerLayout.closeDrawers()
 
                 when (item.itemId) {
                     R.id.overview -> {
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                         if (supportFragmentManager.backStackEntryCount != 0) {
                             supportFragmentManager.popBackStackImmediate()
                         }
                     }
                     R.id.completed -> {
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+                        binding.drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
                         supportFragmentManager.beginTransaction()
                             .add(R.id.frameLayoutMain, CompletedFragment(), School.COMPLETED)
                             .addToBackStack(School.COMPLETED)
                             .commit()
                     }
                     R.id.settings -> {
-                        drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_LOCKED_CLOSED)
-                        supportFragmentManager.beginTransaction()
-                            .setCustomAnimations(R.anim.slide_in_right, 0)
-                            .add(R.id.frameLayoutMain, SettingsFragment(), School.SETTINGS)
-                            .addToBackStack(School.SETTINGS)
-                            .commit()
+                        startActivity(Intent(this, SettingsActivity::class.java))
                     }
                 }
             } else {
-                drawerLayout.closeDrawer(GravityCompat.START)
+                binding.drawerLayout.closeDrawers()
             }
             return@setNavigationItemSelectedListener true
         }
@@ -100,54 +156,132 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
             if (supportFragmentManager.backStackEntryCount == 0) {
                 if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
                     showFragment(School.OVERVIEW)
-                    navigationView.setCheckedItem(R.id.overview)
+                    binding.navigationView.setCheckedItem(R.id.overview)
                 }
             } else {
-                when (supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name) {
-                    School.COMPLETED -> {
-                        if (supportFragmentManager.findFragmentByTag(School.COMPLETED) != null) {
-                            showFragment(School.COMPLETED)
-                            navigationView.setCheckedItem(R.id.completed)
-                        }
-                        if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
-                            hideFragment(School.OVERVIEW)
-                        }
-                        if (supportFragmentManager.findFragmentByTag(School.SETTINGS) != null) {
-                            hideFragment(School.SETTINGS)
-                        }
+                if (supportFragmentManager.getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 1).name
+                    == School.COMPLETED
+                ) {
+                    if (supportFragmentManager.findFragmentByTag(School.COMPLETED) != null) {
+                        showFragment(School.COMPLETED)
+                        binding.navigationView.setCheckedItem(R.id.completed)
                     }
-                    School.SETTINGS -> {
-                        if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
-                            hideFragment(School.OVERVIEW)
-                        }
-                        if (supportFragmentManager.findFragmentByTag(School.COMPLETED) != null) {
-                            hideFragment(School.COMPLETED)
-                        }
+                    if (supportFragmentManager.findFragmentByTag(School.OVERVIEW) != null) {
+                        supportFragmentManager.beginTransaction()
+                            .hide(supportFragmentManager.findFragmentByTag(School.OVERVIEW)!!)
+                            .commit()
                     }
                 }
             }
         }
     }
 
+    private fun loadAd() {
+        InterstitialAd.load(
+            this,
+            "ca-app-pub-7635997075130466/5941211339",
+            AdRequest.Builder().build(),
+            object : InterstitialAdLoadCallback() {
+                override fun onAdLoaded(ad: InterstitialAd) {
+                    interstitialAd = ad
+                }
+            }
+        )
+    }
+
+    /**
+     * Calls [updateDatabase] and [listenForUpdates] if a user
+     * is signed-in.
+     */
+    private fun manageProfileUpdates() {
+        auth.currentUser?.uid?.let {
+            updateDatabase(it)
+            listenForUpdates(it)
+        }
+    }
+
+    /**
+     * Updates the profile info in [database] if the [School.DATABASE_PROFILE_UPDATED]
+     * in [sharedPref] is false.
+     */
+    private fun updateDatabase(uid: String) {
+        if (!sharedPref.getBoolean(School.DATABASE_PROFILE_UPDATED, true)) {
+            val map = mapOf(
+                School.NICKNAME to sharedPref.getString(School.NICKNAME, ""),
+                School.FULL_NAME to sharedPref.getString(School.FULL_NAME, ""),
+                School.PROFILE_LAST_UPDATE_TIME to ServerValue.TIMESTAMP
+            )
+            database.reference.child(School.USERS).child(uid).updateChildren(map)
+                .addOnSuccessListener {
+                    sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, true).apply()
+                }
+        }
+    }
+
+    /**
+     * Sets a listener for the value of [School.PROFILE_LAST_UPDATE_TIME]
+     * in the user's database path.
+     */
+    private fun listenForUpdates(uid: String) {
+        database.reference.child(School.USERS).child(uid)
+            .child(School.PROFILE_LAST_UPDATE_TIME)
+            .addValueEventListener(object : ValueEventListener {
+                override fun onDataChange(snapshot: DataSnapshot) {
+                    lastUpdateTimeChanged(snapshot)
+                }
+
+                override fun onCancelled(error: DatabaseError) {}
+
+                /**
+                 * Updates profile info on [sharedPref] if time saved in [sharedPref]
+                 * is less than or equal to the updated time from database
+                 */
+                private fun lastUpdateTimeChanged(snapshot: DataSnapshot) {
+                    val time = snapshot.getValue(Long::class.java)
+                    if (time != null && sharedPref.getLong(
+                            School.PROFILE_LAST_UPDATE_TIME,
+                            0
+                        ) < time
+                    ) {
+                        database.reference.child(School.USERS).child(uid).get()
+                            .addOnCompleteListener { taskGetData ->
+                                if (taskGetData.isSuccessful) {
+                                    val edit = sharedPref.edit()
+                                    taskGetData.result.children.forEach { data ->
+                                        val key = data.key
+                                        if (key in arrayOf(School.NICKNAME, School.FULL_NAME)) {
+                                            edit.putString(
+                                                key,
+                                                data.getValue(String::class.java)
+                                            )
+                                        } else if (key == School.PROFILE_LAST_UPDATE_TIME) {
+                                            data.getValue(Long::class.java)
+                                                ?.let { lastUpdateTime ->
+                                                    edit.putLong(
+                                                        key,
+                                                        lastUpdateTime
+                                                    )
+                                                }
+                                        }
+                                    }
+                                    edit.apply()
+                                }
+                            }
+                    }
+                }
+            })
+    }
+
     /** Sets [R.id.textViewNickname] text to [nickname] */
     private fun setNavigationViewHeaderNickname(nickname: String?) {
-        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewNickname).text =
+        binding.navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewNickname).text =
             nickname
     }
 
     /** Sets [R.id.textViewFullName] text to [fullName] */
     private fun setNavigationViewHeaderFullName(fullName: String?) {
-        navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewFullName).text =
+        binding.navigationView.getHeaderView(0).findViewById<TextView>(R.id.textViewFullName).text =
             fullName
-    }
-
-    /** Hides fragment with tag [tag] */
-    private fun hideFragment(tag: String) {
-        if (supportFragmentManager.findFragmentByTag(tag)!!.isHidden) {
-            return
-        }
-        supportFragmentManager.beginTransaction()
-            .hide(supportFragmentManager.findFragmentByTag(tag)!!).commit()
     }
 
     /** Shows fragment with tag [tag] */
@@ -160,31 +294,72 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener {
             .show(supportFragmentManager.findFragmentByTag(tag)!!).commit()
     }
 
-    override fun openDrawer() {
-        drawerLayout.openDrawer(GravityCompat.START)
+    /**
+     * Updates [clickCounter] if the difference between
+     * [System.currentTimeMillis] and [lastClickTime] in seconds
+     * is greater than 0.5 seconds then shows [interstitialAd] if
+     * loaded and if [clickCounter] is greater than or equal to 5
+     *
+     * Returns true if show is called on [interstitialAd], false
+     * otherwise
+     */
+    private fun updateCounter(): Boolean {
+        var b = false
+        if ((System.currentTimeMillis() - lastClickTime) / 1000 > 0.5) {
+            clickCounter++
+            lastClickTime = System.currentTimeMillis()
+            if (clickCounter >= 5) {
+                if (interstitialAd != null) {
+                    interstitialAd?.show(this)
+                    clickCounter = 0
+                    b = true
+                }
+            }
+        }
+        return b
     }
 
-    override fun onBackPressed() {
-        if (settingsBackPressedListener == null) {
-            if (supportFragmentManager.backStackEntryCount > 0) {
-                if (supportFragmentManager.backStackEntryCount == 1) {
-                    supportFragmentManager.popBackStackImmediate()
-                    drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
-                } else if (supportFragmentManager
-                        .getBackStackEntryAt(supportFragmentManager.backStackEntryCount - 2)
-                        .name == School.COMPLETED
-                ) {
-                    supportFragmentManager.popBackStackImmediate()
-                    drawerLayout.setDrawerLockMode(DrawerLayout.LOCK_MODE_UNLOCKED)
+    private fun updateSharedPreferences(map: HashMap<String, String>) {
+        val editor = sharedPref.edit()
+        for (item in map) {
+            editor.putString(item.key, item.value)
+        }
+        editor.apply()
+    }
+
+    override fun openDrawer() {
+        binding.drawerLayout.openDrawer(GravityCompat.START)
+    }
+
+    /**
+     * Calls [callback] immediately if [updateCounter] returns
+     * false, otherwise wait for ad to close before calling
+     * [callback]
+     */
+    override fun incrementCounter(callback: () -> Unit) {
+        if (updateCounter()) {
+
+            interstitialAd?.fullScreenContentCallback = object : FullScreenContentCallback() {
+                override fun onAdDismissedFullScreenContent() {
+                    loadAd()
+                    callback()
                 }
-            } else super.onBackPressed()
+
+                override fun onAdFailedToShowFullScreenContent(p0: AdError?) {
+                    callback()
+                }
+                override fun onAdShowedFullScreenContent() {
+                    interstitialAd = null
+                }
+            }
         } else {
-            settingsBackPressedListener?.backPressed()
+            callback()
         }
     }
 
-    /** Used for back presses when in [SettingsFragment] */
-    interface SettingsBackPressedListener {
-        fun backPressed()
+    override fun onBackPressed() {
+        if (supportFragmentManager.backStackEntryCount > 0) {
+            supportFragmentManager.popBackStackImmediate()
+        } else super.onBackPressed()
     }
 }

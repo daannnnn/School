@@ -1,4 +1,4 @@
-package com.dan.school.fragments
+package com.dan.school.settings
 
 import android.os.Bundle
 import androidx.fragment.app.Fragment
@@ -7,52 +7,66 @@ import android.view.View
 import android.view.ViewGroup
 import com.dan.school.BuildConfig
 import com.dan.school.R
+import com.dan.school.databinding.FragmentAboutBinding
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
-import kotlinx.android.synthetic.main.fragment_about.*
 
 class AboutFragment : Fragment() {
+
+    private var _binding: FragmentAboutBinding? = null
+
+    private val binding get() = _binding!!
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_about, container, false)
+    ): View {
+        _binding = FragmentAboutBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
-        val version = "Version ${BuildConfig.VERSION_NAME}"
-        textViewVersion.text = version
+        val version = "${getString(R.string.version)} ${BuildConfig.VERSION_NAME}"
+        binding.textViewVersion.text = version
 
-        relativeLayoutLicenses.setOnClickListener {
+        binding.relativeLayoutLicenses.setOnClickListener {
             LibsBuilder()
                 .withFields(R.string::class.java.fields)
                 .withActivityTitle(getString(R.string.licenses))
                 .withLicenseShown(true)
                 .withAboutIconShown(false)
                 .withLibraryModification(
-                    "com_github_antonyt__InfiniteViewPager",
+                    getString(R.string.com_github_antonyt__InfiniteViewPager_library),
                     Libs.LibraryFields.LIBRARY_DESCRIPTION,
                     getString(R.string.com_github_antonyt__InfiniteViewPager_description)
                 )
                 .withLibraryModification(
-                    "com_github_antonyt__InfiniteViewPager",
+                    getString(R.string.com_github_antonyt__InfiniteViewPager_library),
                     Libs.LibraryFields.LIBRARY_WEBSITE,
                     getString(R.string.com_github_antonyt__InfiniteViewPager_libraryWebsite)
                 )
                 .withLibraryModification(
-                    "com_github_kizitonwose__CalendarView",
+                    getString(R.string.com_github_kizitonwose__CalendarView_library),
                     Libs.LibraryFields.LIBRARY_DESCRIPTION,
                     getString(R.string.com_github_kizitonwose__CalendarView_description)
                 )
                 .withLibraryModification(
-                    "com_github_kizitonwose__CalendarView",
+                    getString(R.string.com_github_kizitonwose__CalendarView_library),
                     Libs.LibraryFields.LIBRARY_WEBSITE,
                     getString(R.string.com_github_kizitonwose__CalendarView_libraryWebsite)
                 )
                 .start(requireContext())
         }
+
+        binding.buttonBack.setOnClickListener {
+            requireActivity().onBackPressed()
+        }
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
 }

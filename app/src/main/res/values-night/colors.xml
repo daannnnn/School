@@ -14,6 +14,7 @@
     <color name="add_button_color_normal">#32afe2</color>
 
     <color name="dividerColor">#1FFFFFFF</color>
+    <color name="outlineColor">#1F000000</color>
     <color name="chipStrokeColor">#1FFFFFFF</color>
     <color name="chipSelectedColor">#4D66d3ff</color>
     <color name="chipSelectedHomeworkColor">#4Deba999</color>
@@ -30,7 +31,11 @@
     <color name="strokeColor">#1F000000</color>
 
     <color name="red">#ef5350</color>
+    <color name="redRipple">#1FEF5350</color>
 
     <color name="tabLayoutColor">#272727</color>
     <color name="appBarLayoutColor">#272727</color>
+    <color name="signInButtonTextColor">#fff</color>
+    <color name="signInWithGoogleBackgroundColor">#4285F4</color>
+    <color name="signInWithEmailBackgroundColor">#2E2E2E</color>
 </resources>

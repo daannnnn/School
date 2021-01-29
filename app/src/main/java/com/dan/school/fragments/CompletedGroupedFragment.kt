@@ -9,23 +9,26 @@ import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.DataViewModel
 import com.dan.school.ItemClickListener
-import com.dan.school.R
 import com.dan.school.School
 import com.dan.school.School.categoryCheckedIcons
 import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.BaseItemListAdapter
 import com.dan.school.adapters.ItemListAdapter
+import com.dan.school.databinding.FragmentCompletedGroupedBinding
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.google.gson.Gson
 import com.google.gson.reflect.TypeToken
-import kotlinx.android.synthetic.main.fragment_completed_grouped.*
 import java.text.SimpleDateFormat
 import java.util.*
 
 class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
     BaseItemListAdapter.ShowSubtasksListener, ItemClickListener, BaseItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialogFragment.ConfirmDeleteListener {
+
+    private var _binding: FragmentCompletedGroupedBinding? = null
+
+    private val binding get() = _binding!!
 
     private val dataViewModel: DataViewModel by activityViewModels()
 
@@ -36,8 +39,9 @@ class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_completed_grouped, container, false)
+    ): View {
+        _binding = FragmentCompletedGroupedBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -65,15 +69,15 @@ class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
             this
         )
 
-        recyclerViewHomeworks.apply {
+        binding.recyclerViewHomeworks.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = homeworkListAdapter
         }
-        recyclerViewExams.apply {
+        binding.recyclerViewExams.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = examListAdapter
         }
-        recyclerViewTasks.apply {
+        binding.recyclerViewTasks.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = taskListAdapter
         }
@@ -81,9 +85,9 @@ class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
         dataViewModel.getDoneHomeworks()
             .observe(viewLifecycleOwner, { homeworks ->
                 if (homeworks.isEmpty()) {
-                    groupHomework.visibility = View.GONE
+                    binding.groupHomework.visibility = View.GONE
                 } else {
-                    groupHomework.visibility = View.VISIBLE
+                    binding.groupHomework.visibility = View.VISIBLE
                 }
                 homeworkListAdapter.submitList(homeworks)
             })
@@ -91,9 +95,9 @@ class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
         dataViewModel.getDoneExams()
             .observe(viewLifecycleOwner, { exams ->
                 if (exams.isEmpty()) {
-                    groupExam.visibility = View.GONE
+                    binding.groupExam.visibility = View.GONE
                 } else {
-                    groupExam.visibility = View.VISIBLE
+                    binding.groupExam.visibility = View.VISIBLE
                 }
                 examListAdapter.submitList(exams)
             })
@@ -101,12 +105,17 @@ class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
         dataViewModel.getDoneTasks()
             .observe(viewLifecycleOwner, { tasks ->
                 if (tasks.isEmpty()) {
-                    groupTask.visibility = View.GONE
+                    binding.groupTask.visibility = View.GONE
                 } else {
-                    groupTask.visibility = View.VISIBLE
+                    binding.groupTask.visibility = View.VISIBLE
                 }
                 taskListAdapter.submitList(tasks)
             })
+    }
+
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
     }
 
     override fun setDone(id: Int, done: Boolean, doneTime: Long?) {
@@ -127,7 +136,7 @@ class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
             categoryCheckedIcons[category]
         ).show(
             childFragmentManager,
-            "subtasksBottomSheet"
+            null
         )
     }
 
@@ -144,7 +153,7 @@ class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
             item.title,
             Gson().fromJson(
                 item.subtasks,
-                object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type
+                object : TypeToken<ArrayList<Subtask?>?>() {}.type
             ),
             item.notes,
             calendar,
@@ -154,7 +163,7 @@ class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
 
     override fun itemLongClicked(title: String, id: Int) {
         ConfirmDeleteDialogFragment(this, id, title)
-            .show(childFragmentManager, "confirmDeleteDialog")
+            .show(childFragmentManager, null)
     }
 
     override fun confirmDelete(itemId: Int) {
@@ -166,7 +175,7 @@ class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
         done: Boolean,
         doneTime: Long? = null,
         title: String,
-        subtasks: java.util.ArrayList<Subtask>,
+        subtasks: ArrayList<Subtask>,
         notes: String,
         date: Calendar?,
         itemId: Int
@@ -183,7 +192,7 @@ class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
             isEdit = true,
             itemId = itemId
         )
-        editFragment.show(childFragmentManager, "editFragment")
+        editFragment.show(childFragmentManager, null)
     }
 
 }

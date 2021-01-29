@@ -17,14 +17,25 @@ object School {
     const val LIGHT_MODE = 10
     const val SYSTEM_DEFAULT = 11
 
-    const val PROFILE = 12
-    const val THEME = 13
-    const val ABOUT = 14
+    const val SIGN_IN_WITH_GOOGLE = 12
+    const val SIGN_IN_WITH_EMAIL = 13
+
+    const val PROFILE = 14
+    const val THEME = 15
+    const val BACKUP = 16
+    const val ABOUT = 17
+
+    const val HOMEWORK_TITLE = "Homework"
+    const val EXAM_TITLE = "Exam"
+    const val TASK_TITLE = "Task"
+
+    const val TABLE_NAME = "items"
 
     const val dateFormat = "EEE, MMM d, yyyy"
     const val dateFormatOnDatabase = "yyyyMMdd"
     const val dateTimeFormat = "EEE, MMM d, yyyy hh:mm aaa"
     const val displayDateFormat = "EEEE, MMMM d, yyyy"
+    const val dateFormatOnBackupFile = "yyMMddHHmmss"
 
     const val HOME = "home"
     const val CALENDAR = "calendar"
@@ -47,7 +58,24 @@ object School {
 
     const val POSITION = "position"
 
+    const val USERS = "users"
+
     const val SETTINGS_CONTENT_FRAGMENT_TAG = "SettingsContentFragment"
+
+    const val PASSWORD_RESET_EMAIL_TIME_LAST_SENT = "passwordResetEmailTimeLastSent"
+    const val VERIFICATION_EMAIL_TIME_LAST_SENT = "verificationEmailTimeLastSent"
+    const val PROFILE_LAST_UPDATE_TIME = "profileLastUpdateTime"
+    const val DATABASE_PROFILE_UPDATED = "databaseProfileUpdated"
+
+    const val DATABASE_NAME = "itemsDB"
+
+    const val FROM_SETUP = "from_setup"
+
+    const val UPDATES = "updates"
+
+    const val CHANNEL_UPDATES_NAME = "Updates"
+
+    const val SELECTED_DATE = "selectedDate"
 
     val categoryColors =
         arrayOf(

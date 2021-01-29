@@ -6,6 +6,7 @@ import androidx.sqlite.db.SupportSQLiteQuery
 import com.dan.school.models.DateItem
 import com.dan.school.models.Item
 
+
 @Dao
 interface ItemDao {
     @Query("SELECT * FROM items")
@@ -58,4 +59,7 @@ interface ItemDao {
 
     @Update
     fun update(item: Item)
+
+    @RawQuery
+    fun checkpoint(supportSQLiteQuery: SupportSQLiteQuery): Int
 }

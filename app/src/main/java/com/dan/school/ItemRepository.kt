@@ -1,6 +1,7 @@
 package com.dan.school
 
 import androidx.lifecycle.LiveData
+import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
 import com.dan.school.models.DateItem
 import com.dan.school.models.Item
@@ -51,5 +52,8 @@ class ItemRepository(private val itemDao: ItemDao) {
     }
     suspend fun runtimeQuery(query: SupportSQLiteQuery) = withContext(Dispatchers.IO) {
         itemDao.runtimeQuery(query)
+    }
+    suspend fun checkpoint(): Int = withContext(Dispatchers.IO) {
+        itemDao.checkpoint(SimpleSQLiteQuery("pragma wal_checkpoint(full)"))
     }
 }

@@ -29,6 +29,7 @@ import com.dan.school.School.categoryCheckedIcons
 import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.BaseItemListAdapter
 import com.dan.school.adapters.ItemListAdapter
+import com.dan.school.databinding.FragmentCalendarBinding
 import com.dan.school.models.CategoryCount
 import com.dan.school.models.DateItem
 import com.dan.school.models.Item
@@ -39,7 +40,6 @@ import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
 import com.kizitonwose.calendarview.utils.Size
 import com.kizitonwose.calendarview.utils.yearMonth
-import kotlinx.android.synthetic.main.fragment_calendar.*
 import java.text.SimpleDateFormat
 import java.time.LocalDate
 import java.time.YearMonth
@@ -52,6 +52,10 @@ import kotlin.collections.ArrayList
 class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
     BaseItemListAdapter.ShowSubtasksListener, ItemClickListener, BaseItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialogFragment.ConfirmDeleteListener {
+
+    private var _binding: FragmentCalendarBinding? = null
+
+    private val binding get() = _binding!!
 
     private lateinit var titleChangeListener: TitleChangeListener
     private lateinit var itemClickListener: ItemClickListener
@@ -78,7 +82,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
     private var selectedDateChanged = arrayOf(true, true, true)
 
     /**
-     * Set to true if [calendarView] is scrolled without
+     * Set to true if [FragmentCalendarBinding.calendarView] is scrolled without
      * selecting a date, false otherwise.
      *
      * If set to true, the first day of the month
@@ -104,7 +108,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         if (savedInstanceState != null) {
-            selectedDate = Date(savedInstanceState.getLong("selectedDate")).toInstant()
+            selectedDate = Date(savedInstanceState.getLong(School.SELECTED_DATE)).toInstant()
                 .atZone(ZoneId.systemDefault()).toLocalDate()
         }
     }
@@ -112,8 +116,9 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
-    ): View? {
-        return inflater.inflate(R.layout.fragment_calendar, container, false)
+    ): View {
+        _binding = FragmentCalendarBinding.inflate(inflater, container, false)
+        return binding.root
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -140,7 +145,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
             }
         }
 
-        calendarView.dayBinder = object : DayBinder<DayViewContainer> {
+        binding.calendarView.dayBinder = object : DayBinder<DayViewContainer> {
             override fun create(view: View) = DayViewContainer(view)
             override fun bind(container: DayViewContainer, day: CalendarDay) {
                 container.textViewCalendarDay.text = day.date.dayOfMonth.toString()
@@ -224,8 +229,8 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
             }
         }
 
-        calendarView.monthScrollListener = {
-            if (calendarView.maxRowCount == 6) {  // If in month view
+        binding.calendarView.monthScrollListener = {
+            if (binding.calendarView.maxRowCount == 6) {  // If in month view
                 if (this::titleChangeListener.isInitialized) {
                     titleChangeListener.changeTitle(
                         if (it.year == today.year) {
@@ -273,15 +278,15 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
             MeasureSpec.makeMeasureSpec(widthPixels, MeasureSpec.AT_MOST)
         val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
         dayView.measure(widthMeasureSpec, heightMeasureSpec)
-        calendarView.daySize =
+        binding.calendarView.daySize =
             Size(((widthPixels / 7f) + 0.5).toInt(), dayView.measuredHeight)
 
         val currentMonth = YearMonth.now()
         val firstMonth = currentMonth.minusMonths(10)
         val lastMonth = currentMonth.plusMonths(10)
         val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
-        calendarView.setup(firstMonth, lastMonth, firstDayOfWeek)
-        calendarView.scrollToMonth(currentMonth)
+        binding.calendarView.setup(firstMonth, lastMonth, firstDayOfWeek)
+        binding.calendarView.scrollToMonth(currentMonth)
         // [END] CalendarView setup
 
         dataViewModel.homeworkAllDates.observe(viewLifecycleOwner, { dateItems ->
@@ -341,7 +346,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
             }
         })
 
-        recyclerViewCalendarHomework.apply {
+        binding.recyclerViewCalendarHomework.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = ItemListAdapter(
                 requireContext(),
@@ -352,7 +357,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
             )
         }
 
-        recyclerViewCalendarExam.apply {
+        binding.recyclerViewCalendarExam.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = ItemListAdapter(
                 requireContext(),
@@ -363,7 +368,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
             )
         }
 
-        recyclerViewCalendarTask.apply {
+        binding.recyclerViewCalendarTask.apply {
             layoutManager = LinearLayoutManager(requireContext())
             adapter = ItemListAdapter(
                 requireContext(),
@@ -377,7 +382,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
         /** Observers for the items on [selectedDate] */
         dataViewModel.getCalendarHomeworks().observe(viewLifecycleOwner, {
             if (selectedDateChanged[School.HOMEWORK]) {
-                recyclerViewCalendarHomework.adapter = ItemListAdapter(
+                binding.recyclerViewCalendarHomework.adapter = ItemListAdapter(
                     requireContext(),
                     this,
                     this,
@@ -386,14 +391,14 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
                 )
                 selectedDateChanged[School.HOMEWORK] = false
             }
-            (recyclerViewCalendarHomework.adapter as ItemListAdapter).submitList(it)
-            groupHomework.isGone = it.isEmpty()
+            (binding.recyclerViewCalendarHomework.adapter as ItemListAdapter).submitList(it)
+            binding.groupHomework.isGone = it.isEmpty()
             isEmpty[School.HOMEWORK] = it.isEmpty()
             showNoItemsTextIfAllEmpty()
         })
         dataViewModel.getCalendarExams().observe(viewLifecycleOwner, {
             if (selectedDateChanged[School.EXAM]) {
-                recyclerViewCalendarExam.adapter = ItemListAdapter(
+                binding.recyclerViewCalendarExam.adapter = ItemListAdapter(
                     requireContext(),
                     this,
                     this,
@@ -402,14 +407,14 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
                 )
                 selectedDateChanged[School.EXAM] = false
             }
-            (recyclerViewCalendarExam.adapter as ItemListAdapter).submitList(it)
-            groupExam.isGone = it.isEmpty()
+            (binding.recyclerViewCalendarExam.adapter as ItemListAdapter).submitList(it)
+            binding.groupExam.isGone = it.isEmpty()
             isEmpty[School.EXAM] = it.isEmpty()
             showNoItemsTextIfAllEmpty()
         })
         dataViewModel.getCalendarTasks().observe(viewLifecycleOwner, {
             if (selectedDateChanged[School.TASK]) {
-                recyclerViewCalendarTask.adapter = ItemListAdapter(
+                binding.recyclerViewCalendarTask.adapter = ItemListAdapter(
                     requireContext(),
                     this,
                     this,
@@ -418,16 +423,21 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
                 )
                 selectedDateChanged[School.TASK] = false
             }
-            (recyclerViewCalendarTask.adapter as ItemListAdapter).submitList(it)
-            groupTask.isGone = it.isEmpty()
+            (binding.recyclerViewCalendarTask.adapter as ItemListAdapter).submitList(it)
+            binding.groupTask.isGone = it.isEmpty()
             isEmpty[School.TASK] = it.isEmpty()
             showNoItemsTextIfAllEmpty()
         })
     }
 
+    override fun onDestroyView() {
+        super.onDestroyView()
+        _binding = null
+    }
+
     override fun onSaveInstanceState(outState: Bundle) {
         outState.putLong(
-            "selectedDate",
+            School.SELECTED_DATE,
             Date.from(
                 (if (selectedDate != null) selectedDate else LocalDate.now())!!.atStartOfDay(
                     ZoneId.systemDefault()
@@ -438,7 +448,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
     }
 
     /**
-     * Updates indicators on [calendarView] dates and sets new
+     * Updates indicators on [FragmentCalendarBinding.calendarView] dates and sets new
      * updated data, [newItems], on one of [allHomeworks], [allExams] or
      * [allTasks]
      *
@@ -472,17 +482,17 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
                 when (category) {
                     School.HOMEWORK -> {
                         if (++events[date]!!.homeworkCount == 1) {
-                            calendarView.notifyDateChanged(date)
+                            binding.calendarView.notifyDateChanged(date)
                         }
                     }
                     School.EXAM -> {
                         if (++events[date]!!.examCount == 1) {
-                            calendarView.notifyDateChanged(date)
+                            binding.calendarView.notifyDateChanged(date)
                         }
                     }
                     School.TASK -> {
                         if (++events[date]!!.taskCount == 1) {
-                            calendarView.notifyDateChanged(date)
+                            binding.calendarView.notifyDateChanged(date)
                         }
                     }
                 }
@@ -496,17 +506,17 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
                 when (category) {
                     School.HOMEWORK -> {
                         if (--events[date]!!.homeworkCount == 0) {
-                            calendarView.notifyDateChanged(date)
+                            binding.calendarView.notifyDateChanged(date)
                         }
                     }
                     School.EXAM -> {
                         if (--events[date]!!.examCount == 0) {
-                            calendarView.notifyDateChanged(date)
+                            binding.calendarView.notifyDateChanged(date)
                         }
                     }
                     School.TASK -> {
                         if (--events[date]!!.taskCount == 0) {
-                            calendarView.notifyDateChanged(date)
+                            binding.calendarView.notifyDateChanged(date)
                         }
                     }
                 }
@@ -519,7 +529,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
         }
     }
 
-    /** Initializes [calendarView] date indicators */
+    /** Initializes [FragmentCalendarBinding.calendarView] date indicators */
     private fun initializeData(category: Int, newItems: List<DateItem>) {
         when (category) {
             School.HOMEWORK -> allHomeworks = ArrayList(newItems)
@@ -543,7 +553,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
                 }
             }
         }
-        calendarView.notifyCalendarChanged()
+        binding.calendarView.notifyCalendarChanged()
     }
 
     /**
@@ -557,16 +567,16 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
     fun selectDate(date: LocalDate = LocalDate.now(), scrollToMonth: Boolean = false) {
         if (selectedDate == null) {
             selectedDate = LocalDate.now()
-            calendarView.notifyDateChanged(date)
+            binding.calendarView.notifyDateChanged(date)
         } else {
             if (selectedDate != date) {
                 if (scrollToMonth) {
-                    calendarView.scrollToMonth(date.yearMonth)
+                    binding.calendarView.scrollToMonth(date.yearMonth)
                 }
                 val oldDate = selectedDate
                 selectedDate = date
-                calendarView.notifyDateChanged(date)
-                oldDate?.let { it -> calendarView.notifyDateChanged(it) }
+                binding.calendarView.notifyDateChanged(date)
+                oldDate?.let { it -> binding.calendarView.notifyDateChanged(it) }
             }
         }
         selectedDateChanged = arrayOf(true, true, true)
@@ -598,7 +608,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
     }
 
     /**
-     * Sets [calendarView] to month view or
+     * Sets [FragmentCalendarBinding.calendarView] to month view or
      * week view depending on [isMonthView] if
      * [isViewChangeDone] then returns the value
      * of [isViewChangeDone]
@@ -608,7 +618,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
         if (isViewChangeDone) {
             isViewChangeDone = false
 
-            val oneWeekHeight = calendarView.daySize.height
+            val oneWeekHeight = binding.calendarView.daySize.height
             val oneMonthHeight = oneWeekHeight * 6
 
             val oldHeight = if (isMonthView) oneMonthHeight else oneWeekHeight
@@ -616,14 +626,14 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
 
             val animator = ValueAnimator.ofInt(oldHeight, newHeight)
             animator.addUpdateListener { mAnimator ->
-                calendarView.updateLayoutParams {
+                binding.calendarView.updateLayoutParams {
                     height = mAnimator.animatedValue as Int
                 }
             }
 
             animator.doOnStart {
                 if (!isMonthView) {
-                    calendarView.apply {
+                    binding.calendarView.apply {
                         maxRowCount = 6
                         hasBoundaries = true
                     }
@@ -631,17 +641,17 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
             }
             animator.doOnEnd {
                 if (isMonthView) {
-                    calendarView.apply {
+                    binding.calendarView.apply {
                         maxRowCount = 1
                         hasBoundaries = false
                     }
                 }
 
                 if (isMonthView) {
-                    calendarView.scrollToDate(selectedDate!!)
+                    binding.calendarView.scrollToDate(selectedDate!!)
                 } else {
                     calendarScrolled = false
-                    calendarView.scrollToMonth(selectedDate!!.yearMonth)
+                    binding.calendarView.scrollToMonth(selectedDate!!.yearMonth)
                 }
 
                 isViewChangeDone = true
@@ -653,14 +663,14 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
     }
 
     /**
-     * Show [textViewNoItemsForThisDate] and hide
-     * [scrollViewCalendarItems] if all items on
+     * Show [FragmentCalendarBinding.textViewNoItemsForThisDate] and hide
+     * [FragmentCalendarBinding.scrollViewCalendarItems] if all items on
      * [isEmpty] are true
      */
     private fun showNoItemsTextIfAllEmpty() {
-        textViewNoItemsForThisDate.isVisible =
+        binding.textViewNoItemsForThisDate.isVisible =
             (isEmpty[School.HOMEWORK] && isEmpty[School.EXAM] && isEmpty[School.TASK])
-        scrollViewCalendarItems.isGone =
+        binding.scrollViewCalendarItems.isGone =
             (isEmpty[School.HOMEWORK] && isEmpty[School.EXAM] && isEmpty[School.TASK])
     }
 
@@ -691,7 +701,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
             categoryCheckedIcons[category]
         ).show(
             childFragmentManager,
-            "subtasksBottomSheet"
+            null
         )
     }
 
@@ -703,7 +713,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
 
     override fun itemLongClicked(title: String, id: Int) {
         ConfirmDeleteDialogFragment(this, id, title)
-            .show(childFragmentManager, "confirmDeleteDialog")
+            .show(childFragmentManager, null)
     }
 
     override fun confirmDelete(itemId: Int) {
