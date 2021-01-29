@@ -69,7 +69,7 @@ object School {
 
     const val DATABASE_NAME = "itemsDB"
 
-    const val FROM_SETUP = "from_setup"
+    const val SHOW_BUTTON_SIGN_IN_LATER = "show_button_sign_in_later"
 
     const val UPDATES = "updates"
 

@@ -141,7 +141,7 @@ class BackupFragment : Fragment(), BackupItemClickListener,
 
         binding.buttonSignIn.setOnClickListener {
             val intent = Intent(requireContext(), AuthenticationActivity::class.java)
-            intent.putExtra(School.FROM_SETUP, false)
+            intent.putExtra(School.SHOW_BUTTON_SIGN_IN_LATER, false)
             startActivity(intent)
         }
 
