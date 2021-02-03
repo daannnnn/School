@@ -181,4 +181,5 @@
     <string name="file_is_too_big_message">Delete some homeworks, exams, or tasks then try again.</string>
     <string name="file_is_too_big">File is too big</string>
     <string name="restore_cancelled">Restore cancelled</string>
+    <string name="welcome">Welcome</string>
 </resources>

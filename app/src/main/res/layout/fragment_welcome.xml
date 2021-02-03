@@ -32,7 +32,6 @@
                 android:layout_marginTop="24dp"
                 android:layout_marginEnd="36dp"
                 android:fontFamily="@font/cabin_bold"
-                android:text="Welcome Dan!"
                 android:textColor="@color/colorPrimary"
                 android:textSize="36sp"
                 app:layout_constraintEnd_toEndOf="parent"

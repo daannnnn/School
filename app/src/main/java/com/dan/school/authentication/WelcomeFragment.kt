@@ -7,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import com.dan.school.R
+import com.dan.school.School
 import com.dan.school.databinding.FragmentWelcomeBinding
 
 private const val EMAIL_VERIFICATION_SENT = "email_verification_sent"
@@ -58,6 +59,14 @@ class WelcomeFragment : Fragment() {
                 "${getString(R.string.a_verification_email_has_been_sent_to)} $email. ${getString(R.string.please_check_your_email_to_verify_your_account)}"
             binding.textViewVerifyEmailMessage.text = message
         }
+
+        val sharedPref = requireContext().getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
+        val nickname = sharedPref.getString(School.NICKNAME, "")
+        val welcomeMessage =
+            "${getString(R.string.welcome)}${if (nickname != "") " $nickname" else ""}!"
+        binding.textViewWelcome.text = welcomeMessage
         binding.buttonDone.setOnClickListener {
             welcomeDoneButtonClickListener.welcomeDoneButtonClicked()
         }
