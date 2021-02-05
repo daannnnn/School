@@ -53,7 +53,7 @@
             android:resource="@color/colorPrimary" />
         <meta-data
             android:name="com.google.android.gms.ads.APPLICATION_ID"
-            android:value="ca-app-pub-7635997075130466~6687332706" />
+            android:value="@string/appId" />
     </application>
 
 </manifest>

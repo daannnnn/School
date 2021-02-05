@@ -43,6 +43,7 @@ android {
             resValue("string", "bannerCompletedScreenId", "ca-app-pub-3940256099942544/6300978111")
             resValue("string", "bannerItemId", "ca-app-pub-3940256099942544/6300978111")
             resValue("string", "interstitial1Id", "ca-app-pub-3940256099942544/1033173712")
+            resValue("string", "appId", adMobAdUnitIdProperties.getProperty("appId"))
         }
         release {
             minifyEnabled false
@@ -52,6 +53,7 @@ android {
             resValue("string", "bannerCompletedScreenId", adMobAdUnitIdProperties.getProperty("bannerCompletedScreen"))
             resValue("string", "bannerItemId", adMobAdUnitIdProperties.getProperty("bannerItem"))
             resValue("string", "interstitial1Id", adMobAdUnitIdProperties.getProperty("interstitial1"))
+            resValue("string", "appId", adMobAdUnitIdProperties.getProperty("appId"))
         }
     }
 
