@@ -42,7 +42,6 @@
         android:visibility="visible"
         app:errorEnabled="true"
         app:errorTextAppearance="@style/TextFieldErrorTextAppearance"
-        app:helperText="@string/what_do_you_want_us_to_call_you"
         app:helperTextTextAppearance="@style/TextFieldHelperTextTextAppearance"
         app:hintTextAppearance="@style/TextFieldHintTextAppearance"
         app:layout_constraintEnd_toEndOf="parent"
