@@ -317,6 +317,6 @@
         android:layout_gravity="center|bottom"
         android:visibility="gone"
         ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-7635997075130466/9088996694" />
+        ads:adUnitId="@string/bannerItemId" />
 
 </androidx.coordinatorlayout.widget.CoordinatorLayout>
