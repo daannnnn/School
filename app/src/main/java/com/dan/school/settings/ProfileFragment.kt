@@ -67,9 +67,15 @@ class ProfileFragment : Fragment() {
                         MaterialAlertDialogBuilder(requireContext()).setMessage(null)
                             .setTitle(getString(R.string.do_you_want_to_save_your_changes))
                             .setPositiveButton(getString(R.string.save)) { _, _ ->
-                                setEditMode(false)
-                                // save to realtime database save updated time
-                                requireActivity().supportFragmentManager.popBackStack()
+                                if (setEditMode(false)) {
+                                    requireActivity().supportFragmentManager.popBackStack()
+                                } else {
+                                    Toast.makeText(
+                                        requireContext(),
+                                        getString(R.string.enter_a_valid_input),
+                                        Toast.LENGTH_SHORT
+                                    ).show()
+                                }
                             }
                             .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
                             .create()
@@ -326,41 +332,65 @@ class ProfileFragment : Fragment() {
         }
     }
 
-    private fun setEditMode(editMode: Boolean) {
-        binding.textFieldNickname.isVisible = editMode
-        binding.textFieldFullName.isVisible = editMode
-        binding.textViewNicknameDisplay.isVisible = !editMode
-        binding.textViewFullNameDisplay.isVisible = !editMode
+    private fun setEditMode(editMode: Boolean): Boolean {
         if (editMode) {
             binding.textFieldNickname.editText?.setText(sharedPref.getString(School.NICKNAME, ""))
             binding.textFieldFullName.editText?.setText(sharedPref.getString(School.FULL_NAME, ""))
+            isEditMode = editMode
+            setVisibility(editMode)
+            return true
         } else {
             inputMethodManager.hideSoftInputFromWindow(view?.windowToken, 0)
             val nickname = binding.textFieldNickname.editText?.text.toString()
             val fullName = binding.textFieldFullName.editText?.text.toString()
-            sharedPref.edit {
-                putString(School.NICKNAME, nickname)
-                putString(School.FULL_NAME, fullName)
-                commit()
+
+            val isNicknameEmpty = nickname.trim().isEmpty()
+            val isFullNameEmpty = fullName.trim().isEmpty()
+            if (isNicknameEmpty) {
+                binding.textFieldNickname.error = getString(R.string.this_field_is_required)
+            } else {
+                binding.textFieldNickname.error = null
             }
-            binding.textViewNicknameDisplay.text = nickname
-            binding.textViewFullNameDisplay.text = fullName
+            if (isFullNameEmpty) {
+                binding.textFieldFullName.error = getString(R.string.this_field_is_required)
+            } else {
+                binding.textFieldFullName.error = null
+            }
+            if (!(isNicknameEmpty || isFullNameEmpty)) {
+                sharedPref.edit {
+                    putString(School.NICKNAME, nickname)
+                    putString(School.FULL_NAME, fullName)
+                    commit()
+                }
+                binding.textViewNicknameDisplay.text = nickname
+                binding.textViewFullNameDisplay.text = fullName
 
-            sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, false).apply()
+                sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, false).apply()
 
-            auth.currentUser?.let {
-                val map = mapOf(
-                    School.NICKNAME to nickname,
-                    School.FULL_NAME to fullName,
-                    School.PROFILE_LAST_UPDATE_TIME to ServerValue.TIMESTAMP
-                )
-                database.reference.child(School.USERS).child(it.uid).updateChildren(map)
-                    .addOnSuccessListener {
-                        sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, true)
-                    }
+                auth.currentUser?.let {
+                    val map = mapOf(
+                        School.NICKNAME to nickname,
+                        School.FULL_NAME to fullName,
+                        School.PROFILE_LAST_UPDATE_TIME to ServerValue.TIMESTAMP
+                    )
+                    database.reference.child(School.USERS).child(it.uid).updateChildren(map)
+                        .addOnSuccessListener {
+                            sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, true)
+                        }
+                }
+                isEditMode = editMode
+                setVisibility(editMode)
+                return true
             }
         }
-        isEditMode = editMode
+        return false
+    }
+
+    private fun setVisibility(editMode: Boolean) {
+        binding.textFieldNickname.isVisible = editMode
+        binding.textFieldFullName.isVisible = editMode
+        binding.textViewNicknameDisplay.isVisible = !editMode
+        binding.textViewFullNameDisplay.isVisible = !editMode
     }
 
     override fun onDetach() {
