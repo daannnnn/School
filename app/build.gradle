@@ -36,14 +36,11 @@ android {
 
     buildTypes {
         debug {
-            resValue 'string', 'web_client_id', '"540705645951-4rco4265tk4vikhd4t3vjpis6gb23jab.apps.googleusercontent.com"'
         }
         release {
             minifyEnabled false
             proguardFiles getDefaultProguardFile('proguard-android-optimize.txt'), 'proguard-rules.pro'
             signingConfig signingConfigs.release
-
-            resValue 'string', 'web_client_id', '"502579712329-li56vofghdhc5nk4b1lgfu8ll3fhmcr8.apps.googleusercontent.com"'
         }
     }
 
