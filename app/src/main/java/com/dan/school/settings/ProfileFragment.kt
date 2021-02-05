@@ -220,7 +220,6 @@ class ProfileFragment : Fragment() {
 
     /**
      * Updates the visibility of [FragmentProfileBinding.groupEmail],
-     * [FragmentProfileBinding.viewDivider],
      * [FragmentProfileBinding.buttonResetPassword],
      * [FragmentProfileBinding.cardViewVerifyEmail] and
      * [FragmentProfileBinding.buttonSignIn] depending if a
@@ -235,7 +234,6 @@ class ProfileFragment : Fragment() {
             binding.buttonSignIn.visibility = View.GONE
 
             binding.groupEmail.visibility = View.VISIBLE
-            binding.viewDivider.visibility = View.VISIBLE
             binding.buttonResetPassword.visibility = View.VISIBLE
 
             binding.textViewEmailDisplay.text = user.email
@@ -266,7 +264,6 @@ class ProfileFragment : Fragment() {
             }
         } else {
             binding.groupEmail.visibility = View.GONE
-            binding.viewDivider.visibility = View.GONE
             binding.buttonResetPassword.visibility = View.GONE
             binding.buttonSignIn.visibility = View.VISIBLE
             binding.cardViewVerifyEmail.isGone = true
