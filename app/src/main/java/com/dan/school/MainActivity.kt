@@ -29,10 +29,9 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
     private lateinit var binding: ActivityMainBinding
 
     /**
-     * Saves the last click time from FAB, BottomNavigationView, and
-     * from an item click.
+     * Saves the last time show is called on [interstitialAd]
      */
-    private var lastClickTime = System.currentTimeMillis()
+    private var lastAdShowTime = System.currentTimeMillis()
 
     /**
      * Saves the amount of clicks from FAB, BottomNavigationView, and
@@ -179,7 +178,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
     private fun loadAd() {
         InterstitialAd.load(
             this,
-            "ca-app-pub-7635997075130466/5941211339",
+            getString(R.string.interstitial1Id),
             AdRequest.Builder().build(),
             object : InterstitialAdLoadCallback() {
                 override fun onAdLoaded(ad: InterstitialAd) {
@@ -295,25 +294,23 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
     }
 
     /**
-     * Updates [clickCounter] if the difference between
-     * [System.currentTimeMillis] and [lastClickTime] in seconds
-     * is greater than 0.5 seconds then shows [interstitialAd] if
-     * loaded and if [clickCounter] is greater than or equal to 5
+     * Updates [clickCounter] then shows [interstitialAd] if
+     * loaded, if [clickCounter] is greater than or equal to 5
+     * and if the difference between [System.currentTimeMillis] and
+     * [lastAdShowTime] in seconds is greater than 30.
      *
      * Returns true if show is called on [interstitialAd], false
      * otherwise
      */
     private fun updateCounter(): Boolean {
         var b = false
-        if ((System.currentTimeMillis() - lastClickTime) / 1000 > 0.5) {
-            clickCounter++
-            lastClickTime = System.currentTimeMillis()
-            if (clickCounter >= 5) {
-                if (interstitialAd != null) {
-                    interstitialAd?.show(this)
-                    clickCounter = 0
-                    b = true
-                }
+        clickCounter++
+        if (clickCounter >= 5 && (System.currentTimeMillis() - lastAdShowTime) / 1000 > 30) {
+            if (interstitialAd != null) {
+                interstitialAd?.show(this)
+                lastAdShowTime = System.currentTimeMillis()
+                clickCounter = 0
+                b = true
             }
         }
         return b

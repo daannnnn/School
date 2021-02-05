@@ -258,7 +258,7 @@
         android:layout_height="50dp"
         android:visibility="gone"
         ads:adSize="BANNER"
-        ads:adUnitId="ca-app-pub-7635997075130466/8605780965"
+        ads:adUnitId="@string/bannerCompletedScreenId"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
