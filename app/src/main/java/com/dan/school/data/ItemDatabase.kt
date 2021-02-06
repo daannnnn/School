@@ -1,25 +1,28 @@
-package com.dan.school
+package com.dan.school.data
 
 import android.content.Context
 import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
+import com.dan.school.Converter
+import com.dan.school.School
 import com.dan.school.models.Item
 
 @Database(entities = [Item::class], version = 1, exportSchema = false)
 @TypeConverters(Converter::class)
 abstract class ItemDatabase : RoomDatabase(){
-    abstract fun itemDao():ItemDao
+    abstract fun itemDao(): ItemDao
 
     companion object{
         private var instance: ItemDatabase? = null
-        fun getInstance(context: Context): ItemDatabase{
+        fun getInstance(context: Context): ItemDatabase {
             if (instance == null){
                 instance = Room.databaseBuilder(
                     context,
                     ItemDatabase::class.java,
-                    School.DATABASE_NAME)
+                    School.DATABASE_NAME
+                )
                     .build()
             }
             return instance as ItemDatabase

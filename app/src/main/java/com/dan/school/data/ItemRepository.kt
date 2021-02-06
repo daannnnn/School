@@ -1,8 +1,9 @@
-package com.dan.school
+package com.dan.school.data
 
 import androidx.lifecycle.LiveData
 import androidx.sqlite.db.SimpleSQLiteQuery
 import androidx.sqlite.db.SupportSQLiteQuery
+import com.dan.school.School
 import com.dan.school.models.DateItem
 import com.dan.school.models.Item
 import kotlinx.coroutines.Dispatchers

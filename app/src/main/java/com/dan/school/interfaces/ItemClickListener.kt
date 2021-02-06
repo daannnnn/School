@@ -1,4 +1,4 @@
-package com.dan.school
+package com.dan.school.interfaces
 
 import com.dan.school.models.Item
 

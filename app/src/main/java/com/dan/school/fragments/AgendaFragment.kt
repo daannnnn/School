@@ -19,6 +19,7 @@ import com.dan.school.adapters.BaseItemListAdapter
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.adapters.UpcomingItemListAdapter
 import com.dan.school.databinding.FragmentAgendaBinding
+import com.dan.school.interfaces.ItemClickListener
 import com.dan.school.models.*
 import java.text.SimpleDateFormat
 import java.util.*

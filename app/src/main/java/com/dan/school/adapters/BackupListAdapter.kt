@@ -6,7 +6,7 @@ import android.view.ViewGroup
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import com.dan.school.BackupItemViewHolder
-import com.dan.school.BackupItemClickListener
+import com.dan.school.interfaces.BackupItemClickListener
 import com.dan.school.R
 import com.dan.school.School
 import com.google.firebase.storage.StorageReference

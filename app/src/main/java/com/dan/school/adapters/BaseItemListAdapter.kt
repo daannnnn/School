@@ -4,7 +4,7 @@ import android.view.View
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.dan.school.ItemClickListener
+import com.dan.school.interfaces.ItemClickListener
 import com.dan.school.ItemViewHolder
 import com.dan.school.School
 import com.dan.school.models.Item
