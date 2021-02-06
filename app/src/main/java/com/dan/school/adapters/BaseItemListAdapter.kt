@@ -1,12 +1,15 @@
 package com.dan.school.adapters
 
 import android.view.View
+import androidx.core.view.isGone
+import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dan.school.interfaces.ItemClickListener
 import com.dan.school.ItemViewHolder
 import com.dan.school.School
+import com.dan.school.Utils
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.dan.school.models.UpcomingItem
@@ -42,34 +45,25 @@ abstract class BaseItemListAdapter<T>(
             )
             return@setOnLongClickListener true
         }
-        val subtasks = (Gson().fromJson(
-            item.subtasks,
-            object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type
-        ) as ArrayList<Subtask?>)
-        if (subtasks.isEmpty()) {
-            holder.buttonSubtask.visibility = View.GONE
-            holder.textViewSubtaskCount.visibility = View.GONE
+        val subtasks = Utils.convertJsonToListOfSubtasks(item.subtasks)
+        val undoneSubtasksCount = Utils.countUndoneSubtasks(subtasks)
+
+        holder.buttonSubtask.isGone = subtasks.isEmpty()
+
+        if (subtasks.isEmpty() || undoneSubtasksCount == 0) {
+            holder.textViewSubtaskCount.isGone = true
         } else {
-            holder.buttonSubtask.visibility = View.VISIBLE
-            var count = 0
-            for (subtask in subtasks) {
-                if (subtask != null && !subtask.done) {
-                    count++
-                }
-            }
-            if (count != 0) {
-                holder.textViewSubtaskCount.visibility = View.VISIBLE
-                holder.textViewSubtaskCount.text = count.toString()
-            } else {
-                holder.textViewSubtaskCount.visibility = View.GONE
-            }
+            holder.textViewSubtaskCount.isGone = false
+            holder.textViewSubtaskCount.text = undoneSubtasksCount.toString()
         }
+
         val mItemCategory = item.category
         if (item.done) {
             holder.buttonCheckItem.setImageResource(School.categoryCheckedIcons[mItemCategory])
         } else {
             holder.buttonCheckItem.setImageResource(School.categoryUncheckedIcons[mItemCategory])
         }
+
         holder.buttonCheckItem.setOnClickListener {
             if (holder.bindingAdapterPosition != -1) {
                 if (get().done) {
@@ -88,10 +82,10 @@ abstract class BaseItemListAdapter<T>(
         holder.buttonSubtask.setOnClickListener {
             val mItem = get()
             showSubtasksListener.showSubtasks(
-                Gson().fromJson(
-                    mItem.subtasks,
-                    object : TypeToken<java.util.ArrayList<Subtask?>?>() {}.type
-                ), mItem.title, mItem.id, mItem.category
+                Utils.convertJsonToListOfSubtasks(mItem.subtasks),
+                mItem.title,
+                mItem.id,
+                mItem.category
             )
         }
     }

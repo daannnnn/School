@@ -35,6 +35,7 @@ import com.dan.school.models.DateItem
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.kizitonwose.calendarview.model.CalendarDay
+import com.kizitonwose.calendarview.model.CalendarMonth
 import com.kizitonwose.calendarview.model.DayOwner
 import com.kizitonwose.calendarview.ui.DayBinder
 import com.kizitonwose.calendarview.ui.ViewContainer
@@ -50,7 +51,8 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
-    BaseItemListAdapter.ShowSubtasksListener, ItemClickListener, BaseItemListAdapter.ItemLongClickListener,
+    BaseItemListAdapter.ShowSubtasksListener, ItemClickListener,
+    BaseItemListAdapter.ItemLongClickListener,
     ConfirmDeleteDialogFragment.ConfirmDeleteListener {
 
     private var _binding: FragmentCalendarBinding? = null
@@ -124,170 +126,7 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        // [START] CalendarView setup
-        class DayViewContainer(view: View) : ViewContainer(view) {
-            lateinit var day: CalendarDay
-            val textViewCalendarDay = view.findViewById<TextView>(R.id.textViewCalendarDay)
-            val imageViewIndicator = view.findViewById<ImageView>(R.id.imageViewIndicator)
-            val viewHomeworkDotIndicator = view.findViewById<View>(R.id.viewHomeworkDotIndicator)
-            val viewExamDotIndicator = view.findViewById<View>(R.id.viewExamDotIndicator)
-            val viewTaskDotIndicator = view.findViewById<View>(R.id.viewTaskDotIndicator)
-
-            init {
-                view.setOnClickListener {
-                    if (day.owner == DayOwner.THIS_MONTH) {
-                        selectDate(day.date)
-                    } else {
-                        calendarScrolled = false
-                        selectDate(day.date, true)
-                    }
-                }
-            }
-        }
-
-        binding.calendarView.dayBinder = object : DayBinder<DayViewContainer> {
-            override fun create(view: View) = DayViewContainer(view)
-            override fun bind(container: DayViewContainer, day: CalendarDay) {
-                container.textViewCalendarDay.text = day.date.dayOfMonth.toString()
-                container.day = day
-
-                if (day.owner == DayOwner.THIS_MONTH) {
-                    when (day.date) {
-
-                        today -> {
-                            if (selectedDate == today) {
-                                container.imageViewIndicator.setBackgroundResource(R.drawable.date_selected_background)
-                                container.textViewCalendarDay.setTextColor(
-                                    ContextCompat.getColor(
-                                        requireContext(),
-                                        android.R.color.white
-                                    )
-                                )
-                            } else {
-                                container.imageViewIndicator.background = null
-                                container.textViewCalendarDay.setTextColor(
-                                    ContextCompat.getColor(
-                                        requireContext(),
-                                        R.color.colorPrimary
-                                    )
-                                )
-                            }
-                        }
-                        selectedDate -> {
-                            container.textViewCalendarDay.setTextColor(
-                                ContextCompat.getColor(
-                                    requireContext(),
-                                    android.R.color.white
-                                )
-                            )
-                            container.imageViewIndicator.setBackgroundResource(R.drawable.date_selected_background)
-                        }
-                        else -> {
-                            val textColorPrimary: TypedArray =
-                                requireContext().obtainStyledAttributes(
-                                    TypedValue().data, intArrayOf(
-                                        android.R.attr.textColorPrimary
-                                    )
-                                )
-                            container.textViewCalendarDay.setTextColor(
-                                textColorPrimary.getColor(
-                                    0,
-                                    -1
-                                )
-                            )
-                            textColorPrimary.recycle()
-                            container.imageViewIndicator.background = null
-                        }
-                    }
-                } else {
-                    val textColorSecondary: TypedArray = requireContext().obtainStyledAttributes(
-                        TypedValue().data, intArrayOf(
-                            android.R.attr.textColorSecondary
-                        )
-                    )
-                    container.textViewCalendarDay.setTextColor(textColorSecondary.getColor(0, -1))
-                    textColorSecondary.recycle()
-                    container.imageViewIndicator.background = null
-                }
-
-                /**
-                 * Show category indicator if the count in the
-                 * category is not equal to 0
-                 */
-                if (events[day.date] != null) {
-                    container.viewHomeworkDotIndicator.isVisible =
-                        events[day.date]!!.homeworkCount != 0
-                    container.viewExamDotIndicator.isVisible =
-                        events[day.date]!!.examCount != 0
-                    container.viewTaskDotIndicator.isVisible =
-                        events[day.date]!!.taskCount != 0
-                } else {
-                    container.viewHomeworkDotIndicator.isVisible = false
-                    container.viewExamDotIndicator.isVisible = false
-                    container.viewTaskDotIndicator.isVisible = false
-                }
-            }
-        }
-
-        binding.calendarView.monthScrollListener = {
-            if (binding.calendarView.maxRowCount == 6) {  // If in month view
-                if (this::titleChangeListener.isInitialized) {
-                    titleChangeListener.changeTitle(
-                        if (it.year == today.year) {
-                            titleMonthFormatter.format(it.yearMonth)
-                        } else {
-                            titleMonthWithYearFormatter.format(it.yearMonth)
-                        }
-                    )
-                }
-                if (calendarScrolled) {
-                    selectDate(it.yearMonth.atDay(1))
-                } else {
-                    if (selectedDate == null) {
-                        selectDate()
-                    } else {
-                        selectDate(selectedDate!!)
-                    }
-                    calendarScrolled = true
-                }
-            } else {  // If in week view
-                val firstDate = it.weekDays.first().first().date
-                val lastDate = it.weekDays.last().last().date
-                if (firstDate.yearMonth == lastDate.yearMonth) {
-                    if (this::titleChangeListener.isInitialized) {
-                        titleChangeListener.changeTitle(titleMonthFormatter.format(firstDate))
-                    }
-                } else {
-                    if (this::titleChangeListener.isInitialized) {
-                        titleChangeListener.changeTitle(
-                            "${titleMonthFormatter.format(firstDate)} - ${
-                                titleMonthFormatter.format(
-                                    lastDate
-                                )
-                            }"
-                        )
-                    }
-                }
-            }
-        }
-
-        // set calendar dayHeight and dayWidth
-        val widthPixels = Resources.getSystem().displayMetrics.widthPixels
-        dayView = View.inflate(context, R.layout.layout_calendar_day, null)
-        val widthMeasureSpec =
-            MeasureSpec.makeMeasureSpec(widthPixels, MeasureSpec.AT_MOST)
-        val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
-        dayView.measure(widthMeasureSpec, heightMeasureSpec)
-        binding.calendarView.daySize =
-            Size(((widthPixels / 7f) + 0.5).toInt(), dayView.measuredHeight)
-
-        val currentMonth = YearMonth.now()
-        val firstMonth = currentMonth.minusMonths(10)
-        val lastMonth = currentMonth.plusMonths(10)
-        val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
-        binding.calendarView.setup(firstMonth, lastMonth, firstDayOfWeek)
-        binding.calendarView.scrollToMonth(currentMonth)
-        // [END] CalendarView setup
+        setupCalendarView()
 
         dataViewModel.homeworkAllDates.observe(viewLifecycleOwner, { dateItems ->
             if (this::allHomeworks.isInitialized) {
@@ -428,6 +267,166 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
             isEmpty[School.TASK] = it.isEmpty()
             showNoItemsTextIfAllEmpty()
         })
+    }
+
+    private fun setupCalendarView() {
+        class DayViewContainer(view: View) : ViewContainer(view) {
+            lateinit var day: CalendarDay
+            val textViewCalendarDay = view.findViewById<TextView>(R.id.textViewCalendarDay)
+            val imageViewIndicator = view.findViewById<ImageView>(R.id.imageViewIndicator)
+            val viewHomeworkDotIndicator = view.findViewById<View>(R.id.viewHomeworkDotIndicator)
+            val viewExamDotIndicator = view.findViewById<View>(R.id.viewExamDotIndicator)
+            val viewTaskDotIndicator = view.findViewById<View>(R.id.viewTaskDotIndicator)
+
+            init {
+                view.setOnClickListener {
+                    if (day.owner == DayOwner.THIS_MONTH) {
+                        selectDate(day.date)
+                    } else {
+                        calendarScrolled = false
+                        selectDate(day.date, true)
+                    }
+                }
+            }
+        }
+
+        binding.calendarView.dayBinder = object : DayBinder<DayViewContainer> {
+            override fun create(view: View) = DayViewContainer(view)
+            override fun bind(container: DayViewContainer, day: CalendarDay) {
+                container.textViewCalendarDay.text = day.date.dayOfMonth.toString()
+                container.day = day
+
+                if (day.owner == DayOwner.THIS_MONTH) {
+                    when (day.date) {
+                        today -> {
+                            if (selectedDate == today) {
+                                container.imageViewIndicator.setBackgroundResource(R.drawable.date_selected_background)
+                                container.textViewCalendarDay.setTextColorToWhite()
+                            } else {
+                                container.imageViewIndicator.background = null
+                                container.textViewCalendarDay.setTextColorToColorPrimary()
+                            }
+                        }
+                        selectedDate -> {
+                            container.textViewCalendarDay.setTextColorToWhite()
+                            container.imageViewIndicator.setBackgroundResource(R.drawable.date_selected_background)
+                        }
+                        else -> {
+                            val textColorPrimary: TypedArray =
+                                requireContext().obtainStyledAttributes(
+                                    TypedValue().data, intArrayOf(
+                                        android.R.attr.textColorPrimary
+                                    )
+                                )
+                            container.textViewCalendarDay.setTextColor(
+                                textColorPrimary.getColor(
+                                    0,
+                                    -1
+                                )
+                            )
+                            textColorPrimary.recycle()
+                            container.imageViewIndicator.background = null
+                        }
+                    }
+                } else {
+                    val textColorSecondary: TypedArray = requireContext().obtainStyledAttributes(
+                        TypedValue().data, intArrayOf(
+                            android.R.attr.textColorSecondary
+                        )
+                    )
+                    container.textViewCalendarDay.setTextColor(textColorSecondary.getColor(0, -1))
+                    textColorSecondary.recycle()
+                    container.imageViewIndicator.background = null
+                }
+
+                /**
+                 * Show category indicator if the count in the
+                 * category is not equal to 0
+                 */
+                if (events[day.date] != null) {
+                    container.viewHomeworkDotIndicator.isVisible =
+                        events[day.date]!!.homeworkCount != 0
+                    container.viewExamDotIndicator.isVisible =
+                        events[day.date]!!.examCount != 0
+                    container.viewTaskDotIndicator.isVisible =
+                        events[day.date]!!.taskCount != 0
+                } else {
+                    container.viewHomeworkDotIndicator.isVisible = false
+                    container.viewExamDotIndicator.isVisible = false
+                    container.viewTaskDotIndicator.isVisible = false
+                }
+            }
+        }
+
+        binding.calendarView.monthScrollListener = {
+            if (binding.calendarView.maxRowCount == 6) {  // If in month view
+                updateTitle(true, it)
+                if (calendarScrolled) {
+                    selectDate(it.yearMonth.atDay(1))
+                } else {
+                    if (selectedDate == null) {
+                        selectDate()
+                    } else {
+                        selectDate(selectedDate!!)
+                    }
+                    calendarScrolled = true
+                }
+            } else {  // If in week view
+                updateTitle(false, it)
+            }
+        }
+
+        setCalendarDayHeightWidth()
+
+        val currentMonth = YearMonth.now()
+        val firstMonth = currentMonth.minusMonths(10)
+        val lastMonth = currentMonth.plusMonths(10)
+        val firstDayOfWeek = WeekFields.of(Locale.getDefault()).firstDayOfWeek
+        binding.calendarView.setup(firstMonth, lastMonth, firstDayOfWeek)
+        binding.calendarView.scrollToMonth(currentMonth)
+    }
+
+    private fun updateTitle(isMonthView: Boolean, calendarMonth: CalendarMonth) {
+        if (isMonthView) {
+            if (this::titleChangeListener.isInitialized) {
+                titleChangeListener.changeTitle(
+                    if (calendarMonth.year == today.year) {
+                        titleMonthFormatter.format(calendarMonth.yearMonth)
+                    } else {
+                        titleMonthWithYearFormatter.format(calendarMonth.yearMonth)
+                    }
+                )
+            }
+        } else {
+            val firstDate = calendarMonth.weekDays.first().first().date
+            val lastDate = calendarMonth.weekDays.last().last().date
+            if (firstDate.yearMonth == lastDate.yearMonth) {
+                if (this::titleChangeListener.isInitialized) {
+                    titleChangeListener.changeTitle(titleMonthFormatter.format(firstDate))
+                }
+            } else {
+                if (this::titleChangeListener.isInitialized) {
+                    titleChangeListener.changeTitle(
+                        "${titleMonthFormatter.format(firstDate)} - ${
+                            titleMonthFormatter.format(
+                                lastDate
+                            )
+                        }"
+                    )
+                }
+            }
+        }
+    }
+
+    private fun setCalendarDayHeightWidth() {
+        val widthPixels = Resources.getSystem().displayMetrics.widthPixels
+        dayView = View.inflate(context, R.layout.layout_calendar_day, null)
+        val widthMeasureSpec =
+            MeasureSpec.makeMeasureSpec(widthPixels, MeasureSpec.AT_MOST)
+        val heightMeasureSpec = MeasureSpec.makeMeasureSpec(0, MeasureSpec.UNSPECIFIED)
+        dayView.measure(widthMeasureSpec, heightMeasureSpec)
+        binding.calendarView.daySize =
+            Size(((widthPixels / 7f) + 0.5).toInt(), dayView.measuredHeight)
     }
 
     override fun onDestroyView() {
@@ -681,6 +680,24 @@ class CalendarFragment : Fragment(), BaseItemListAdapter.DoneListener,
         return Calendar.getInstance().apply {
             time = Date.from(selectedDate?.atStartOfDay(ZoneId.systemDefault())?.toInstant())
         }
+    }
+
+    private fun TextView.setTextColorToWhite() {
+        this.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                android.R.color.white
+            )
+        )
+    }
+
+    private fun TextView.setTextColorToColorPrimary() {
+        this.setTextColor(
+            ContextCompat.getColor(
+                requireContext(),
+                R.color.colorPrimary
+            )
+        )
     }
 
     override fun setDone(id: Int, done: Boolean, doneTime: Long?) {

@@ -65,22 +65,22 @@ class SignInFragment : Fragment() {
         })
 
         binding.buttonSignIn.setOnClickListener {
-            var cancel = false
+            var isInputValid = true
 
             if (binding.editTextEmail.editText!!.text.trim().isNotEmpty()) {
                 binding.editTextEmail.error = ""
             } else {
                 binding.editTextEmail.error = getString(R.string.this_field_is_required)
-                cancel = true
+                isInputValid = false
             }
             if (binding.editTextPassword.editText!!.text.trim().isNotEmpty()) {
                 binding.editTextPassword.error = ""
             } else {
                 binding.editTextPassword.error = getString(R.string.this_field_is_required)
-                cancel = true
+                isInputValid = false
             }
 
-            if (!cancel) {
+            if (isInputValid) {
                 signInButtonClickListener.signInButtonClicked(
                     binding.editTextEmail.editText!!.text.toString(),
                     binding.editTextPassword.editText!!.text.toString()

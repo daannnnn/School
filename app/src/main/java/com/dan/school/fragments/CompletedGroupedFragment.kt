@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.core.view.isGone
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
@@ -84,31 +85,19 @@ class CompletedGroupedFragment : Fragment(), BaseItemListAdapter.DoneListener,
 
         dataViewModel.getDoneHomeworks()
             .observe(viewLifecycleOwner, { homeworks ->
-                if (homeworks.isEmpty()) {
-                    binding.groupHomework.visibility = View.GONE
-                } else {
-                    binding.groupHomework.visibility = View.VISIBLE
-                }
+                binding.groupHomework.isGone = homeworks.isEmpty()
                 homeworkListAdapter.submitList(homeworks)
             })
 
         dataViewModel.getDoneExams()
             .observe(viewLifecycleOwner, { exams ->
-                if (exams.isEmpty()) {
-                    binding.groupExam.visibility = View.GONE
-                } else {
-                    binding.groupExam.visibility = View.VISIBLE
-                }
+                binding.groupExam.isGone = exams.isEmpty()
                 examListAdapter.submitList(exams)
             })
 
         dataViewModel.getDoneTasks()
             .observe(viewLifecycleOwner, { tasks ->
-                if (tasks.isEmpty()) {
-                    binding.groupTask.visibility = View.GONE
-                } else {
-                    binding.groupTask.visibility = View.VISIBLE
-                }
+                binding.groupTask.isGone = tasks.isEmpty()
                 taskListAdapter.submitList(tasks)
             })
     }

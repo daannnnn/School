@@ -34,7 +34,6 @@ import com.google.firebase.storage.ktx.storage
 import java.io.*
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.collections.ArrayList
 import kotlin.system.exitProcess
 
 class BackupFragment : Fragment(), BackupItemClickListener,
@@ -72,6 +71,10 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         auth = Firebase.auth
         storage = Firebase.storage
 
+        setStorageMaxRetryTime()
+    }
+
+    private fun setStorageMaxRetryTime() {
         val timeout: Long = 10000
         storage.maxOperationRetryTimeMillis = timeout
         storage.maxDownloadRetryTimeMillis = timeout
@@ -111,22 +114,19 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             if (isNetworkAvailable(requireContext())) {
                 showProgressBar()
                 dataViewModel.checkpoint()
-                backup { successful ->
+                backup(onBackupComplete = { successful ->
                     if (successful) {
-                        updateBackupList {
+                        updateBackupList(onComplete = {
                             showDialog(
                                 getString(R.string.backup_created_successfully),
                                 getString(R.string.backup_successful)
                             )
-                        }
+                        })
                     } else {
-                        showDialog(
-                            getString(R.string.error_while_performing_backup),
-                            getString(R.string.backup_failed)
-                        )
+                        showBackupFailedMessage()
                         hideProgressBar()
                     }
-                }
+                })
             } else {
                 Toast.makeText(
                     requireContext(),
@@ -173,78 +173,83 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         if (isNetworkAvailable(requireContext())) {
             val user = auth.currentUser
             if (user != null) {
-
                 if (user.isEmailVerified) {
-                    updateBackupList {
+                    updateBackupList(onComplete = {
                         binding.swipeRefreshLayout.isRefreshing = false
-                    }
+                    })
                     return
                 }
-
-                user.getIdToken(true).addOnCompleteListener { taskGetIdToken ->
-                    if (taskGetIdToken.isSuccessful) {
-                        user.reload().addOnCompleteListener reload@{ taskReload ->
-                            if (_binding == null) {
-                                return@reload
-                            }
-                            if (taskReload.isSuccessful) {
+                refreshUser(
+                    onFinish = { isSuccessful ->
+                        if (_binding != null) {
+                            setVisible(groupBackupLayout = true)
+                            if (isSuccessful) {
                                 auth.currentUser?.let {
-                                    if (it.isEmailVerified) {
-                                        updateBackupList {
-                                            binding.swipeRefreshLayout.isRefreshing = false
-                                        }
-                                    } else {
-                                        binding.groupBackupLayout.visibility = View.GONE
-                                        binding.groupInternetRequired.visibility = View.GONE
-                                        binding.groupAccountRequired.visibility = View.GONE
-                                        binding.groupVerificationRequired.visibility = View.VISIBLE
-                                        binding.swipeRefreshLayout.isRefreshing = false
-                                    }
+                                    authUserRefreshed()
                                 }
                             } else {
-                                try {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        getString(R.string.error_while_getting_list_of_backups),
-                                        Toast.LENGTH_LONG
-                                    ).show()
-                                } catch (e: Exception) {
-                                }
+                                showErrorGettingBackups()
                                 binding.swipeRefreshLayout.isRefreshing = false
                             }
                         }
-                    } else {
-                        if (_binding == null) {
-                            return@addOnCompleteListener
-                        }
-                        try {
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.error_while_getting_list_of_backups),
-                                Toast.LENGTH_LONG
-                            ).show()
-                        } catch (e: Exception) {
-                        }
-                        binding.swipeRefreshLayout.isRefreshing = false
-                    }
-                }
+                    })
             } else {
-                binding.groupBackupLayout.visibility = View.GONE
-                binding.groupInternetRequired.visibility = View.GONE
-                binding.groupAccountRequired.visibility = View.VISIBLE
-                binding.groupVerificationRequired.visibility = View.GONE
+                setVisible(groupAccountRequired = true)
                 binding.swipeRefreshLayout.isRefreshing = false
             }
         } else {
-            binding.groupBackupLayout.visibility = View.GONE
-            binding.groupInternetRequired.visibility = View.VISIBLE
-            binding.groupAccountRequired.visibility = View.GONE
-            binding.groupVerificationRequired.visibility = View.GONE
+            setVisible(groupInternetRequired = true)
             binding.swipeRefreshLayout.isRefreshing = false
         }
     }
 
-    private fun updateBackupList(done: () -> Unit) {
+    private fun setVisible(
+        groupBackupLayout: Boolean = false,
+        groupInternetRequired: Boolean = false,
+        groupAccountRequired: Boolean = false,
+        groupVerificationRequired: Boolean = false
+    ) {
+        binding.groupBackupLayout.isVisible = groupBackupLayout
+        binding.groupInternetRequired.isVisible = groupInternetRequired
+        binding.groupAccountRequired.isVisible = groupAccountRequired
+        binding.groupVerificationRequired.isVisible = groupVerificationRequired
+    }
+
+    private fun authUserRefreshed() {
+        auth.currentUser?.let {
+            if (it.isEmailVerified) {
+                updateBackupList(onComplete = {
+                    binding.swipeRefreshLayout.isRefreshing = false
+                })
+            } else {
+                setVisible(groupVerificationRequired = true)
+                binding.swipeRefreshLayout.isRefreshing = false
+            }
+        }
+    }
+
+    /**
+     * Refreshes auth token and user
+     */
+    private fun refreshUser(onFinish: (isSuccessful: Boolean) -> Unit) {
+        val user = auth.currentUser
+        if (user == null) {
+            onFinish(false)
+            return
+        }
+
+        user.getIdToken(true).addOnCompleteListener { taskGetIdToken ->
+            if (taskGetIdToken.isSuccessful) {
+                user.reload().addOnCompleteListener reload@{ taskReload ->
+                    onFinish(taskReload.isSuccessful)
+                }
+            } else {
+                onFinish(false)
+            }
+        }
+    }
+
+    private fun updateBackupList(onComplete: Callback = {}) {
         storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
             .listAll()
             .addOnCompleteListener {
@@ -252,38 +257,27 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                     return@addOnCompleteListener
                 }
                 if (it.isSuccessful) {
-                    val backupList = ArrayList<StorageReference>()
-                    if (it.result != null) {
-                        it.result!!.items.forEach { item ->
-                            backupList.add(item)
-                        }
-                    }
-
-                    backupList.sortWith { o1, o2 ->
-                        o2.name.compareTo(o1.name)
-                    }
-
-                    binding.groupBackupLayout.visibility = View.VISIBLE
-                    binding.groupInternetRequired.visibility = View.GONE
-                    binding.groupAccountRequired.visibility = View.GONE
-                    binding.groupVerificationRequired.visibility = View.GONE
-
+                    val backupList = it.result.items
                     binding.textViewNoBackupsYet.isGone = backupList.isNotEmpty()
                     binding.recyclerViewBackups.isVisible = backupList.isNotEmpty()
                     backupListAdapter.submitList(backupList)
                 } else {
-                    try {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.error_while_getting_list_of_backups),
-                            Toast.LENGTH_LONG
-                        ).show()
-                    } catch (e: Exception) {
-                    }
+                    showErrorGettingBackups()
                 }
-                done()
+                onComplete()
                 hideProgressBar()
             }
+    }
+
+    private fun showErrorGettingBackups() {
+        try {
+            Toast.makeText(
+                requireContext(),
+                getString(R.string.error_while_getting_list_of_backups),
+                Toast.LENGTH_LONG
+            ).show()
+        } catch (e: Exception) {
+        }
     }
 
     private fun showProgressBar() {
@@ -296,7 +290,7 @@ class BackupFragment : Fragment(), BackupItemClickListener,
 
     private fun backup(
         isBeforeRestore: Boolean = false,
-        backupComplete: (success: Boolean) -> Unit
+        onBackupComplete: (success: Boolean) -> Unit
     ) {
         val dbFile: File = requireContext().getDatabasePath(School.DATABASE_NAME)
         val fileName: String =
@@ -306,147 +300,99 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         try {
             val inputStream: InputStream = FileInputStream(dbFile)
 
-            // Check if file is less than 2MB
-            if (inputStream.available() < 2 * 1024 * 1024) {
-
-                // Check if the number of backups is less than 10
-                val ref = storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
-                ref.listAll().addOnCompleteListener { taskListAll ->
-                    if (taskListAll.isSuccessful) {
-                        if (taskListAll.result.items.size < 10) {
-                            storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
-                                .child(fileName)
-                                .putStream(inputStream).addOnCompleteListener {
-                                    backupComplete(it.isSuccessful)
-                                }
+            if (isLessThan2MB(inputStream)) {
+                getNumberOfBackups(onComplete = { isSuccessful, numberOfBackups ->
+                    if (isSuccessful) {
+                        if (numberOfBackups < 10) {
+                            uploadBackup(fileName, inputStream,
+                                onComplete = { isUploadSuccessful ->
+                                    onBackupComplete(isUploadSuccessful)
+                                })
                         } else {
-                            showDialog(
-                                "You are only allowed to have 10 backups, you currently have ${taskListAll.result.items.size}. Please delete some backups first to create a new one.",
-                                "Delete some backups"
-                            ) {
-                                if (isBeforeRestore) {
-                                    showRestoreCancelled()
-                                }
-                            }
+                            showDeleteSomeBackupsFirstMessage(numberOfBackups, onDismiss = {
+                                showRestoreCancelled(isBeforeRestore)
+                            })
                             hideProgressBar()
                         }
                     } else {
-                        showDialog(
-                            getString(R.string.error_while_performing_backup),
-                            getString(R.string.backup_failed)
-                        ) {
-                            if (isBeforeRestore) {
-                                showRestoreCancelled()
-                            }
-                        }
+                        showBackupFailedMessage(onDismiss = {
+                            showRestoreCancelled(isBeforeRestore)
+                        })
                         hideProgressBar()
                     }
-                }
+                })
+
             } else {
-                showDialog(
-                    getString(R.string.file_is_too_big_message),
-                    getString(R.string.file_is_too_big)
-                ) {
-                    if (isBeforeRestore) {
-                        showRestoreCancelled()
-                    }
-                }
+                showFileIsTooBigMessage(onDismiss = {
+                    showRestoreCancelled(isBeforeRestore)
+                })
                 hideProgressBar()
             }
         } catch (e: Exception) {
-            showDialog(
-                getString(R.string.error_while_performing_backup),
-                getString(R.string.backup_failed)
-            ) {
-                if (isBeforeRestore) {
-                    showRestoreCancelled()
-                }
-            }
+            showBackupFailedMessage(onDismiss = {
+                showRestoreCancelled(isBeforeRestore)
+            })
             hideProgressBar()
         }
     }
 
-    private fun showRestoreCancelled() {
-        showDialog(
-            null,
-            getString(R.string.restore_cancelled)
-        )
-        restoringDatabase = false
-    }
-
     private fun restore(storageReference: StorageReference, backupCurrentDatabase: Boolean) {
         if (backupCurrentDatabase) {
-            backup(true) { success ->
+            backup(true, onBackupComplete = { success ->
                 if (success) {
-                    getFile(storageReference, { byteArray ->
-                        restoreDatabase(byteArray)
-                    }, {
-                        showDialog(
-                            getString(R.string.error_while_performing_restore),
-                            getString(R.string.restore_failed)
-                        )
-                        hideProgressBar()
-                        restoringDatabase = false
-                    })
+                    getFile(storageReference,
+                        onSuccess = { byteArray ->
+                            restoreDatabase(byteArray)
+                        },
+                        onFailure = {
+                            showRestoreFailedMessage()
+                            hideProgressBar()
+                            restoringDatabase = false
+                        })
                 } else {
                     showDialog(
-                        getString(R.string.error_restore_cancelled),
+                        getString(R.string.backup_error_restore_cancelled),
                         getString(R.string.restore_failed)
                     )
                     hideProgressBar()
                     restoringDatabase = false
                 }
-            }
-        } else {
-            getFile(storageReference, { byteArray ->
-                restoreDatabase(byteArray)
-            }, {
-                showDialog(
-                    getString(R.string.error_while_performing_restore),
-                    getString(R.string.restore_failed)
-                )
-                hideProgressBar()
-                restoringDatabase = false
             })
+        } else {
+            getFile(storageReference,
+                onSuccess = { byteArray ->
+                    restoreDatabase(byteArray)
+                },
+                onFailure = {
+                    showRestoreFailedMessage()
+                    hideProgressBar()
+                    restoringDatabase = false
+                })
         }
     }
 
     private fun restoreDatabase(byteArray: ByteArray) {
         ItemDatabase.getInstance(requireContext()).close()
-
         val oldDB: File = requireContext().getDatabasePath(School.DATABASE_NAME)
         try {
             FileOutputStream(oldDB).use { fos -> fos.write(byteArray) }
-
-            MaterialAlertDialogBuilder(requireContext()).setMessage(getString(R.string.restore_successful_restart_app))
-                .setTitle(getString(R.string.restore_successful))
-                .setPositiveButton(
-                    getString(R.string.restart)
-                ) { _, _ -> }
-                .setOnDismissListener {
-                    restart()
-                }
-                .create()
-                .show()
+            showRestoreSuccessful()
         } catch (e: IOException) {
-            showDialog(
-                getString(R.string.error_while_performing_restore),
-                getString(R.string.restore_failed)
-            )
+            showRestoreFailedMessage()
             hideProgressBar()
         }
     }
 
     private fun getFile(
         storageReference: StorageReference,
-        success: (byteArray: ByteArray) -> Unit,
-        failed: (e: Exception) -> Unit
+        onSuccess: (byteArray: ByteArray) -> Unit,
+        onFailure: (e: Exception) -> Unit
     ) {
         val twoMegabytes: Long = 2 * 1024 * 1024
         storageReference.getBytes(twoMegabytes).addOnSuccessListener {
-            success(it)
+            onSuccess(it)
         }.addOnFailureListener {
-            failed(it)
+            onFailure(it)
         }
     }
 
@@ -458,7 +404,96 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         exitProcess(0)
     }
 
-    private fun showDialog(message: String?, title: String, dismissed: () -> Unit = {}) {
+    private fun showRestoreSuccessful() {
+        MaterialAlertDialogBuilder(requireContext()).setMessage(getString(R.string.restore_successful_restart_app))
+            .setTitle(getString(R.string.restore_successful))
+            .setPositiveButton(
+                getString(R.string.restart)
+            ) { _, _ -> }
+            .setOnDismissListener {
+                restart()
+            }
+            .create()
+            .show()
+    }
+
+    private fun showRestoreFailedMessage() {
+        showDialog(
+            getString(R.string.error_while_performing_restore),
+            getString(R.string.restore_failed)
+        )
+    }
+
+    private fun showFileIsTooBigMessage(onDismiss: Callback) {
+        showDialog(
+            getString(R.string.file_is_too_big_message),
+            getString(R.string.file_is_too_big),
+            onDismiss = {
+                onDismiss()
+            }
+        )
+    }
+
+    private fun showDeleteSomeBackupsFirstMessage(numberOfBackups: Int, onDismiss: Callback) {
+        showDialog(
+            "${getString(R.string.only_allowed_to_have_10_backups)} $numberOfBackups. " + getString(
+                R.string.please_delete_backups_first
+            ),
+            getString(R.string.delete_some_backups),
+            onDismiss = {
+                onDismiss()
+            }
+        )
+    }
+
+    private fun showBackupFailedMessage(onDismiss: Callback = {}) {
+        showDialog(
+            getString(R.string.error_while_performing_backup),
+            getString(R.string.backup_failed),
+            onDismiss = {
+                onDismiss()
+            }
+        )
+    }
+
+    private fun uploadBackup(
+        fileName: String,
+        inputStream: InputStream,
+        onComplete: (isSuccessful: Boolean) -> Unit
+    ) {
+        storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
+            .child(fileName)
+            .putStream(inputStream).addOnCompleteListener {
+                onComplete(it.isSuccessful)
+            }
+    }
+
+    private fun getNumberOfBackups(onComplete: (isSuccessful: Boolean, numberOfBackups: Int) -> Unit) {
+        val ref = storage.reference.child(School.USERS).child(auth.currentUser!!.uid)
+        ref.listAll().addOnCompleteListener { taskListAll ->
+            onComplete(taskListAll.isSuccessful, taskListAll.result.items.size)
+        }
+    }
+
+    private fun isLessThan2MB(inputStream: InputStream): Boolean {
+        return inputStream.available() < 2 * 1024 * 1024
+    }
+
+    private fun showRestoreCancelled() {
+        showDialog(
+            null,
+            getString(R.string.restore_cancelled)
+        )
+        restoringDatabase = false
+    }
+
+    private fun showRestoreCancelled(isBeforeRestore: Boolean) {
+        if (isBeforeRestore) {
+            showRestoreCancelled()
+        }
+    }
+
+    private fun showDialog(message: String?, title: String, onDismiss: Callback = {}) {
         try {
             MaterialAlertDialogBuilder(requireContext()).setMessage(message)
                 .setTitle(title)
@@ -466,7 +501,7 @@ class BackupFragment : Fragment(), BackupItemClickListener,
                     getString(R.string.okay)
                 ) { _, _ -> }
                 .setOnDismissListener {
-                    dismissed()
+                    onDismiss()
                 }
                 .create()
                 .show()
@@ -474,26 +509,27 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         }
     }
 
-    private fun askForConfirmation(confirm: () -> Unit) {
-        showConfirmationDialog { result ->
+    private fun askForConfirmation(onConfirm: Callback) {
+        showConfirmationDialog(onResult = { result ->
             when (result) {
                 CONFIRM -> {
-                    confirm()
+                    onConfirm()
                 }
                 CANCEL -> {
                     hideProgressBar()
                     restoringDatabase = false
                 }
             }
-        }
+        })
     }
 
-    private fun showConfirmationDialog(done: (result: Int) -> Unit) {
+    private fun showConfirmationDialog(onResult: (result: Int) -> Unit) {
+        val code = getRandom4DigitCode()
         val view = LayoutInflater.from(requireContext())
             .inflate(R.layout.layout_confirm_dialog, LinearLayout(requireContext()), false)
-        val code = ((Math.random() * 9000) + 1000).toInt()
-        view.findViewById<TextView>(R.id.textViewCode).text = code.toString()
         val editTextCode = view.findViewById<TextInputLayout>(R.id.editTextCode).editText
+        view.findViewById<TextView>(R.id.textViewCode).text = code.toString()
+
         MaterialAlertDialogBuilder(requireContext()).setMessage(getString(R.string.enter_code_to_confirm_restore))
             .setTitle(getString(R.string.confirm_restore))
             .setView(view)
@@ -502,26 +538,30 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             ) { _, _ ->
                 if (editTextCode != null) {
                     if (editTextCode.text.toString() == code.toString()) {
-                        done(CONFIRM)
+                        onResult(CONFIRM)
                     } else {
                         Toast.makeText(
                             requireContext(),
                             getString(R.string.code_not_match_restore_cancelled),
                             Toast.LENGTH_LONG
                         ).show()
-                        done(CANCEL)
+                        onResult(CANCEL)
                     }
                 } else {
-                    done(CANCEL)
+                    onResult(CANCEL)
                 }
             }
             .setNeutralButton(
                 getString(R.string.cancel)
             ) { _, _ ->
-                done(CANCEL)
+                onResult(CANCEL)
             }
             .create()
             .show()
+    }
+
+    private fun getRandom4DigitCode(): Int {
+        return ((Math.random() * 9000) + 1000).toInt()
     }
 
     @Suppress("DEPRECATION")
@@ -559,34 +599,22 @@ class BackupFragment : Fragment(), BackupItemClickListener,
             if (!restoringDatabase) {
                 restoringDatabase = true
                 showProgressBar()
-                MaterialAlertDialogBuilder(requireContext()).setMessage(getString(R.string.do_you_want_to_backup_current_database))
-                    .setTitle(getString(R.string.backup_current_database))
-                    .setNeutralButton(
-                        getString(R.string.cancel)
-                    ) { _, _ ->
-                        hideProgressBar()
-                        restoringDatabase = false
-                    }
-                    .setPositiveButton(
-                        R.string.yes
-                    ) { _, _ ->
-                        askForConfirmation {
+                showBackupBeforeRestoreDialog(
+                    onPositiveButtonClick = {
+                        askForConfirmation(onConfirm = {
                             restore(storageReference, true)
-                        }
-                    }
-                    .setNegativeButton(
-                        getString(R.string.no)
-                    ) { _, _ ->
-                        askForConfirmation {
+                        })
+                    },
+                    onNegativeButtonClick = {
+                        askForConfirmation(onConfirm = {
                             restore(storageReference, false)
-                        }
-                    }
-                    .setOnCancelListener {
+                        })
+                    },
+                    onCancel = {
                         hideProgressBar()
                         restoringDatabase = false
                     }
-                    .create()
-                    .show()
+                )
             }
         } else {
             Toast.makeText(requireContext(), getString(R.string.no_internet), Toast.LENGTH_SHORT)
@@ -594,26 +622,64 @@ class BackupFragment : Fragment(), BackupItemClickListener,
         }
     }
 
+    private fun showBackupBeforeRestoreDialog(
+        onPositiveButtonClick: Callback,
+        onNegativeButtonClick: Callback,
+        onCancel: Callback,
+    ) {
+        MaterialAlertDialogBuilder(requireContext()).setMessage(getString(R.string.do_you_want_to_backup_current_database))
+            .setTitle(getString(R.string.backup_current_database))
+            .setPositiveButton(
+                R.string.yes
+            ) { _, _ ->
+                onPositiveButtonClick()
+            }
+            .setNegativeButton(
+                getString(R.string.no)
+            ) { _, _ ->
+                onNegativeButtonClick()
+            }
+            .setNeutralButton(
+                getString(R.string.cancel)
+            ) { _, _ ->
+                onCancel()
+            }
+            .setOnCancelListener {
+                onCancel()
+            }
+            .create()
+            .show()
+    }
+
     override fun backupItemLongClicked(storageReference: StorageReference) {
         showProgressBar()
+        showDeleteConfirmationDialog(storageReference, onConfirmDelete = {
+            storageReference.delete().addOnCompleteListener {
+                if (it.isSuccessful) {
+                    updateBackupList()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.failed_to_delete_backup),
+                        Toast.LENGTH_LONG
+                    ).show()
+                    hideProgressBar()
+                }
+            }
+        })
+    }
+
+    private fun showDeleteConfirmationDialog(
+        storageReference: StorageReference,
+        onConfirmDelete: Callback
+    ) {
         MaterialAlertDialogBuilder(requireContext())
             .setMessage("${getString(R.string.are_you_sure_you_want_to_delete_this_backup)} (${storageReference.name})?")
             .setTitle(getString(R.string.delete_backup))
             .setPositiveButton(
                 R.string.yes
             ) { _, _ ->
-                storageReference.delete().addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        updateBackupList {}
-                    } else {
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.failed_to_delete_backup),
-                            Toast.LENGTH_LONG
-                        ).show()
-                        hideProgressBar()
-                    }
-                }
+                onConfirmDelete()
             }
             .setNegativeButton(
                 getString(R.string.no)

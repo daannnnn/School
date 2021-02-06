@@ -71,7 +71,19 @@ class HomeFragment : Fragment(),
             )
         )
 
-        // [START configure TabLayout and ViewPager]
+        setupTabLayoutAndViewPager()
+
+        binding.tabLayout.selectTab(
+            binding.tabLayout.getTabAt(
+                sharedPref.getInt(
+                    School.SELECTED_TAB_FRAGMENT,
+                    School.HOMEWORK
+                )
+            )
+        )
+    }
+
+    private fun setupTabLayoutAndViewPager() {
         val homeworksFragment = ItemsFragment.newInstance(School.HOMEWORK)
         val examsFragment = ItemsFragment.newInstance(School.EXAM)
         val tasksFragment = ItemsFragment.newInstance(School.TASK)
@@ -114,16 +126,6 @@ class HomeFragment : Fragment(),
                 setLastSelectedTab(position)
             }
         })
-        // [END configure TabLayout and ViewPager]
-
-        binding.tabLayout.selectTab(
-            binding.tabLayout.getTabAt(
-                sharedPref.getInt(
-                    School.SELECTED_TAB_FRAGMENT,
-                    School.HOMEWORK
-                )
-            )
-        )
     }
 
     override fun onDestroyView() {

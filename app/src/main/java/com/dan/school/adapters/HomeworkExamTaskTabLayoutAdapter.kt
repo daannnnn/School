@@ -16,7 +16,7 @@ class HomeworkExamTaskTabLayoutAdapter(private val mListFragments: ArrayList<Fra
     }
 
     @Nullable
-    override fun getPageTitle(position: Int): CharSequence? {
+    override fun getPageTitle(position: Int): CharSequence {
         return mListFragmentTitles[position]
     }
 

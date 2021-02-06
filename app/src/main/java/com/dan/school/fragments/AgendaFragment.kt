@@ -155,11 +155,7 @@ class AgendaFragment : Fragment(),
 
         dataViewModel.getAllOverdueItemsByDate(todayDateInt)
             .observe(viewLifecycleOwner, { overdueItems ->
-                if (overdueItems.isEmpty()) {
-                    binding.groupOverdue.visibility = View.GONE
-                } else {
-                    binding.groupOverdue.visibility = View.VISIBLE
-                }
+                binding.groupOverdue.isGone = overdueItems.isEmpty()
                 overdueListAdapter.submitList(overdueItems) {
                     refreshShowEmptyMessageVisibility()
                 }
@@ -167,11 +163,7 @@ class AgendaFragment : Fragment(),
 
         dataViewModel.getAllHomeworkByDate(todayDateInt)
             .observe(viewLifecycleOwner, { homeworks ->
-                if (homeworks.isEmpty()) {
-                    binding.groupHomework.visibility = View.GONE
-                } else {
-                    binding.groupHomework.visibility = View.VISIBLE
-                }
+                binding.groupHomework.isGone = homeworks.isEmpty()
                 homeworkListAdapter.submitList(homeworks) {
                     refreshShowEmptyMessageVisibility()
                 }
@@ -179,11 +171,7 @@ class AgendaFragment : Fragment(),
 
         dataViewModel.getAllExamByDate(todayDateInt)
             .observe(viewLifecycleOwner, { exams ->
-                if (exams.isEmpty()) {
-                    binding.groupExam.visibility = View.GONE
-                } else {
-                    binding.groupExam.visibility = View.VISIBLE
-                }
+                binding.groupExam.isGone = exams.isEmpty()
                 examListAdapter.submitList(exams) {
                     refreshShowEmptyMessageVisibility()
                 }
@@ -191,11 +179,7 @@ class AgendaFragment : Fragment(),
 
         dataViewModel.getAllTaskByDate(todayDateInt)
             .observe(viewLifecycleOwner, { tasks ->
-                if (tasks.isEmpty()) {
-                    binding.groupTask.visibility = View.GONE
-                } else {
-                    binding.groupTask.visibility = View.VISIBLE
-                }
+                binding.groupTask.isGone = tasks.isEmpty()
                 taskListAdapter.submitList(tasks) {
                     refreshShowEmptyMessageVisibility()
                 }
@@ -270,8 +254,9 @@ class AgendaFragment : Fragment(),
     }
 
     /**
-     * Hides, shows and sets [FragmentAgendaBinding.textViewMessage] visibility
-     * and text depending on list contents
+     * Sets [FragmentAgendaBinding.cardViewMessage] visibility and
+     * [FragmentAgendaBinding.textViewMessage] text depending on
+     * list contents
      */
     private fun refreshShowEmptyMessageVisibility() {
         if (overdueListAdapter.currentList.isEmpty() &&

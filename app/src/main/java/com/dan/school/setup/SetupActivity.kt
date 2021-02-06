@@ -5,6 +5,7 @@ import android.content.Intent
 import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatActivity
+import androidx.fragment.app.Fragment
 import com.dan.school.BuildConfig
 import com.dan.school.MainActivity
 import com.dan.school.R
@@ -19,7 +20,8 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 
-class SetupActivity : AppCompatActivity() {
+class SetupActivity : AppCompatActivity(), ProfileSetupFragment.ProfileSetupDoneListener,
+    SetupFragment.ButtonGetStartedClickListener, SetupViewPagerFragment.SetupDoneListener {
 
     private lateinit var binding: ActivitySetupBinding
 
@@ -63,51 +65,61 @@ class SetupActivity : AppCompatActivity() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         super.onActivityResult(requestCode, resultCode, data)
         if (requestCode == AUTHENTICATION_ACTIVITY_REQUEST_CODE && resultCode == RESULT_OK) {
-            when (data?.getIntExtra(AuthenticationActivity.RESULT, -1)) {
-                AuthenticationActivity.AUTHENTICATION_CANCELLED -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(
-                            R.id.frameLayoutSetup,
-                            ProfileSetupFragment.newInstance()
-                        ).commit()
-                }
-                AuthenticationActivity.AUTHENTICATION_SUCCESS -> {
-                    supportFragmentManager.beginTransaction()
-                        .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-                        .replace(
-                            R.id.frameLayoutSetup,
-                            SetupViewPagerFragment()
-                        ).commit()
-                }
-                AuthenticationActivity.AUTHENTICATION_WITH_GOOGLE_SUCCESS -> {
-                    supportFragmentManager.beginTransaction()
-                        .replace(
-                            R.id.frameLayoutSetup,
-                            ProfileSetupFragment.newInstance(
-                                data.getStringExtra(School.NICKNAME) ?: "",
-                                data.getStringExtra(School.FULL_NAME) ?: ""
-                            )
-                        ).commit()
-                }
+            authenticationComplete(data)
+        }
+    }
+
+    private fun authenticationComplete(data: Intent?) {
+        when (data?.getIntExtra(AuthenticationActivity.RESULT, -1)) {
+            AuthenticationActivity.AUTHENTICATION_CANCELLED -> {
+                replaceFragment(ProfileSetupFragment.newInstance())
+            }
+            AuthenticationActivity.AUTHENTICATION_SUCCESS -> {
+                replaceFragment(SetupViewPagerFragment())
+            }
+            AuthenticationActivity.AUTHENTICATION_WITH_GOOGLE_SUCCESS -> {
+                replaceFragment(
+                    ProfileSetupFragment.newInstance(
+                        data.getStringExtra(School.NICKNAME) ?: "",
+                        data.getStringExtra(School.FULL_NAME) ?: ""
+                    )
+                )
             }
         }
     }
 
-    fun buttonGetStartedClicked() {
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .replace(
+                R.id.frameLayoutSetup,
+                fragment
+            ).commit()
+    }
+
+    override fun buttonGetStartedClicked() {
         startActivityForResult(
             Intent(this, AuthenticationActivity::class.java),
             AUTHENTICATION_ACTIVITY_REQUEST_CODE
         )
     }
 
-    fun profileSetupDone(nickname: String, fullName: String) {
+    override fun profileSetupDone(nickname: String, fullName: String) {
+        saveUpdatedProfile(nickname, fullName)
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
+            .replace(
+                R.id.frameLayoutSetup,
+                SetupViewPagerFragment()
+            ).commit()
+    }
+
+    private fun saveUpdatedProfile(nickname: String, fullName: String) {
         with(sharedPref.edit()) {
             putString(School.NICKNAME, nickname)
             putString(School.FULL_NAME, fullName)
+            putBoolean(School.DATABASE_PROFILE_UPDATED, false)
             apply()
         }
-
-        sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, false).apply()
 
         if (auth.currentUser != null) {
             val map: MutableMap<String, Any> = HashMap()
@@ -120,16 +132,9 @@ class SetupActivity : AppCompatActivity() {
                     sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, true).apply()
                 }
         }
-
-        supportFragmentManager.beginTransaction()
-            .setCustomAnimations(R.anim.slide_in_right, R.anim.slide_out_left)
-            .replace(
-                R.id.frameLayoutSetup,
-                SetupViewPagerFragment()
-            ).commit()
     }
 
-    fun setupDone() {
+    override fun setupDone() {
         with(sharedPref.edit()) {
             putBoolean(School.IS_SETUP_DONE, true)
             apply()

@@ -137,7 +137,7 @@
     <string name="restore_successful">Restore successful</string>
     <string name="error_while_performing_backup">An error occurred while performing a backup. Please try again.</string>
     <string name="error_while_performing_restore">An error occurred while performing a restore. Please try again.</string>
-    <string name="error_restore_cancelled">An error occurred while creating a backup of the current database. Restore cancelled.</string>
+    <string name="backup_error_restore_cancelled">An error occurred while creating a backup of the current database. Restore cancelled.</string>
     <string name="error_while_getting_list_of_backups">An error occurred while getting the list of backups. Please try again.</string>
     <string name="no_internet">There is no Internet connection.</string>
     <string name="updates_notification_channel_id">updates_notification_channel_id</string>
@@ -183,4 +183,7 @@
     <string name="restore_cancelled">Restore cancelled</string>
     <string name="welcome">Welcome</string>
     <string name="enter_a_valid_input">Please enter a valid input.</string>
+    <string name="delete_some_backups">Delete some backups</string>
+    <string name="please_delete_backups_first">Please delete some backups first to create a new one.</string>
+    <string name="only_allowed_to_have_10_backups">You are only allowed to have 10 backups, you currently have</string>
 </resources>

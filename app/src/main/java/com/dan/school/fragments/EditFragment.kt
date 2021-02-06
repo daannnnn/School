@@ -106,6 +106,8 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             R.style.FullScreenDialog
         )
 
+        dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
+
         category = requireArguments().getInt(CATEGORY, School.HOMEWORK)
         done = requireArguments().getBoolean(DONE, false)
         doneTime = if (requireArguments().getLong(
@@ -146,7 +148,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         super.onViewCreated(view, savedInstanceState)
 
         val adRequest = AdRequest.Builder().build()
-        binding.adViewBannerEditFragment.adListener = object: AdListener() {
+        binding.adViewBannerEditFragment.adListener = object : AdListener() {
             override fun onAdLoaded() {
                 binding.adViewBannerEditFragment.visibility = View.VISIBLE
             }
@@ -205,9 +207,7 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             }
         }
         binding.chipPickDate.setOnClickListener {
-            val datePicker: DialogFragment =
-                DatePickerFragment(this, this)
-            datePicker.show(childFragmentManager, null)
+            showDatePicker()
         }
         binding.buttonCheck.setOnClickListener {
             saveData()
@@ -246,8 +246,6 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             }
         }
 
-        // [START] initialize
-        dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
         binding.textViewDatePicked.setTextColor(
             ContextCompat.getColor(
                 requireContext(),
@@ -278,7 +276,6 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             binding.viewPagerCategory.currentItem += category
         }
 
-        // [START] configure subtasks list
         binding.editTextNotes.setText(notes)
         subtaskListAdapter = SubtaskListAdapter(
             requireContext(),
@@ -290,7 +287,6 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         )
         binding.recyclerViewSubtasks.layoutManager = LinearLayoutManager(context)
         binding.recyclerViewSubtasks.adapter = subtaskListAdapter
-        // [END] configure subtasks list
 
         if (!isEdit) {
             binding.editTextTitle.requestFocus()
@@ -308,7 +304,12 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
         }
         binding.buttonFinish.text =
             if (done) resources.getString(R.string.uncheck) else resources.getString(R.string.check)
-        // [END] initialize
+    }
+
+    private fun showDatePicker() {
+        val datePicker: DialogFragment =
+            DatePickerFragment(this, this)
+        datePicker.show(childFragmentManager, null)
     }
 
     override fun onDestroyView() {
@@ -371,58 +372,39 @@ class EditFragment : DialogFragment(), SubtaskListAdapter.SetFocusListener,
             binding.textViewDatePicked.setTextColor(animatedValue)
         }
         colorAnimation.start()
-        binding.chipPickDate.chipBackgroundColor = ContextCompat.getColorStateList(
+
+        val chipBackgroundColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipBackgroundColorStateList[newCategory]
         )
-        binding.chipToday.chipBackgroundColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipBackgroundColorStateList[newCategory]
-        )
-        binding.chipTomorrow.chipBackgroundColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipBackgroundColorStateList[newCategory]
-        )
-        binding.chipPickDate.chipStrokeColor = ContextCompat.getColorStateList(
+        val chipStrokeColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryChipStrokeColorStateList[newCategory]
         )
-        binding.chipToday.chipStrokeColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipStrokeColorStateList[newCategory]
-        )
-        binding.chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipStrokeColorStateList[newCategory]
-        )
-        binding.chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipStrokeColorStateList[newCategory]
-        )
-        binding.chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipStrokeColorStateList[newCategory]
-        )
-        (binding.buttonAddSubtask as MaterialButton).iconTint = ContextCompat.getColorStateList(
+        val buttonAddColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryButtonAddColorStateList[newCategory]
         )
-        binding.buttonAddSubtask.setTextColor(
-            ContextCompat.getColorStateList(
-                requireContext(),
-                categoryButtonAddColorStateList[newCategory]
-            )
-        )
-        (binding.buttonAddSubtask as MaterialButton).rippleColor = ContextCompat.getColorStateList(
+        val buttonAddRippleColor = ContextCompat.getColorStateList(
             requireContext(),
             categoryButtonAddRippleColorStateList[newCategory]
         )
-        binding.cardViewCompleted.setCardBackgroundColor(
-            ContextCompat.getColor(
-                requireContext(),
-                categoryCardViewBackgroundColors[newCategory]
-            )
+        val cardViewBackgroundColor = ContextCompat.getColor(
+            requireContext(),
+            categoryCardViewBackgroundColors[newCategory]
         )
+        binding.chipPickDate.chipBackgroundColor = chipBackgroundColor
+        binding.chipToday.chipBackgroundColor = chipBackgroundColor
+        binding.chipTomorrow.chipBackgroundColor = chipBackgroundColor
+        binding.chipPickDate.chipStrokeColor = chipStrokeColor
+        binding.chipToday.chipStrokeColor = chipStrokeColor
+        binding.chipTomorrow.chipStrokeColor = chipStrokeColor
+        binding.chipTomorrow.chipStrokeColor = chipStrokeColor
+        binding.chipTomorrow.chipStrokeColor = chipStrokeColor
+        (binding.buttonAddSubtask as MaterialButton).iconTint = buttonAddColor
+        binding.buttonAddSubtask.setTextColor(buttonAddColor)
+        (binding.buttonAddSubtask as MaterialButton).rippleColor = buttonAddRippleColor
+        binding.cardViewCompleted.setCardBackgroundColor(cardViewBackgroundColor)
         changeSubtaskListColor(newCategory)
         if (this::categoryChangeListener.isInitialized) {
             categoryChangeListener.selectedCategoryChanged(newCategory)

@@ -3,7 +3,6 @@ package com.dan.school.fragments
 import android.content.Context
 import android.content.SharedPreferences
 import android.os.Bundle
-import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -120,7 +119,6 @@ class OverviewFragment : Fragment(),
             }
         }
         binding.bottomNavigation.setOnNavigationItemSelectedListener { item ->
-            Log.i("Test", "onViewCreated: ")
             clickCounterListener.incrementCounter {
                 when (item.itemId) {
                     R.id.homeFragment -> {

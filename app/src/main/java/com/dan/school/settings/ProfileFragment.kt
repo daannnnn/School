@@ -18,6 +18,7 @@ import androidx.fragment.app.Fragment
 import com.dan.school.ProgressBarDialog
 import com.dan.school.R
 import com.dan.school.School
+import com.dan.school.Utils
 import com.dan.school.authentication.AuthenticationActivity
 import com.dan.school.databinding.FragmentProfileBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
@@ -64,22 +65,7 @@ class ProfileFragment : Fragment() {
             object : OnBackPressedCallback(true) {
                 override fun handleOnBackPressed() {
                     if (isEditMode) {
-                        MaterialAlertDialogBuilder(requireContext()).setMessage(null)
-                            .setTitle(getString(R.string.do_you_want_to_save_your_changes))
-                            .setPositiveButton(getString(R.string.save)) { _, _ ->
-                                if (setEditMode(false)) {
-                                    requireActivity().supportFragmentManager.popBackStack()
-                                } else {
-                                    Toast.makeText(
-                                        requireContext(),
-                                        getString(R.string.enter_a_valid_input),
-                                        Toast.LENGTH_SHORT
-                                    ).show()
-                                }
-                            }
-                            .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
-                            .create()
-                            .show()
+                        showSaveChangesDialog()
                     } else {
                         if (requireActivity() is SettingsActivity) {
                             requireActivity().supportFragmentManager.popBackStack()
@@ -91,6 +77,25 @@ class ProfileFragment : Fragment() {
 
         auth = Firebase.auth
         database = Firebase.database
+    }
+
+    private fun showSaveChangesDialog() {
+        MaterialAlertDialogBuilder(requireContext()).setMessage(null)
+            .setTitle(getString(R.string.do_you_want_to_save_your_changes))
+            .setPositiveButton(getString(R.string.save)) { _, _ ->
+                if (setEditMode(false)) {
+                    requireActivity().supportFragmentManager.popBackStack()
+                } else {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.enter_a_valid_input),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                }
+            }
+            .setNegativeButton(getString(R.string.cancel)) { _, _ -> }
+            .create()
+            .show()
     }
 
     override fun onCreateView(
@@ -116,7 +121,7 @@ class ProfileFragment : Fragment() {
         binding.textViewFullNameDisplay.text = sharedPref.getString(School.FULL_NAME, "")
 
         binding.buttonSendVerificationEmail.setOnClickListener {
-            sendVerificationEmail()
+            buttonSendVerificationEmailClicked()
         }
 
         binding.buttonEdit.setOnClickListener {
@@ -134,58 +139,14 @@ class ProfileFragment : Fragment() {
         }
 
         binding.buttonResetPassword.setOnClickListener {
-
-            val lastPasswordResetTime = sharedPref.getLong(
-                School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT,
-                0
+            val time = Utils.getDifferenceInSeconds(
+                sharedPref.getLong(
+                    School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT,
+                    0
+                )
             )
-            val time = (System.currentTimeMillis() - lastPasswordResetTime).toFloat() / 1000
-
             if (time >= 30) {
-                MaterialAlertDialogBuilder(requireContext()).setMessage("${getString(R.string.send_password_reset_email_to)} ${auth.currentUser?.email}.")
-                    .setTitle("${getString(R.string.reset_password)}?")
-                    .setPositiveButton(
-                        getString(R.string.yes)
-                    ) { _, _ ->
-                        showProgressBar()
-                        auth.currentUser?.email?.let { email ->
-                            auth.sendPasswordResetEmail(email).addOnCompleteListener {
-                                if (it.isSuccessful) {
-                                    try {
-                                        Toast.makeText(
-                                            requireContext(),
-                                            getString(R.string.password_reset_email_sent),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    } catch (e: Exception) {
-                                    }
-
-                                    with(sharedPref.edit()) {
-                                        putLong(
-                                            School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT,
-                                            System.currentTimeMillis()
-                                        )
-                                        apply()
-                                    }
-                                } else {
-                                    try {
-                                        Toast.makeText(
-                                            requireContext(),
-                                            getString(R.string.an_error_occurred),
-                                            Toast.LENGTH_SHORT
-                                        ).show()
-                                    } catch (e: Exception) {
-                                    }
-                                }
-                                hideProgressBar()
-                            }
-                        }
-                    }
-                    .setNegativeButton(
-                        getString(R.string.no)
-                    ) { _, _ -> }
-                    .create()
-                    .show()
+                showResetPasswordDialog()
             } else {
                 val timeToWait = ceil(30 - time).toInt()
                 Toast.makeText(
@@ -208,6 +169,60 @@ class ProfileFragment : Fragment() {
 
         binding.swipeRefreshLayout.setOnRefreshListener {
             update()
+        }
+    }
+
+    private fun showResetPasswordDialog() {
+        MaterialAlertDialogBuilder(requireContext()).setMessage("${getString(R.string.send_password_reset_email_to)} ${auth.currentUser?.email}.")
+            .setTitle("${getString(R.string.reset_password)}?")
+            .setPositiveButton(
+                getString(R.string.yes)
+            ) { _, _ ->
+                showProgressBar()
+                auth.currentUser?.email?.let { email ->
+                    sendPasswordResetEmail(email)
+                }
+            }
+            .setNegativeButton(
+                getString(R.string.no)
+            ) { _, _ -> }
+            .create()
+            .show()
+    }
+
+    private fun sendPasswordResetEmail(email: String) {
+        auth.sendPasswordResetEmail(email).addOnCompleteListener {
+            if (it.isSuccessful) {
+                try {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.password_reset_email_sent),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } catch (e: Exception) {
+                }
+                savePasswordResetEmailTimeLastSent()
+            } else {
+                try {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.an_error_occurred),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } catch (e: Exception) {
+                }
+            }
+            hideProgressBar()
+        }
+    }
+
+    private fun savePasswordResetEmailTimeLastSent() {
+        with(sharedPref.edit()) {
+            putLong(
+                School.PASSWORD_RESET_EMAIL_TIME_LAST_SENT,
+                System.currentTimeMillis()
+            )
+            apply()
         }
     }
 
@@ -282,41 +297,18 @@ class ProfileFragment : Fragment() {
      * the last time a verification email was sent is 30 seconds
      * before [System.currentTimeMillis].
      */
-    private fun sendVerificationEmail() {
-        val time = (System.currentTimeMillis() - sharedPref.getLong(
-            School.VERIFICATION_EMAIL_TIME_LAST_SENT,
-            0
-        )).toFloat() / 1000
+    private fun buttonSendVerificationEmailClicked() {
+        val time = Utils.getDifferenceInSeconds(
+            sharedPref.getLong(
+                School.VERIFICATION_EMAIL_TIME_LAST_SENT,
+                0
+            )
+        )
         if (time >= 30) {
             if (!isSendingVerificationEmail) {
                 isSendingVerificationEmail = true
                 binding.cardViewVerifyEmail.visibility = View.VISIBLE
-                auth.currentUser?.sendEmailVerification()?.addOnCompleteListener {
-                    if (it.isSuccessful) {
-                        with(sharedPref.edit()) {
-                            putLong(
-                                School.VERIFICATION_EMAIL_TIME_LAST_SENT,
-                                System.currentTimeMillis()
-                            )
-                            apply()
-                        }
-                        Toast.makeText(
-                            requireContext(),
-                            getString(R.string.verification_email_sent),
-                            Toast.LENGTH_SHORT
-                        ).show()
-                    } else {
-                        try {
-                            Toast.makeText(
-                                requireContext(),
-                                getString(R.string.failed_to_send_verification_email),
-                                Toast.LENGTH_SHORT
-                            ).show()
-                        } catch (e: Exception) {
-                        }
-                    }
-                    isSendingVerificationEmail = false
-                }
+                sendEmailVerification()
             }
         } else {
             val timeToWait = ceil(30 - time).toInt()
@@ -329,6 +321,35 @@ class ProfileFragment : Fragment() {
                 }.",
                 Toast.LENGTH_SHORT
             ).show()
+        }
+    }
+
+    private fun sendEmailVerification() {
+        auth.currentUser?.sendEmailVerification()?.addOnCompleteListener {
+            if (it.isSuccessful) {
+                with(sharedPref.edit()) {
+                    putLong(
+                        School.VERIFICATION_EMAIL_TIME_LAST_SENT,
+                        System.currentTimeMillis()
+                    )
+                    apply()
+                }
+                Toast.makeText(
+                    requireContext(),
+                    getString(R.string.verification_email_sent),
+                    Toast.LENGTH_SHORT
+                ).show()
+            } else {
+                try {
+                    Toast.makeText(
+                        requireContext(),
+                        getString(R.string.failed_to_send_verification_email),
+                        Toast.LENGTH_SHORT
+                    ).show()
+                } catch (e: Exception) {
+                }
+            }
+            isSendingVerificationEmail = false
         }
     }
 
@@ -357,33 +378,36 @@ class ProfileFragment : Fragment() {
                 binding.textFieldFullName.error = null
             }
             if (!(isNicknameEmpty || isFullNameEmpty)) {
-                sharedPref.edit {
-                    putString(School.NICKNAME, nickname)
-                    putString(School.FULL_NAME, fullName)
-                    commit()
-                }
                 binding.textViewNicknameDisplay.text = nickname
                 binding.textViewFullNameDisplay.text = fullName
 
-                sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, false).apply()
-
-                auth.currentUser?.let {
-                    val map = mapOf(
-                        School.NICKNAME to nickname,
-                        School.FULL_NAME to fullName,
-                        School.PROFILE_LAST_UPDATE_TIME to ServerValue.TIMESTAMP
-                    )
-                    database.reference.child(School.USERS).child(it.uid).updateChildren(map)
-                        .addOnSuccessListener {
-                            sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, true)
-                        }
-                }
+                saveUpdatedProfile(nickname, fullName)
                 isEditMode = editMode
                 setVisibility(editMode)
                 return true
             }
         }
         return false
+    }
+
+    private fun saveUpdatedProfile(nickname: String, fullName: String) {
+        sharedPref.edit {
+            putString(School.NICKNAME, nickname)
+            putString(School.FULL_NAME, fullName)
+            sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, false).apply()
+            commit()
+        }
+        auth.currentUser?.let {
+            val map = mapOf(
+                School.NICKNAME to nickname,
+                School.FULL_NAME to fullName,
+                School.PROFILE_LAST_UPDATE_TIME to ServerValue.TIMESTAMP
+            )
+            database.reference.child(School.USERS).child(it.uid).updateChildren(map)
+                .addOnSuccessListener {
+                    sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, true)
+                }
+        }
     }
 
     private fun setVisibility(editMode: Boolean) {

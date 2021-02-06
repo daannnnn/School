@@ -1,5 +1,6 @@
 package com.dan.school.setup
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -16,7 +17,16 @@ class SetupViewPagerFragment : Fragment() {
 
     private val binding get() = _binding!!
 
+    private lateinit var setupDoneListener: SetupDoneListener
+
     private var currentPosition = 0
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (activity is SetupActivity) {
+            setupDoneListener = activity as SetupActivity
+        }
+    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -32,11 +42,7 @@ class SetupViewPagerFragment : Fragment() {
         binding.setupViewPager.adapter = SetupViewPagerAdapter(childFragmentManager)
         binding.setupTabLayout.setupWithViewPager(binding.setupViewPager)
 
-        if (currentPosition == 2) {
-            binding.buttonDoneSkip.text = getString(R.string.done)
-        } else {
-            binding.buttonDoneSkip.text = getString(R.string.skip)
-        }
+        updateButtonText(currentPosition)
 
         binding.setupViewPager.addOnPageChangeListener(object : ViewPager.OnPageChangeListener {
             override fun onPageScrolled(
@@ -46,11 +52,7 @@ class SetupViewPagerFragment : Fragment() {
             ) {
             }
             override fun onPageSelected(position: Int) {
-                if (position == 2) {
-                    binding.buttonDoneSkip.text = getString(R.string.done)
-                } else {
-                    binding.buttonDoneSkip.text = getString(R.string.skip)
-                }
+                updateButtonText(position)
                 currentPosition = position
             }
             override fun onPageScrollStateChanged(state: Int) {}
@@ -70,6 +72,18 @@ class SetupViewPagerFragment : Fragment() {
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    private fun updateButtonText(position: Int) {
+        if (position == 2) {
+            binding.buttonDoneSkip.text = getString(R.string.done)
+        } else {
+            binding.buttonDoneSkip.text = getString(R.string.skip)
+        }
+    }
+
+    interface SetupDoneListener {
+        fun setupDone()
     }
 
 }

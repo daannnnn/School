@@ -1,5 +1,6 @@
 package com.dan.school.setup
 
+import android.content.Context
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -13,6 +14,15 @@ class SetupFragment : Fragment() {
 
     private val binding get() = _binding!!
 
+    private lateinit var buttonGetStartedClickListener: ButtonGetStartedClickListener
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (activity is SetupActivity) {
+            buttonGetStartedClickListener = activity as SetupActivity
+        }
+    }
+
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
         savedInstanceState: Bundle?
@@ -25,15 +35,17 @@ class SetupFragment : Fragment() {
         super.onViewCreated(view, savedInstanceState)
 
         binding.buttonGetStarted.setOnClickListener {
-            if (activity is SetupActivity) {
-                (activity as SetupActivity).buttonGetStartedClicked()
-            }
+            buttonGetStartedClickListener.buttonGetStartedClicked()
         }
     }
 
     override fun onDestroyView() {
         super.onDestroyView()
         _binding = null
+    }
+
+    interface ButtonGetStartedClickListener {
+        fun buttonGetStartedClicked()
     }
 
 }

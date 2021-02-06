@@ -58,50 +58,7 @@ class SettingsFragment : Fragment() {
         }
 
         binding.relativeLayoutTheme.setOnClickListener {
-            val items = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-                arrayOf(getString(R.string.light), getString(R.string.dark), getString(R.string.system_default))
-            } else {
-                arrayOf(getString(R.string.light), getString(R.string.dark))
-            }
-
-            var checkedItem = when (sharedPref.getInt(School.SELECTED_THEME, -1)) {
-                School.LIGHT_MODE -> {
-                    0
-                }
-                School.DARK_MODE -> {
-                    1
-                }
-                School.SYSTEM_DEFAULT -> {
-                    2
-                }
-                else -> {
-                    0
-                }
-            }
-
-            MaterialAlertDialogBuilder(requireContext())
-                .setTitle(resources.getString(R.string.theme))
-                .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
-                .setPositiveButton(resources.getString(R.string.done)) { _, _ ->
-                    when (checkedItem) {
-                        0 -> {
-                            setTheme(School.LIGHT_MODE)
-                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
-                        }
-                        1 -> {
-                            setTheme(School.DARK_MODE)
-                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
-                        }
-                        2 -> {
-                            setTheme(School.SYSTEM_DEFAULT)
-                            AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
-                        }
-                    }
-                }
-                .setSingleChoiceItems(items, checkedItem) { _, i ->
-                    checkedItem = i
-                }
-                .show()
+            showSelectThemeDialog()
         }
 
         binding.relativeLayoutBackup.setOnClickListener {
@@ -110,6 +67,59 @@ class SettingsFragment : Fragment() {
 
         binding.relativeLayoutAbout.setOnClickListener {
             settingsItemOnClickListener.itemClicked(School.ABOUT)
+        }
+    }
+
+    private fun showSelectThemeDialog() {
+        val items = getThemesArray()
+        var checkedItem = getThemePosition(sharedPref.getInt(School.SELECTED_THEME, -1))
+        MaterialAlertDialogBuilder(requireContext())
+            .setTitle(resources.getString(R.string.theme))
+            .setNeutralButton(resources.getString(R.string.cancel)) { _, _ -> }
+            .setPositiveButton(resources.getString(R.string.done)) { _, _ ->
+                when (checkedItem) {
+                    0 -> {
+                        setTheme(School.LIGHT_MODE)
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_NO)
+                    }
+                    1 -> {
+                        setTheme(School.DARK_MODE)
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_YES)
+                    }
+                    2 -> {
+                        setTheme(School.SYSTEM_DEFAULT)
+                        AppCompatDelegate.setDefaultNightMode(AppCompatDelegate.MODE_NIGHT_FOLLOW_SYSTEM)
+                    }
+                }
+            }
+            .setSingleChoiceItems(items, checkedItem) { _, i ->
+                checkedItem = i
+            }
+            .show()
+    }
+
+    private fun getThemePosition(theme: Int): Int {
+        return when (theme) {
+            School.LIGHT_MODE -> {
+                0
+            }
+            School.DARK_MODE -> {
+                1
+            }
+            School.SYSTEM_DEFAULT -> {
+                2
+            }
+            else -> {
+                0
+            }
+        }
+    }
+
+    private fun getThemesArray(): Array<String> {
+        return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
+            arrayOf(getString(R.string.light), getString(R.string.dark), getString(R.string.system_default))
+        } else {
+            arrayOf(getString(R.string.light), getString(R.string.dark))
         }
     }
 

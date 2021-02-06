@@ -23,6 +23,8 @@ import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 
+typealias Callback = () -> Unit
+
 class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
     OverviewFragment.ClickCounterListener {
 
@@ -77,10 +79,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
                     OverviewFragment(), School.OVERVIEW
                 ).commit()
         }
-
-        val sharedPref = getSharedPreferences(
-            getString(R.string.preference_file_key), Context.MODE_PRIVATE
-        )
 
         if (auth.currentUser != null) {
             database.reference.child(School.USERS).child(auth.currentUser!!.uid)

@@ -9,6 +9,7 @@ import com.dan.school.BackupItemViewHolder
 import com.dan.school.interfaces.BackupItemClickListener
 import com.dan.school.R
 import com.dan.school.School
+import com.dan.school.Utils
 import com.google.firebase.storage.StorageReference
 import java.text.SimpleDateFormat
 import java.util.*
@@ -27,15 +28,10 @@ class BackupListAdapter(
     override fun onBindViewHolder(holder: BackupItemViewHolder, position: Int) {
         val backupItem = getItem(position)
         holder.textViewBackupFileName.text = backupItem.name
-        val dateFromFileName = backupItem.name.split("_").toTypedArray()[1]
-        val date = SimpleDateFormat(School.dateFormatOnBackupFile, Locale.getDefault()).parse(dateFromFileName)!!
-        val dateNewFormat = SimpleDateFormat(School.dateTimeFormat, Locale.getDefault()).format(date)
-        holder.textViewBackupDate.text = dateNewFormat
-
+        holder.textViewBackupDate.text = Utils.formatBackupItemDateFromFilename(backupItem.name)
         holder.itemView.setOnClickListener {
             backupItemClickListener.backupItemClicked(getItem(holder.bindingAdapterPosition))
         }
-
         holder.itemView.setOnLongClickListener {
             backupItemLongClickListener.backupItemLongClicked(getItem(holder.bindingAdapterPosition))
             return@setOnLongClickListener true
