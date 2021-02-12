@@ -15,10 +15,6 @@
         android:theme="@style/AppTheme">
         <activity android:name=".settings.SettingsActivity" />
         <activity
-            android:name=".authentication.AuthenticationActivity"
-            android:label="@string/title_activity_authentication"
-            android:theme="@style/SetupTheme" />
-        <activity
             android:name=".setup.SetupActivity"
             android:theme="@style/SetupTheme" />
         <activity
