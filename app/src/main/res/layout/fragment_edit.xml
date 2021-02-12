@@ -267,7 +267,7 @@
                 android:background="@null"
                 android:fontFamily="@font/cabin_regular"
                 android:hint="@string/enter_note_here"
-                android:inputType="textCapSentences"
+                android:inputType="textCapSentences|textMultiLine"
                 app:layout_constraintEnd_toEndOf="parent"
                 app:layout_constraintStart_toStartOf="parent"
                 app:layout_constraintTop_toBottomOf="@id/textViewNotesLabel" />
