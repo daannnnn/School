@@ -4,7 +4,6 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -82,8 +81,10 @@ class BackupFragment : Fragment() {
 
         if (resultCode == Activity.RESULT_OK && data != null) {
             if (requestCode == BACKUP_REQUEST_CODE) {
+                showProgressBar()
                 backupLocal(data)
             } else if (requestCode == RESTORE_REQUEST_CODE) {
+                showProgressBar()
                 restoreLocal(data)
             }
         } else {
@@ -312,7 +313,6 @@ class BackupFragment : Fragment() {
                             withContext(Dispatchers.Main) {
                                 showConfirmRestoreDialog(
                                     onSuccess = {
-                                        Log.i(TAG, "restoreLocal: onSuccess")
                                         restoreWithoutPassword(
                                             preparedZipFile,
                                             toBeRestoredZipFile,
@@ -582,6 +582,7 @@ class BackupFragment : Fragment() {
             getString(R.string.error_while_performing_restore),
             getString(R.string.restore_failed)
         )
+        hideProgressBar()
     }
 
     private fun showWrongPasswordMessage() {
@@ -589,6 +590,7 @@ class BackupFragment : Fragment() {
             getString(R.string.restore_failed),
             getString(R.string.wrong_password)
         )
+        hideProgressBar()
     }
 
     private fun showBackupSuccessfulMessage() {
@@ -596,16 +598,15 @@ class BackupFragment : Fragment() {
             getString(R.string.backup_created_successfully),
             getString(R.string.backup_successful)
         )
+        hideProgressBar()
     }
 
-    private fun showBackupFailedMessage(onDismiss: Callback = {}) {
+    private fun showBackupFailedMessage() {
         showDialog(
             getString(R.string.error_while_performing_backup),
-            getString(R.string.backup_failed),
-            onDismiss = {
-                onDismiss()
-            }
+            getString(R.string.backup_failed)
         )
+        hideProgressBar()
     }
 
     private fun showRestoreCancelled() {
@@ -613,6 +614,7 @@ class BackupFragment : Fragment() {
             null,
             getString(R.string.restore_cancelled)
         )
+        hideProgressBar()
     }
 
     private fun showDialog(message: String?, title: String, onDismiss: Callback = {}) {
@@ -660,7 +662,6 @@ class BackupFragment : Fragment() {
             dialog.getButton(AlertDialog.BUTTON_POSITIVE).setOnClickListener {
                 if (editTextCodeEditText != null) {
                     if (editTextCodeEditText.text.toString() == code.toString()) {
-                        Log.i(TAG, "showConfirmationDialog: CONFIRM $CONFIRM")
                         onResult(CONFIRM)
 
                         dialog.dismiss()
@@ -687,7 +688,5 @@ class BackupFragment : Fragment() {
 
         const val BACKUP_REQUEST_CODE = 2
         const val RESTORE_REQUEST_CODE = 3
-
-        const val TAG = "BackupFragment"
     }
 }
