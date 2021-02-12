@@ -395,6 +395,7 @@ class BackupFragment : Fragment() {
         extractedFilesDir: File
     ) {
         lifecycleScope.launch(Dispatchers.IO) {
+            var delete = true
             try {
                 val zf = ZipFile(
                     toBeRestoredZipFile.absolutePath,
@@ -403,11 +404,23 @@ class BackupFragment : Fragment() {
                 zf.extractAll(
                     extractedFilesDir.absolutePath
                 )
+                delete = false
                 withContext(Dispatchers.Main) {
                     showConfirmRestoreDialog(
                         onSuccess = {
                             lifecycleScope.launch(Dispatchers.IO) {
-                                restoreData(extractedFilesDir)
+                                try {
+                                    restoreData(extractedFilesDir)
+                                } catch (e: Exception) {
+                                    withContext(Dispatchers.Main) {
+                                        showRestoreFailedMessage()
+                                    }
+                                } finally {
+                                    deleteTempRestoreFiles(
+                                        toBeRestoredZipFile,
+                                        extractedFilesDir
+                                    )
+                                }
                                 withContext(Dispatchers.Main) {
                                     showRestoreSuccessful()
                                 }
@@ -431,7 +444,9 @@ class BackupFragment : Fragment() {
                     showRestoreFailedMessage()
                 }
             } finally {
-                deleteTempRestoreFiles(toBeRestoredZipFile, extractedFilesDir)
+                if (delete) {
+                    deleteTempRestoreFiles(toBeRestoredZipFile, extractedFilesDir)
+                }
             }
         }
     }
