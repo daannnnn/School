@@ -295,7 +295,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
      * Updates [clickCounter] then shows [interstitialAd] if
      * loaded, if [clickCounter] is greater than or equal to 5
      * and if the difference between [System.currentTimeMillis] and
-     * [lastAdShowTime] in seconds is greater than 30.
+     * [lastAdShowTime] in seconds is greater than 60.
      *
      * Returns true if show is called on [interstitialAd], false
      * otherwise
@@ -303,7 +303,7 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
     private fun updateCounter(): Boolean {
         var b = false
         clickCounter++
-        if (clickCounter >= 5 && (System.currentTimeMillis() - lastAdShowTime) / 1000 > 30) {
+        if (clickCounter >= 5 && (System.currentTimeMillis() - lastAdShowTime) / 1000 > 60) {
             if (interstitialAd != null) {
                 interstitialAd?.show(this)
                 lastAdShowTime = System.currentTimeMillis()
