@@ -68,6 +68,7 @@ object School {
     const val DATABASE_PROFILE_UPDATED = "databaseProfileUpdated"
 
     const val DATABASE_NAME = "itemsDB"
+    const val PROFILE_JSON_FILE_NAME = "profile"
 
     const val SHOW_BUTTON_SIGN_IN_LATER = "show_button_sign_in_later"
 

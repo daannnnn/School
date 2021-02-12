@@ -186,4 +186,13 @@
     <string name="delete_some_backups">Delete some backups</string>
     <string name="please_delete_backups_first">Please delete some backups first to create a new one.</string>
     <string name="only_allowed_to_have_10_backups">You are only allowed to have 10 backups, you currently have</string>
+    <string name="enable_password">Enable password</string>
+    <string name="you_will_need_this_password_when_restoring">You will need this password when restoring.</string>
+    <string name="enter_password">Enter password</string>
+    <string name="backup_password">Backup password</string>
+    <string name="password_cannot_be_blank">Password can\'t be blank.</string>
+    <string name="wrong_password">Wrong Password</string>
+    <string name="codes_not_match">The codes don\'t match. Please try again.</string>
+    <string name="restore">Restore</string>
+    <string name="backup_and_restore">Backup and Restore</string>
 </resources>

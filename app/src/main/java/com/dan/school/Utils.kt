@@ -1,6 +1,7 @@
 package com.dan.school
 
 import android.app.Activity
+import android.content.res.Resources
 import android.view.View
 import android.view.inputmethod.InputMethodManager
 import com.dan.school.models.Subtask
@@ -11,6 +12,9 @@ import java.util.*
 import kotlin.collections.ArrayList
 
 object Utils {
+
+    const val EMPTY_PASSWORD = 0
+    const val BLANK_PASSWORD = 1
 
     fun hideKeyboard(activity: Activity) {
         val imm = activity.getSystemService(Activity.INPUT_METHOD_SERVICE) as InputMethodManager
@@ -48,4 +52,15 @@ object Utils {
         return (System.currentTimeMillis() - value).toFloat() / 1000
     }
 
+    fun validateBackupPasswordInput(password: String): Int? {
+        return if (password.isNotEmpty()) {
+            if (password.trim() == "") {
+                BLANK_PASSWORD
+            } else {
+                null
+            }
+        } else {
+            EMPTY_PASSWORD
+        }
+    }
 }

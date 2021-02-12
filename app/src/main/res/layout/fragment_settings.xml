@@ -156,7 +156,7 @@
                     android:layout_marginStart="8dp"
                     android:layout_toEndOf="@id/imageViewBackupIcon"
                     android:fontFamily="@font/cabin_regular"
-                    android:text="@string/backup"
+                    android:text="@string/backup_and_restore"
                     android:textColor="?android:textColorPrimary"
                     android:textSize="18sp" />
 

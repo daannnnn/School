@@ -12,8 +12,7 @@ import com.dan.school.School
 import com.dan.school.databinding.ActivitySettingsBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class SettingsActivity : AppCompatActivity(), SettingsFragment.SettingsItemOnClickListener,
-    BackupFragment.SettingsGoToFragmentListener {
+class SettingsActivity : AppCompatActivity(), SettingsFragment.SettingsItemOnClickListener {
 
     private lateinit var binding: ActivitySettingsBinding
 
@@ -64,13 +63,5 @@ class SettingsActivity : AppCompatActivity(), SettingsFragment.SettingsItemOnCli
                 fragment
             ).addToBackStack(null)
             .commit()
-    }
-
-    override fun goToFragment(fragment: Int) {
-        when (fragment) {
-            School.PROFILE -> {
-                replaceFragment(ProfileFragment())
-            }
-        }
     }
 }
