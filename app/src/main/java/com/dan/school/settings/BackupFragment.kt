@@ -403,7 +403,25 @@ class BackupFragment : Fragment() {
                 zf.extractAll(
                     extractedFilesDir.absolutePath
                 )
-                restoreData(extractedFilesDir)
+                withContext(Dispatchers.Main) {
+                    showConfirmRestoreDialog(
+                        onSuccess = {
+                            lifecycleScope.launch(Dispatchers.IO) {
+                                restoreData(extractedFilesDir)
+                                withContext(Dispatchers.Main) {
+                                    showRestoreSuccessful()
+                                }
+                            }
+                        },
+                        onCancel = {
+                            deleteTempRestoreFiles(
+                                toBeRestoredZipFile,
+                                extractedFilesDir
+                            )
+                            showRestoreCancelled()
+                        }
+                    )
+                }
             } catch (e: net.lingala.zip4j.exception.ZipException) {
                 withContext(Dispatchers.Main) {
                     showWrongPasswordMessage()
@@ -565,6 +583,10 @@ class BackupFragment : Fragment() {
     }
 
     private fun showRestoreSuccessful() {
+        try {
+            Utils.hideKeyboard(requireActivity())
+        } catch (e: Exception) {
+        }
         MaterialAlertDialogBuilder(requireContext()).setMessage(getString(R.string.restore_successful_restart_app))
             .setTitle(getString(R.string.restore_successful))
             .setPositiveButton(
@@ -575,6 +597,7 @@ class BackupFragment : Fragment() {
             }
             .create()
             .show()
+        hideProgressBar()
     }
 
     private fun showRestoreFailedMessage() {
