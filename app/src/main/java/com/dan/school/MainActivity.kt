@@ -16,10 +16,6 @@ import com.dan.school.settings.SettingsActivity
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.google.firebase.auth.FirebaseAuth
-import com.google.firebase.auth.ktx.auth
-import com.google.firebase.database.*
-import com.google.firebase.database.ktx.database
 import com.google.firebase.ktx.Firebase
 import com.google.firebase.messaging.ktx.messaging
 
@@ -47,9 +43,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
 
     private lateinit var sharedPref: SharedPreferences
 
-    private lateinit var auth: FirebaseAuth
-    private lateinit var database: FirebaseDatabase
-
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
@@ -62,14 +55,9 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
 
         loadAd()
 
-        auth = Firebase.auth
-        database = Firebase.database
-
         sharedPref = getSharedPreferences(
             getString(R.string.preference_file_key), Context.MODE_PRIVATE
         )
-
-        manageProfileUpdates()
 
         if (savedInstanceState == null) {  // to prevent multiple creation of instances
             binding.navigationView.menu.getItem(0).isChecked = true
@@ -80,24 +68,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
                 ).commit()
         }
 
-        if (auth.currentUser != null) {
-            database.reference.child(School.USERS).child(auth.currentUser!!.uid)
-                .addValueEventListener(object : ValueEventListener {
-                    override fun onDataChange(snapshot: DataSnapshot) {
-                        val map = HashMap<String, String>()
-                        for (dataSnapshot in snapshot.children) {
-                            val key = dataSnapshot.key
-                            if (key == School.NICKNAME || key == School.FULL_NAME) {
-                                map[key] = dataSnapshot.value.toString()
-                            }
-                        }
-                        updateSharedPreferences(map)
-                    }
-
-                    override fun onCancelled(error: DatabaseError) {
-                    }
-                })
-        }
         setNavigationViewHeaderNickname(sharedPref.getString(School.NICKNAME, ""))
         setNavigationViewHeaderFullName(sharedPref.getString(School.FULL_NAME, ""))
 
@@ -184,89 +154,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
                 }
             }
         )
-    }
-
-    /**
-     * Calls [updateDatabase] and [listenForUpdates] if a user
-     * is signed-in.
-     */
-    private fun manageProfileUpdates() {
-        auth.currentUser?.uid?.let {
-            updateDatabase(it)
-            listenForUpdates(it)
-        }
-    }
-
-    /**
-     * Updates the profile info in [database] if the [School.DATABASE_PROFILE_UPDATED]
-     * in [sharedPref] is false.
-     */
-    private fun updateDatabase(uid: String) {
-        if (!sharedPref.getBoolean(School.DATABASE_PROFILE_UPDATED, true)) {
-            val map = mapOf(
-                School.NICKNAME to sharedPref.getString(School.NICKNAME, ""),
-                School.FULL_NAME to sharedPref.getString(School.FULL_NAME, ""),
-                School.PROFILE_LAST_UPDATE_TIME to ServerValue.TIMESTAMP
-            )
-            database.reference.child(School.USERS).child(uid).updateChildren(map)
-                .addOnSuccessListener {
-                    sharedPref.edit().putBoolean(School.DATABASE_PROFILE_UPDATED, true).apply()
-                }
-        }
-    }
-
-    /**
-     * Sets a listener for the value of [School.PROFILE_LAST_UPDATE_TIME]
-     * in the user's database path.
-     */
-    private fun listenForUpdates(uid: String) {
-        database.reference.child(School.USERS).child(uid)
-            .child(School.PROFILE_LAST_UPDATE_TIME)
-            .addValueEventListener(object : ValueEventListener {
-                override fun onDataChange(snapshot: DataSnapshot) {
-                    lastUpdateTimeChanged(snapshot)
-                }
-
-                override fun onCancelled(error: DatabaseError) {}
-
-                /**
-                 * Updates profile info on [sharedPref] if time saved in [sharedPref]
-                 * is less than or equal to the updated time from database
-                 */
-                private fun lastUpdateTimeChanged(snapshot: DataSnapshot) {
-                    val time = snapshot.getValue(Long::class.java)
-                    if (time != null && sharedPref.getLong(
-                            School.PROFILE_LAST_UPDATE_TIME,
-                            0
-                        ) < time
-                    ) {
-                        database.reference.child(School.USERS).child(uid).get()
-                            .addOnCompleteListener { taskGetData ->
-                                if (taskGetData.isSuccessful) {
-                                    val edit = sharedPref.edit()
-                                    taskGetData.result.children.forEach { data ->
-                                        val key = data.key
-                                        if (key in arrayOf(School.NICKNAME, School.FULL_NAME)) {
-                                            edit.putString(
-                                                key,
-                                                data.getValue(String::class.java)
-                                            )
-                                        } else if (key == School.PROFILE_LAST_UPDATE_TIME) {
-                                            data.getValue(Long::class.java)
-                                                ?.let { lastUpdateTime ->
-                                                    edit.putLong(
-                                                        key,
-                                                        lastUpdateTime
-                                                    )
-                                                }
-                                        }
-                                    }
-                                    edit.apply()
-                                }
-                            }
-                    }
-                }
-            })
     }
 
     /** Sets [R.id.textViewNickname] text to [nickname] */

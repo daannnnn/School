@@ -17,13 +17,10 @@ object School {
     const val LIGHT_MODE = 10
     const val SYSTEM_DEFAULT = 11
 
-    const val SIGN_IN_WITH_GOOGLE = 12
-    const val SIGN_IN_WITH_EMAIL = 13
-
-    const val PROFILE = 14
-    const val THEME = 15
-    const val BACKUP = 16
-    const val ABOUT = 17
+    const val PROFILE = 12
+    const val THEME = 13
+    const val BACKUP = 14
+    const val ABOUT = 15
 
     const val HOMEWORK_TITLE = "Homework"
     const val EXAM_TITLE = "Exam"
@@ -58,19 +55,8 @@ object School {
 
     const val POSITION = "position"
 
-    const val USERS = "users"
-
-    const val SETTINGS_CONTENT_FRAGMENT_TAG = "SettingsContentFragment"
-
-    const val PASSWORD_RESET_EMAIL_TIME_LAST_SENT = "passwordResetEmailTimeLastSent"
-    const val VERIFICATION_EMAIL_TIME_LAST_SENT = "verificationEmailTimeLastSent"
-    const val PROFILE_LAST_UPDATE_TIME = "profileLastUpdateTime"
-    const val DATABASE_PROFILE_UPDATED = "databaseProfileUpdated"
-
     const val DATABASE_NAME = "itemsDB"
     const val PROFILE_JSON_FILE_NAME = "profile"
-
-    const val SHOW_BUTTON_SIGN_IN_LATER = "show_button_sign_in_later"
 
     const val UPDATES = "updates"
 

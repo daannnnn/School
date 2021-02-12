@@ -1,6 +1,7 @@
 package com.dan.school.setup
 
 import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -18,22 +19,16 @@ class ProfileSetupFragment : Fragment() {
 
     private lateinit var profileSetupDoneListener: ProfileSetupDoneListener
 
-    private var nickname = ""
-    private var fullName = ""
+    private lateinit var sharedPref: SharedPreferences
 
     override fun onAttach(context: Context) {
         super.onAttach(context)
         if (activity is SetupActivity) {
             profileSetupDoneListener = activity as SetupActivity
         }
-    }
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            nickname = it.getString(School.NICKNAME, "")
-            fullName = it.getString(School.FULL_NAME, "")
-        }
+        sharedPref = context.getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
     }
 
     override fun onCreateView(
@@ -47,8 +42,8 @@ class ProfileSetupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.textFieldNickname.editText?.setText(nickname)
-        binding.textFieldFullName.editText?.setText(fullName)
+        binding.textFieldNickname.editText?.setText(sharedPref.getString(School.NICKNAME, ""))
+        binding.textFieldFullName.editText?.setText(sharedPref.getString(School.FULL_NAME, ""))
 
         binding.buttonDone.setOnClickListener {
             if (isInputValid()) {
@@ -93,13 +88,8 @@ class ProfileSetupFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(nickname: String = "", fullName: String = "") =
-            ProfileSetupFragment().apply {
-                arguments = Bundle().apply {
-                    putString(School.NICKNAME, nickname)
-                    putString(School.FULL_NAME, fullName)
-                }
-            }
+        fun newInstance() =
+            ProfileSetupFragment()
     }
 
 }
