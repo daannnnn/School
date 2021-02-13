@@ -31,37 +31,41 @@ class AboutFragment : Fragment() {
         binding.textViewVersion.text = version
 
         binding.relativeLayoutLicenses.setOnClickListener {
-            LibsBuilder()
-                .withFields(R.string::class.java.fields)
-                .withActivityTitle(getString(R.string.licenses))
-                .withLicenseShown(true)
-                .withAboutIconShown(false)
-                .withLibraryModification(
-                    getString(R.string.com_github_antonyt__InfiniteViewPager_library),
-                    Libs.LibraryFields.LIBRARY_DESCRIPTION,
-                    getString(R.string.com_github_antonyt__InfiniteViewPager_description)
-                )
-                .withLibraryModification(
-                    getString(R.string.com_github_antonyt__InfiniteViewPager_library),
-                    Libs.LibraryFields.LIBRARY_WEBSITE,
-                    getString(R.string.com_github_antonyt__InfiniteViewPager_libraryWebsite)
-                )
-                .withLibraryModification(
-                    getString(R.string.com_github_kizitonwose__CalendarView_library),
-                    Libs.LibraryFields.LIBRARY_DESCRIPTION,
-                    getString(R.string.com_github_kizitonwose__CalendarView_description)
-                )
-                .withLibraryModification(
-                    getString(R.string.com_github_kizitonwose__CalendarView_library),
-                    Libs.LibraryFields.LIBRARY_WEBSITE,
-                    getString(R.string.com_github_kizitonwose__CalendarView_libraryWebsite)
-                )
-                .start(requireContext())
+            showLibrariesPage()
         }
 
         binding.buttonBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
+    }
+
+    private fun showLibrariesPage() {
+        LibsBuilder()
+            .withFields(R.string::class.java.fields)
+            .withActivityTitle(getString(R.string.licenses))
+            .withLicenseShown(true)
+            .withAboutIconShown(false)
+            .withLibraryModification(
+                getString(R.string.com_github_antonyt__InfiniteViewPager_library),
+                Libs.LibraryFields.LIBRARY_DESCRIPTION,
+                getString(R.string.com_github_antonyt__InfiniteViewPager_description)
+            )
+            .withLibraryModification(
+                getString(R.string.com_github_antonyt__InfiniteViewPager_library),
+                Libs.LibraryFields.LIBRARY_WEBSITE,
+                getString(R.string.com_github_antonyt__InfiniteViewPager_libraryWebsite)
+            )
+            .withLibraryModification(
+                getString(R.string.com_github_kizitonwose__CalendarView_library),
+                Libs.LibraryFields.LIBRARY_DESCRIPTION,
+                getString(R.string.com_github_kizitonwose__CalendarView_description)
+            )
+            .withLibraryModification(
+                getString(R.string.com_github_kizitonwose__CalendarView_library),
+                Libs.LibraryFields.LIBRARY_WEBSITE,
+                getString(R.string.com_github_kizitonwose__CalendarView_libraryWebsite)
+            )
+            .start(requireContext())
     }
 
     override fun onDestroyView() {

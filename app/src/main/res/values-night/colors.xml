@@ -11,10 +11,7 @@
     <color name="examColorAccent">#B380d7c0</color>
     <color name="taskColorAccent">#B3bc92fe</color>
 
-    <color name="add_button_color_normal">#32afe2</color>
-
     <color name="dividerColor">#1FFFFFFF</color>
-    <color name="outlineColor">#1F000000</color>
     <color name="chipStrokeColor">#1FFFFFFF</color>
     <color name="chipSelectedColor">#4D66d3ff</color>
     <color name="chipSelectedHomeworkColor">#4Deba999</color>
@@ -24,18 +21,12 @@
     <color name="cardViewHomeworkBackgroundColor">#3Deba999</color>
     <color name="cardViewExamBackgroundColor">#3D80d7c0</color>
     <color name="cardViewTaskBackgroundColor">#3Dbc92fe</color>
-    <color name="cardViewColorPrimaryBackgroundColor">#3D32afe2</color>
     <color name="cardViewRedBackgroundColor">#3Def5350</color>
     <color name="cardViewUpcomingBackgroundColor">#14FFFFFF</color>
     <color name="colorPrimaryAlpha70">#B332afe2</color>
-    <color name="strokeColor">#1F000000</color>
 
     <color name="red">#ef5350</color>
-    <color name="redRipple">#1FEF5350</color>
 
     <color name="tabLayoutColor">#272727</color>
     <color name="appBarLayoutColor">#272727</color>
-    <color name="signInButtonTextColor">#fff</color>
-    <color name="signInWithGoogleBackgroundColor">#4285F4</color>
-    <color name="signInWithEmailBackgroundColor">#2E2E2E</color>
 </resources>

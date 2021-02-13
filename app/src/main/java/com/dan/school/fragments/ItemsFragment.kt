@@ -13,7 +13,7 @@ import androidx.fragment.app.Fragment
 import androidx.fragment.app.activityViewModels
 import androidx.recyclerview.widget.LinearLayoutManager
 import com.dan.school.DataViewModel
-import com.dan.school.ItemClickListener
+import com.dan.school.interfaces.ItemClickListener
 import com.dan.school.R
 import com.dan.school.School
 import com.dan.school.School.categoryCheckedIcons

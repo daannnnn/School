@@ -90,6 +90,7 @@ class CompletedFragment : Fragment() {
 
         binding.relativeLayoutOptionsFragment.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
         binding.linearLayoutCompletedItems.layoutTransition.enableTransitionType(LayoutTransition.CHANGING)
+
         binding.textSwitcherSortBy.setFactory {
             val textView = TextView(requireContext())
             textView.apply {
@@ -111,6 +112,7 @@ class CompletedFragment : Fragment() {
             binding.textSwitcherSortBy.setText(displaySortByStringArray[selectedIndex])
             dataViewModel.setSortBy(sortByArray[selectedIndex])
         }
+
         binding.buttonOptions.setOnClickListener {
             isOptionsExpanded = if (isOptionsExpanded) {
                 ObjectAnimator.ofFloat(binding.imageViewOptions, ROTATION, 0f)

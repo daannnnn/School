@@ -6,16 +6,11 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
-import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
-import com.dan.school.ItemClickListener
+import com.dan.school.interfaces.ItemClickListener
 import com.dan.school.ItemViewHolder
 import com.dan.school.R
-import com.dan.school.School
 import com.dan.school.models.*
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
-import java.util.*
 
 class UpcomingItemListAdapter(
     private val context: Context,

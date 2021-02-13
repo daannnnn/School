@@ -6,13 +6,13 @@ import android.os.Build
 import androidx.appcompat.app.AppCompatActivity
 import android.os.Bundle
 import androidx.appcompat.app.AppCompatDelegate
+import androidx.fragment.app.Fragment
 import com.dan.school.R
 import com.dan.school.School
 import com.dan.school.databinding.ActivitySettingsBinding
 import com.google.android.material.dialog.MaterialAlertDialogBuilder
 
-class SettingsActivity : AppCompatActivity(), SettingsFragment.SettingsItemOnClickListener,
-    BackupFragment.SettingsGoToFragmentListener {
+class SettingsActivity : AppCompatActivity(), SettingsFragment.SettingsItemOnClickListener {
 
     private lateinit var binding: ActivitySettingsBinding
 
@@ -39,66 +39,29 @@ class SettingsActivity : AppCompatActivity(), SettingsFragment.SettingsItemOnCli
     override fun itemClicked(item: Int) {
         when (item) {
             School.PROFILE -> {
-                supportFragmentManager.beginTransaction()
-                    .setCustomAnimations(
-                        R.anim.slide_in_right,
-                        R.anim.slide_out_left,
-                        R.anim.slide_in_left,
-                        R.anim.slide_out_right
-                    )
-                    .replace(
-                        R.id.frameLayoutSettings,
-                        ProfileFragment()
-                    ).addToBackStack(null)
-                    .commit()
+                replaceFragment(ProfileFragment())
             }
             School.BACKUP -> {
-                supportFragmentManager.beginTransaction()
-                    .setCustomAnimations(
-                        R.anim.slide_in_right,
-                        R.anim.slide_out_left,
-                        R.anim.slide_in_left,
-                        R.anim.slide_out_right
-                    )
-                    .replace(
-                        R.id.frameLayoutSettings,
-                        BackupFragment()
-                    ).addToBackStack(null)
-                    .commit()
+                replaceFragment(BackupFragment())
             }
             School.ABOUT -> {
-                supportFragmentManager.beginTransaction()
-                    .setCustomAnimations(
-                        R.anim.slide_in_right,
-                        R.anim.slide_out_left,
-                        R.anim.slide_in_left,
-                        R.anim.slide_out_right
-                    )
-                    .replace(
-                        R.id.frameLayoutSettings,
-                        AboutFragment()
-                    ).addToBackStack(null)
-                    .commit()
+                replaceFragment(AboutFragment())
             }
         }
     }
 
-    override fun goToFragment(fragment: Int) {
-        when (fragment) {
-            School.PROFILE -> {
-                supportFragmentManager.beginTransaction()
-                    .setCustomAnimations(
-                        R.anim.slide_in_right,
-                        R.anim.slide_out_left,
-                        R.anim.slide_in_left,
-                        R.anim.slide_out_right
-                    )
-                    .replace(
-                        R.id.frameLayoutSettings,
-                        ProfileFragment()
-                    ).addToBackStack(null)
-                    .commit()
-            }
-        }
+    private fun replaceFragment(fragment: Fragment) {
+        supportFragmentManager.beginTransaction()
+            .setCustomAnimations(
+                R.anim.slide_in_right,
+                R.anim.slide_out_left,
+                R.anim.slide_in_left,
+                R.anim.slide_out_right
+            )
+            .replace(
+                R.id.frameLayoutSettings,
+                fragment
+            ).addToBackStack(null)
+            .commit()
     }
 }

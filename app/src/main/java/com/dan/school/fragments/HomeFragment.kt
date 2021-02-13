@@ -11,6 +11,7 @@ import androidx.fragment.app.Fragment
 import com.dan.school.*
 import com.dan.school.adapters.HomeworkExamTaskTabLayoutAdapter
 import com.dan.school.databinding.FragmentHomeBinding
+import com.dan.school.interfaces.ItemClickListener
 import com.dan.school.models.Item
 import com.google.android.material.tabs.TabLayout
 
@@ -70,7 +71,19 @@ class HomeFragment : Fragment(),
             )
         )
 
-        // [START configure TabLayout and ViewPager]
+        setupTabLayoutAndViewPager()
+
+        binding.tabLayout.selectTab(
+            binding.tabLayout.getTabAt(
+                sharedPref.getInt(
+                    School.SELECTED_TAB_FRAGMENT,
+                    School.HOMEWORK
+                )
+            )
+        )
+    }
+
+    private fun setupTabLayoutAndViewPager() {
         val homeworksFragment = ItemsFragment.newInstance(School.HOMEWORK)
         val examsFragment = ItemsFragment.newInstance(School.EXAM)
         val tasksFragment = ItemsFragment.newInstance(School.TASK)
@@ -113,16 +126,6 @@ class HomeFragment : Fragment(),
                 setLastSelectedTab(position)
             }
         })
-        // [END configure TabLayout and ViewPager]
-
-        binding.tabLayout.selectTab(
-            binding.tabLayout.getTabAt(
-                sharedPref.getInt(
-                    School.SELECTED_TAB_FRAGMENT,
-                    School.HOMEWORK
-                )
-            )
-        )
     }
 
     override fun onDestroyView() {

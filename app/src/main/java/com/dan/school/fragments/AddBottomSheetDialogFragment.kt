@@ -9,6 +9,7 @@ import android.view.View
 import android.view.ViewGroup
 import android.view.inputmethod.InputMethodManager
 import android.widget.DatePicker
+import android.widget.Toast
 import androidx.core.content.ContextCompat
 import androidx.fragment.app.DialogFragment
 import androidx.fragment.app.activityViewModels
@@ -146,7 +147,6 @@ class AddBottomSheetDialogFragment(
             dismiss()
         }
 
-        // initialize
         dateTomorrow.add(Calendar.DAY_OF_MONTH, 1)
         changeColors(category)
         if (isInitialDateFromCalendarFragment) {
@@ -170,6 +170,15 @@ class AddBottomSheetDialogFragment(
      */
     private fun changeColors(newCategory: Int) {
         val colorTo = ContextCompat.getColorStateList(requireContext(), categoryColors[newCategory])
+        val chipBackgroundColor = ContextCompat.getColorStateList(
+            requireContext(),
+            categoryChipBackgroundColorStateList[newCategory]
+        )
+        val chipStrokeColor = ContextCompat.getColorStateList(
+            requireContext(),
+            categoryChipStrokeColorStateList[newCategory]
+        )
+
         when {
             binding.chipHomework.isSelected -> {
                 binding.chipHomework.isSelected = false
@@ -183,25 +192,16 @@ class AddBottomSheetDialogFragment(
         }
         when (newCategory) {
             School.HOMEWORK -> {
-                binding.chipHomework.chipBackgroundColor = ContextCompat.getColorStateList(
-                    requireContext(),
-                    categoryChipBackgroundColorStateList[newCategory]
-                )
+                binding.chipHomework.chipBackgroundColor = chipBackgroundColor
                 binding.chipHomework.isSelected = true
 
             }
             School.EXAM -> {
-                binding.chipExam.chipBackgroundColor = ContextCompat.getColorStateList(
-                    requireContext(),
-                    categoryChipBackgroundColorStateList[newCategory]
-                )
+                binding.chipExam.chipBackgroundColor = chipBackgroundColor
                 binding.chipExam.isSelected = true
             }
             School.TASK -> {
-                binding.chipTask.chipBackgroundColor = ContextCompat.getColorStateList(
-                    requireContext(),
-                    categoryChipBackgroundColorStateList[newCategory]
-                )
+                binding.chipTask.chipBackgroundColor = chipBackgroundColor
                 binding.chipTask.isSelected = true
             }
         }
@@ -210,30 +210,14 @@ class AddBottomSheetDialogFragment(
         binding.buttonCheck.imageTintList = colorTo
         binding.buttonShowAllDetails.setTextColor(colorTo)
         (binding.buttonShowAllDetails as MaterialButton).iconTint = colorTo
-        binding.chipPickDate.chipBackgroundColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipBackgroundColorStateList[newCategory]
-        )
-        binding.chipToday.chipBackgroundColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipBackgroundColorStateList[newCategory]
-        )
-        binding.chipTomorrow.chipBackgroundColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipBackgroundColorStateList[newCategory]
-        )
-        binding.chipPickDate.chipStrokeColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipStrokeColorStateList[newCategory]
-        )
-        binding.chipToday.chipStrokeColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipStrokeColorStateList[newCategory]
-        )
-        binding.chipTomorrow.chipStrokeColor = ContextCompat.getColorStateList(
-            requireContext(),
-            categoryChipStrokeColorStateList[newCategory]
-        )
+
+        binding.chipPickDate.chipBackgroundColor = chipBackgroundColor
+        binding.chipToday.chipBackgroundColor = chipBackgroundColor
+        binding.chipTomorrow.chipBackgroundColor = chipBackgroundColor
+        binding.chipPickDate.chipStrokeColor = chipStrokeColor
+        binding.chipToday.chipStrokeColor = chipStrokeColor
+        binding.chipTomorrow.chipStrokeColor = chipStrokeColor
+
         category = newCategory
         categoryChangeListener.selectedCategoryChanged(newCategory)
     }

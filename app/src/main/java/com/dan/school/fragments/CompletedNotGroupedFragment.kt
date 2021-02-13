@@ -13,6 +13,7 @@ import com.dan.school.School.categoryUncheckedIcons
 import com.dan.school.adapters.BaseItemListAdapter
 import com.dan.school.adapters.ItemListAdapter
 import com.dan.school.databinding.FragmentCompletedNotGroupedBinding
+import com.dan.school.interfaces.ItemClickListener
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.google.gson.Gson

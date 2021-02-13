@@ -1,5 +1,7 @@
 package com.dan.school.setup
 
+import android.content.Context
+import android.content.SharedPreferences
 import android.os.Bundle
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
@@ -15,15 +17,18 @@ class ProfileSetupFragment : Fragment() {
 
     private val binding get() = _binding!!
 
-    private var nickname = ""
-    private var fullName = ""
+    private lateinit var profileSetupDoneListener: ProfileSetupDoneListener
 
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            nickname = it.getString(School.NICKNAME, "")
-            fullName = it.getString(School.FULL_NAME, "")
+    private lateinit var sharedPref: SharedPreferences
+
+    override fun onAttach(context: Context) {
+        super.onAttach(context)
+        if (activity is SetupActivity) {
+            profileSetupDoneListener = activity as SetupActivity
         }
+        sharedPref = context.getSharedPreferences(
+            getString(R.string.preference_file_key), Context.MODE_PRIVATE
+        )
     }
 
     override fun onCreateView(
@@ -37,31 +42,39 @@ class ProfileSetupFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.textFieldNickname.editText?.setText(nickname)
-        binding.textFieldFullName.editText?.setText(fullName)
+        binding.textFieldNickname.editText?.setText(sharedPref.getString(School.NICKNAME, ""))
+        binding.textFieldFullName.editText?.setText(sharedPref.getString(School.FULL_NAME, ""))
 
         binding.buttonDone.setOnClickListener {
-            val isNicknameEmpty = binding.textFieldNickname.editText?.text.toString().trim().isEmpty()
-            val isFullNameEmpty = binding.textFieldFullName.editText?.text.toString().trim().isEmpty()
-            if (isNicknameEmpty) {
-                binding.textFieldNickname.error = getString(R.string.this_field_is_required)
-            } else {
-                binding.textFieldNickname.error = null
-            }
-            if (isFullNameEmpty) {
-                binding.textFieldFullName.error = getString(R.string.this_field_is_required)
-            } else {
-                binding.textFieldFullName.error = null
-            }
-            if (!(isNicknameEmpty || isFullNameEmpty)) {
-                if (activity is SetupActivity) {
-                    (activity as SetupActivity).profileSetupDone(
-                        binding.textFieldNickname.editText?.text.toString().trim(),
-                        binding.textFieldFullName.editText?.text.toString().trim()
-                    )
-                }
+            if (isInputValid()) {
+                saveProfile()
             }
         }
+    }
+
+    private fun saveProfile() {
+        if (this::profileSetupDoneListener.isInitialized) {
+            profileSetupDoneListener.profileSetupDone(
+                binding.textFieldNickname.editText?.text.toString().trim(),
+                binding.textFieldFullName.editText?.text.toString().trim()
+            )
+        }
+    }
+
+    private fun isInputValid(): Boolean {
+        val isNicknameEmpty = binding.textFieldNickname.editText?.text.toString().trim().isEmpty()
+        val isFullNameEmpty = binding.textFieldFullName.editText?.text.toString().trim().isEmpty()
+        if (isNicknameEmpty) {
+            binding.textFieldNickname.error = getString(R.string.this_field_is_required)
+        } else {
+            binding.textFieldNickname.error = null
+        }
+        if (isFullNameEmpty) {
+            binding.textFieldFullName.error = getString(R.string.this_field_is_required)
+        } else {
+            binding.textFieldFullName.error = null
+        }
+        return !(isNicknameEmpty || isFullNameEmpty)
     }
 
     override fun onDestroyView() {
@@ -69,15 +82,14 @@ class ProfileSetupFragment : Fragment() {
         _binding = null
     }
 
+    interface ProfileSetupDoneListener {
+        fun profileSetupDone(nickname: String, fullName: String)
+    }
+
     companion object {
         @JvmStatic
-        fun newInstance(nickname: String = "", fullName: String = "") =
-            ProfileSetupFragment().apply {
-                arguments = Bundle().apply {
-                    putString(School.NICKNAME, nickname)
-                    putString(School.FULL_NAME, fullName)
-                }
-            }
+        fun newInstance() =
+            ProfileSetupFragment()
     }
 
 }

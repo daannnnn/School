@@ -2,7 +2,9 @@ package com.dan.school.models
 
 import android.os.Parcel
 import android.os.Parcelable
+import androidx.annotation.Keep
 
+@Keep
 data class Subtask(var title: String, var done: Boolean) : Parcelable {
 
     constructor(parcel: Parcel) : this(
