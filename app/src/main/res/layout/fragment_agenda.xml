@@ -7,7 +7,7 @@
     android:clipToPadding="false"
     android:paddingTop="24dp"
     android:paddingBottom="24dp"
-    tools:context=".fragments.AgendaFragment">
+    tools:context=".ui.fragments.overview.AgendaFragment">
 
     <androidx.constraintlayout.widget.ConstraintLayout
         android:id="@+id/constraintLayoutAgendaMain"

@@ -13,15 +13,15 @@
         android:roundIcon="@mipmap/ic_launcher_round"
         android:supportsRtl="true"
         android:theme="@style/AppTheme">
-        <activity android:name=".settings.SettingsActivity" />
+        <activity android:name=".ui.activities.SettingsActivity" />
         <activity
-            android:name=".setup.SetupActivity"
+            android:name=".ui.activities.SetupActivity"
             android:theme="@style/SetupTheme" />
         <activity
-            android:name=".MainActivity"
+            android:name=".ui.activities.MainActivity"
             android:windowSoftInputMode="adjustResize" />
         <activity
-            android:name=".SplashScreenActivity"
+            android:name=".ui.activities.SplashScreenActivity"
             android:theme="@style/SplashScreenTheme">
             <intent-filter>
                 <action android:name="android.intent.action.MAIN" />
@@ -31,7 +31,7 @@
         </activity>
 
         <service
-            android:name=".FirebaseMessaging"
+            android:name=".other.FirebaseMessaging"
             android:exported="false">
             <intent-filter>
                 <action android:name="com.google.firebase.MESSAGING_EVENT" />

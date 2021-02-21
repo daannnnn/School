@@ -1,20 +1,16 @@
 package com.dan.school.adapters
 
-import android.view.View
 import androidx.core.view.isGone
-import androidx.core.view.isVisible
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.ListAdapter
 import androidx.recyclerview.widget.RecyclerView
 import com.dan.school.interfaces.ItemClickListener
-import com.dan.school.ItemViewHolder
-import com.dan.school.School
-import com.dan.school.Utils
+import com.dan.school.other.ItemViewHolder
+import com.dan.school.other.School
+import com.dan.school.other.Utils
 import com.dan.school.models.Item
 import com.dan.school.models.Subtask
 import com.dan.school.models.UpcomingItem
-import com.google.gson.Gson
-import com.google.gson.reflect.TypeToken
 import java.util.*
 import kotlin.collections.ArrayList
 

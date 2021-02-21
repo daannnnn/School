@@ -5,8 +5,8 @@ import androidx.room.Database
 import androidx.room.Room
 import androidx.room.RoomDatabase
 import androidx.room.TypeConverters
-import com.dan.school.Converter
-import com.dan.school.School
+import com.dan.school.other.Converter
+import com.dan.school.other.School
 import com.dan.school.models.Item
 
 @Database(entities = [Item::class], version = 1, exportSchema = false)

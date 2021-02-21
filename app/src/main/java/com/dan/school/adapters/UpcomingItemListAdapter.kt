@@ -8,7 +8,7 @@ import android.widget.TextView
 import androidx.recyclerview.widget.DiffUtil
 import androidx.recyclerview.widget.RecyclerView
 import com.dan.school.interfaces.ItemClickListener
-import com.dan.school.ItemViewHolder
+import com.dan.school.other.ItemViewHolder
 import com.dan.school.R
 import com.dan.school.models.*
 

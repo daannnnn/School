@@ -1,5 +1,6 @@
 package com.dan.school
 
+import com.dan.school.other.Utils
 import com.google.common.truth.Truth.assertThat
 import org.junit.Test
 

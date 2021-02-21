@@ -2,7 +2,7 @@ package com.dan.school.models
 
 import androidx.room.Entity
 import androidx.room.PrimaryKey
-import com.dan.school.School
+import com.dan.school.other.School
 
 @Entity(tableName = School.TABLE_NAME)
 data class Item(

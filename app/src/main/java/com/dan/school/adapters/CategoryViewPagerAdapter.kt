@@ -10,7 +10,7 @@ import androidx.core.content.ContextCompat
 import androidx.core.content.res.ResourcesCompat
 import androidx.viewpager.widget.PagerAdapter
 import com.dan.school.R
-import com.dan.school.School
+import com.dan.school.other.School
 
 class CategoryViewPagerAdapter(val context: Context) :
     PagerAdapter() {
