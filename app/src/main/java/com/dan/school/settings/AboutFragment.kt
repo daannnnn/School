@@ -1,15 +1,18 @@
 package com.dan.school.settings
 
+import android.content.Intent
+import android.net.Uri
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import com.dan.school.BuildConfig
 import com.dan.school.R
 import com.dan.school.databinding.FragmentAboutBinding
 import com.mikepenz.aboutlibraries.Libs
 import com.mikepenz.aboutlibraries.LibsBuilder
+
 
 class AboutFragment : Fragment() {
 
@@ -34,9 +37,23 @@ class AboutFragment : Fragment() {
             showLibrariesPage()
         }
 
+        binding.relativeLayoutCode.setOnClickListener {
+            goToUrl("https://github.com/daannnnn/School")
+        }
+
+        binding.relativeLayoutBug.setOnClickListener {
+            goToUrl("https://github.com/daannnnn/School/issues")
+        }
+
         binding.buttonBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
+    }
+
+    private fun goToUrl(url: String) {
+        val uri: Uri = Uri.parse(url)
+        val intent = Intent(Intent.ACTION_VIEW, uri)
+        startActivity(intent)
     }
 
     private fun showLibrariesPage() {

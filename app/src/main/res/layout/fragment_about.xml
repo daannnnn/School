@@ -105,15 +105,90 @@
                 android:paddingStart="24dp"
                 android:paddingEnd="24dp">
 
+                <ImageView
+                    android:id="@+id/imageViewLicensesIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="12dp"
+                    app:tint="@color/colorPrimary"
+                    android:layout_marginBottom="12dp"
+                    android:src="@drawable/ic_licenses" />
+
                 <TextView
                     android:layout_width="wrap_content"
                     android:layout_height="wrap_content"
                     android:layout_centerVertical="true"
                     android:layout_marginStart="8dp"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
+                    android:layout_toEndOf="@id/imageViewLicensesIcon"
                     android:fontFamily="@font/cabin_regular"
                     android:text="@string/licenses"
+                    android:textColor="?android:textColorPrimary"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relativeLayoutCode"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp">
+
+                <ImageView
+                    android:id="@+id/imageViewCodeIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="12dp"
+                    app:tint="@color/colorPrimary"
+                    android:layout_marginBottom="12dp"
+                    android:src="@drawable/ic_code" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_toEndOf="@id/imageViewCodeIcon"
+                    android:fontFamily="@font/cabin_regular"
+                    android:text="@string/source_code"
+                    android:textColor="?android:textColorPrimary"
+                    android:textSize="18sp" />
+
+            </RelativeLayout>
+
+            <RelativeLayout
+                android:id="@+id/relativeLayoutBug"
+                android:layout_width="match_parent"
+                android:layout_height="wrap_content"
+                android:background="?attr/selectableItemBackground"
+                android:clickable="true"
+                android:focusable="true"
+                android:paddingStart="24dp"
+                android:paddingEnd="24dp">
+
+                <ImageView
+                    android:id="@+id/imageViewBugIcon"
+                    android:layout_width="24dp"
+                    android:layout_height="24dp"
+                    android:layout_centerVertical="true"
+                    android:layout_marginTop="12dp"
+                    app:tint="@color/colorPrimary"
+                    android:layout_marginBottom="12dp"
+                    android:src="@drawable/ic_bug" />
+
+                <TextView
+                    android:layout_width="wrap_content"
+                    android:layout_height="wrap_content"
+                    android:layout_centerVertical="true"
+                    android:layout_marginStart="8dp"
+                    android:layout_toEndOf="@id/imageViewBugIcon"
+                    android:fontFamily="@font/cabin_regular"
+                    android:text="@string/report_bugs"
                     android:textColor="?android:textColorPrimary"
                     android:textSize="18sp" />
 
