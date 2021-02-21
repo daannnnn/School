@@ -33,15 +33,15 @@ class AboutFragment : Fragment() {
         val version = "${getString(R.string.version)} ${BuildConfig.VERSION_NAME}"
         binding.textViewVersion.text = version
 
-        binding.relativeLayoutLicenses.setOnClickListener {
+        binding.settingsItemLicenses.setOnClickListener {
             showLibrariesPage()
         }
 
-        binding.relativeLayoutCode.setOnClickListener {
+        binding.settingsItemCode.setOnClickListener {
             goToUrl("https://github.com/daannnnn/School")
         }
 
-        binding.relativeLayoutBug.setOnClickListener {
+        binding.settingsItemBug.setOnClickListener {
             goToUrl("https://github.com/daannnnn/School/issues")
         }
 

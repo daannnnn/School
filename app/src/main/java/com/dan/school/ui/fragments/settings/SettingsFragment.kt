@@ -49,25 +49,25 @@ class SettingsFragment : Fragment() {
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
         super.onViewCreated(view, savedInstanceState)
 
-        binding.textViewSelectedTheme.text = getSelectedTheme()
+        binding.settingsItemTheme.setSelectedText(getSelectedTheme())
 
         binding.buttonBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
 
-        binding.relativeLayoutProfile.setOnClickListener {
+        binding.settingsItemProfile.setOnClickListener {
             settingsItemOnClickListener.itemClicked(School.PROFILE)
         }
 
-        binding.relativeLayoutTheme.setOnClickListener {
+        binding.settingsItemTheme.setOnClickListener {
             showSelectThemeDialog()
         }
 
-        binding.relativeLayoutBackup.setOnClickListener {
+        binding.settingsItemBackup.setOnClickListener {
             settingsItemOnClickListener.itemClicked(School.BACKUP)
         }
 
-        binding.relativeLayoutAbout.setOnClickListener {
+        binding.settingsItemAbout.setOnClickListener {
             settingsItemOnClickListener.itemClicked(School.ABOUT)
         }
     }
@@ -119,7 +119,11 @@ class SettingsFragment : Fragment() {
 
     private fun getThemesArray(): Array<String> {
         return if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.Q) {
-            arrayOf(getString(R.string.light), getString(R.string.dark), getString(R.string.system_default))
+            arrayOf(
+                getString(R.string.light),
+                getString(R.string.dark),
+                getString(R.string.system_default)
+            )
         } else {
             arrayOf(getString(R.string.light), getString(R.string.dark))
         }
@@ -157,12 +161,12 @@ class SettingsFragment : Fragment() {
     }
 
     /**
-     * Tries to update text of [FragmentSettingsBinding.textViewSelectedTheme]
+     * Sets selected text of [FragmentSettingsBinding.settingsItemTheme]
      * to the value returned by [getThemeStringWithIntValue] with [theme] as
      * parameter.
      */
     private fun selectedThemeUpdated(theme: Int) {
-        binding.textViewSelectedTheme.text = getThemeStringWithIntValue(theme)
+        binding.settingsItemTheme.setSelectedText(getThemeStringWithIntValue(theme))
     }
 
     /**
