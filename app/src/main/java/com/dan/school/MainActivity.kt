@@ -28,8 +28,10 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
 
     /**
      * Saves the last time show is called on [interstitialAd]
+     *
+     * Initial value is [System.currentTimeMillis] - 30 seconds
      */
-    private var lastAdShowTime = System.currentTimeMillis()
+    private var lastAdShowTime = System.currentTimeMillis() - 30000
 
     /**
      * Saves the amount of clicks from FAB, BottomNavigationView, and
