@@ -13,8 +13,6 @@ import com.dan.school.databinding.ActivitySetupBinding
 import com.dan.school.ui.fragments.setup.ProfileSetupFragment
 import com.dan.school.ui.fragments.setup.SetupFragment
 import com.dan.school.ui.fragments.setup.SetupViewPagerFragment
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.ktx.messaging
 
 class SetupActivity : AppCompatActivity(), ProfileSetupFragment.ProfileSetupDoneListener,
     SetupFragment.ButtonGetStartedClickListener, SetupViewPagerFragment.SetupDoneListener {
@@ -27,9 +25,6 @@ class SetupActivity : AppCompatActivity(), ProfileSetupFragment.ProfileSetupDone
         super.onCreate(savedInstanceState)
         binding = ActivitySetupBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        Firebase.messaging.subscribeToTopic(School.UPDATES)
-        Firebase.messaging.subscribeToTopic("v${BuildConfig.VERSION_NAME}")
 
         sharedPref = getSharedPreferences(
             getString(R.string.preference_file_key), Context.MODE_PRIVATE

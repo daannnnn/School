@@ -18,8 +18,6 @@ import com.dan.school.ui.fragments.overview.OverviewFragment
 import com.google.android.gms.ads.*
 import com.google.android.gms.ads.interstitial.InterstitialAd
 import com.google.android.gms.ads.interstitial.InterstitialAdLoadCallback
-import com.google.firebase.ktx.Firebase
-import com.google.firebase.messaging.ktx.messaging
 
 typealias Callback = () -> Unit
 
@@ -51,9 +49,6 @@ class MainActivity : AppCompatActivity(), OverviewFragment.OpenDrawerListener,
         super.onCreate(savedInstanceState)
         binding = ActivityMainBinding.inflate(layoutInflater)
         setContentView(binding.root)
-
-        Firebase.messaging.subscribeToTopic(School.UPDATES)
-        Firebase.messaging.subscribeToTopic("v${BuildConfig.VERSION_NAME}")
 
         MobileAds.initialize(this) {}
 
