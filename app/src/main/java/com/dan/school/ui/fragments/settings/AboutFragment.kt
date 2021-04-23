@@ -37,23 +37,9 @@ class AboutFragment : Fragment() {
             showLibrariesPage()
         }
 
-        binding.settingsItemCode.setOnClickListener {
-            goToUrl("https://github.com/daannnnn/School")
-        }
-
-        binding.settingsItemBug.setOnClickListener {
-            goToUrl("https://github.com/daannnnn/School/issues")
-        }
-
         binding.buttonBack.setOnClickListener {
             requireActivity().onBackPressed()
         }
-    }
-
-    private fun goToUrl(url: String) {
-        val uri: Uri = Uri.parse(url)
-        val intent = Intent(Intent.ACTION_VIEW, uri)
-        startActivity(intent)
     }
 
     private fun showLibrariesPage() {

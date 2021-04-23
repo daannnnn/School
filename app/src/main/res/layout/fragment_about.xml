@@ -102,20 +102,6 @@
                 app:text="@string/licenses"
                 app:icon="@drawable/ic_licenses"/>
 
-            <com.dan.school.custom.SettingsItem
-                android:id="@+id/settingsItemCode"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:text="@string/source_code"
-                app:icon="@drawable/ic_code"/>
-
-            <com.dan.school.custom.SettingsItem
-                android:id="@+id/settingsItemBug"
-                android:layout_width="match_parent"
-                android:layout_height="wrap_content"
-                app:text="@string/report_bugs"
-                app:icon="@drawable/ic_bug"/>
-
         </LinearLayout>
 
     </androidx.core.widget.NestedScrollView>
