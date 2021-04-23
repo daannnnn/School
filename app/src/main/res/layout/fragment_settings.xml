@@ -5,7 +5,7 @@
     android:layout_width="match_parent"
     android:layout_height="match_parent"
     android:orientation="vertical"
-    tools:context=".settings.SettingsFragment">
+    tools:context=".ui.fragments.settings.SettingsFragment">
 
     <com.google.android.material.appbar.AppBarLayout
         android:id="@+id/appBar"
@@ -53,125 +53,27 @@
             android:layout_height="wrap_content"
             android:orientation="vertical">
 
-            <RelativeLayout
-                android:id="@+id/relativeLayoutProfile"
+            <com.dan.school.custom.SettingsItem
+                android:id="@+id/settingsItemProfile"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp">
+                app:text="@string/profile"
+                app:icon="@drawable/ic_profile"/>
 
-                <ImageView
-                    android:id="@+id/imageViewProfileIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="12dp"
-                    android:layout_marginBottom="12dp"
-                    android:src="@drawable/ic_profile" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="8dp"
-                    android:layout_toEndOf="@id/imageViewProfileIcon"
-                    android:fontFamily="@font/cabin_regular"
-                    android:text="@string/profile"
-                    android:textColor="?android:textColorPrimary"
-                    android:textSize="18sp" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/relativeLayoutTheme"
+            <com.dan.school.custom.SettingsItem
+                android:id="@+id/settingsItemTheme"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp">
+                app:text="@string/theme"
+                app:showSelectedTextView="true"
+                app:icon="@drawable/ic_theme"/>
 
-                <ImageView
-                    android:id="@+id/imageViewDarkModeIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="12dp"
-                    app:tint="@color/colorPrimary"
-                    android:layout_marginBottom="12dp"
-                    android:src="@drawable/ic_theme" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="8dp"
-                    android:layout_toEndOf="@id/imageViewDarkModeIcon"
-                    android:fontFamily="@font/cabin_regular"
-                    android:text="@string/theme"
-                    android:textColor="?android:textColorPrimary"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/textViewSelectedTheme"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="8dp"
-                    android:layout_alignParentEnd="true"
-                    android:fontFamily="@font/cabin_bold"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="18sp" />
-
-            </RelativeLayout>
-
-            <RelativeLayout
-                android:id="@+id/relativeLayoutBackup"
+            <com.dan.school.custom.SettingsItem
+                android:id="@+id/settingsItemBackup"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp">
-
-                <ImageView
-                    android:id="@+id/imageViewBackupIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="12dp"
-                    app:tint="@color/colorPrimary"
-                    android:layout_marginBottom="12dp"
-                    android:src="@drawable/ic_backup" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="8dp"
-                    android:layout_toEndOf="@id/imageViewBackupIcon"
-                    android:fontFamily="@font/cabin_regular"
-                    android:text="@string/backup_and_restore"
-                    android:textColor="?android:textColorPrimary"
-                    android:textSize="18sp" />
-
-                <TextView
-                    android:id="@+id/textViewSelectedBackup"
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="8dp"
-                    android:layout_alignParentEnd="true"
-                    android:fontFamily="@font/cabin_bold"
-                    android:textColor="@color/colorPrimary"
-                    android:textSize="18sp" />
-
-            </RelativeLayout>
+                app:text="@string/backup_and_restore"
+                app:icon="@drawable/ic_backup"/>
 
             <View
                 android:layout_width="match_parent"
@@ -181,38 +83,12 @@
                 android:layout_marginTop="8dp"
                 android:layout_marginBottom="8dp"/>
 
-            <RelativeLayout
-                android:id="@+id/relativeLayoutAbout"
+            <com.dan.school.custom.SettingsItem
+                android:id="@+id/settingsItemAbout"
                 android:layout_width="match_parent"
                 android:layout_height="wrap_content"
-                android:background="?attr/selectableItemBackground"
-                android:clickable="true"
-                android:focusable="true"
-                android:paddingStart="24dp"
-                android:paddingEnd="24dp">
-
-                <ImageView
-                    android:id="@+id/imageViewAboutIcon"
-                    android:layout_width="24dp"
-                    android:layout_height="24dp"
-                    android:layout_centerVertical="true"
-                    android:layout_marginTop="12dp"
-                    app:tint="@color/colorPrimary"
-                    android:layout_marginBottom="12dp"
-                    android:src="@drawable/ic_about" />
-
-                <TextView
-                    android:layout_width="wrap_content"
-                    android:layout_height="wrap_content"
-                    android:layout_centerVertical="true"
-                    android:layout_marginStart="8dp"
-                    android:layout_toEndOf="@id/imageViewAboutIcon"
-                    android:fontFamily="@font/cabin_regular"
-                    android:text="@string/about"
-                    android:textColor="?android:textColorPrimary"
-                    android:textSize="18sp" />
-
-            </RelativeLayout>
+                app:text="@string/about"
+                app:icon="@drawable/ic_about"/>
 
         </LinearLayout>
 

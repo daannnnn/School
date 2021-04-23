@@ -115,4 +115,6 @@
     <string name="codes_not_match">The codes don\'t match. Please try again.</string>
     <string name="restore">Restore</string>
     <string name="backup_and_restore">Backup and Restore</string>
+    <string name="source_code">Source code</string>
+    <string name="report_bugs">Report bugs</string>
 </resources>

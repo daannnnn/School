@@ -3,7 +3,7 @@ package com.dan.school.data
 import androidx.lifecycle.LiveData
 import androidx.room.*
 import androidx.sqlite.db.SupportSQLiteQuery
-import com.dan.school.School
+import com.dan.school.other.School
 import com.dan.school.models.DateItem
 import com.dan.school.models.Item
 
