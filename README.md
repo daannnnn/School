@@ -5,9 +5,6 @@ Productivity app to organize school tasks
 [![](https://img.shields.io/github/release/daannnnn/School)](https://github.com/daannnnn/School/releases)
 ![](https://img.shields.io/github/license/daannnnn/School)
 
-## Download
-Link to download APK: https://schoolapp.cf <br/>
-
 ## Screenshots
 <img src="/images/screenshot_1.png" 
   height="300"><img src="/images/screenshot_2.png" 
@@ -36,13 +33,6 @@ Link to download APK: https://schoolapp.cf <br/>
     LIABILITY, WHETHER IN AN ACTION OF CONTRACT, TORT OR OTHERWISE, ARISING FROM,
     OUT OF OR IN CONNECTION WITH THE SOFTWARE OR THE USE OR OTHER DEALINGS IN THE
     SOFTWARE.
-
-## Donate
-<p>
-  <a href="https://www.paypal.com/donate?hosted_button_id=TBXCBTKB7VGAJ&source=url">
-      <img src="https://www.paypalobjects.com/en_US/i/btn/btn_donateCC_LG.gif" alt="paypal">
-  </a>
-</p>
 
 ## Others
 YouTube video: https://www.youtube.com/watch?v=-kX6GHygjfk
